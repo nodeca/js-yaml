@@ -1,0 +1,12 @@
+{
+  "name": "js-yaml",
+  "description": "Javascript port of PyYAML",
+  "version": "0.0.1",
+  "author": "Aleksey V Zapparov <ixti@member.fsf.org> (http://ixti.ru)",
+  "repository": "git://github.com/nodeca/js-yaml",
+  "main": "index.js",
+  "dependencies":
+  {
+    "jsclass": "3.0.4"
+  }
+}
