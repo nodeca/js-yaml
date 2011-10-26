@@ -21,3 +21,18 @@ useful for debugging dead-loops. Example:
 export JSYAML_MAX_CALLS=1000
 node myapp.js
 ```
+
+If you are contributor and want to add debug output to some method please check
+if debug mode is enabled to reduce resources usage on creation of params object,
+e.g.:
+
+``` javascript
+// file: ./lib/js-yaml/foobar.js
+var debug = require('./debug');
+
+// ...
+
+if (debug.ENABLED) {
+  debug('My message', {foo: 1, bar: 2});
+}
+```
