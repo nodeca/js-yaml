@@ -13,3 +13,12 @@ require:
   - logger
   - debugger
 dbg-mode: true
+# some comments
+non-ascii-ключ: значение # more comments
+folded: >
+  Multi
+  line
+  text
+literal: |
+  More
+  samples
