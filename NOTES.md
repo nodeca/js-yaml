@@ -15,8 +15,6 @@ Future Refactoring
 
 - Implement lightweight Hashtable implementation and replace JS.Hash:
   - `constructor.js`
-- Replace JS.Hash with native hash:
-  - `scanner.js`
 - Remove Hashable type (used as mixin for Node and in conditional test in
   Constructor)
 - Replace JS.Class with something lightweight (own implementation similar to
