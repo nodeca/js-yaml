@@ -1,11 +1,15 @@
 ---
 pid: '/home/www/pids/thin.pid'
 wait: 12.34
-config:
-  host: localhost
-  port: 3000
+listen: {host: localhost, port: 3000}
+modules: ['users', 'i18n']
+users: &crew
+  puzrin:
+    role: manager
+  ixti:
+    role: developer
+authors: *crew
 require:
   - logger
   - debugger
 dbg-mode: true
-
