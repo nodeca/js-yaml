@@ -1,0 +1,11 @@
+---
+pid: '/home/www/pids/thin.pid'
+wait: 12.34
+config:
+  host: localhost
+  port: 3000
+require:
+  - logger
+  - debugger
+dbg-mode: true
+
