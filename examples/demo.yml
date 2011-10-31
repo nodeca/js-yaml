@@ -31,3 +31,7 @@ omap: !!omap
   - aardvark: African pig-like ant eater. Ugly.
   - anteater: South-American ant eater. Two species.
   - anaconda: South-American constrictor snake. Scaly.
+set: !!set
+  ? Mark McGwire
+  ? Sammy Sosa
+  ? Ken Griffey
