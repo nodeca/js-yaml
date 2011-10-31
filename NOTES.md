@@ -11,4 +11,4 @@ NOTES
 -   Improve documentation
     -   Add examples of usage
     -   Add sample YAMLs from official spec to show they all parsable
--   Check if !!merge works
+-   Fix !!merge
