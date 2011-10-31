@@ -6,7 +6,7 @@
   "homepage": "https://github.com/nodeca/js-yaml",
   "author": "Aleksey V Zapparov <ixti@member.fsf.org> (http://www.ixti.net)",
   "bugs": {
-     "web": "https://github.com/nodeca/js-yaml/issues"
+     "url": "https://github.com/nodeca/js-yaml/issues"
   },
   "license": {
     "type": "MIT",
