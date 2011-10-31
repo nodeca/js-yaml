@@ -8,7 +8,7 @@ NOTES
 -   ? think about final project name
 -   Bugs
     -   problem with nested lists
-    -   !!merge
+    -   +++ !!merge
     -   https://github.com/nodeca/js-yaml/issues/1
     -   problem with block-styled base64 data
     -   error reporting (proper snippets)

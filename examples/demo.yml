@@ -35,11 +35,11 @@ set: !!set
   ? Mark McGwire
   ? Sammy Sosa
   ? Ken Griffey
-#merge_test:
-#  - &FOOBAR { xx: 1, yy: 2 }
-#  - # Should include FOOBAR
-#    << : *FOOBAR
-#    zx : 3
+merge_test:
+  - &FOOBAR { xx: 1, yy: 2 }
+  - # Should include FOOBAR
+    << : *FOOBAR
+    zx : 3
 generic: !!binary "\
   R0lGODlhDAAMAIQAAP//9/X17unp5WZmZgAAAOfn515eXvPz7Y6OjuDg4J+fn5\
   OTk6enp56enmlpaWNjY6Ojo4SEhP/++f/++f/++f/++f/++f/++f/++f/++f/+\
