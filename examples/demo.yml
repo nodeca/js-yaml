@@ -22,8 +22,11 @@ folded: >
 literal: |
   More
   samples
-pairs:
+pairs: # will net be treated as pairs - will result in an array of objects
   - meeting: with team.
   - meeting: with boss.
   - break: lunch.
   - meeting: with client.
+pairs_explicit: !!pairs # result in array of pairs (array with two values)
+  - meeting: with team.
+  - meeting: with boss.
