@@ -2,20 +2,26 @@
   "name": "js-yaml",
   "version": "0.1.1",
   "description": "YAML 1.1 Parser",
-  "keywords": ["yaml", "parser", "pyyaml"]
-  "author": "Aleksey V Zapparov <ixti@member.fsf.org> (http://www.ixti.net)",
+  "keywords": ["yaml", "parser", "pyyaml"],
   "homepage": "https://github.com/nodeca/js-yaml",
-  "repository":
-  {
+  "author": "Aleksey V Zapparov <ixti@member.fsf.org> (http://www.ixti.net)",
+  "bugs": {
+     "web": "https://github.com/nodeca/js-yaml/issues"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/nodeca/js-yaml/blob/master/LICENSE"
+  },
+  "repository": {
     "type": "git",
-    "url": "git://github.com/nodeca/js-yaml.git",
-  }
+    "url": "git://github.com/nodeca/js-yaml.git"
+  },
   "main": "./index.js",
   "dependencies":
   {
     "jsclass": "3.0.4"
   },
-  "engines"
+  "engines":
   {
       "node": ">= 0.4.0 < 0.6.0"
   }
