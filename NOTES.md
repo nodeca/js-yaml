@@ -4,11 +4,17 @@ NOTES
 -   Remove JS.Class dependency
     -   Implement own lightweitgh classes
     -   Implement lightweight hashtables
--   Implement emitter
--   Improve Reader to support UTF-16
--   Fix (check if it is a bug) problem with parsing nested lists
 -   Port PyYAML tests
+-   ? think about final project name
+-   Bugs
+    -   problem with nested lists
+    -   !!merge
+    -   https://github.com/nodeca/js-yaml/issues/1
+    -   error reporting (proper snippets)
+        -   demo.js, missed ] on line 5
+        -   invalid hash.yaml from visionmedia
 -   Improve documentation
     -   Add examples of usage
     -   Add sample YAMLs from official spec to show they all parsable
--   Fix !!merge
+-   ? Implement yaml writer
+-   ? fix UTF-16 support for reader
