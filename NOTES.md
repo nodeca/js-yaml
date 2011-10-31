@@ -3,7 +3,7 @@ NOTES
 
 -   Remove JS.Class dependency
     -   Implement own lightweitgh classes
-    -   Implement lightweight hashtables
+    -   +++ Implement lightweight hashtables
 -   Port PyYAML tests
 -   ? think about final project name
 -   Bugs
