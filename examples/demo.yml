@@ -22,3 +22,8 @@ folded: >
 literal: |
   More
   samples
+pairs:
+  - meeting: with team.
+  - meeting: with boss.
+  - break: lunch.
+  - meeting: with client.
