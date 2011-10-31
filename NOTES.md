@@ -10,6 +10,7 @@ NOTES
     -   problem with nested lists
     -   !!merge
     -   https://github.com/nodeca/js-yaml/issues/1
+    -   problem with block-styled base64 data
     -   error reporting (proper snippets)
         -   demo.js, missed ] on line 5
         -   invalid hash.yaml from visionmedia
