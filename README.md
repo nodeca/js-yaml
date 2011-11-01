@@ -13,9 +13,9 @@ TBD. Just git clone now.
 
 ``` javascript
 var jsyaml = require('js-yaml');
-var document = jsyaml.load('---\nhello: world');
+var doc = jsyaml.load('---\nhello: world');
 
-console.log(document.hello);
+console.log(doc.hello);
 // -> 'world'
 ```
 
