@@ -1,4 +1,4 @@
-js-yaml
+JS-YAML
 =======
 
 JS-YAML is a YAML parser for JavaScript. Originally ported from [PyYAML][1].
