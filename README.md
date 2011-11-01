@@ -1,104 +1,92 @@
 JS-YAML
 =======
 
-YAML parser for JavaScript. Originally ported from [PyYAML](http://pyyaml.org/).
+YAML 1.1 parser for JavaScript. Originally ported from [PyYAML](http://pyyaml.org/).
 
-(\*) not feature-compleete, more coming soon. See examples.
+(\*) Not feature-compleete, more coming soon:
+
+- YAML 1.2 support
+- writer
+- JS-specific tags
+- internal API for complex operations
 
 ## Installation
 
-TBD. Just git clone now.
+For node.js:
 
-## Usage
+    npm install js-yaml
 
-``` javascript
-var jsyaml = require('js-yaml');
-var doc = jsyaml.load('---\nhello: world');
+## API
 
-console.log(doc.hello);
-// -> 'world'
-```
-
-See `examples/`
+See examples in `examples/` folder.
 
 
-### Load by extention
+### register( ['yml','yaml',...] )
 
-**register(ext\_1[, ext\_2[, ext\_N]]) -> Void**
+register JS-YAML as default file handler for specified extension(s). If no extensions defined, then
+use 'yml' & 'yaml' by default.
 
-- _ext\_1_, _ext\_2_, _..._, _ext\_N_ (String)
-
-Register JS-YAML as default file handler for specified extension(s).
+After registration you can just call `require` instead of `loadAll` method.
 
 ``` javascript
+require('js-yaml').register('yml', 'yaml'); // or even more simple: require('js-yaml').register();
 
-jsyaml.register('yml', 'yaml');
+var docs = require('/home/ixti/examples.yml'); // Returns array of documents, or throw exception on error
 
-var docs = require('/home/ixti/examples.yml');
-docs.forEach(function (doc) {
-  // ...
-});
+console.log(docs);
 ```
 
 
-### Load single doc
+### load( string|buffer|file_resource )
 
-**load(stream) -> Object**
+Parses source as single YAML document. Returns JS object or throws exception on error.
 
-- _stream_ (String|Buffer|File Resource) YAML source
-
-Parse the single YAML document in a stream and produce the corresponding
-JavaScript object.
+This function does NOT understands multi-doc sources, it throws exception on those.
 
 ``` javascript
+var yaml = require('js-yaml');
+
 // pass the string
 fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
   if (err) {
     // handle error
     return;
   }
-
-  var doc = jsyaml.load(data);
+  try {
+    console.log( yaml.load(data) );
+  } catch(e) {
+    console.log(e);
+  }
 });
 ```
 
 
-### Load multiple doc
+### loadAll( string|buffer|file_resource )
 
-**loadAll(stream) -> Array**
-
-- _stream_ (String|Buffer|File Resource) YAML source
-
-Parse the all YAML documents in a stream and produce array of corresponding
-JavaScript objects.
+The same as `Load`, but understands multi-doc sources and returns array of JS objects.
 
 ``` javascript
+var yaml = require('js-yaml');
+
 // pass the string
-fs.readFile('/home/ixti/examples.yml', 'utf8', function (err, data) {
+fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
   if (err) {
     // handle error
     return;
   }
-
-  jsyaml.loadAll(data).forEach(function (doc) {
-    // ...
-  });
+  try {
+    console.log( yaml.loadAll(data) );
+  } catch(e) {
+    console.log(e);
+  }
 });
 ```
 
 
-## Comparison to visionmedia's yaml parser
-
-All files that can be parsed with visionmedia's yaml parser can be parsed by
-JS-YAML, except those, which are not VALID:
-
-* `examples/visionmedia-compat/hash.yml` contains invalid YAML document.
-  Unquoted strings cannot start with `{` or `[`.
-
-
 ## JsTagScheme
 
-The list of standard YAML tags and corresponding JavaScipt types.
+The list of standard YAML tags and corresponding JavaScipt types. See also
+[YAMLTagDiscussion](http://pyyaml.org/wiki/YAMLTagDiscussion) and [Yaml Types](http://yaml.org/type/).
 
 ```
 !!null ''                   # null
@@ -116,28 +104,7 @@ The list of standard YAML tags and corresponding JavaScipt types.
 ```
 
 The list of JS-specific YAML tags will be availble soon (not implemented
-yet) and will include at least RegExp, Undefined and Infinity.
-
-See also [YAMLTagDiscussion](http://pyyaml.org/wiki/YAMLTagDiscussion) and [Yaml Types](http://yaml.org/type/).
-
-
-## Versioning
-
-For transparency and insight into our release cycle, and for striving to
-maintain backwards compatibility, JS-YAML will be maintained under
-the Semantic Versioning guidelines as much as possible.
-
-Releases will be numbered with the follow format:
-
-`<major>.<minor>.<patch>`
-
-And constructed with the following guidelines:
-
-* Breaking backwards compatibility bumps the major
-* New additions without breaking backwards compatibility bumps the minor
-* Bug fixes and misc changes bump the patch
-
-For more information on SemVer, please visit http://semver.org/.
+yet) and will probably include RegExp, Undefined, function and Infinity.
 
 
 ## License
