@@ -1,6 +1,0 @@
----
-pid: '/home/www/pids/thin.pid'
-wait: 12.34
----
-pid: '/home/www/pids/unicorn.pid'
-wait: 23.45
