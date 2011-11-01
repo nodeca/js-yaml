@@ -1,16 +1,25 @@
 JS-YAML
 =======
 
-JS-YAML is a YAML parser for JavaScript. Originally ported from [PyYAML][1].
+YAML parser for JavaScript. Originally ported from [PyYAML](http://pyyaml.org/).
 
-## Features
+(*) not feature-compleete, more coming soon. See examples.
 
-- a **complete** YAML 1.1 parser.
-- unicode support limited to UTF-8 input and \u escape sequences.
-- support for all types from the  [YAML types repository][2].
-- relatively sensible error messages.
+## Installation
 
-## Tag Scheme
+TBD. Just git clone now.
+
+## Usage
+
+TBD.
+
+### Load by extention
+
+### Load single doc
+
+### Load multiple doc
+
+## JsTagScheme
 
 The list of standard YAML tags and corresponding JavaScipt types.
 
@@ -29,15 +38,11 @@ The list of standard YAML tags and corresponding JavaScipt types.
 !!map { ... }               # object
 ```
 
-The list of JavaScript specific YAML tags will be availble soon (not implemented
+The list of JS-specific YAML tags will be availble soon (not implemented
 yet) and will include at least RegExp, Undefined and Infinity.
 
+See also [YAMLTagDiscussion](http://pyyaml.org/wiki/YAMLTagDiscussion) and [Yaml Types](http://yaml.org/type/).
 
 ## License
 
-View the [LICENSE][3] file.
-
-
-[1]: http://pyyaml.org/
-[2]: http://yaml.org/type/index.html
-[3]: https://github.com/nodeca/js-yaml/blob/master/LICENSE
+View the [LICENSE](https://github.com/nodeca/js-yaml/blob/master/LICENSE) file
