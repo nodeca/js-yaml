@@ -10,8 +10,6 @@ Essentials:
 
 Later:
 
--   Improve documentation
-    -   Add examples of usage
-    -   Add sample YAMLs from official spec to show they all parsable
+-   Fix examples to inclute all YAML types
 -   YAML 1.2 features
 -   JS-specific types (regexp, undefined, infinity)
