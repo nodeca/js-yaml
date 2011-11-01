@@ -21,7 +21,7 @@ For node.js:
 See examples in `examples/` folder.
 
 
-### register( ['yml','yaml',...] )
+### register ( ['yml','yaml',...] )
 
 register JS-YAML as default file handler for specified extension(s). If no extensions defined, then
 use 'yml' & 'yaml' by default.
@@ -37,7 +37,7 @@ console.log(docs);
 ```
 
 
-### load( string|buffer|file_resource )
+### load ( string|buffer|file_resource )
 
 Parses source as single YAML document. Returns JS object or throws exception on error.
 
@@ -61,7 +61,7 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
 ```
 
 
-### loadAll( string|buffer|file_resource )
+### loadAll ( string|buffer|file_resource )
 
 The same as `Load`, but understands multi-doc sources and returns array of JS objects.
 
