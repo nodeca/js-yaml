@@ -4,8 +4,6 @@ NOTES
 -   Remove JS.Class dependency
     -   Implement own lightweitgh classes
 -   Port PyYAML tests
--   Bugs
-    -   (later) loading from file descriptor
 -   Improve documentation
     -   Document all public API
     -   Add examples of usage
@@ -16,4 +14,3 @@ NOTES
     -   register extension handler
     -   provide methods for backward compatibility with visionmedia
 -   ? Implement yaml writer
--   ? fix UTF-16 support for reader
