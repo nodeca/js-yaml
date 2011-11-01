@@ -6,6 +6,7 @@ Essentials:
 -   Remove JS.Class dependency
 -   Port PyYAML tests
 -   Document public API + add extention handler
+-   fix loading from file (string/buffer are ok)
 
 Later:
 
