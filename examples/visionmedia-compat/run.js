@@ -11,5 +11,9 @@ fs.readFile(path, function(err, fileContents) {
   console.log('\n')
   console.log(fileContents)
   console.log('\noutputs:\n')
-  console.log(yaml.eval(fileContents))
+  try {
+    console.log(yaml.eval(fileContents))
+  } catch (err) {
+    console.error(err.toString());
+  }
 })
