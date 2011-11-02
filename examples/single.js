@@ -11,7 +11,7 @@ try {
     }
 
     var doc = jsyaml.load(fd);
-    console.log(inspect(doc));
+    console.log(inspect(doc, false, 10));
   });
 } catch (e) {
   console.log(e.stack || e.toString());
