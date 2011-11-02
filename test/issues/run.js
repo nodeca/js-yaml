@@ -4,6 +4,14 @@
 var fs = require('fs');
 
 
+// Legend:
+//
+// [NEW]        -- Issue test cse created. No fix available.
+// [FIXED]      -- Issue fix ready.
+// [REGRESION]  -- Issue was fixed, but appears again
+// [BROKEN]     -- Issue was not yet fixed, but does not appear anymore
+
+
 var fixed = function () {
       var code = (!!this.fixed) ? '[FIXED]' : '[BROKEN]';
       console.log(code + ' ' + this.title);
