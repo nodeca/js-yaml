@@ -3,8 +3,9 @@ var fs = require('fs'),
     source = __dirname + '/single.yml';
 
 try {
-  var str = fs.readFileSync(source, 'utf8');
-  console.log(jsyaml.load(str));
+  fs.open(source, 'r', function (err, fd) {
+    console.log(jsyaml.load(fd));
+  });
 } catch (e) {
   console.log(e.stack || e.toString());
 }
