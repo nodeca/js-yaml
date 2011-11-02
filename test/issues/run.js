@@ -1,6 +1,3 @@
-// TODO: replace with VOWS based testing
-
-
 var fs = require('fs');
 
 

@@ -1,7 +1,7 @@
 var issue = module.exports = {},
     fs = require('fs'),
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
-    source = __dirname + '/issue-8.yml';
+    source = __dirname + '/data/issue-8.yml';
 
 issue.title = "#8: Parse failed when no document start present";
 issue.fixed = false;
