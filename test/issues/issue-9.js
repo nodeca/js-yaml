@@ -4,6 +4,7 @@ var issue = module.exports = {},
     source = __dirname + '/issue-9.yml';
 
 issue.title = "#9: Reader fails on File Resource stream, when file is less than 4KB";
+issue.fixed = true;
 issue.test = function (fixed, broken) {
   var fd = fs.openSync(source, 'r');
 
