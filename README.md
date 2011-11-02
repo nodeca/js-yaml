@@ -18,19 +18,11 @@ For node.js:
 
 ## API
 
-See examples in `examples/` folder.
-
-
-### registerExtensions ( ['yml','yaml',...] )
-
-Register JS-YAML as default file handler for specified extension(s).
-If no extensions defined, then use 'yml' & 'yaml' by default.
-
-After registration you can just call `require` instead of `loadAll` method.
+JS-YAML automatically registers handlers for `.yml` and `.yaml` files. You can load them just with `require`.
+That's equivalent to calling loadAll() on file handler. Just with one string!
 
 ``` javascript
-// Register JS-YAML to process requires of *.yml.
-require('js-yaml').registerExtensions(['yml']);
+require('js-yaml');
 
 // Get array of documents, or throw exception on error
 var docs = require('/home/ixti/examples.yml');
