@@ -1,28 +1,18 @@
 {
-  "name": "js-yaml",
-  "version": "0.2.1",
-  "description": "YAML 1.1 Parser",
-  "keywords": ["yaml", "parser", "pyyaml"],
-  "homepage": "https://github.com/nodeca/js-yaml",
-  "author": "Aleksey V Zapparov <ixti@member.fsf.org> (http://www.ixti.net)",
-  "bugs": {
-     "url": "https://github.com/nodeca/js-yaml/issues"
-  },
-  "license": {
-    "type": "MIT",
-    "url": "https://github.com/nodeca/js-yaml/blob/master/LICENSE"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/nodeca/js-yaml.git"
-  },
-  "main": "./index.js",
-  "dependencies":
-  {
-    "jsclass": "3.0.4"
-  },
-  "engines":
-  {
-      "node": "> 0.4.11 < 0.7.0"
-  }
+  "name"            : "js-yaml",
+  "version"         : "0.2.1",
+  "description"     : "YAML 1.1 Parser",
+  "keywords"        : ["yaml", "parser", "pyyaml"],
+  "homepage"        : "https://github.com/nodeca/js-yaml",
+
+  "author"          : "Aleksey V Zapparov <ixti@member.fsf.org> (http://www.ixti.net/)",
+
+  "bugs"            : { "url": "https://github.com/nodeca/js-yaml/issues" },
+  "license"         : { "type": "MIT", "url": "https://github.com/nodeca/js-yaml/blob/master/LICENSE" },
+  "repository"      : { "type": "git", "url": "git://github.com/nodeca/js-yaml.git" },
+
+  "main"            : "./index.js",
+
+  "dependencies"    : { "jsclass": "3.0.4" },
+  "engines"         : { "node": "> 0.4.11 < 0.7.0" }
 }
