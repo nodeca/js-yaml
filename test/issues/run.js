@@ -2,7 +2,10 @@ var fs = require('fs');
 
 
 var fixed = function () { console.log('[FIXED] ' + this.title); },
-    broken = function () { console.log('[BROKEN] ' + this.title); };
+    broken = function () {
+      var code = (!!this.fixed) ? '[REGRESSION]' : '[BROKEN]';
+      console.log(code + ' ' + this.title);
+    };
 
 
 fs.readdir(__dirname, function (err, files) {
