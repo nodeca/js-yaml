@@ -1,9 +1,15 @@
+// TODO: replace with VOWS based testing
+
+
 var fs = require('fs');
 
 
-var fixed = function () { console.log('[FIXED] ' + this.title); },
+var fixed = function () {
+      var code = (!!this.fixed) ? '[FIXED]' : '[BROKEN]';
+      console.log(code + ' ' + this.title);
+    },
     broken = function () {
-      var code = (!!this.fixed) ? '[REGRESSION]' : '[BROKEN]';
+      var code = (!!this.fixed) ? '[REGRESSION]' : '[NEW]';
       console.log(code + ' ' + this.title);
     };
 
