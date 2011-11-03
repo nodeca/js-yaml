@@ -1,16 +1,11 @@
 var issue = module.exports = {},
-    fs = require('fs'),
+    assert = require('assert'),
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
     source = __dirname + '/data/issue-8.yml';
 
 issue.title = "#8: Parse failed when no document start present";
 issue.fixed = false;
-issue.execute = function (fixed, broken) {
-  try {
-    doc = require(source).shift();
-    ('bar' === doc.foo) ? fixed() : broken();
-  } catch (err) {
-    broken();
-    return;
-  }
+issue.execute = function () {
+  var doc = require(source).shift();
+  assert.equal(doc.foo, 'bar');
 };
