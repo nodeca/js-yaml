@@ -27,6 +27,9 @@ var verbose = function (message) { console.log(colorize(90, '>>>>') + ' ' + mess
 var MAX_WIDTH = 70; // max width is 75 - 5 (code prefix with space)
 
 
+var stats = {pass: 0, fail: 0, warn: 0, error: 0};
+
+
 // wraps func into try-catch block
 var execute = function execute(test, args, message) {
   try {
@@ -35,12 +38,21 @@ var execute = function execute(test, args, message) {
     // issue was not marked as fixed yet, but it pass test
     if (false === test.fixed) {
       warning(message);
+      stats.warn += 1;
       return;
     }
 
     success(message);
+    stats.pass += 1;
   } catch (err) {
-    ('AssertionError' === err.name) ? failure(message) : generic(message);
+    if ('AssertionError' === err.name) {
+      failure(message);
+      stats.fail += 1;
+    } else {
+      generic(message);
+      stats.error += 1;
+    }
+
     verbose(err);
   }
 };
@@ -69,10 +81,41 @@ var findTestFilenames = function findTestFilenames(dataDir) {
 };
 
 
+// runs single test
+var runTest = function runTest(root, test) {
+  var message = test.title || test.execute.name || file;
+
+  // execute simple test
+  if (!test.unittest) {
+    execute(test, [], shrink(message, MAX_WIDTH));
+    return;
+  }
+
+  // run unit tests for all found desired files
+  $$.each(findTestFilenames(root + '/data'), function (exts, base) {
+    var filenames = [], msgPrefix, msgSuffix;
+
+    $$.each(test.unittest, function (ext) {
+      if (0 <= exts.indexOf(ext)) {
+        filenames.push(root + '/data/' + base + ext);
+      }
+    });
+
+    if (filenames.length === test.unittest.length) {
+      msgSuffix = ' (' + base + ')';
+      msgPrefix = shrink(message, MAX_WIDTH - msgSuffix.length);
+      execute(test, filenames, msgPrefix + msgSuffix);
+    }
+  });
+};
+
+
 // run tests
 helper.run = function run(root, regexp) {
+  var total = 0;
+
   fs.readdirSync(root).forEach(function (file) {
-    var test, message;
+    var tests;
 
     if (!regexp.test(file)) {
       // skip non-test files
@@ -80,35 +123,24 @@ helper.run = function run(root, regexp) {
     }
 
     try {
-      test = require(root + '/' + file);
-      message = test.title || test.execute.name || file;
+      tests = require(root + '/' + file);
     } catch (err) {
       generic(err);
     }
 
-    // execute single test
-    if (!test.unittest) {
-      execute(test, [], shrink(message, MAX_WIDTH));
-      return;
+    if (!Array.isArray(tests)) {
+      tests = [tests];
     }
 
-    // run unit tests for all found desired files
-    $$.each(findTestFilenames(root + '/data'), function (exts, base) {
-      var filenames = [], msgPrefix, msgSuffix;
-
-      $$.each(test.unittest, function (ext) {
-        if (0 <= exts.indexOf(ext)) {
-          filenames.push(root + '/data/' + base + ext);
-        }
-      });
-
-      if (filenames.length === test.unittest.length) {
-        msgSuffix = ' (' + base + ')';
-        msgPrefix = shrink(message, MAX_WIDTH - msgSuffix.length);
-        execute(test, filenames, msgPrefix + msgSuffix);
-      }
+    tests.forEach(function (test) {
+      runTest(root, test);
     });
   });
+
+  total += stats.pass + stats.warn + stats.fail + stats.error;
+  console.log(colorize(90, '----' + ' (' + total + ') ' +
+                                    ' P:' + stats.pass + ' W:' + stats.warn +
+                                    ' F:' + stats.fail + ' E:' + stats.error));
 };
 
 
