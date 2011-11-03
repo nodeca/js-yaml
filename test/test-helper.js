@@ -115,18 +115,13 @@ helper.run = function run(root, regexp) {
   var total = 0;
 
   fs.readdirSync(root).forEach(function (file) {
-    var tests;
 
     if (!regexp.test(file)) {
       // skip non-test files
       return;
     }
 
-    try {
-      tests = require(root + '/' + file);
-    } catch (err) {
-      generic(err);
-    }
+    var tests = require(root + '/' + file);
 
     if (!Array.isArray(tests)) {
       tests = [tests];
