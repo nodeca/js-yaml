@@ -49,8 +49,7 @@ REPLACES.store(__.ValueToken,               ':');
 
 test.unittest = ['.data', '.tokens'];
 test.execute = function test_tokens(data_filename, tokens_filename) {
-  var tokens1 = [],
-      tokens2 = [];
+  var tokens1 = [], tokens2 = [];
   
   fs.readFileSync(tokens_filename, 'utf8').split(/[ \n]/).forEach(function (t) {
     if (!!t) { tokens2.push(t); }
