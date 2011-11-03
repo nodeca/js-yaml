@@ -1,5 +1,6 @@
 //  stdlib
-var fs = require('fs');
+var fs = require('fs'),
+    path = require('path');
 
 
 // current module
@@ -58,4 +59,22 @@ exports.run = function run(root, regexp, success, failure) {
       }
     });
   });
+};
+
+
+exports.findTestFilenames = function findTestFilenames(directory) {
+  var filenames = {};
+  
+  fs.readdirSync(directory).forEach(function (f) {
+    var extname = path.extname(f),
+        basename = path.basename(f, extname);
+
+    if (undefined === filenames[basename]) {
+      filenames[basename] = [];
+    }
+
+    filenames[basename].push(extname);
+  });
+
+  return filenames;
 };
