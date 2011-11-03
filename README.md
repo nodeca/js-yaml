@@ -62,8 +62,7 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
 
 ### loadAll ( string|buffer|file\_resource, iterator )
 
-Same as `Load`, but understands multi-doc sources and fires callback on
-each parsed document.
+Same as `Load`, but understands multi-doc sources and apply iterator for each document.
 
 ``` javascript
 var yaml = require('js-yaml');
