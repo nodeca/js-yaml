@@ -5,7 +5,7 @@ var issue = module.exports = {},
 
 issue.title = "#8: Parse failed when no document start present";
 issue.fixed = false;
-issue.test = function (fixed, broken) {
+issue.execute = function (fixed, broken) {
   try {
     doc = require(source).shift();
     ('bar' === doc.foo) ? fixed() : broken();

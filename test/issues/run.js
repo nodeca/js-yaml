@@ -1,22 +1,26 @@
+//  stdlib
 var fs = require('fs');
 
 
-// Legend:
-//
-// [NEW]        -- Issue test cse created. No fix available.
-// [FIXED]      -- Issue fix ready.
-// [REGRESION]  -- Issue was fixed, but appears again
-// [BROKEN]     -- Issue was not yet fixed, but does not appear anymore
+// internal
+var helper = require(__dirname + '/../test-helper');
 
 
-var fixed = function () {
-      var code = (!!this.fixed) ? '[FIXED]' : '[BROKEN]';
-      console.log(code + ' ' + this.title);
-    },
-    broken = function () {
-      var code = (!!this.fixed) ? '[REGRESSION]' : '[NEW]';
-      console.log(code + ' ' + this.title);
-    };
+var success = function () {
+  if (!!this.fixed) {
+    helper.success('[FIXED]', this.title);
+  } else {
+    helper.failure('[BROKEN]', this.title);
+  }
+};
+
+var failure = function () {
+  if (!!this.fixed) {
+    helper.failure('[REGRESSION]', this.title);
+  } else {
+    helper.message('[NEW]', this.title);
+  }
+};
 
 
 fs.readdir(__dirname, function (err, files) {
@@ -31,7 +35,7 @@ fs.readdir(__dirname, function (err, files) {
       return;
     }
 
-    var issue = require(__dirname + '/' + f);
-    issue.test(fixed.bind(issue), broken.bind(issue));
+    var test = require(__dirname + '/' + f);
+    test.execute(success.bind(test), failure.bind(test));
   });
 });
