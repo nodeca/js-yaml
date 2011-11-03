@@ -6,6 +6,7 @@ var issue = module.exports = {},
 issue.title = "#8: Parse failed when no document start present";
 issue.fixed = false;
 issue.execute = function () {
-  var doc = require(source).shift();
-  assert.equal(doc.foo, 'bar');
+  assert.doesNotThrow(function () {
+    require(source).shift();
+  }, TypeError);
 };
