@@ -1,8 +1,8 @@
 var test = module.exports = {},
     fs = require('fs'),
     assert = require('assert'),
-    helper = require(__dirname + '/../test-helper'),
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
+    helper = require(__dirname + '/../test-helper'),
     $$ = require(__dirname + '/../../lib/js-yaml/core'),
     __ = $$.import('tokens');
 
@@ -47,7 +47,8 @@ REPLACES.store(__.KeyToken,                 '?');
 REPLACES.store(__.ValueToken,               ':');
 
 
-var test_tokens = function test_tokens(data_filename, tokens_filename) {
+test.unittest = ['.data', '.tokens'];
+test.execute = function test_tokens(data_filename, tokens_filename) {
   var tokens1 = [],
       tokens2 = [];
   
@@ -60,7 +61,7 @@ var test_tokens = function test_tokens(data_filename, tokens_filename) {
       return;
     }
 
-    tokens1.push(REPLACES.get(token.__klass__));
+    tokens1.push(REPLACES.get(token.klass));
   });
 
   assert.equal(tokens1.length, tokens2.length);
@@ -70,23 +71,6 @@ var test_tokens = function test_tokens(data_filename, tokens_filename) {
   });
 };
 
-
-test.title = "Test tokens generation";
-test.execute = function () {
-  $$.each(helper.findTestFilenames(__dirname + '/data'), function (exts, base) {
-    var files = [];
-
-    $$.each(['.data', '.tokens'], function (ext) {
-      if (0 <= exts.indexOf(ext)) {
-        files.push(__dirname + '/data/' + base + ext);
-      }
-    });
-
-    if (2 === files.length) {
-      test_tokens.apply(this, files);
-    }
-  });
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
