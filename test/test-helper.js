@@ -40,12 +40,8 @@ var execute = function execute(test, args, message) {
 
     success(message);
   } catch (err) {
-    if ('AssertionError' === err.name) {
-      failure(message);
-      verbose(err);
-    } else {
-      generic(err);
-    }
+    ('AssertionError' === err.name) ? failure(message) : generic(message);
+    verbose(err);
   }
 };
 
