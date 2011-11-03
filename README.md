@@ -31,7 +31,7 @@ console.log(docs);
 ```
 
 
-### load ( string|buffer|file_resource )
+### load ( string|buffer|file\_resource ) -> Object
 
 Parses source as single YAML document. Returns JS object or throws exception on error.
 
@@ -55,9 +55,10 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
 ```
 
 
-### loadAll ( string|buffer|file_resource )
+### loadAll ( string|buffer|file\_resource, callback ) -> Void
 
-The same as `Load`, but understands multi-doc sources and returns array of JS objects.
+Same as `Load`, but understands multi-doc sources and fires callback on
+each parsed document.
 
 ``` javascript
 var yaml = require('js-yaml');
@@ -68,8 +69,11 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
     // handle error
     return;
   }
+
   try {
-    console.log( yaml.loadAll(data) );
+    yaml.loadAll(data, function (doc) {
+      console.log(doc);
+    });
   } catch(e) {
     console.log(e);
   }
