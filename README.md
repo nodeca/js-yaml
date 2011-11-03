@@ -36,7 +36,7 @@ console.log(singleDoc);
 ```
 
 
-### load ( string|buffer|file\_resource ) -> Object
+### load ( string|buffer|file\_resource )
 
 Parses source as single YAML document. Returns JS object or throws exception on error.
 
@@ -60,7 +60,7 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
 ```
 
 
-### loadAll ( string|buffer|file\_resource, callback ) -> Void
+### loadAll ( string|buffer|file\_resource, iterator )
 
 Same as `Load`, but understands multi-doc sources and fires callback on
 each parsed document.
