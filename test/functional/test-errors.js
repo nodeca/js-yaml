@@ -31,7 +31,7 @@ suite.push({
 
 
 suite.push({
-  unittest: ['.loader-error'],
+  unittest: ['.single-loader-error'],
   execute: function test_loader_error_single(error_filename) {
     assert.throws(function () {
       jsyaml.load(fs.readFileSync(error_filename, 'utf8'));
