@@ -30,6 +30,17 @@ var docs = require('/home/ixti/examples.yml');
 console.log(docs);
 ```
 
+If you are sure, that file has only one document, chained `shift()` will help to exclude array wrapper:
+
+``` javascript
+require('js-yaml');
+
+// Get array of documents, or throw exception on error
+var singleDoc = require('/home/ixti/examples.yml').shift();
+
+console.log(singleDoc);
+```
+
 
 ### load ( string|buffer|file\_resource ) -> Object
 
