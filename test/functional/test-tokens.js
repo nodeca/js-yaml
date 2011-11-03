@@ -4,7 +4,7 @@ var test = module.exports = {},
     helper = require(__dirname + '/../test-helper'),
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
     $$ = require(__dirname + '/../../lib/js-yaml/core'),
-    __ = $$.import('nodes');
+    __ = $$.import('tokens');
 
 // Tokens mnemonic:
 // directive:            %
