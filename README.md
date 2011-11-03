@@ -3,13 +3,6 @@ JS-YAML
 
 YAML 1.1 parser for JavaScript. Originally ported from [PyYAML](http://pyyaml.org/).
 
-(\*) Not feature-compleete, more coming soon:
-
-- YAML 1.2 support
-- writer
-- JS-specific tags
-- internal API for complex operations
-
 ## Installation
 
 For node.js:
@@ -19,7 +12,8 @@ For node.js:
 ## API
 
 JS-YAML automatically registers handlers for `.yml` and `.yaml` files. You can load them just with `require`.
-That's equivalent to calling loadAll() on file handler. Just with one string!
+That's mostly equivalent to calling loadAll() on file handler ang gathering all documents with iterator into one array.
+Just with one string!
 
 ``` javascript
 require('js-yaml');
