@@ -1,18 +1,25 @@
-JS-YAML
-=======
+JS-YAML - YAML 1.1 parser for JavaScript
+========================================
 
-YAML 1.1 parser for JavaScript. Originally ported from [PyYAML](http://pyyaml.org/).
+This is a native port of [PyYAML](http://pyyaml.org/), the most advanced YAML parcer.
+Now you can use all modern YAML feature right in JavaScript.
+
+Originally snapshoted version - PyYAML 3.10 (2011-05-30).
 
 ## Installation
 
-For node.js:
+### YAML module for node.js
 
     npm install js-yaml
+
+### bundled YAML library for browser
+
+TBD
 
 ## API
 
 JS-YAML automatically registers handlers for `.yml` and `.yaml` files. You can load them just with `require`.
-That's mostly equivalent to calling loadAll() on file handler ang gathering all documents with iterator into one array.
+That's mostly equivalent to calling loadAll() on file handler ang gathering all documents into array.
 Just with one string!
 
 ``` javascript
@@ -36,7 +43,7 @@ console.log(singleDoc);
 ```
 
 
-### load ( string|buffer|file\_resource )
+### load (string|buffer|file\_resource)
 
 Parses source as single YAML document. Returns JS object or throws exception on error.
 
@@ -60,9 +67,9 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
 ```
 
 
-### loadAll ( string|buffer|file\_resource, iterator )
+### loadAll (string|buffer|file\_resource, iterator)
 
-Same as `Load`, but understands multi-doc sources and apply iterator for each document.
+Same as `Load`, but understands multi-doc sources and apply iterator to each document.
 
 ``` javascript
 var yaml = require('js-yaml');
@@ -85,10 +92,10 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
 ```
 
 
-## JsTagScheme
+## JavaScript YAML tags scheme
 
 The list of standard YAML tags and corresponding JavaScipt types. See also
-[YAMLTagDiscussion](http://pyyaml.org/wiki/YAMLTagDiscussion) and [Yaml Types](http://yaml.org/type/).
+[YAML Tag Discussion](http://pyyaml.org/wiki/YAMLTagDiscussion) and [Yaml Types](http://yaml.org/type/).
 
 ```
 !!null ''                   # null
@@ -105,10 +112,10 @@ The list of standard YAML tags and corresponding JavaScipt types. See also
 !!map { ... }               # object
 ```
 
-The list of JS-specific YAML tags will be availble soon (not implemented
-yet) and will probably include RegExp, Undefined, function and Infinity.
+The list of JavaScript-specific YAML tags will be availble soon (not implemented
+yet) and will probably include `RegExp`, `Undefined` and `function`.
 
 
 ## License
 
-View the [LICENSE](https://github.com/nodeca/js-yaml/blob/master/LICENSE) file
+View the [LICENSE](https://github.com/nodeca/js-yaml/blob/master/LICENSE) file (MIT).
