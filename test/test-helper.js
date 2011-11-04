@@ -82,8 +82,8 @@ var findTestFilenames = function findTestFilenames(dataDir) {
 
 
 // runs single test
-var runTest = function runTest(root, test) {
-  var message = test.title || test.execute.name || file;
+var runTest = function runTest(root, file, test) {
+  var message = file + ' // ' + (test.title || test.execute.name);
 
   // execute simple test
   if (!test.unittest) {
@@ -128,7 +128,7 @@ helper.run = function run(root, regexp) {
     }
 
     tests.forEach(function (test) {
-      runTest(root, test);
+      runTest(root, file, test);
     });
   });
 
