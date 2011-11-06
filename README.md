@@ -117,24 +117,8 @@ yet) and will probably include `RegExp`, `Undefined` and `function`.
 
 ### Caveats
 
-YAML has no restrictions on the key of maps, so it can be a sequence or map as
-well as simple scalar. JavaScript in it's turn flattens array into a string
-concatenated with commas. E.g.:
-
-``` javascript
-var obj = {},
-    arr = [1,2,3];
-
-obj[arr] = 'hell, yeah!';
-
-console.log(obj[arr]);
-// -> 'hell, yeah!'
-
-console.log(obj['1,2,3']);
-// -> 'hell, yeah!'
-```
-
-Thus, key given as sequence in YAML will become string in JavaScript:
+Note, that if you use arrays as key in JS, it's automatically converted to string.
+So, if you have maps as key in YAML, result will flat:
 
 ``` yaml
 ---
@@ -143,7 +127,7 @@ Thus, key given as sequence in YAML will become string in JavaScript:
 : - baz
 ```
 
-will result into JavaScript object:
+=>
 
 ``` javascript
 { "foo,bar": ["baz"] }
