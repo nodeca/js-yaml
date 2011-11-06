@@ -4,3 +4,8 @@ Block style: !!map
   Brian : Ingerson
   Oren  : Ben-Kiki
 Flow style: !!map { Clark: Evans, Brian: Ingerson, Oren: Ben-Kiki }
+
+# YAML has no restrictions on key type, so it can be an array
+? - foo
+  - bar
+: baz
