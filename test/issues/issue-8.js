@@ -4,7 +4,7 @@ var issue = module.exports = {},
     source = __dirname + '/data/issue-8.yml';
 
 issue.title = "#8: Parse failed when no document start present";
-issue.fixed = false;
+issue.fixed = true;
 issue.execute = function () {
   assert.doesNotThrow(function () {
     require(source).shift();
