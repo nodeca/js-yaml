@@ -13,10 +13,10 @@ suite.push({
     var correctTag = fs.readFileSync(detect_filename, 'utf8').replace(/^[ \s]+|[ \s]+$/g, ''),
         node = jsyaml.compose(fs.readFileSync(data_filename, 'utf8'));
 
-    assert.equal(node.isA(__.SequenceNode), true);
+    assert.equal($$.isInstanceOf(node, __.SequenceNode), true);
 
     $$.each(node.value, function (scalar) {
-      assert.equal(scalar.isA(__.ScalarNode), true);
+      assert.equal($$.isInstanceOf(scalar, __.ScalarNode), true);
       assert.equal(scalar.tag, correctTag);
     });
   }
