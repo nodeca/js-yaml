@@ -1,7 +1,13 @@
+.SILENT: test test-functional test-issues
+
+
 PATH := ./node_modules/.bin:${PATH}
 
+PROJECT =  $(notdir ${PWD})
+TMP_DIR = /tmp/${PROJECT}-$(shell date +%s)
 
-.SILENT: test test-functional test-issues
+REMOTE_NAME ?= origin
+REMOTE_REPO ?= $(shell git config --get remote.${REMOTE_NAME}.url)
 
 
 test: test-functional test-issues
@@ -33,8 +39,20 @@ uglify:
 	if test ! `which uglifyjs` ; then npm install uglify-js ; fi
 	uglifyjs js-yaml.js > js-yaml.min.js
 
-gh-pages: build
-	git checkout -b gh-pages
-	git commit -am
-	git push origin gh-pages
-	git checkout master
+
+gh-pages:
+	@if test -z ${REMOTE_REPO} ; then \
+		echo 'Remote repo URL not found' >&2 ; \
+		exit 128 ; \
+		fi
+	mkdir ${TMP_DIR}
+	cp -r index.html js-yaml.js demo ${TMP_DIR}
+	touch ${TMP_DIR}/.nojekyll
+	cd ${TMP_DIR} && \
+		git init && \
+		git add . && \
+		git commit -q -m 'Recreated docs'
+	cd ${TMP_DIR} && \
+		git remote add remote ${REMOTE_REPO} && \
+		git push --force remote +master:gh-pages 
+	rm -rf ${TMP_DIR}
