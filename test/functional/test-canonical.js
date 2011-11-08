@@ -4,7 +4,7 @@ var suite = module.exports = [],
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
     helper = require(__dirname + '/../test-helper'),
     $$ = require(__dirname + '/../../lib/js-yaml/core'),
-    __ = $$.import('error');
+    _errors = $$.import('errors');
 
 
 ////////////////////////////////////////////////////////////////////////////////

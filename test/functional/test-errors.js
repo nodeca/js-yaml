@@ -4,7 +4,7 @@ var suite = module.exports = [],
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
     helper = require(__dirname + '/../test-helper'),
     $$ = require(__dirname + '/../../lib/js-yaml/core'),
-    __ = $$.import('error');
+    _errors = require(__dirname + '/../../lib/js-yaml/errors');
 
 
 suite.push({
@@ -14,7 +14,7 @@ suite.push({
       var fd = fs.openSync(error_filename, 'r');
       jsyaml.loadAll(fd, function (doc) {});
       fs.closeSync(fd);
-    }, __.YAMLError);
+    }, _errors.YAMLError);
   }
 });
 
@@ -25,7 +25,7 @@ suite.push({
     assert.throws(function () {
       var str = fs.readFileSync(error_filename, 'utf8');
       jsyaml.loadAll(str, function (doc) {});
-    }, __.YAMLError);
+    }, _errors.YAMLError);
   }
 });
 
@@ -35,7 +35,7 @@ suite.push({
   execute: function test_loader_error_single(error_filename) {
     assert.throws(function () {
       jsyaml.load(fs.readFileSync(error_filename, 'utf8'));
-    }, __.YAMLError);
+    }, _errors.YAMLError);
   }
 });
 
