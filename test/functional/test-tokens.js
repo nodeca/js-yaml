@@ -56,11 +56,11 @@ test.execute = function test_tokens(data_filename, tokens_filename) {
   });
 
   jsyaml.scan(fs.readFileSync(data_filename, 'utf8'), function (token) {
-    if (token.isA(__.StreamStartToken) || token.isA(__.StreamEndToken)) {
+    if ($$.isInstanceOf(token, __.StreamStartToken) || $$.isInstanceOf(token, __.StreamEndToken)) {
       return;
     }
 
-    tokens1.push(REPLACES.get(token.klass));
+    tokens1.push(REPLACES.get(token.constructor));
   });
 
   assert.equal(tokens1.length, tokens2.length);
