@@ -3,6 +3,20 @@ $(function () {
       $source = $('#source'),
       $result = $('#result');
 
+  // Default source text
+  $source.val(
+    '---\n' +
+    'YAML: YAML Ain\'t Markup Language\n' +
+    'JS-YAML: !!pairs\n' +
+    '  - It is: YAML implementation proted from PyYAML\n' +
+    '  - Written in: JavaScript\n' +
+    '  - Copyrights belongs to: Vitaly Puzrin\n' +
+    '  - Authored by:\n' +
+    '      name: Aleksey V Zapparov\n' +
+    '      web: http://www.ixti.net/\n'
+  );
+
+
   function parse() {
     var obj;
 
@@ -30,3 +44,8 @@ $(function () {
 
   parse();
 });
+
+
+////////////////////////////////////////////////////////////////////////////////
+// vim:ts=2:sw=2
+////////////////////////////////////////////////////////////////////////////////
