@@ -1,0 +1,29 @@
+body {
+  margin: 30px;
+  padding: 0;
+  font-family: verdana, sans-serif; 
+}
+h1 {
+  font-size: 50px;
+  font-weight: normal;
+  line-height: 90px;
+  margin: 0;
+}
+h5 {
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 30px;
+  margin: 0;  
+}
+.src {
+  width: 49%;
+  float: left;
+}
+.dst {
+  width: 49%;
+  float: right;
+}
+
+.CodeMirror {
+  border: 1px solid #ccc;
+}
