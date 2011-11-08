@@ -1,12 +1,12 @@
 PATH := ./node_modules/.bin:${PATH}
 
 
-.SILENT: test test_functional test_issues
+.SILENT: test test-functional test-issues
 
 
-test: test_functional test_issues
+test: test-functional test-issues
 
-test_issues:
+test-issues:
 	echo 
 	echo "## ISSUES ######################################################################"
 	echo "################################################################################"
@@ -14,7 +14,7 @@ test_issues:
 	node ./test/issues/run.js
 	echo 
 
-test_functional:
+test-functional:
 	echo 
 	echo "## FUNCTIONAL ##################################################################"
 	echo "################################################################################"
@@ -32,3 +32,9 @@ browserify:
 uglify:
 	if test ! `which uglifyjs` ; then npm install uglify-js ; fi
 	uglifyjs js-yaml.js > js-yaml.min.js
+
+gh-pages: build
+	git checkout -b gh-pages
+	git commit -am
+	git push origin gh-pages
+	git checkout master
