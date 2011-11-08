@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Stylus</title>
+    <title>JS-YAML Online Demo</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="css/codemirror.css">
+    <link rel="stylesheet" href="css/codemirror.default.css">
     <link rel="stylesheet" href="css/demo.css">
     <script src="../js-yaml.js"></script>
-    <script src="js/jquery.js"></script>
+    <script src="js/codemirror.js"></script>
+    <script src="js/codemirror/yaml.js"></script>
+    <script src="js/codemirror/javascript.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/demo.js"></script>
   </head>
-  <body>
+  <body onLoad="runDemo();">
 
     <textarea id="source"></textarea>
     <textarea id="result"></textarea>

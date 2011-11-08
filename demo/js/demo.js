@@ -1,35 +1,12 @@
-$(function () {
-  var jsyaml = require('/lib/js-yaml'),
-      $source = $('#source'),
-      $result = $('#result');
-
-  // Default source text
-  $source.val(
-    '---\n' +
-    'YAML: YAML Ain\'t Markup Language\n' +
-    'JS-YAML: !!pairs\n' +
-    '  - It is: YAML implementation proted from PyYAML\n' +
-    '  - Written in: JavaScript\n' +
-    '  - Copyrights belongs to: Vitaly Puzrin\n' +
-    '  - Authored by:\n' +
-    '      name: Aleksey V Zapparov\n' +
-    '      web: http://www.ixti.net/\n'
-  );
+window.runDemo = function runDemo() {
+  var jsyaml = require('/lib/js-yaml'), source, result;
 
 
-  function parse() {
+  function parse(_, e) {
     var obj;
 
-    try {
-      obj = jsyaml.load($source.val().trim());
-      $result.val(inspect(obj, false, 10));
-    } catch (err) {
-      $result.val(err.toString());
-    }
-  }
-
-  $source.on('keyup', function (e) {
     if (e) {
+      if (e.type != 'keyup') return;
       switch (e.keyCode) {
         case 37:
         case 38:
@@ -39,11 +16,43 @@ $(function () {
       }
     }
 
-    parse();
+    try {
+      obj = jsyaml.load(source.getValue().trim());
+      result.setOption('mode', 'javascript');
+      result.setValue(inspect(obj, false, 10));
+    } catch (err) {
+      result.setOption('mode', 'text/plain');
+      result.setValue(err.toString());
+    }
+  }
+
+
+  source = CodeMirror.fromTextArea(document.getElementById('source'), {
+    mode: 'yaml',
+    undoDepth: 1,
+    onKeyEvent: parse
   });
 
+  result = CodeMirror.fromTextArea(document.getElementById('result'), {
+    readOnly: true
+  });
+
+  // initial source text
+  source.setValue(
+    '---\n' +
+    'YAML: YAML Ain\'t Markup Language\n' +
+    'JS-YAML: !!pairs\n' +
+    '  - It is: YAML implementation ported from PyYAML\n' +
+    '  - Written in: JavaScript\n' +
+    '  - Copyrights belongs to: Vitaly Puzrin\n' +
+    '  - Authored by:\n' +
+    '      name: Aleksey V Zapparov\n' +
+    '      web: http://www.ixti.net/\n'
+  );
+
+  // initial parse
   parse();
-});
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////
