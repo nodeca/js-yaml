@@ -38,17 +38,7 @@ window.runDemo = function runDemo() {
   });
 
   // initial source text
-  source.setValue(
-    '---\n' +
-    'YAML: YAML Ain\'t Markup Language\n' +
-    'JS-YAML: !!pairs\n' +
-    '  - It is: YAML implementation ported from PyYAML\n' +
-    '  - Written in: JavaScript\n' +
-    '  - Copyrights belongs to: Vitaly Puzrin\n' +
-    '  - Authored by:\n' +
-    '      name: Aleksey V Zapparov\n' +
-    '      web: http://www.ixti.net/\n'
-  );
+  source.setValue(document.getElementById('source').value);
 
   // initial parse
   parse();
