@@ -4,7 +4,7 @@ var test = module.exports = {},
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
     helper = require(__dirname + '/../test-helper'),
     $$ = require(__dirname + '/../../lib/js-yaml/core'),
-    __ = $$.import('tokens');
+    _tokens = require(__dirname + '/../../lib/js-yaml/tokens');
 
 // Tokens mnemonic:
 // directive:            %
@@ -27,24 +27,24 @@ var test = module.exports = {},
 
 var REPLACES = new $$.Hash();
 
-REPLACES.store(__.DirectiveToken,           '%');
-REPLACES.store(__.DocumentStartToken,       '---');
-REPLACES.store(__.DocumentEndToken,         '...');
-REPLACES.store(__.AliasToken,               '*');
-REPLACES.store(__.AnchorToken,              '&');
-REPLACES.store(__.TagToken,                 '!');
-REPLACES.store(__.ScalarToken,              '_');
-REPLACES.store(__.BlockSequenceStartToken,  '[[');
-REPLACES.store(__.BlockMappingStartToken,   '{{');
-REPLACES.store(__.BlockEndToken,            ']}');
-REPLACES.store(__.FlowSequenceStartToken,   '[');
-REPLACES.store(__.FlowSequenceEndToken,     ']');
-REPLACES.store(__.FlowMappingStartToken,    '{');
-REPLACES.store(__.FlowMappingEndToken,      '}');
-REPLACES.store(__.BlockEntryToken,          ',');
-REPLACES.store(__.FlowEntryToken,           ',');
-REPLACES.store(__.KeyToken,                 '?');
-REPLACES.store(__.ValueToken,               ':');
+REPLACES.store(_tokens.DirectiveToken,           '%');
+REPLACES.store(_tokens.DocumentStartToken,       '---');
+REPLACES.store(_tokens.DocumentEndToken,         '...');
+REPLACES.store(_tokens.AliasToken,               '*');
+REPLACES.store(_tokens.AnchorToken,              '&');
+REPLACES.store(_tokens.TagToken,                 '!');
+REPLACES.store(_tokens.ScalarToken,              '_');
+REPLACES.store(_tokens.BlockSequenceStartToken,  '[[');
+REPLACES.store(_tokens.BlockMappingStartToken,   '{{');
+REPLACES.store(_tokens.BlockEndToken,            ']}');
+REPLACES.store(_tokens.FlowSequenceStartToken,   '[');
+REPLACES.store(_tokens.FlowSequenceEndToken,     ']');
+REPLACES.store(_tokens.FlowMappingStartToken,    '{');
+REPLACES.store(_tokens.FlowMappingEndToken,      '}');
+REPLACES.store(_tokens.BlockEntryToken,          ',');
+REPLACES.store(_tokens.FlowEntryToken,           ',');
+REPLACES.store(_tokens.KeyToken,                 '?');
+REPLACES.store(_tokens.ValueToken,               ':');
 
 
 test.unittest = ['.data', '.tokens'];
@@ -56,7 +56,7 @@ test.execute = function test_tokens(data_filename, tokens_filename) {
   });
 
   jsyaml.scan(fs.readFileSync(data_filename, 'utf8'), function (token) {
-    if ($$.isInstanceOf(token, __.StreamStartToken) || $$.isInstanceOf(token, __.StreamEndToken)) {
+    if ($$.isInstanceOf(token, _tokens.StreamStartToken) || $$.isInstanceOf(token, _tokens.StreamEndToken)) {
       return;
     }
 

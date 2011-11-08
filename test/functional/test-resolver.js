@@ -4,7 +4,7 @@ var suite = module.exports = [],
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
     helper = require(__dirname + '/../test-helper'),
     $$ = require(__dirname + '/../../lib/js-yaml/core'),
-    __ = $$.import('nodes');
+    _nodes = require(__dirname + '/../../lib/js-yaml/nodes');
 
 
 suite.push({
@@ -13,10 +13,10 @@ suite.push({
     var correctTag = fs.readFileSync(detect_filename, 'utf8').replace(/^[ \s]+|[ \s]+$/g, ''),
         node = jsyaml.compose(fs.readFileSync(data_filename, 'utf8'));
 
-    assert.equal($$.isInstanceOf(node, __.SequenceNode), true);
+    assert.equal($$.isInstanceOf(node, _nodes.SequenceNode), true);
 
     $$.each(node.value, function (scalar) {
-      assert.equal($$.isInstanceOf(scalar, __.ScalarNode), true);
+      assert.equal($$.isInstanceOf(scalar, _nodes.ScalarNode), true);
       assert.equal(scalar.tag, correctTag);
     });
   }
