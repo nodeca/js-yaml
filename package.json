@@ -13,6 +13,5 @@
 
   "main"            : "./index.js",
 
-  "dependencies"    : { "jsclass": "3.0.4" },
   "engines"         : { "node": "> 0.4.11 < 0.7.0" }
 }
