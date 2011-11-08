@@ -27,3 +27,7 @@ h5 {
 .CodeMirror {
   border: 1px solid #ccc;
 }
+
+.CodeMirror-scroll {
+  height: 500px;
+}
