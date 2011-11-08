@@ -34,6 +34,7 @@ build: browserify uglify
 browserify:
 	if test ! `which browserify` ; then npm install browserify ; fi
 	browserify index.js -o js-yaml.js
+	cp js-yaml.js demo/js/
 
 uglify:
 	if test ! `which uglifyjs` ; then npm install uglify-js ; fi
@@ -46,7 +47,7 @@ gh-pages:
 		exit 128 ; \
 		fi
 	mkdir ${TMP_DIR}
-	cp -r index.html js-yaml.js demo ${TMP_DIR}
+	cp -r demo/* ${TMP_DIR}
 	touch ${TMP_DIR}/.nojekyll
 	cd ${TMP_DIR} && \
 		git init && \
