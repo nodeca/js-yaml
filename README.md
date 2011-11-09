@@ -10,11 +10,19 @@ Originally snapshoted version - PyYAML 3.10 (2011-05-30).
 
 ### YAML module for node.js
 
-    npm install js-yaml
+```
+npm install js-yaml
+```
 
 ### bundled YAML library for browser
 
-TBD
+``` html
+<script src="js-yaml.min.js"></script>
+<script type="text/javascript">
+var jsyaml = require('/lib/js-yaml');
+alert(jsyaml.load('---\n- Hello\n- World!').join(' '));
+</script>
+```
 
 ## API
 
