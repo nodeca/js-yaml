@@ -1,3 +1,8 @@
+??? / ???
+---------
+
+* Added JavaScript constructor of RegExp. Partially solves #12.
+
 0.3.0 / 2011-11-09
 ------------------
 

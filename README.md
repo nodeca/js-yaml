@@ -119,8 +119,14 @@ The list of standard YAML tags and corresponding JavaScipt types. See also
 !!map { ... }               # object
 ```
 
-The list of JavaScript-specific YAML tags will be availble soon (not implemented
-yet) and will probably include `RegExp`, `Undefined` and `function`.
+**JavaScript-specific tags**
+
+```
+!!js/regexp /pattern/gim    # RegExp
+```
+
+More JavaScript-specific YAML tags will be availble soon (`Undefined`,
+`function`).
 
 ### Caveats
 
