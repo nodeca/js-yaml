@@ -4794,8 +4794,8 @@ SafeConstructor.prototype.constructYamlTimestamp = function constructYamlTimesta
   second = +(match[6]);
 
   if (!!match[7]) {
-    fraction = match[7].slice(0,6);
-    while (fraction.length < 6) {
+    fraction = match[7].slice(0,3);
+    while (fraction.length < 3) { // milli-seconds
       fraction += '0';
     }
     fraction = +fraction;
