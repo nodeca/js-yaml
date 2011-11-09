@@ -38,7 +38,7 @@ h5 {
 }
 
 .CodeMirror-scroll {
-  height: 500px;
+  height: 480px;
   line-height: 1.2;
 }
 
@@ -52,4 +52,13 @@ h5 {
 }
 .addthis_toolbox:hover {
   opacity: 1;
+}
+
+#permalink {
+  width: 98%;
+  margin-top: 20px;
+}
+
+#permalink-value {
+  width: 80%;
 }
