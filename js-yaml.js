@@ -345,18 +345,29 @@ jsyaml.compose = function compose(stream, Loader) {
 
 
 jsyaml.load = function load(stream, Loader) {
-  var loader = new (Loader || _loader.SafeLoader)(stream);
+  var loader = new (Loader || _loader.Loader)(stream);
   return loader.getSingleData();
 };
 
 
 jsyaml.loadAll = function loadAll(stream, callback, Loader) {
-  var loader = new (Loader || _loader.SafeLoader)(stream);
+  var loader = new (Loader || _loader.Loader)(stream);
 
   while (loader.checkData()) {
     callback(loader.getData());
   }
 };
+
+
+jsyaml.safeLoad = function load(stream) {
+  return jsyaml.load(stream, _loader.SafeLoader);
+};
+
+
+jsyaml.safeLoadAll = function loadAll(stream, callback) {
+  jsyaml.loadAll(stream, callback, _loader.SafeLoader);
+};
+
 
 // Register extensions handler
 (function () {
@@ -439,8 +450,27 @@ $$.extend(SafeLoader.prototype,
          _resolver.Resolver.prototype);
 
 
+function Loader(stream) {
+  _reader.Reader.call(this, stream);
+  _scanner.Scanner.call(this);
+  _parser.Parser.call(this);
+  _composer.Composer.call(this);
+  _constructor.Constructor.call(this);
+  _resolver.Resolver.call(this);
+}
+
+$$.extend(Loader.prototype,
+         _reader.Reader.prototype,
+         _scanner.Scanner.prototype,
+         _parser.Parser.prototype,
+         _composer.Composer.prototype,
+         _constructor.Constructor.prototype,
+         _resolver.Resolver.prototype);
+
+
 module.exports.BaseLoader = BaseLoader;
 module.exports.SafeLoader = SafeLoader;
+module.exports.Loader = Loader;
 
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
@@ -4609,7 +4639,7 @@ function SafeConstructor() {
 
 $$.inherits(SafeConstructor, BaseConstructor);
 
-SafeConstructor.yamlConstructors = {};
+SafeConstructor.yamlConstructors = $$.extend({}, BaseConstructor.yamlConstructors);
 SafeConstructor.addConstructor = BaseConstructor.addConstructor;
 
 SafeConstructor.prototype.constructScalar = function constructScalar(node) {
@@ -4973,8 +5003,42 @@ SafeConstructor.addConstructor(
   SafeConstructor.prototype.constructUndefined);
 
 
+function Constructor() {
+  SafeConstructor.apply(this);
+  this.yamlConstructors = Constructor.yamlConstructors;
+}
+
+$$.inherits(Constructor, SafeConstructor);
+
+Constructor.yamlConstructors = $$.extend({}, SafeConstructor.yamlConstructors);
+Constructor.addConstructor = SafeConstructor.addConstructor;
+
+Constructor.prototype.constructJavascriptRegExp = function constructJavascriptRegExp(node) {
+  var regexp = this.constructScalar(node),
+      tail =/\/([gim]*)$/.exec(regexp),
+      modifiers;
+
+  // `/foo/gim` - tail can be maximum 4 chars
+  if ('/' === regexp[0] && !!tail && 4 >= tail[0].length) {
+    regexp = regexp.slice(1, regexp.length - tail[0].length);
+    modifiers = tail[1];
+  }
+
+  return new RegExp(regexp, modifiers);
+};
+
+Constructor.addConstructor(
+  'tag:yaml.org,2002:js/null',
+  Constructor.prototype.constructYamlNull);
+
+Constructor.addConstructor(
+  'tag:yaml.org,2002:js/regexp',
+  Constructor.prototype.constructJavascriptRegExp);
+
+
 module.exports.BaseConstructor = BaseConstructor;
 module.exports.SafeConstructor = SafeConstructor;
+module.exports.Constructor = Constructor;
 
 
 ////////////////////////////////////////////////////////////////////////////////
