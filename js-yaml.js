@@ -4917,7 +4917,7 @@ SafeConstructor.prototype.constructYamlPairs = function constructYamlPairs(node)
 };
 
 SafeConstructor.prototype.constructYamlSet = function constructYamlSet(node) {
-  var data = [];
+  var data = {};
   return $$.Populator(data, function () {
     $$.extend(data, this.constructMapping(node));
   }, this);
