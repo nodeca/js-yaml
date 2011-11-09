@@ -180,5 +180,5 @@ timestamp:
 # https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp -#
 
 regexp:
-  simple: !!javascript/regexp      foobar
-  modifiers: !!javascript/regexp   /foobar/mi
+  simple: !!js/regexp      foobar
+  modifiers: !!js/regexp   /foobar/mi
