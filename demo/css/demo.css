@@ -25,10 +25,20 @@ h5 {
   float: right;
 }
 
-.CodeMirror {
-  border: 1px solid #ccc;
+.src .CodeMirror {
+  background-color: #fffffb;
+  border: 1px solid #888;
+  border-radius: 3px;
+  box-shadow: 0 0 3px #ccc inset;
+}
+
+.dst .CodeMirror {
+  background-color: #F8F8F8;
+  border: 1px solid #eee;
+  border-radius: 3px;
 }
 
 .CodeMirror-scroll {
   height: 500px;
+  line-height: 1.2;
 }
