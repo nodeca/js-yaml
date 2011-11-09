@@ -1,10 +1,10 @@
 JS-YAML - YAML 1.1 parser for JavaScript
 ========================================
 
-This is a native port of [PyYAML](http://pyyaml.org/), the most advanced YAML parser.
-Now you can use all modern YAML feature right in JavaScript.
+[Online Demo](http://nodeca.github.com/js-yaml/)
 
-Originally snapshoted version - PyYAML 3.10 (2011-05-30).
+This is a native port of [PyYAML](http://pyyaml.org/), the most advanced YAML parser.
+Now you can use all modern YAML feature right in JavaScript. Originally snapshoted version - PyYAML 3.10 (2011-05-30).
 
 ## Installation
 
@@ -19,8 +19,7 @@ npm install js-yaml
 ``` html
 <script src="js-yaml.min.js"></script>
 <script type="text/javascript">
-var jsyaml = require('/lib/js-yaml');
-alert(jsyaml.load('---\n- Hello\n- World!').join(' '));
+var yaml = require('/lib/js-yaml');
 </script>
 ```
 
