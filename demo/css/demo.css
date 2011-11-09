@@ -42,6 +42,8 @@ h5 {
   line-height: 1.2;
 }
 
+.cm-s-default span.cm-comment {color: #bcc;}
+
 .addthis_toolbox {
   position: absolute;
   top: 10px;
