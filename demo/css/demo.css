@@ -8,6 +8,9 @@ h1 {
   margin: 60px 0 10px;
   color: #aaa;
 }
+#permalink {
+  float: right;
+}
 h5 {
   font-size: 16px;
   font-weight: normal;
