@@ -2,8 +2,28 @@ window.runDemo = function runDemo() {
   var jsyaml = require('/lib/js-yaml'), source, result, initial;
 
 
+  function updatePermlink(str) {
+    var base, hash, field;
+
+    field = document.getElementById('permalink');
+  
+    try {
+      hash = base64.encode(str);
+      base = window.location.toString();
+
+      if (-1 !== base.indexOf('#')) {
+        base = base.slice(0, base.indexOf('#'));
+      }
+
+      field.value = base + '/#!/yaml/' + hash;
+    } catch (err) {
+      field.value = err.toString();
+    }
+  }
+
+
   function parse(_, evt) {
-    var obj;
+    var str;
 
     if (evt) {
       if (evt.type != 'keyup') return;
@@ -17,33 +37,15 @@ window.runDemo = function runDemo() {
     }
 
     try {
-      obj = jsyaml.load(source.getValue().trim());
+      str = source.getValue();
+      updatePermlink(str);
       result.setOption('mode', 'javascript');
-      result.setValue(inspect(obj, false, 10));
+      result.setValue(inspect(jsyaml.load(obj), false, 10));
     } catch (err) {
       result.setOption('mode', 'text/plain');
       result.setValue(err.toString());
     }
   }
-
-  document.getElementById('permalink-trigger').addEventListener('click', function (evt) {
-    var base, hash, field;
-
-    field = document.getElementById('permalink-value');
-  
-    try {
-      hash = base64.encode(source.getValue());
-      base = window.location.toString();
-
-      if (-1 !== base.indexOf('#')) {
-        base = base.slice(0, base.indexOf('#'));
-      }
-
-      field.value = base + '#' + hash;
-    } catch (err) {
-      field.value = err.toString();
-    }
-  });
 
   source = CodeMirror.fromTextArea(document.getElementById('source'), {
     mode: 'yaml',
@@ -56,8 +58,8 @@ window.runDemo = function runDemo() {
   });
 
   // try to get initial value from hash part
-  if (location.hash && '#' === location.hash[0]) {
-    initial = base64.decode(location.hash.slice(1));
+  if (location.hash && '#!/yaml/' === location.hash.toString().slice(0,8)) {
+    initial = base64.decode(location.hash.slice(8));
   }
 
   // initial source text
