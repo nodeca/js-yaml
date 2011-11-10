@@ -40,7 +40,7 @@ window.runDemo = function runDemo() {
       str = source.getValue();
       updatePermlink(str);
       result.setOption('mode', 'javascript');
-      result.setValue(inspect(jsyaml.load(obj), false, 10));
+      result.setValue(inspect(jsyaml.load(str), false, 10));
     } catch (err) {
       result.setOption('mode', 'text/plain');
       result.setValue(err.toString());
