@@ -1,6 +1,6 @@
 window.runDemo = function runDemo() {
   var jsyaml = require('/lib/js-yaml'), source, result, initial, permalink,
-      timer1, timer2 = null;
+      timer1, timer2 = null, current;
 
   function parse() {
     var str;
@@ -8,13 +8,27 @@ window.runDemo = function runDemo() {
     try {
       str = source.getValue();
 
-      permalink.href = '#yaml=' + base64.encode(str);
+      current = permalink.href = '#yaml=' + base64.encode(str);
 
       result.setOption('mode', 'javascript');
       result.setValue(inspect(jsyaml.load(str), false, 10));
     } catch (err) {
       result.setOption('mode', 'text/plain');
       result.setValue(err.toString());
+    }
+  }
+
+  function getHashSource() {
+    if (location.hash && '#yaml=' === location.hash.toString().slice(0,6)) {
+      return base64.decode(location.hash.slice(6));
+    }
+  }
+
+  function watchHashChange() {
+    var hash = location.hash.toString();
+    window.setTimeout(watchHashChange, 750);
+    if (0 < hash.length && current !== hash) {
+      source.setValue(getHashSource());
     }
   }
 
@@ -44,16 +58,14 @@ window.runDemo = function runDemo() {
     readOnly: true
   });
 
-  // try to get initial value from hash part
-  if (location.hash && '#yaml=' === location.hash.toString().slice(0,6)) {
-    initial = base64.decode(location.hash.slice(6));
-  }
-
   // initial source text
-  source.setValue(initial || document.getElementById('source').value);
+  source.setValue(getHashSource() || document.getElementById('source').value);
 
   // initial parse
   parse();
+
+  // start monitor hash change
+  watchHashChange();
 };
 
 
