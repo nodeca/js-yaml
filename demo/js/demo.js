@@ -1,13 +1,18 @@
 window.runDemo = function runDemo() {
-  var jsyaml = require('/lib/js-yaml'), source, result, initial;
+  var jsyaml = require('/lib/js-yaml'), source, result, initial, history,
+      timer1, timer2;
 
 
-  function updatePermlink(str) {
-    var base, hash, field;
+  history = (window.history && window.history.replaceState)
+          ? function (url) { window.history.replaceState({}, 'YAML', url); }
+          : function (url) { window.location = url; };
 
-    field = document.getElementById('permalink');
-  
+
+  function parse() {
+    var str, base, hash;
+
     try {
+      str = source.getValue();
       hash = base64.encode(str);
       base = window.location.toString();
 
@@ -15,30 +20,8 @@ window.runDemo = function runDemo() {
         base = base.slice(0, base.indexOf('#'));
       }
 
-      field.value = base + '/#!/yaml/' + hash;
-    } catch (err) {
-      field.value = err.toString();
-    }
-  }
+      history(base + '#!/yaml/' + hash);
 
-
-  function parse(_, evt) {
-    var str;
-
-    if (evt) {
-      if (evt.type != 'keyup') return;
-      switch (evt.keyCode) {
-        case 37:
-        case 38:
-        case 39:
-        case 40:
-          return;
-      }
-    }
-
-    try {
-      str = source.getValue();
-      updatePermlink(str);
       result.setOption('mode', 'javascript');
       result.setValue(inspect(jsyaml.load(str), false, 10));
     } catch (err) {
@@ -50,7 +33,17 @@ window.runDemo = function runDemo() {
   source = CodeMirror.fromTextArea(document.getElementById('source'), {
     mode: 'yaml',
     undoDepth: 1,
-    onKeyEvent: parse
+    onKeyEvent: function (_, evt) {
+      if (evt.type != 'keyup') {
+        window.clearTimeout(timer1);
+        window.clearTimeout(timer2);
+
+        timer1 = window.setTimeout(parse, 500);
+        window.setTimeout(function () {
+          timer2 = window.setTimeout(parse, 1000);
+        });
+      }
+    }
   });
 
   result = CodeMirror.fromTextArea(document.getElementById('result'), {
