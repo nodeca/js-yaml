@@ -8,7 +8,7 @@ window.runDemo = function runDemo() {
     try {
       str = source.getValue();
 
-      permalink.href = '#!/yaml/' + base64.encode(str);
+      permalink.href = '#yaml=' + base64.encode(str);
 
       result.setOption('mode', 'javascript');
       result.setValue(inspect(jsyaml.load(str), false, 10));
@@ -45,8 +45,8 @@ window.runDemo = function runDemo() {
   });
 
   // try to get initial value from hash part
-  if (location.hash && '#!/yaml/' === location.hash.toString().slice(0,8)) {
-    initial = base64.decode(location.hash.slice(8));
+  if (location.hash && '#yaml=' === location.hash.toString().slice(0,6)) {
+    initial = base64.decode(location.hash.slice(6));
   }
 
   // initial source text
