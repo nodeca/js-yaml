@@ -1,5 +1,33 @@
-// Modified from:
-// https://raw.github.com/kanaka/noVNC/d890e8640f20fba3215ba7be8e0ff145aeb8c17c/include/base64.js
+// Base64 encoder/decoder with UTF-8 support
+//
+// Copyright (c) 2011 Vitaly Puzrin
+// Copyright (c) 2011 Aleksey V Zapparov
+//
+// Author: Aleksey V Zapparov AKA ixti (http://www.ixti.net/)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+
+// Based on original artworks of base64 encoder/decoder by [Mozilla][1]
+// [1] http://lxr.mozilla.org/mozilla/source/extensions/xml-rpc/src/nsXmlRpcClient.js
+
+
 (function (exports) {
   'use strict';
 
@@ -17,93 +45,88 @@
         15,16,17,18, 19,20,21,22, 23,24,25,-1, -1,-1,-1,-1,
         -1,26,27,28, 29,30,31,32, 33,34,35,36, 37,38,39,40,
         41,42,43,44, 45,46,47,48, 49,50,51,-1, -1,-1,-1,-1
-      ];
+      ],
+      UTF8_FIRST_BYTE = /[^\x00-\x7F]/,
+      UTF8_SUBSTR = /([^\x00-\x7F]+[\x00-\x7F]{0,10})+/;
 
   if (console) {
     logger.warn = console.warn || console.error || console.log || noop;
     logger.warn = console.error || console.warn || console.log || noop;
   }
 
-  // UTF encode/decode modified from:
-  // http://www.webtoolkit.info/javascript-base64.html
+  // internal helpers //////////////////////////////////////////////////////////
 
-  function utf8_encode(string) {
-    var utftext = "", i, l, c;
+  function utf8Encode(str) {
+    var bytes = [], offset = 0, length, char;
 
-    string = string.replace(/\r\n/g,"\n");
+    str = encodeURI(str);
+    length = str.length;
 
-    for (i = 0, l = string.length; i < l; i++) {
-      c = string.charCodeAt(i);
+    while (offset < length) {
+      char = str[offset];
+      offset += 1;
 
-      if (c < 128) {
-        utftext += String.fromCharCode(c);
-      } else if((c > 127) && (c < 2048)) {
-        utftext += String.fromCharCode((c >> 6) | 192);
-        utftext += String.fromCharCode((c & 63) | 128);
+      if ('%' !== char) {
+        bytes.push(char.charCodeAt(0));
       } else {
-        utftext += String.fromCharCode((c >> 12) | 224);
-        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-        utftext += String.fromCharCode((c & 63) | 128);
+        char = str[offset] + str[offset + 1];
+        bytes.push(parseInt(char, 16));
+        offset += 2;
       }
     }
 
-    return utftext;
+    return bytes;
   }
 
-  function utf8_decode(utftext) {
-    var string = "", i = 0, c = 0, c2 = 0, c3 = 0;
+  function utf8Decode(bytes) {
+    var chars = [], offset = 0, length = bytes.length, c, c2, c3;
 
-    while ( i < utftext.length ) {
-      c = utftext.charCodeAt(i);
-      if (c < 128) {
-        string += String.fromCharCode(c);
-        i += 1;
-      } else if ((c > 191) && (c < 224)) {
-        c2 = utftext.charCodeAt(i+1);
-        string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-        i += 2;
+    while (offset < length) {
+      c = bytes[offset];
+      c2 = bytes[offset + 1];
+      c3 = bytes[offset + 2];
+
+      if (128 > c) {
+        chars.push(String.fromCharCode(c));
+        offset += 1;
+      } else if (191 < c && c < 224) {
+        chars.push(String.fromCharCode(((c & 31) << 6) | (c2 & 63)));
+        offset += 2;
       } else {
-        c2 = utftext.charCodeAt(i+1);
-        c3 = utftext.charCodeAt(i+2);
-        string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-        i += 3;
+        chars.push(String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63)));
+        offset += 3;
       }
     }
 
-    return string;
+    return chars.join('');
   }
+
+  // public api ////////////////////////////////////////////////////////////////
 
   function encode(str) {
-    var result = '', length = str.length, i, c1, c2, c3;
-
-    str = utf8_encode(str);
+    var result = '',
+        bytes = utf8Encode(str),
+        length = bytes.length,
+        i;
 
     // Convert every three bytes to 4 ascii characters.
     for (i = 0; i < (length - 2); i += 3) {
-      c1 = str.charCodeAt(i);
-      c2 = str.charCodeAt(i+1);
-      c3 = str.charCodeAt(i+2);
-
-      console.log(c1, c2, c3);
-
-      result += chrTable[c1 >> 2];
-      result += chrTable[((c1 & 0x03) << 4) + (c2 >> 4)];
-      result += chrTable[((c2 & 0x0f) << 2) + (c3 >> 6)];
-      result += chrTable[c3 & 0x3f];
+      result += chrTable[bytes[i] >> 2];
+      result += chrTable[((bytes[i] & 0x03) << 4) + (bytes[i+1] >> 4)];
+      result += chrTable[((bytes[i+1] & 0x0f) << 2) + (bytes[i+2] >> 6)];
+      result += chrTable[bytes[i+2] & 0x3f];
     }
 
     // Convert the remaining 1 or 2 bytes, pad out to 4 characters.
     if (length%3) {
       i = length - (length%3);
-      c1 = str.charCodeAt(i);
-      c2 = str.charCodeAt(i+1);
-      result += chrTable[c1 >> 2];
+      result += chrTable[bytes[i] >> 2];
       if ((length%3) === 2) {
-        result += chrTable[((c1 & 0x03) << 4) + (c2 >> 4)];
-        result += chrTable[(c2 & 0x0f) << 2];
+        result += chrTable[((bytes[i] & 0x03) << 4) + (bytes[i+1] >> 4)];
+        result += chrTable[(bytes[i+1] & 0x0f) << 2];
         result += padding;
       } else {
-        result += chrTable[(c1 & 0x03) << 4];
+        result += chrTable[(bytes[i] & 0x03) << 4];
         result += padding + padding;
       }
     }
@@ -112,7 +135,8 @@
   }
 
   function decode(data) {
-    var value, code, idx = 0, result = [],
+    var value, code, idx = 0,
+        bytes = [],
         leftbits = 0, // number of bits decoded, but yet to be appended
         leftdata = 0; // bits decoded, but yet to be appended
 
@@ -138,7 +162,7 @@
           leftbits -= 8;
           // Append if not padding.
           if (padding !== data.charAt(idx)) {
-            result.push(String.fromCharCode((leftdata >> leftbits) & 0xFF));
+            bytes.push((leftdata >> leftbits) & 0xFF);
           }
           leftdata &= (1 << leftbits) - 1;
         }
@@ -151,8 +175,13 @@
       return null;
     }
 
-    return utf8_decode(result.join(''));
+    return utf8Decode(bytes);
   }
 
   exports.base64 = {encode: encode, decode: decode};
 }(window));
+
+
+////////////////////////////////////////////////////////////////////////////////
+// vim:ts=2:sw=2
+////////////////////////////////////////////////////////////////////////////////
