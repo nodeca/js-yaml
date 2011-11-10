@@ -24,14 +24,67 @@
     logger.warn = console.error || console.warn || console.log || noop;
   }
 
+  // UTF encode/decode modified from:
+  // http://www.webtoolkit.info/javascript-base64.html
+
+  function utf8_encode(string) {
+    var utftext = "", i, l, c;
+
+    string = string.replace(/\r\n/g,"\n");
+
+    for (i = 0, l = string.length; i < l; i++) {
+      c = string.charCodeAt(i);
+
+      if (c < 128) {
+        utftext += String.fromCharCode(c);
+      } else if((c > 127) && (c < 2048)) {
+        utftext += String.fromCharCode((c >> 6) | 192);
+        utftext += String.fromCharCode((c & 63) | 128);
+      } else {
+        utftext += String.fromCharCode((c >> 12) | 224);
+        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+        utftext += String.fromCharCode((c & 63) | 128);
+      }
+    }
+
+    return utftext;
+  }
+
+  function utf8_decode(utftext) {
+    var string = "", i = 0, c = 0, c2 = 0, c3 = 0;
+
+    while ( i < utftext.length ) {
+      c = utftext.charCodeAt(i);
+      if (c < 128) {
+        string += String.fromCharCode(c);
+        i += 1;
+      } else if ((c > 191) && (c < 224)) {
+        c2 = utftext.charCodeAt(i+1);
+        string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+        i += 2;
+      } else {
+        c2 = utftext.charCodeAt(i+1);
+        c3 = utftext.charCodeAt(i+2);
+        string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+        i += 3;
+      }
+    }
+
+    return string;
+  }
+
   function encode(str) {
     var result = '', length = str.length, i, c1, c2, c3;
+
+    str = utf8_encode(str);
 
     // Convert every three bytes to 4 ascii characters.
     for (i = 0; i < (length - 2); i += 3) {
       c1 = str.charCodeAt(i);
       c2 = str.charCodeAt(i+1);
       c3 = str.charCodeAt(i+2);
+
+      console.log(c1, c2, c3);
 
       result += chrTable[c1 >> 2];
       result += chrTable[((c1 & 0x03) << 4) + (c2 >> 4)];
@@ -98,7 +151,7 @@
       return null;
     }
 
-    return result.join('');
+    return utf8_decode(result.join(''));
   }
 
   exports.base64 = {encode: encode, decode: decode};

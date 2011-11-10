@@ -43,7 +43,15 @@ window.runDemo = function runDemo() {
     mode: 'yaml',
     undoDepth: 1,
     onKeyEvent: function (_, evt) {
-      if (evt.type != 'keyup') {
+      switch (evt.keyCode) {
+        case 37:
+        case 38:
+        case 39:
+        case 40:
+          return;
+      }
+
+      if (evt.type == 'keyup') {
         window.clearTimeout(timer1);
         timer1 = window.setTimeout(parse, 500);
 
