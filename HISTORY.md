@@ -1,9 +1,9 @@
 ??? / ???
 ---------
 
-* Addded permalink generator on demo.
-* Fixed constructed type of !!set.
-* Added JavaScript constructor of RegExp. Partially solves #12.
+* Added permalinks for online demo YAML snippets. Now we have YPaste service, lol.
+* Added !!js/regexp type. Partially solves #12.
+* Fixed !!set mapping.
 
 0.3.0 / 2011-11-09
 ------------------
