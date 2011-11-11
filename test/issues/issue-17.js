@@ -4,7 +4,7 @@ var issue = module.exports = {},
     source = __dirname + '/data/issue-17.yml';
 
 issue.title = "#17: Non-specific `!` tags should resolve to !!str";
-issue.fixed = false;
+issue.fixed = true;
 issue.execute = function () {
   var str = require(source).shift();
   assert.equal('string', typeof str);
