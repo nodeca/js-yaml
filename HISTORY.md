@@ -1,8 +1,9 @@
 ??? / ???
 ---------
 
+* Fixed the resolvement of non-specific tags. Closes #17.
 * Added permalinks for online demo YAML snippets. Now we have YPaste service, lol.
-* Added !!js/regexp type. Partially solves #12.
+* Added !!js/regexp and !!js/undefined types. Partially solves #12.
 * Fixed !!set mapping.
 
 0.3.0 / 2011-11-09
