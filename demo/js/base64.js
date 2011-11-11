@@ -25,7 +25,7 @@
 
 
 // Based on original artworks of base64 encoder/decoder by [Mozilla][1]
-// [1] http://lxr.mozilla.org/mozilla/source/extensions/xml-rpc/src/nsXmlRpcClient.js
+// [1]: http://lxr.mozilla.org/mozilla/source/extensions/xml-rpc/src/nsXmlRpcClient.js
 
 
 (function (exports) {
@@ -45,9 +45,7 @@
         15,16,17,18, 19,20,21,22, 23,24,25,-1, -1,-1,-1,-1,
         -1,26,27,28, 29,30,31,32, 33,34,35,36, 37,38,39,40,
         41,42,43,44, 45,46,47,48, 49,50,51,-1, -1,-1,-1,-1
-      ],
-      UTF8_FIRST_BYTE = /[^\x00-\x7F]/,
-      UTF8_SUBSTR = /([^\x00-\x7F]+[\x00-\x7F]{0,10})+/;
+      ];
 
   if (console) {
     logger.warn = console.warn || console.error || console.log || noop;
