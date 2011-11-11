@@ -143,14 +143,10 @@
       code = data.charCodeAt(idx);
       value = binTable[code & 0x7F];
 
-      // Skip LF(NL) || CR
-      if (0x0A !== code && 0x0D !== code) {
-        // Fail on illegal characters and whitespace
-        if (-1 === value) {
-          logger.warn("Illegal characters (code=" + code + ") in position " +
-                      idx + ": ordinal not in range(128)");
-        }
-
+      if (-1 === value) {
+        // Skip illegal characters and whitespace
+        logger.warn("Illegal characters (code=" + code + ") in position " + idx);
+      } else {
         // Collect data into leftdata, update bitcount
         leftdata = (leftdata << 6) | value;
         leftbits += 6;
