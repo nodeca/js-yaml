@@ -369,6 +369,18 @@ jsyaml.safeLoadAll = function loadAll(stream, callback) {
 };
 
 
+/**
+ *  jsyaml.addConstructor(tag, constructor[, Loader]) -> Void
+ *  Add a constructor for the given tag.
+ *
+ *  Constructor is a function that accepts a Loader instance
+ *  and a node object and produces the corresponding JavaScript object.
+ **/
+jsyaml.addConstructor = function addConstructor(tag, constructor, Loader) {
+  (Loader || _loader.Loader).addConstructor(tag, constructor);
+};
+
+
 // Register extensions handler
 (function () {
   var require_handler = function (module, filename) {
@@ -616,10 +628,10 @@ $$.decodeBase64 = (function () {
 
       // Skip LF(NL) || CR
       if (0x0A !== code && 0x0D !== code) {
-        // Fail on illegal characters and whitespace
+        // Fail on illegal characters
         if (-1 === value) {
           throw new Error("Illegal characters (code=" + code + ") in position " +
-                          idx + ": ordinal not in range(128)");
+                          idx + ": ordinal not in range(0..128)");
         }
 
         // Collect data into leftdata, update bitcount
@@ -4129,8 +4141,10 @@ Composer.prototype.composeScalarNode = function composeScalarNode(anchor) {
   event = this.getEvent();
   tag = event.tag;
 
-  if (null === tag || "!" === tag) {
+  if (null === tag) {
     tag = this.resolve(_nodes.ScalarNode, event.value, event.implicit);
+  } else if ("!" === tag) {
+    tag = this.resolve(_nodes.ScalarNode, event.value, false);
   }
 
   node = new _nodes.ScalarNode(tag, event.value, event.startMark, event.endMark,
@@ -4149,8 +4163,10 @@ Composer.prototype.composeSequenceNode = function composeSequenceNode(anchor) {
   start_event = this.getEvent();
   tag = start_event.tag;
 
-  if (null === tag || "!" === tag) {
+  if (null === tag) {
     tag = this.resolve(_nodes.SequenceNode, null, start_event.implicit);
+  } else if ("!" === tag) {
+    tag = this.resolve(_nodes.SequenceNode, null, false);
   }
 
   node = new _nodes.SequenceNode(tag, [], start_event.startMark, null,
@@ -4180,8 +4196,10 @@ Composer.prototype.composeMappingNode = function composeMappingNode(anchor) {
   startEvent = this.getEvent();
   tag = startEvent.tag;
 
-  if (null === tag || "!" === tag) {
+  if (null === tag) {
     tag = this.resolve(_nodes.MappingNode, null, startEvent.implicit);
+  } else if ("!" === tag) {
+    tag = this.resolve(_nodes.MappingNode, null, false);
   }
 
   node = new _nodes.MappingNode(tag, [], startEvent.startMark, null,
@@ -4307,7 +4325,7 @@ BaseResolver.addImplicitResolver = function addImplicitResolver(tag, regexp, fir
 BaseResolver.prototype.resolve = function resolve(kind, value, implicit) {
   var resolvers, i, tag, regexp;
 
-  if (kind === _nodes.ScalarNode && implicit[0]) {
+  if (kind === _nodes.ScalarNode && implicit && implicit[0]) {
     if (value === '') {
       resolvers = this.yamlImplicitResolvers[''] || [];
     } else {
@@ -4324,8 +4342,6 @@ BaseResolver.prototype.resolve = function resolve(kind, value, implicit) {
         return tag;
       }
     }
-
-    implicit = implicit[1];
   }
 
   if (kind === _nodes.ScalarNode) {
@@ -5027,9 +5043,14 @@ Constructor.prototype.constructJavascriptRegExp = function constructJavascriptRe
   return new RegExp(regexp, modifiers);
 };
 
+Constructor.prototype.constructJavascriptUndefined = function constructJavascriptUndefined(node) {
+  var undef;
+  return undef;
+};
+
 Constructor.addConstructor(
-  'tag:yaml.org,2002:js/null',
-  Constructor.prototype.constructYamlNull);
+  'tag:yaml.org,2002:js/undefined',
+  Constructor.prototype.constructJavascriptUndefined);
 
 Constructor.addConstructor(
   'tag:yaml.org,2002:js/regexp',
