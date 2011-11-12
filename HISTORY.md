@@ -1,6 +1,8 @@
 ??? / ???
 ---------
 
+* Added AMD support for browserified version.
+* Wrapped browserified js-yaml into closure.
 * Fixed the resolvement of non-specific tags. Closes #17.
 * Added permalinks for online demo YAML snippets. Now we have YPaste service, lol.
 * Added !!js/regexp and !!js/undefined types. Partially solves #12.
