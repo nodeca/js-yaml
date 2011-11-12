@@ -1,0 +1,1 @@
+/* this is a stub and will be replaced during browserification */

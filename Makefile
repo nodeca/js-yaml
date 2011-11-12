@@ -12,14 +12,6 @@ REMOTE_REPO ?= $(shell git config --get remote.${REMOTE_NAME}.url)
 
 test: test-functional test-issues
 
-test-issues:
-	echo 
-	echo "## ISSUES ######################################################################"
-	echo "################################################################################"
-	echo 
-	node ./test/issues/run.js
-	echo 
-
 test-functional:
 	echo 
 	echo "## FUNCTIONAL ##################################################################"
@@ -28,12 +20,23 @@ test-functional:
 	node ./test/functional/run.js
 	echo 
 
+test-issues:
+	echo 
+	echo "## ISSUES ######################################################################"
+	echo "################################################################################"
+	echo 
+	node ./test/issues/run.js
+	echo 
+
 
 build: browserify uglify
 
 browserify:
 	if test ! `which browserify` ; then npm install browserify ; fi
-	browserify index.js -o js-yaml.js
+	cp -r .browserify/ ${TMP_DIR}
+	browserify index.js -o ${TMP_DIR}/50_js-yaml.js
+	cat ${TMP_DIR}/* > js-yaml.js
+	rm -rf ${TMP_DIR}
 	cp js-yaml.js demo/js/
 
 uglify:

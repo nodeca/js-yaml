@@ -1,6 +1,6 @@
 window.runDemo = function runDemo() {
-  var jsyaml = require('/lib/js-yaml'), source, result, initial, permalink,
-      timer1, timer2 = null, hash = location.hash.toString();
+  var source, result, initial, permalink, timer1, timer2 = null,
+      hash = location.hash.toString();
 
   function parse() {
     var str;

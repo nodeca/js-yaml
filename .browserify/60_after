@@ -1,0 +1,9 @@
+    return require('/lib/js-yaml');
+  }());
+  
+  if ('function' === typeof define && define.amd) {
+    define('jsyaml', [], function () { return __jsyaml__; }, 'jsyaml');
+  }
+  
+  return __jsyaml__;
+}());
