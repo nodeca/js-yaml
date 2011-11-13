@@ -23,16 +23,7 @@ var doc = jsyaml.load('greeting: hello\nname: world');
 </script>
 ```
 
-### AMD support for browser
-
-You can use AMD loader, e.g. [RequireJS](http://requirejs.org/) to require
-JS-YAML as well:
-
-``` javascript
-require(['jsyaml'], function (jsyaml) {
-  var doc = jsyaml.load('greeting: hello\nname: world');
-});
-```
+Also we support AMD loaders, e.g. [RequireJS](http://requirejs.org/).
 
 ## API
 
