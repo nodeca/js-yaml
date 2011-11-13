@@ -33,7 +33,7 @@ build: browserify uglify
 
 browserify:
 	if test ! `which browserify` ; then npm install browserify ; fi
-	cp -r .browserify/ ${TMP_DIR}
+	cp -r support/browserify/ ${TMP_DIR}
 	browserify index.js -o ${TMP_DIR}/50_js-yaml.js
 	cat ${TMP_DIR}/* > js-yaml.js
 	rm -rf ${TMP_DIR}
