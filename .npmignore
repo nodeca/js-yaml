@@ -1,3 +1,7 @@
 /src/
 /test/unported/
+
+/demo/
+/js-yaml.js
+/js-yaml.min.js
 /support/browserify/
