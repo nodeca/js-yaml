@@ -4,7 +4,7 @@ var issue = module.exports = {},
     source = __dirname + '/data/issue-19.yml';
 
 issue.title = "#19: Timestamp parsing is one month off";
-issue.fixed = false;
+issue.fixed = true;
 issue.execute = function () {
   var doc = require(source).shift(),
       expected = new Date(2011, 11, 24);
