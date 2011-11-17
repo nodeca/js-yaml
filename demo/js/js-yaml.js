@@ -4850,7 +4850,7 @@ SafeConstructor.prototype.constructYamlTimestamp = function constructYamlTimesta
   // match: [1] year [2] month [3] day
 
   year = +(match[1]);
-  month = +(match[2]);
+  month = +(match[2]) - 1; // JS month starts with 0
   day = +(match[3]);
 
   if (!match[4]) { // no hour
