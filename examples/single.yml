@@ -177,8 +177,19 @@ timestamp:
 # JavaScript Specific Types ####################################################
 ################################################################################
 
-# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp -#
+# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp
 
 regexp:
   simple: !!js/regexp      foobar
   modifiers: !!js/regexp   /foobar/mi
+
+# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/undefined
+
+undefined: !!js/undefined ~
+
+# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function
+
+function: !!js/func >
+  function foobar() {
+    return 'Wow! JS-YAML Rocks!';
+  }
