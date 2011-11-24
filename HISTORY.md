@@ -1,4 +1,4 @@
-??? / ???
+0.3.1 / 2011-11-18
 ---------
 
 * Added AMD support for browserified version.
@@ -7,6 +7,7 @@
 * Added permalinks for online demo YAML snippets. Now we have YPaste service, lol.
 * Added !!js/regexp and !!js/undefined types. Partially solves #12.
 * Fixed !!set mapping.
+* Fixed month parse in dates. Closes #19.
 
 0.3.0 / 2011-11-09
 ------------------
