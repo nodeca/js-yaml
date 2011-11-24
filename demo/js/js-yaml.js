@@ -5072,6 +5072,11 @@ Constructor.prototype.constructJavascriptUndefined = function constructJavascrip
   return undef;
 };
 
+Constructor.prototype.constructJavascriptFunction = function constructJavascriptFunction(node) {
+  var func = new Function('return ' + this.constructScalar(node));
+  return func();
+};
+
 Constructor.addConstructor(
   'tag:yaml.org,2002:js/undefined',
   Constructor.prototype.constructJavascriptUndefined);
@@ -5079,6 +5084,10 @@ Constructor.addConstructor(
 Constructor.addConstructor(
   'tag:yaml.org,2002:js/regexp',
   Constructor.prototype.constructJavascriptRegExp);
+
+Constructor.addConstructor(
+  'tag:yaml.org,2002:js/func',
+  Constructor.prototype.constructJavascriptFunction);
 
 
 module.exports.BaseConstructor = BaseConstructor;
