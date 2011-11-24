@@ -1,5 +1,10 @@
+?.?.? / ????-??-??
+------------------
+
+* Added !!js/function support. Finally resolves #12.
+
 0.3.1 / 2011-11-18
----------
+------------------
 
 * Added AMD support for browserified version.
 * Wrapped browserified js-yaml into closure.
