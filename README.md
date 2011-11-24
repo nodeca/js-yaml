@@ -138,9 +138,8 @@ The list of standard YAML tags and corresponding JavaScipt types. See also
 ```
 !!js/regexp /pattern/gim    # RegExp
 !!js/undefined ''           # Undefined
+!!js/func   function () {}  # Function
 ```
-
-More JavaScript-specific YAML tags will be availble soon: (`function`).
 
 ### Caveats
 
