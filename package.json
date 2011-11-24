@@ -11,6 +11,7 @@
   "license"         : { "type": "MIT", "url": "https://github.com/nodeca/js-yaml/blob/master/LICENSE" },
   "repository"      : { "type": "git", "url": "git://github.com/nodeca/js-yaml.git" },
 
+  "bin"             : { "jsyaml": "bin/js-yaml.js" },
   "main"            : "./index.js",
 
   "engines"         : { "node": "> 0.4.11 < 0.7.0" }
