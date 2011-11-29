@@ -5086,7 +5086,7 @@ Constructor.addConstructor(
   Constructor.prototype.constructJavascriptRegExp);
 
 Constructor.addConstructor(
-  'tag:yaml.org,2002:js/func',
+  'tag:yaml.org,2002:js/function',
   Constructor.prototype.constructJavascriptFunction);
 
 

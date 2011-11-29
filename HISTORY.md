@@ -2,7 +2,7 @@
 ------------------
 
 * Added jsyaml executable.
-* Added !!js/func support. Finally resolves #12.
+* Added !!js/function support. Finally resolves #12.
 
 0.3.1 / 2011-11-18
 ------------------
