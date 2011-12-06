@@ -441,7 +441,7 @@ require.define("/lib/js-yaml/loader.js", function (require, module, exports, __d
     'use strict';
 
 
-var $$ = require('./core'),
+var $$ = require('./common'),
     _reader = require('./reader'),
     _scanner = require('./scanner'),
     _parser = require('./parser'),
@@ -514,7 +514,7 @@ module.exports.Loader = Loader;
 
 });
 
-require.define("/lib/js-yaml/core.js", function (require, module, exports, __dirname, __filename) {
+require.define("/lib/js-yaml/common.js", function (require, module, exports, __dirname, __filename) {
     'use strict';
 
 
@@ -523,6 +523,23 @@ var $$ = module.exports = {};
 
 // UTILITY METHODS
 ////////////////////////////////////////////////////////////////////////////////
+
+
+// returns new function bound to given context
+var nativeBind = Function.prototype.bind;
+$$.bind = function bind(func, context) {
+  if (nativeBind && func.bind === nativeBind) {
+    return func.bind(context);
+  }
+
+  if ('function' !== typeof func) {
+    throw new TypeError;
+  }
+
+  return function bound() {
+    func.apply(context, arguments);
+  };
+};
 
 
 // <object> $$.extend(receiver, *sources)
@@ -762,7 +779,7 @@ require.define("/lib/js-yaml/reader.js", function (require, module, exports, __d
 
 
 var fs = require('fs'),
-    $$ = require('./core'),
+    $$ = require('./common'),
     _errors = require('./errors');
 
 
@@ -953,7 +970,7 @@ require.define("/lib/js-yaml/errors.js", function (require, module, exports, __d
     'use strict';
 
 
-var $$ = require('./core');
+var $$ = require('./common');
 
 
 var repeat = function repeat(str, n) {
@@ -1119,7 +1136,7 @@ require.define("/lib/js-yaml/scanner.js", function (require, module, exports, __
 'use strict';
 
 
-var $$ = require('./core'),
+var $$ = require('./common'),
     _errors = require('./errors'),
     _tokens = require('./tokens');
 
@@ -2585,15 +2602,15 @@ Scanner.prototype.scanFlowScalar = function scanFlowScalar(style) {
 };
 
 Scanner.prototype.scanFlowScalarNonSpaces = function scanFlowScalarNonSpaces(double, startMark) {
-  var chunks, length, ch, code, validator;
+  var self = this, chunks, length, ch, code, validator;
 
   validator = function (k) {
-    if (-1 === '0123456789ABCDEFabcdef'.indexOf(this.peek(k))) {
+    if (-1 === '0123456789ABCDEFabcdef'.indexOf(self.peek(k))) {
       throw new ScannerError("while scanning a double-quoted scalar", startMark,
-          "expected escape sequence of " + length + " hexdecimal numbers, but found " + this.peek(k),
-          this.getMark());
+          "expected escape sequence of " + length + " hexdecimal numbers, but found " + self.peek(k),
+          self.getMark());
     }
-  }.bind(this);
+  };
 
   // See the specification for details.
   chunks = [];
@@ -2909,19 +2926,19 @@ Scanner.prototype.scanTagUri = function scanTagUri(name, startMark) {
 };
 
 Scanner.prototype.scanUriEscapes = function scanUriEscapes(name, startMark) {
-  var codes, mark, value, validator;
+  var self = this, codes, mark, value, validator;
 
   // See the specification for details.
   codes = [];
   mark = this.getMark();
 
   validator = function (k) {
-    if (-1 === '0123456789ABCDEFabcdef'.indexOf(this.peek(k))) {
+    if (-1 === '0123456789ABCDEFabcdef'.indexOf(self.peek(k))) {
       throw new ScannerError("while scanning a " + name, startMark,
-        "expected URI escape sequence of 2 hexdecimal numbers, but found " + this.peek(k),
-        this.getMark());
+        "expected URI escape sequence of 2 hexdecimal numbers, but found " + self.peek(k),
+        self.getMark());
     }
-  }.bind(this);
+  };
 
   while (this.peek() === '%') {
     this.forward();
@@ -2983,7 +3000,7 @@ require.define("/lib/js-yaml/tokens.js", function (require, module, exports, __d
     'use strict';
 
 
-var $$ = require('./core');
+var $$ = require('./common');
 
 
 function Token(startMark, endMark) {
@@ -3219,7 +3236,7 @@ require.define("/lib/js-yaml/parser.js", function (require, module, exports, __d
 'use strict';
 
 
-var $$ = require('./core'),
+var $$ = require('./common'),
     _errors = require('./errors'),
     _tokens = require('./tokens'),
     _events = require('./events');
@@ -3244,7 +3261,7 @@ function Parser(self) {
   this.tagHandles = {};
   this.states = [];
   this.marks = [];
-  this.state = this.parseStreamStart.bind(this);
+  this.state = $$.bind(this.parseStreamStart, this);
 }
 
 
@@ -3309,7 +3326,7 @@ Parser.prototype.parseStreamStart = function parseStreamStart() {
                                   token.encoding);
 
   // Prepare the next state.
-  this.state = this.parseImplicitDocumentStart.bind(this);
+  this.state = $$.bind(this.parseImplicitDocumentStart, this);
 
   return event;
 };
@@ -3326,8 +3343,8 @@ Parser.prototype.parseImplicitDocumentStart = function parseImplicitDocumentStar
   event = new _events.DocumentStartEvent(token.startMark, token.startMark, false);
 
   // Prepare the next state.
-  this.states.push(this.parseDocumentEnd.bind(this));
-  this.state = this.parseBlockNode.bind(this);
+  this.states.push($$.bind(this.parseDocumentEnd, this));
+  this.state = $$.bind(this.parseBlockNode, this);
 
   return event;
 };
@@ -3374,8 +3391,8 @@ Parser.prototype.parseDocumentStart = function parseDocumentStart() {
   token = this.getToken();
   event = new _events.DocumentStartEvent(startMark, token.endMark, true, version, tags);
 
-  this.states.push(this.parseDocumentEnd.bind(this));
-  this.state = this.parseDocumentContent.bind(this);
+  this.states.push($$.bind(this.parseDocumentEnd, this));
+  this.state = $$.bind(this.parseDocumentContent, this);
 
   return event;
 };
@@ -3397,7 +3414,7 @@ Parser.prototype.parseDocumentEnd = function parseDocumentEnd() {
   event = new _events.DocumentEndEvent(startMark, endMark, explicit);
 
   // Prepare the next state.
-  this.state = this.parseDocumentStart.bind(this);
+  this.state = $$.bind(this.parseDocumentStart, this);
 
   return event;
 };
@@ -3417,7 +3434,7 @@ Parser.prototype.parseDocumentContent = function parseDocumentContent() {
 };
 
 Parser.prototype.processDirectives = function processDirectives() {
-  var token, handle, prefix, value;
+  var self = this, token, handle, prefix, value;
 
   this.yamlVersion = null;
   this.tagHandles = {};
@@ -3456,15 +3473,15 @@ Parser.prototype.processDirectives = function processDirectives() {
   } else {
     value = [this.yamlVersion, {}];
     Object.getOwnPropertyNames(this.tagHandles).forEach(function (key) {
-      value[1][key] = this.tagHandles[key];
-    }.bind(this));
+      value[1][key] = self.tagHandles[key];
+    });
   }
 
   Object.getOwnPropertyNames(DEFAULT_TAGS).forEach(function (key) {
-    if (undefined === this.tagHandles[key]) {
-      this.tagHandles[key] = DEFAULT_TAGS[key];
+    if (undefined === self.tagHandles[key]) {
+      self.tagHandles[key] = DEFAULT_TAGS[key];
     }
-  }.bind(this));
+  });
 
   return value;
 };
@@ -3550,7 +3567,7 @@ Parser.prototype.parseNode = function parseNode(block, indentlessSequence) {
       endMark = this.peekToken().endMark;
       event = new _events.SequenceStartEvent(anchor, tag, implicit,
                                         startMark, endMark);
-      this.state = this.parseIndentlessSequenceEntry.bind(this);
+      this.state = $$.bind(this.parseIndentlessSequenceEntry, this);
     } else {
       if (this.checkToken(_tokens.ScalarToken)) {
           token = this.getToken();
@@ -3571,22 +3588,22 @@ Parser.prototype.parseNode = function parseNode(block, indentlessSequence) {
           endMark = this.peekToken().endMark;
           event = new _events.SequenceStartEvent(anchor, tag, implicit,
                                             startMark, endMark, true);
-          this.state = this.parseFlowSequenceFirstEntry.bind(this);
+          this.state = $$.bind(this.parseFlowSequenceFirstEntry, this);
       } else if (this.checkToken(_tokens.FlowMappingStartToken)) {
           endMark = this.peekToken().endMark;
           event = new _events.MappingStartEvent(anchor, tag, implicit,
                                            startMark, endMark, true);
-          this.state = this.parseFlowMappingFirstKey.bind(this);
+          this.state = $$.bind(this.parseFlowMappingFirstKey, this);
       } else if (block && this.checkToken(_tokens.BlockSequenceStartToken)) {
           endMark = this.peekToken().startMark;
           event = new _events.SequenceStartEvent(anchor, tag, implicit,
                                             startMark, endMark, false);
-          this.state = this.parseBlockSequenceFirstEntry.bind(this);
+          this.state = $$.bind(this.parseBlockSequenceFirstEntry, this);
       } else if (block && this.checkToken(_tokens.BlockMappingStartToken)) {
           endMark = this.peekToken().startMark;
           event = new _events.MappingStartEvent(anchor, tag, implicit,
                                            startMark, endMark, false);
-          this.state = this.parseBlockMappingFirstKey.bind(this);
+          this.state = $$.bind(this.parseBlockMappingFirstKey, this);
       } else if (null !== anchor || null !== tag) {
           // Empty scalars are allowed even if a tag or an anchor is
           // specified.
@@ -3619,11 +3636,11 @@ Parser.prototype.parseBlockSequenceEntry = function parseBlockSequenceEntry() {
       token = this.getToken();
 
       if (!this.checkToken(_tokens.BlockEntryToken, _tokens.BlockEndToken)) {
-          this.states.push(this.parseBlockSequenceEntry.bind(this));
+          this.states.push($$.bind(this.parseBlockSequenceEntry, this));
           return this.parseBlockNode();
       }
 
-      this.state = this.parseBlockSequenceEntry.bind(this);
+      this.state = $$.bind(this.parseBlockSequenceEntry, this);
       return this.processEmptyScalar(token.endMark);
   }
 
@@ -3651,11 +3668,11 @@ Parser.prototype.parseIndentlessSequenceEntry = function parseIndentlessSequence
 
     if (!this.checkToken(_tokens.BlockEntryToken, _tokens.KeyToken,
                          _tokens.ValueToken, _tokens.BlockEndToken)) {
-        this.states.push(this.parseIndentlessSequenceEntry.bind(this));
+        this.states.push($$.bind(this.parseIndentlessSequenceEntry, this));
         return this.parseBlockNode();
     }
 
-    this.state = this.parseIndentlessSequenceEntry.bind(this);
+    this.state = $$.bind(this.parseIndentlessSequenceEntry, this);
     return this.processEmptyScalar(token.endMark);
   }
 
@@ -3683,11 +3700,11 @@ Parser.prototype.parseBlockMappingKey = function parseBlockMappingKey() {
     token = this.getToken();
 
     if (!this.checkToken(_tokens.KeyToken, _tokens.ValueToken, _tokens.BlockEndToken)) {
-      this.states.push(this.parseBlockMappingValue.bind(this));
+      this.states.push($$.bind(this.parseBlockMappingValue, this));
       return this.parseBlockNodeOrIndentlessSequence();
     }
 
-    this.state = this.parseBlockMappingValue.bind(this);
+    this.state = $$.bind(this.parseBlockMappingValue, this);
     return this.processEmptyScalar(token.endMark);
   }
 
@@ -3714,15 +3731,15 @@ Parser.prototype.parseBlockMappingValue = function parseBlockMappingValue() {
     token = this.getToken();
 
     if (!this.checkToken(_tokens.KeyToken, _tokens.ValueToken, _tokens.BlockEndToken)) {
-        this.states.push(this.parseBlockMappingKey.bind(this));
+        this.states.push($$.bind(this.parseBlockMappingKey, this));
         return this.parseBlockNodeOrIndentlessSequence();
     }
 
-    this.state = this.parseBlockMappingKey.bind(this);
+    this.state = $$.bind(this.parseBlockMappingKey, this);
     return this.processEmptyScalar(token.endMark);
   }
 
-  this.state = this.parseBlockMappingKey.bind(this);
+  this.state = $$.bind(this.parseBlockMappingKey, this);
   token = this.peekToken();
 
   return this.processEmptyScalar(token.startMark);
@@ -3765,10 +3782,10 @@ Parser.prototype.parseFlowSequenceEntry = function parseFlowSequenceEntry(first)
       token = this.peekToken();
       event = new _events.MappingStartEvent(null, null, true,
                                        token.startMark, token.endMark, true);
-      this.state = this.parseFlowSequenceEntryMappingKey.bind(this);
+      this.state = $$.bind(this.parseFlowSequenceEntryMappingKey, this);
       return event;
     } else if (!this.checkToken(_tokens.FlowSequenceEndToken)) {
-      this.states.push(this.parseFlowSequenceEntry.bind(this));
+      this.states.push($$.bind(this.parseFlowSequenceEntry, this));
       return this.parseFlowNode();
     }
   }
@@ -3786,11 +3803,11 @@ Parser.prototype.parseFlowSequenceEntryMappingKey = function parseFlowSequenceEn
   var token = this.getToken();
 
   if (!this.checkToken(_tokens.ValueToken, _tokens.FlowEntryToken, _tokens.FlowSequenceEndToken)) {
-      this.states.push(this.parseFlowSequenceEntryMappingValue.bind(this));
+      this.states.push($$.bind(this.parseFlowSequenceEntryMappingValue, this));
       return this.parseFlowNode();
   }
 
-  this.state = this.parseFlowSequenceEntryMappingValue.bind(this);
+  this.state = $$.bind(this.parseFlowSequenceEntryMappingValue, this);
   return this.processEmptyScalar(token.endMark);
 };
 
@@ -3801,15 +3818,15 @@ Parser.prototype.parseFlowSequenceEntryMappingValue = function parseFlowSequence
     token = this.getToken();
 
     if (!this.checkToken(_tokens.FlowEntryToken, _tokens.FlowSequenceEndToken)) {
-      this.states.push(this.parseFlowSequenceEntryMappingEnd.bind(this));
+      this.states.push($$.bind(this.parseFlowSequenceEntryMappingEnd, this));
       return this.parseFlowNode();
     }
 
-    this.state = this.parseFlowSequenceEntryMappingEnd.bind(this);
+    this.state = $$.bind(this.parseFlowSequenceEntryMappingEnd, this);
     return this.processEmptyScalar(token.endMark);
   }
 
-  this.state = this.parseFlowSequenceEntryMappingEnd.bind(this);
+  this.state = $$.bind(this.parseFlowSequenceEntryMappingEnd, this);
   token = this.peekToken();
   return this.processEmptyScalar(token.startMark);
 };
@@ -3817,7 +3834,7 @@ Parser.prototype.parseFlowSequenceEntryMappingValue = function parseFlowSequence
 Parser.prototype.parseFlowSequenceEntryMappingEnd = function parseFlowSequenceEntryMappingEnd() {
   var token;
 
-  this.state = this.parseFlowSequenceEntry.bind(this);
+  this.state = $$.bind(this.parseFlowSequenceEntry, this);
   token = this.peekToken();
 
   return new _events.MappingEndEvent(token.startMark, token.startMark);
@@ -3855,14 +3872,14 @@ Parser.prototype.parseFlowMappingKey = function parseFlowMappingKey(first) {
       token = this.getToken();
 
       if (!this.checkToken(_tokens.ValueToken, _tokens.FlowEntryToken, _tokens.FlowMappingEndToken)) {
-        this.states.push(this.parseFlowMappingValue.bind(this));
+        this.states.push($$.bind(this.parseFlowMappingValue, this));
         return this.parseFlowNode();
       }
 
-      this.state = this.parseFlowMappingValue.bind(this);
+      this.state = $$.bind(this.parseFlowMappingValue, this);
       return this.processEmptyScalar(token.endMark);
     } else if (!this.checkToken(_tokens.FlowMappingEndToken)) {
-      this.states.push(this.parseFlowMappingEmptyValue.bind(this));
+      this.states.push($$.bind(this.parseFlowMappingEmptyValue, this));
       return this.parseFlowNode();
     }
   }
@@ -3883,21 +3900,21 @@ Parser.prototype.parseFlowMappingValue = function parseFlowMappingValue() {
     token = this.getToken();
 
     if (!this.checkToken(_tokens.FlowEntryToken, _tokens.FlowMappingEndToken)) {
-      this.states.push(this.parseFlowMappingKey.bind(this));
+      this.states.push($$.bind(this.parseFlowMappingKey, this));
       return this.parseFlowNode();
     }
 
-    this.state = this.parseFlowMappingKey.bind(this);
+    this.state = $$.bind(this.parseFlowMappingKey, this);
     return this.processEmptyScalar(token.endMark);
   }
 
-  this.state = this.parseFlowMappingKey.bind(this);
+  this.state = $$.bind(this.parseFlowMappingKey, this);
   token = this.peekToken();
   return this.processEmptyScalar(token.startMark);
 };
 
 Parser.prototype.parseFlowMappingEmptyValue = function parseFlowMappingEmptyValue() {
-  this.state = this.parseFlowMappingKey.bind(this);
+  this.state = $$.bind(this.parseFlowMappingKey, this);
   return this.processEmptyScalar(this.peekToken().startMark);
 };
 
@@ -3919,7 +3936,7 @@ require.define("/lib/js-yaml/events.js", function (require, module, exports, __d
     'use strict';
 
 
-var $$ = require('./core');
+var $$ = require('./common');
 
 
 var HASHIFY_KEYS = ['anchor', 'tag', 'implicit', 'value'];
@@ -3932,13 +3949,13 @@ function Event(startMark, endMark) {
 
 Event.prototype.hash = 
 Event.prototype.toString = function toString() {
-  var values = [];
+  var self = this, values = [];
   
   Object.getOwnPropertyNames(this).forEach(function (key) {
     if (0 <= HASHIFY_KEYS.indexOf(key)) {
-      values.push(key + '=' + this[key]);
+      values.push(key + '=' + self[key]);
     }
-  }.bind(this));
+  });
 
   return this.constructor.name + '(' + values.join(', ') + ')';
 };
@@ -4046,7 +4063,7 @@ require.define("/lib/js-yaml/composer.js", function (require, module, exports, _
     'use strict';
 
 
-var $$ = require('./core'),
+var $$ = require('./common'),
     _nodes = require('./nodes'),
     _events = require('./events'),
     _errors = require('./errors');
@@ -4259,7 +4276,7 @@ require.define("/lib/js-yaml/nodes.js", function (require, module, exports, __di
     'use strict';
 
 
-var $$ = require('./core');
+var $$ = require('./common');
 
 
 function GenericNode(tag, value, startMark, endMark) {
@@ -4316,7 +4333,7 @@ require.define("/lib/js-yaml/resolver.js", function (require, module, exports, _
     'use strict';
 
 
-var $$ = require('./core'),
+var $$ = require('./common'),
     _nodes = require('./nodes');
 
 
@@ -4333,17 +4350,19 @@ function BaseResolver() {
 
 BaseResolver.yamlImplicitResolvers = {};
 BaseResolver.addImplicitResolver = function addImplicitResolver(tag, regexp, first) {
+  var self = this;
+
   if (undefined === first) {
     first = [null];
   }
 
   first.forEach(function (ch) {
-    if (undefined === this.yamlImplicitResolvers[ch]) {
-      this.yamlImplicitResolvers[ch] = [];
+    if (undefined === self.yamlImplicitResolvers[ch]) {
+      self.yamlImplicitResolvers[ch] = [];
     }
 
-    this.yamlImplicitResolvers[ch].push([tag, regexp]);
-  }.bind(this));
+    self.yamlImplicitResolvers[ch].push([tag, regexp]);
+  });
 };
 
 BaseResolver.prototype.resolve = function resolve(kind, value, implicit) {
@@ -4456,7 +4475,7 @@ require.define("/lib/js-yaml/constructor.js", function (require, module, exports
     'use strict';
 
 
-var $$ = require('./core'),
+var $$ = require('./common'),
     _errors = require('./errors'),
     _nodes = require('./nodes');
 
@@ -4703,7 +4722,7 @@ SafeConstructor.prototype.constructScalar = function constructScalar(node) {
 };
 
 SafeConstructor.prototype.flattenMapping = function flattenMapping(node) {
-  var merge = [], index = 0, keyNode, valueNode, submerge;
+  var self = this, merge = [], index = 0, keyNode, valueNode, submerge;
 
   while (index < node.value.length) {
     keyNode = node.value[index][0];
@@ -4713,7 +4732,7 @@ SafeConstructor.prototype.flattenMapping = function flattenMapping(node) {
       node.value.splice(index, 1);
 
       if ($$.isInstanceOf(valueNode, _nodes.MappingNode)) {
-        this.flattenMapping(valueNode);
+        self.flattenMapping(valueNode);
         $$.each(valueNode.value, function (value) {
           merge.push(value);
         });
@@ -4725,9 +4744,9 @@ SafeConstructor.prototype.flattenMapping = function flattenMapping(node) {
                         "expected a mapping for merging, but found " + subnode.id,
                         subnode.startMark);
           }
-          this.flattenMapping(subnode);
+          self.flattenMapping(subnode);
           submerge.push(subnode.value);
-        }.bind(this));
+        });
 
         $$.reverse(submerge).forEach(function (values) {
           values.forEach(function (value) {
@@ -4892,7 +4911,7 @@ SafeConstructor.prototype.constructYamlTimestamp = function constructYamlTimesta
 };
 
 SafeConstructor.prototype.constructYamlOmap = function constructYamlOmap(node) {
-  var omap = [];
+  var self = this, omap = [];
   return $$.Populator(omap, function () {
     if (!$$.isInstanceOf(node, _nodes.SequenceNode)) {
       throw new ConstructorError("while constructing an ordered map", node.startMark,
@@ -4914,19 +4933,19 @@ SafeConstructor.prototype.constructYamlOmap = function constructYamlOmap(node) {
                       subnode.startMark);
       }
 
-      key = this.constructObject(subnode.value[0][0]);
-      value = this.constructObject(subnode.value[0][1]);
+      key = self.constructObject(subnode.value[0][0]);
+      value = self.constructObject(subnode.value[0][1]);
       data = Object.create(null);
 
       data[key] = value;
 
       omap.push(data);
-    }.bind(this));
-  }, this);
+    });
+  });
 };
 
 SafeConstructor.prototype.constructYamlPairs = function constructYamlPairs(node) {
-  var pairs = [];
+  var self = this, pairs = [];
   return $$.Populator(pairs, function () {
     if (!$$.isInstanceOf(node, _nodes.SequenceNode)) {
        throw new ConstructorError("while constructing pairs", node.startMark,
@@ -4948,12 +4967,12 @@ SafeConstructor.prototype.constructYamlPairs = function constructYamlPairs(node)
                     subnode.startMark);
       }
 
-      key = this.constructObject(subnode.value[0][0]);
-      value = this.constructObject(subnode.value[0][1]);
+      key = self.constructObject(subnode.value[0][0]);
+      value = self.constructObject(subnode.value[0][1]);
 
       pairs.push([key, value]);
-    }.bind(this));
-  }, this);
+    });
+  });
 };
 
 SafeConstructor.prototype.constructYamlSet = function constructYamlSet(node) {
