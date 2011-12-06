@@ -3,7 +3,7 @@ var test = module.exports = {},
     assert = require('assert'),
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
     helper = require(__dirname + '/../test-helper'),
-    $$ = require(__dirname + '/../../lib/js-yaml/core'),
+    $$ = require(__dirname + '/../../lib/js-yaml/common'),
     _tokens = require(__dirname + '/../../lib/js-yaml/tokens');
 
 // Tokens mnemonic:

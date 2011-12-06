@@ -3,7 +3,7 @@ var suite = module.exports = [],
     assert = require('assert'),
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
     helper = require(__dirname + '/../test-helper'),
-    $$ = require(__dirname + '/../../lib/js-yaml/core'),
+    $$ = require(__dirname + '/../../lib/js-yaml/common'),
     _errors = require(__dirname + '/../../lib/js-yaml/errors');
 
 

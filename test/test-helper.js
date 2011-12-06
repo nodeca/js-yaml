@@ -4,7 +4,7 @@ var fs = require('fs'),
 
 
 // internal
-var $$ = require(__dirname + '/../lib/js-yaml/core');
+var $$ = require(__dirname + '/../lib/js-yaml/common');
 
 
 // current module
