@@ -1,6 +1,7 @@
 0.3.2 / ????-??-??
 ------------------
 
+* Improves browser support. Closes #20.
 * Added jsyaml executable.
 * Added !!js/function support. Finally resolves #12.
 
