@@ -14,5 +14,5 @@
   "bin"             : { "jsyaml": "bin/js-yaml.js" },
   "main"            : "./index.js",
 
-  "engines"         : { "node": "> 0.4.11 < 0.7.0" }
+  "engines"         : { "node": "> 0.4.11" }
 }
