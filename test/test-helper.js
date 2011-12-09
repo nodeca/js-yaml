@@ -136,6 +136,9 @@ helper.run = function run(root, regexp) {
   console.log(colorize(90, '----' + ' (' + total + ') ' +
                                     ' P:' + stats.pass + ' W:' + stats.warn +
                                     ' F:' + stats.fail + ' E:' + stats.error));
+
+  // set correct error code on exit
+  process.exit((stats.warn + stats.fail + stats.error) > 0 ? 1 : 0);
 };
 
 
