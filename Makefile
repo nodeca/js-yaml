@@ -12,7 +12,7 @@ SRC_URL_FMT := https://github.com/${GITHUB_NAME}/blob/${CURR_HEAD}/{file}\#L{lin
 
 lint:
 	@if test ! `which jslint` ; then \
-		echo "You need 'jslint' installed in order to generate docs." >&2 ; \
+		echo "You need 'jslint' installed in order to run lint." >&2 ; \
 		echo "  $ make dev-deps" >&2 ; \
 		exit 128 ; \
 		fi
