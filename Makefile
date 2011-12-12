@@ -73,7 +73,7 @@ gh-pages:
 	cd ${TMP_DIR} && \
 		git init && \
 		git add . && \
-		git commit -q -m 'Recreated docs'
+		git commit -q -m 'Update browserified demo'
 	cd ${TMP_DIR} && \
 		git remote add remote ${REMOTE_REPO} && \
 		git push --force remote +master:gh-pages 
