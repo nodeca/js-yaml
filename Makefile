@@ -22,7 +22,8 @@ lint:
 	# (indent)  -> indentation level (2 spaces)
 	# (nomen)   -> tolerate underscores in identifiers (e.g. `var _val = 1`)
 	# (bitwise) -> tolerate bitwise operators (used in base64)
-	jslint --node --nomen --bitwise --indent=2 ${JS_FILES}
+	# (white) 	-> tolerate messy whitespace
+	jslint --node --nomen --bitwise --white --indent=2 ${JS_FILES}
 
 test: test-issues test-functional
 
