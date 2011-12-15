@@ -19,9 +19,10 @@ lint:
 	# (node)    -> Node.JS compatibility mode
 	# (indent)  -> indentation level (2 spaces)
 	# (nomen)   -> tolerate underscores in identifiers (e.g. `var _val = 1`)
-	jslint --node --nomen --indent=2 ./lib/*.js ./lib/**/*.js
+	# (bitwise) -> tolerate bitwise operators (used in base64)
+	jslint --node --nomen --bitwise --indent=2 ./lib/*.js ./lib/**/*.js
 
-test: lint test-issues test-functional
+test: test-issues test-functional
 
 test-functional:
 	echo 
