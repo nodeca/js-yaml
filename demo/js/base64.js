@@ -77,21 +77,21 @@
   }
 
   function utf8Decode(bytes) {
-    var chars = [], offset = 0, length = bytes.length, c, c2, c3;
+    var chars = [], offset = 0, length = bytes.length, c1, c2, c3;
 
     while (offset < length) {
-      c = bytes[offset];
+      c1 = bytes[offset];
       c2 = bytes[offset + 1];
       c3 = bytes[offset + 2];
 
-      if (128 > c) {
-        chars.push(String.fromCharCode(c));
+      if (128 > c1) {
+        chars.push(String.fromCharCode(c1));
         offset += 1;
-      } else if (191 < c && c < 224) {
-        chars.push(String.fromCharCode(((c & 31) << 6) | (c2 & 63)));
+      } else if (191 < c1 && c1 < 224) {
+        chars.push(String.fromCharCode(((c1 & 31) << 6) | (c2 & 63)));
         offset += 2;
       } else {
-        chars.push(String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63)));
+        chars.push(String.fromCharCode(((c1 & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63)));
         offset += 3;
       }
     }
@@ -139,7 +139,7 @@
         leftdata = 0; // bits decoded, but yet to be appended
 
     // Convert one by one.
-    for (idx = 0; idx < data.length; idx++) {
+    for (idx = 0; idx < data.length; idx += 1) {
       code = data.charCodeAt(idx);
       value = binTable[code & 0x7F];
 
