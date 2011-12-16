@@ -25,7 +25,7 @@ lint:
 	# (white) 	-> tolerate messy whitespace
 	jslint --node --nomen --bitwise --white --indent=2 ${JS_FILES}
 
-test: test-issues test-functional
+test: lint test-issues test-functional
 
 test-functional:
 	echo 

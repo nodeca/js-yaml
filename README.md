@@ -1,6 +1,8 @@
 JS-YAML - YAML 1.1 parser for JavaScript
 ========================================
 
+[![Build Status](https://secure.travis-ci.org/nodeca/js-yaml.png)](http://travis-ci.org/nodeca/js-yaml)
+
 [Online Demo](http://nodeca.github.com/js-yaml/)
 
 This is a native port of [PyYAML](http://pyyaml.org/), the most advanced YAML parser.
