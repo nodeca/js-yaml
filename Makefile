@@ -25,7 +25,13 @@ lint:
 	# (white) 	-> tolerate messy whitespace
 	jslint --node --nomen --bitwise --white --indent=2 ${JS_FILES}
 
-test: lint test-issues test-functional
+test: lint test-functional
+	@if test ! `which vows` ; then \
+		echo "You need 'vows' installed in order to run tests." >&2 ; \
+		echo "  $ make dev-deps" >&2 ; \
+		exit 128 ; \
+		fi
+	NODE_ENV=test vows --spec
 
 test-functional:
 	echo 
@@ -33,14 +39,6 @@ test-functional:
 	echo "################################################################################"
 	echo 
 	node ./test/functional/run.js
-	echo 
-
-test-issues:
-	echo 
-	echo "## ISSUES ######################################################################"
-	echo "################################################################################"
-	echo 
-	node ./test/issues/run.js
 	echo 
 
 dev-deps:

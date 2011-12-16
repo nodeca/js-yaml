@@ -1,12 +1,14 @@
-var issue = module.exports = {},
-    assert = require('assert'),
-    jsyaml = require(__dirname + '/../../lib/js-yaml'),
-    source = __dirname + '/data/issue-8.yml';
+var Assert = require('assert');
+var JsYaml = require('../../lib/js-yaml');
+var source = __dirname + '/data/issue-8.yml';
 
-issue.title = "#8: Parse failed when no document start present";
-issue.fixed = true;
-issue.execute = function () {
-  assert.doesNotThrow(function () {
-    require(source).shift();
-  }, TypeError);
-};
+
+module.exports = require('../helper').issue({
+  title: "#8: Parse failed when no document start present",
+  fixed: true,
+  test: function () {
+    Assert.doesNotThrow(function () {
+      require(source).shift();
+    }, TypeError);
+  }
+});
