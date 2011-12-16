@@ -1,4 +1,4 @@
-0.3.2 / ????-??-??
+0.3.2 / 2011-12-16
 ------------------
 
 * Fixes ug with block style scalars. Closes #26.
