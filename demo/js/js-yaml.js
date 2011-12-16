@@ -29,6 +29,18 @@ if (!Function.prototype.bind) {
     };
   };
 }
+if (!Object.getOwnPropertyNames) {
+  // fix for IE and Safari
+  Object.getOwnPropertyNames = function getOwnPropertyNames(obj) {
+    var names = [], key;
+    for (key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        names.push(key);
+      }
+    }
+    return names;
+  };
+}
 ;var jsyaml = (function () {
   var __jsyaml__ = (function () {
 var require = function (file, cwd) {
