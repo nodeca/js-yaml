@@ -55,10 +55,10 @@ build: browserify uglify
 
 browserify:
 	if test ! `which browserify` ; then npm install browserify ; fi
-	cp -r support/browserify/ ${TMP_DIR}
-	browserify index.js -o ${TMP_DIR}/50_js-yaml.js
-	cat ${TMP_DIR}/* > js-yaml.js
-	rm -rf ${TMP_DIR}
+	cp -r support/browserify/ ${TMP_PATH}
+	browserify index.js -o ${TMP_PATH}/50_js-yaml.js
+	cat ${TMP_PATH}/* > js-yaml.js
+	rm -rf ${TMP_PATH}
 	cp js-yaml.js demo/js/
 
 uglify:
@@ -71,17 +71,17 @@ gh-pages:
 		echo 'Remote repo URL not found' >&2 ; \
 		exit 128 ; \
 		fi
-	mkdir ${TMP_DIR}
-	cp -r demo/* ${TMP_DIR}
-	touch ${TMP_DIR}/.nojekyll
-	cd ${TMP_DIR} && \
+	mkdir ${TMP_PATH}
+	cp -r demo/* ${TMP_PATH}
+	touch ${TMP_PATH}/.nojekyll
+	cd ${TMP_PATH} && \
 		git init && \
 		git add . && \
 		git commit -q -m 'Update browserified demo'
-	cd ${TMP_DIR} && \
+	cd ${TMP_PATH} && \
 		git remote add remote ${REMOTE_REPO} && \
 		git push --force remote +master:gh-pages 
-	rm -rf ${TMP_DIR}
+	rm -rf ${TMP_PATH}
 
 todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true
