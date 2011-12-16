@@ -1,4 +1,6 @@
 window.runDemo = function runDemo() {
+  'use strict';
+
   var source, result, initial, permalink, timer1, timer2 = null,
       hash = location.hash.toString();
 
@@ -51,7 +53,7 @@ window.runDemo = function runDemo() {
           return;
       }
 
-      if (evt.type == 'keyup') {
+      if (evt.type === 'keyup') {
         window.clearTimeout(timer1);
         timer1 = window.setTimeout(parse, 500);
 

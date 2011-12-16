@@ -356,15 +356,17 @@ require.define("/lib/js-yaml.js", function (require, module, exports, __dirname,
     'use strict';
 
 
-var fs = require('fs'),
-    _loader = require('./js-yaml/loader');
+var fs = require('fs');
+var _loader = require('./js-yaml/loader');
 
 
 var jsyaml = module.exports = {};
 
 
 jsyaml.scan = function scan(stream, callback, Loader) {
-  var loader = new (Loader || _loader.SafeLoader)(stream);
+  Loader = (Loader || _loader.SafeLoader);
+
+  var loader = new Loader(stream);
   while (loader.checkToken()) {
     callback(loader.getToken());
   }
@@ -372,20 +374,25 @@ jsyaml.scan = function scan(stream, callback, Loader) {
 
 
 jsyaml.compose = function compose(stream, Loader) {
-  var loader = new (Loader || _loader.SafeLoader)(stream);
+  Loader = (Loader || _loader.SafeLoader);
+
+  var loader = new Loader(stream);
   return loader.getSingleNode();
 };
 
 
 jsyaml.load = function load(stream, Loader) {
-  var loader = new (Loader || _loader.Loader)(stream);
+  Loader = (Loader || _loader.Loader);
+
+  var loader = new Loader(stream);
   return loader.getSingleData();
 };
 
 
 jsyaml.loadAll = function loadAll(stream, callback, Loader) {
-  var loader = new (Loader || _loader.Loader)(stream);
+  Loader = (Loader || _loader.Loader);
 
+  var loader = new Loader(stream);
   while (loader.checkData()) {
     callback(loader.getData());
   }
@@ -418,7 +425,7 @@ jsyaml.addConstructor = function addConstructor(tag, constructor, Loader) {
 (function () {
   var require_handler = function (module, filename) {
     var fd = fs.openSync(filename, 'r');
-    
+
     // fill in documents
     module.exports = [];
     jsyaml.loadAll(fd, function (doc) { module.exports.push(doc); });
@@ -450,13 +457,13 @@ require.define("/lib/js-yaml/loader.js", function (require, module, exports, __d
     'use strict';
 
 
-var $$ = require('./common'),
-    _reader = require('./reader'),
-    _scanner = require('./scanner'),
-    _parser = require('./parser'),
-    _composer = require('./composer'),
-    _resolver = require('./resolver'),
-    _constructor = require('./constructor');
+var $$ = require('./common');
+var _reader = require('./reader');
+var _scanner = require('./scanner');
+var _parser = require('./parser');
+var _composer = require('./composer');
+var _resolver = require('./resolver');
+var _constructor = require('./constructor');
 
 
 function BaseLoader(stream) {
@@ -552,7 +559,7 @@ $$.extend = function extend(receiver) {
     l -= 1;
   }
 
-  for (i = 1; i < l; i++) {
+  for (i = 1; i < l; i += 1) {
     if ('object' === typeof arguments[i]) {
       for (key in arguments[i]) {
         if (arguments[i].hasOwnProperty(key) && -1 === skip.indexOf(key)) {
@@ -568,7 +575,7 @@ $$.extend = function extend(receiver) {
 
 // simple inheritance algorithm
 $$.inherits = function inherits(child, parent) {
-  var InheritanceGlue = function(){};
+  var InheritanceGlue = function () {};
 
   InheritanceGlue.prototype = parent.prototype;
   child.prototype = new InheritanceGlue();
@@ -578,7 +585,7 @@ $$.inherits = function inherits(child, parent) {
   $$.extend(child.prototype, parent.prototype, {except: [
     'arguments', 'length', 'name', 'prototype', 'caller'
   ]});
-  
+
   // restore constructor
   $$.extend(child.prototype, {constructor: child});
 
@@ -618,7 +625,7 @@ $$.each = function each(obj, iterator, context) {
     obj.forEach(iterator, context);
   } else {
     keys = Object.getOwnPropertyNames(obj);
-    for (i = 0, l = keys.length; i < l; i++) {
+    for (i = 0, l = keys.length; i < l; i += 1) {
       iterator.call(context, obj[keys[i]], keys[i], obj);
     }
   }
@@ -628,7 +635,7 @@ $$.each = function each(obj, iterator, context) {
 // returns reversed copy of array
 $$.reverse = function reverse(arr) {
   var result = [], i, l;
-  for (i = 0, l = arr.length; i < l; i++) {
+  for (i = 0, l = arr.length; i < l; i += 1) {
     result.unshift(arr[i]);
   }
   return result;
@@ -639,23 +646,24 @@ $$.reverse = function reverse(arr) {
 // https://raw.github.com/kanaka/noVNC/d890e8640f20fba3215ba7be8e0ff145aeb8c17c/include/base64.js
 $$.decodeBase64 = (function () {
   var padding = '=', binTable = [
-    -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
-    -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
-    -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,62, -1,-1,-1,63,
-    52,53,54,55, 56,57,58,59, 60,61,-1,-1, -1, 0,-1,-1,
-    -1, 0, 1, 2,  3, 4, 5, 6,  7, 8, 9,10, 11,12,13,14,
-    15,16,17,18, 19,20,21,22, 23,24,25,-1, -1,-1,-1,-1,
-    -1,26,27,28, 29,30,31,32, 33,34,35,36, 37,38,39,40,
-    41,42,43,44, 45,46,47,48, 49,50,51,-1, -1,-1,-1,-1
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,
+    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1,  0, -1, -1,
+    -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
+    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1,
+    -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1
   ];
 
   return function decode(data) {
-    var value, code, idx = 0, result = [],
-        leftbits = 0, // number of bits decoded, but yet to be appended
-        leftdata = 0; // bits decoded, but yet to be appended
+    var value, code, idx = 0, result = [], leftbits, leftdata;
+
+    leftbits = 0; // number of bits decoded, but yet to be appended
+    leftdata = 0; // bits decoded, but yet to be appended
 
     // Convert one by one.
-    for (idx = 0; idx < data.length; idx++) {
+    for (idx = 0; idx < data.length; idx += 1) {
       code = data.charCodeAt(idx);
       value = binTable[code & 0x7F];
 
@@ -770,12 +778,13 @@ require.define("/lib/js-yaml/reader.js", function (require, module, exports, __d
     'use strict';
 
 
-var fs = require('fs'),
-    $$ = require('./common'),
-    _errors = require('./errors');
+var fs = require('fs');
+var $$ = require('./common');
+var _errors = require('./errors');
 
 
-var NON_PRINTABLE = new RegExp('[^\x09\x0A\x0D\x20-\x7E\x85\xA0-\uD7FF\uE000-\uFFFD]');
+// "\x20-\x7E" -> " -~" for JSLint
+var NON_PRINTABLE = new RegExp('[^\x09\x0A\x0D -~\x85\xA0-\uD7FF\uE000-\uFFFD]');
 
 
 function ReaderError(name, position, character, encoding, reason) {
@@ -789,8 +798,8 @@ function ReaderError(name, position, character, encoding, reason) {
   this.reason = reason;
 
   this.toString = function toString() {
-    return  'unacceptable character ' + this.character + ': ' + this.reason +
-            '\n in "' + this.name + '", position ' + this.position;
+    return 'unacceptable character ' + this.character + ': ' + this.reason +
+      '\n in "' + this.name + '", position ' + this.position;
   };
 }
 $$.inherits(ReaderError, _errors.YAMLError);
@@ -812,7 +821,7 @@ function Reader(stream) {
   if ('string' === typeof stream) { // simple string
     this.name = '<unicode string>';
     this.checkPrintable(stream);
-    this.buffer = stream + '\0';
+    this.buffer = stream + '\x00';
   } else if (Buffer.isBuffer(stream)) { // buffer
     this.name = '<buffer>';
     this.rawBuffer = stream;
@@ -862,18 +871,18 @@ Reader.prototype.forward = function forward(length) {
 
   while (length) {
     ch = this.buffer[this.pointer];
-    this.pointer++;
-    this.index++;
+    this.pointer += 1;
+    this.index += 1;
 
     if (0 <= '\n\x85\u2028\u2029'.indexOf(ch)
         || ('\r' === ch && '\n' !== this.buffer[this.pointer])) {
-      this.line++;
+      this.line += 1;
       this.column = 0;
     } else if (ch !== '\uFEFF') {
-      this.column++;
+      this.column += 1;
     }
 
-    length--;
+    length -= 1;
   }
 };
 
@@ -919,7 +928,7 @@ Reader.prototype.update = function update(length) {
     this.rawBuffer = this.rawBuffer.slice(data.length);
 
     if (this.eof) {
-      this.buffer += '\0';
+      this.buffer += '\x00';
       this.rawBuffer = null;
       break;
     }
@@ -927,9 +936,9 @@ Reader.prototype.update = function update(length) {
 };
 
 Reader.prototype.updateRaw = function updateRaw(size) {
-  var data = new Buffer(+size || 4096),
-      count = fs.readSync(this.stream, data, 0, data.length),
-      tmp;
+  var data = new Buffer(+size || 4096), count, tmp;
+
+  count = fs.readSync(this.stream, data, 0, data.length);
 
   if (null === this.rawBuffer) {
     this.rawBuffer = data.slice(0, count);
@@ -967,7 +976,7 @@ var $$ = require('./common');
 
 var repeat = function repeat(str, n) {
   var result = '', i;
-  for (i = 0; i < n; i++) {
+  for (i = 0; i < n; i += 1) {
     result += str;
   }
   return result;
@@ -996,8 +1005,8 @@ Mark.prototype.getSnippet = function (indent, maxLength) {
   head = '';
   start = this.pointer;
 
-  while (start > 0 && -1 === '\0\r\n\x85\u2028\u2029'.indexOf(this.buffer[start - 1])) {
-    start--;
+  while (start > 0 && -1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.buffer[start - 1])) {
+    start -= 1;
     if (this.pointer - start > (maxLength / 2 - 1)) {
       head = ' ... ';
       start += 5;
@@ -1008,8 +1017,8 @@ Mark.prototype.getSnippet = function (indent, maxLength) {
   tail = '';
   end = this.pointer;
 
-  while (end < this.buffer.length && -1 === '\0\r\n\x85\u2028\u2029'.indexOf(this.buffer[end])) {
-    end++;
+  while (end < this.buffer.length && -1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.buffer[end])) {
+    end += 1;
     if (end - this.pointer > (maxLength / 2 - 1)) {
       tail = ' ... ';
       end -= 5;
@@ -1020,14 +1029,15 @@ Mark.prototype.getSnippet = function (indent, maxLength) {
   snippet = this.buffer.slice(start, end);
 
   return repeat(' ', indent) + head + snippet + tail + '\n' +
-         repeat(' ', indent + this.pointer - start + head.length) + '^';
+    repeat(' ', indent + this.pointer - start + head.length) + '^';
 };
 
 Mark.prototype.toString = function () {
-  var snippet = this.getSnippet(),
-      where = ' in "' + this.name +
-              '", line ' + (this.line + 1) +
-              ', column ' + (this.column + 1);
+  var snippet = this.getSnippet(), where;
+
+  where = ' in "' + this.name +
+    '", line ' + (this.line + 1) +
+    ', column ' + (this.column + 1);
 
   if (snippet) {
     where += ':\n' + snippet;
@@ -1082,7 +1092,7 @@ function MarkedYAMLError(context, contextMark, problem, problemMark, note) {
     }
 
     return lines.join('\n');
-  }
+  };
 }
 $$.inherits(MarkedYAMLError, YAMLError);
 
@@ -1128,13 +1138,13 @@ require.define("/lib/js-yaml/scanner.js", function (require, module, exports, __
 'use strict';
 
 
-var $$ = require('./common'),
-    _errors = require('./errors'),
-    _tokens = require('./tokens');
+var $$ = require('./common');
+var _errors = require('./errors');
+var _tokens = require('./tokens');
 
 
 var ESCAPE_REPLACEMENTS = {
-  '0':    '\0',
+  '0':    '\x00',
   'a':    '\x07',
   'b':    '\x08',
   't':    '\x09',
@@ -1144,7 +1154,7 @@ var ESCAPE_REPLACEMENTS = {
   'f':    '\x0C',
   'r':    '\x0D',
   'e':    '\x1B',
-  ' ':    '\x20',
+  ' ':    ' ', // \x20, but JSLint against it :))
   '\"':   '\"',
   '\\':   '\\',
   'N':    '\x85',
@@ -1167,12 +1177,15 @@ var range = function (start, count) {
     start = 0;
   }
 
-  while (count--) {
-    result.push(start++);
+  while (0 < count) {
+    result.push(start);
+    count -= 1;
+    start += 1;
   }
 
   return result;
 };
+
 
 function ScannerError() {
   _errors.MarkedYAMLError.apply(this, arguments);
@@ -1267,7 +1280,7 @@ Scanner.prototype.checkToken = function checkToken() {
       return true;
     }
 
-    for (i = 0; i < arguments.length; i++) {
+    for (i = 0; i < arguments.length; i += 1) {
       if ($$.isInstanceOf(this.tokens[0], arguments[i])) {
         return true;
       }
@@ -1345,7 +1358,7 @@ Scanner.prototype.fetchMoreTokens = function fetchMoreTokens() {
   ch = this.peek();
 
   // Is it the end of stream?
-  if (ch === '\0') {
+  if (ch === '\x00') {
     return this.fetchStreamEnd();
   }
 
@@ -1665,7 +1678,7 @@ Scanner.prototype.fetchFlowCollectionStart = function fetchFlowCollectionStart(T
   this.savePossibleSimpleKey();
 
   // Increase the flow level.
-  this.flowLevel++;
+  this.flowLevel += 1;
 
   // Simple keys are allowed after '[' and '{'.
   this.allowSimpleKey = true;
@@ -1693,7 +1706,7 @@ Scanner.prototype.fetchFlowCollectionEnd = function fetchFlowCollectionEnd(Token
   this.removePossibleSimpleKey();
 
   // Decrease the flow level.
-  this.flowLevel--;
+  this.flowLevel -= 1;
 
   // No simple keys after ']' or '}'.
   this.allowSimpleKey = false;
@@ -1950,7 +1963,7 @@ Scanner.prototype.checkDirective = function checkDirective() {
 Scanner.prototype.checkDocumentStart = function checkDocumentStart() {
   // DOCUMENT-START:   ^ '---' (' '|'\n')
   if (+this.column === 0 && this.prefix(3) === '---') {
-    return (0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3)));
+    return (0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3)));
   }
 
   return false;
@@ -1959,7 +1972,7 @@ Scanner.prototype.checkDocumentStart = function checkDocumentStart() {
 Scanner.prototype.checkDocumentEnd = function checkDocumentEnd() {
   // DOCUMENT-END:   ^ '...' (' '|'\n')
   if (+this.column === 0 && this.prefix(3) === '...') {
-    return (0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3)));
+    return (0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3)));
   }
 
   return false;
@@ -1967,7 +1980,7 @@ Scanner.prototype.checkDocumentEnd = function checkDocumentEnd() {
 
 Scanner.prototype.checkBlockEntry = function checkBlockEntry() {
   // BLOCK-ENTRY:    '-' (' '|'\n')
-  return (0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(1)));
+  return (0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(1)));
 };
 
 Scanner.prototype.checkKey = function checkKey() {
@@ -1977,7 +1990,7 @@ Scanner.prototype.checkKey = function checkKey() {
   }
 
   // KEY(block context):   '?' (' '|'\n')
-  return 0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(1));
+  return 0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(1));
 };
 
 Scanner.prototype.checkValue = function checkValue() {
@@ -1987,7 +2000,7 @@ Scanner.prototype.checkValue = function checkValue() {
   }
 
   // VALUE(block context): ':' (' '|'\n')
-  return 0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(1));
+  return 0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(1));
 };
 
 Scanner.prototype.checkPlain = function checkPlain() {
@@ -2005,10 +2018,10 @@ Scanner.prototype.checkPlain = function checkPlain() {
   // independent.
   var ch = this.peek();
   return (
-   -1 === '\0 \t\r\n\x85\u2028\u2029-?:,[]{}#&*!|>\'\"%@`'.indexOf(ch)
+   -1 === '\x00 \t\r\n\x85\u2028\u2029-?:,[]{}#&*!|>\'\"%@`'.indexOf(ch)
    ||
    (
-      -1 === '\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(1))
+      -1 === '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(1))
       &&
       (
         ch === '-' || (!this.flowLevel && 0 <= '?:'.indexOf(ch))
@@ -2049,7 +2062,7 @@ Scanner.prototype.scanToNextToken = function scanToNextToken() {
     }
 
     if (this.peek() === '#') {
-      while (-1 === '\0\r\n\x85\u2028\u2029'.indexOf(this.peek())) {
+      while (-1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.peek())) {
         this.forward();
       }
     }
@@ -2082,7 +2095,7 @@ Scanner.prototype.scanDirective = function scanDirective() {
   } else {
     endMark = this.getMark();
 
-    while (-1 === '\0\r\n\x85\u2028\u2029'.indexOf(this.peek())) {
+    while (-1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.peek())) {
       this.forward();
     }
   }
@@ -2099,7 +2112,7 @@ Scanner.prototype.scanDirectiveName = function scanDirectiveName(startMark) {
   ch = this.peek(length);
 
   while (/^[0-9A-Za-z]/.test(ch) || 0 <= '-_'.indexOf(ch)) {
-    length++;
+    length += 1;
     ch = this.peek(length);
   }
 
@@ -2113,7 +2126,7 @@ Scanner.prototype.scanDirectiveName = function scanDirectiveName(startMark) {
   this.forward(length);
   ch = this.peek();
 
-  if (-1 === '\0 \r\n\x85\u2028\u2029'.indexOf(ch)) {
+  if (-1 === '\x00 \r\n\x85\u2028\u2029'.indexOf(ch)) {
     throw new ScannerError("while scanning a directive", startMark,
         "expected alphabetic or numeric character, but found " + ch,
         this.getMark());
@@ -2143,7 +2156,7 @@ Scanner.prototype.scanYamlDirectiveValue = function scanYamlDirectiveValue(start
 
   minor = this.scanYamlDirectiveNumber(startMark);
 
-  if (-1 === '\0 \r\n\x85\u2028\u2029'.indexOf(this.peek())) {
+  if (-1 === '\x00 \r\n\x85\u2028\u2029'.indexOf(this.peek())) {
     throw new ScannerError("while scanning a directive", startMark,
         "expected a digit or ' ', but found " + this.peek(),
         this.getMark());
@@ -2167,7 +2180,7 @@ Scanner.prototype.scanYamlDirectiveNumber = function scanYamlDirectiveNumber(sta
   length = 0;
 
   while (/^[0-9]/.test(this.peek(length))) {
-    length++;
+    length += 1;
   }
 
   value = +(this.prefix(length));
@@ -2217,7 +2230,7 @@ Scanner.prototype.scanTagDirectivePrefix = function scanTagDirectivePrefix(start
   value = this.scanTagUri('directive', startMark);
   ch = this.peek();
 
-  if (-1 === '\0 \r\n\x85\u2028\u2029'.indexOf(ch)) {
+  if (-1 === '\x00 \r\n\x85\u2028\u2029'.indexOf(ch)) {
     throw new ScannerError("while scanning a directive", startMark,
                            "expected ' ', but found " + ch, this.getMark());
   }
@@ -2234,14 +2247,14 @@ Scanner.prototype.scanDirectiveIgnoredLine = function scanDirectiveIgnoredLine(s
   }
 
   if (this.peek() === '#') {
-    while (-1 === '\0\r\n\x85\u2028\u2029'.indexOf(this.peek())) {
+    while (-1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.peek())) {
       this.forward();
     }
   }
 
   ch = this.peek();
 
-  if (-1 === '\0\r\n\x85\u2028\u2029'.indexOf(ch)) {
+  if (-1 === '\x00\r\n\x85\u2028\u2029'.indexOf(ch)) {
     throw new ScannerError("while scanning a directive", startMark,
         "expected a comment or a line break, but found " + ch,
         this.getMark());
@@ -2271,7 +2284,7 @@ Scanner.prototype.scanAnchor = function scanAnchor(TokenClass) {
   ch = this.peek(length);
 
   while (/^[0-9A-Za-z]/.test(ch) || 0 <= '-_'.indexOf(ch)) {
-    length++;
+    length += 1;
     ch = this.peek(length);
   }
     
@@ -2285,7 +2298,7 @@ Scanner.prototype.scanAnchor = function scanAnchor(TokenClass) {
   this.forward(length);
   ch = this.peek();
 
-  if (-1 === '\0 \t\r\n\x85\u2028\u2029?:,]}%@`'.indexOf(ch)) {
+  if (-1 === '\x00 \t\r\n\x85\u2028\u2029?:,]}%@`'.indexOf(ch)) {
     throw new ScannerError("while scanning an " + name, startMark,
         "expected alphabetic or numeric character, but found " + ch,
         this.getMark());
@@ -2313,7 +2326,7 @@ Scanner.prototype.scanTag = function scanTag() {
     }
 
     this.forward();
-  } else if (0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(ch)) {
+  } else if (0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(ch)) {
     handle = null;
     suffix = '!';
 
@@ -2322,13 +2335,13 @@ Scanner.prototype.scanTag = function scanTag() {
     length = 1;
     useHandle = false;
 
-    while (-1 === '\0 \r\n\x85\u2028\u2029'.indexOf(ch)) {
+    while (-1 === '\x00 \r\n\x85\u2028\u2029'.indexOf(ch)) {
       if (ch === '!') {
         useHandle = true;
         break;
       }
 
-      length++;
+      length += 1;
       ch = this.peek(length);
     }
 
@@ -2344,7 +2357,7 @@ Scanner.prototype.scanTag = function scanTag() {
 
   ch = this.peek();
 
-  if (-1 === '\0 \r\n\x85\u2028\u2029'.indexOf(ch)) {
+  if (-1 === '\x00 \r\n\x85\u2028\u2029'.indexOf(ch)) {
     throw new ScannerError("while scanning a tag", startMark,
                            "expected ' ', but found " + ch, this.getMark());
   }
@@ -2392,13 +2405,13 @@ Scanner.prototype.scanBlockScalar = function scanBlockScalar(style) {
   lineBreak = '';
 
   // Scan the inner part of the block scalar.
-  while (+this.column === indent && this.peek() !== '\0') {
+  while (+this.column === indent && this.peek() !== '\x00') {
     chunks = chunks.concat(breaks);
     leadingNonSpace = -1 === ' \t'.indexOf(this.peek());
     length = 0;
 
-    while (-1 === '\0\r\n\x85\u2028\u2029'.indexOf(this.peek(length))) {
-      length++;
+    while (-1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.peek(length))) {
+      length += 1;
     }
 
     chunks.push(this.prefix(length));
@@ -2409,16 +2422,16 @@ Scanner.prototype.scanBlockScalar = function scanBlockScalar(style) {
     breaks = tuple[0];
     endMark = tuple[1];
 
-    if (+this.column !== indent || this.peek() === '\0') {
+    if (+this.column !== indent || this.peek() === '\x00') {
       break;
     }
 
     // Unfortunately, folding rules are ambiguous.
     //
     // This is the folding according to the specification:
-    
+
     if (folded && lineBreak === '\n' && leadingNonSpace && -1 === ' \t'.indexOf(this.peek())) {
-      if (!breaks) {
+      if (!breaks || !breaks.length) {
         chunks.push(' ');
       }
     } else {
@@ -2488,7 +2501,7 @@ Scanner.prototype.scanBlockScalarIndicators = function scanBlockScalarIndicators
 
   ch = this.peek();
 
-  if (-1 === '\0 \r\n\x85\u2028\u2029'.indexOf(ch)) {
+  if (-1 === '\x00 \r\n\x85\u2028\u2029'.indexOf(ch)) {
     throw new ScannerError("while scanning a block scalar", startMark,
         "expected chomping or indentation indicators, but found " + ch,
         this.getMark());
@@ -2506,14 +2519,14 @@ Scanner.prototype.scanBlockScalarIgnoredLine = function scanBlockScalarIgnoredLi
   }
 
   if (this.peek() === '#') {
-    while (-1 === '\0\r\n\x85\u2028\u2029'.indexOf(this.peek())) {
+    while (-1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.peek())) {
       this.forward();
     }
   }
 
   ch = this.peek();
 
-  if (-1 === '\0\r\n\x85\u2028\u2029'.indexOf(ch)) {
+  if (-1 === '\x00\r\n\x85\u2028\u2029'.indexOf(ch)) {
     throw new ScannerError("while scanning a block scalar", startMark,
         "expected a comment or a line break, but found " + ch,
         this.getMark());
@@ -2609,8 +2622,8 @@ Scanner.prototype.scanFlowScalarNonSpaces = function scanFlowScalarNonSpaces(dou
   while (true) {
     length = 0;
 
-    while (-1 === '\'\"\\\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(length))) {
-      length++;
+    while (-1 === '\'\"\\\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(length))) {
+      length += 1;
     }
 
     if (length) {
@@ -2660,14 +2673,14 @@ Scanner.prototype.scanFlowScalarSpaces = function scanFlowScalarSpaces(double, s
   length = 0;
 
   while (0 <= ' \t'.indexOf(this.peek(length))) {
-    length++;
+    length += 1;
   }
 
   whitespaces = this.prefix(length);
   this.forward(length);
   ch = this.peek();
 
-  if (ch === '\0') {
+  if (ch === '\x00') {
     throw new ScannerError("while scanning a quoted scalar", startMark,
                            "found unexpected end of stream", this.getMark());
   } else if (0 <= '\r\n\x85\u2028\u2029'.indexOf(ch)) {
@@ -2698,7 +2711,7 @@ Scanner.prototype.scanFlowScalarBreaks = function scanFlowScalarBreaks(double, s
     // separators.
     prefix = this.prefix(3);
 
-    if ((prefix === '---' || prefix === '...') && 0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3))) {
+    if ((prefix === '---' || prefix === '...') && 0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3))) {
       throw new ScannerError("while scanning a quoted scalar", startMark,
                              "found unexpected document separator", this.getMark());
     }
@@ -2745,9 +2758,9 @@ Scanner.prototype.scanPlain = function scanPlain() {
     while (true) {
       ch = this.peek(length);
 
-      if (0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(ch)
+      if (0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(ch)
           || (!this.flowLevel && ch === ':'
-              && 0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(length + 1)))
+              && 0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(length + 1)))
           || (this.flowLevel && 0 <= ',:?[]{}'.indexOf(ch))) {
         break;
       }
@@ -2756,7 +2769,7 @@ Scanner.prototype.scanPlain = function scanPlain() {
     }
 
     // It's not clear what we should do with ':' in the flow context.
-    if (this.flowLevel && ch === ':' && -1 === '\0 \t\r\n\x85\u2028\u2029,[]{}'.indexOf(this.peek(length + 1))) {
+    if (this.flowLevel && ch === ':' && -1 === '\x00 \t\r\n\x85\u2028\u2029,[]{}'.indexOf(this.peek(length + 1))) {
       this.forward(length);
       throw new ScannerError("while scanning a plain scalar", startMark,
         "found unexpected ':'", this.getMark(),
@@ -2795,7 +2808,7 @@ Scanner.prototype.scanPlainSpaces = function scanPlainSpaces(indent, startMark) 
   length = 0;
 
   while (this.peek(length) === ' ') {
-    length++;
+    length += 1;
   }
 
   whitespaces = this.prefix(length);
@@ -2808,7 +2821,7 @@ Scanner.prototype.scanPlainSpaces = function scanPlainSpaces(indent, startMark) 
     prefix = this.prefix(3);
 
     if ((prefix === '---' || prefix === '...')
-        && 0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3))) {
+        && 0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3))) {
       return;
     }
 
@@ -2822,7 +2835,7 @@ Scanner.prototype.scanPlainSpaces = function scanPlainSpaces(indent, startMark) 
         prefix = this.prefix(3);
 
         if ((prefix === '---' || prefix === '...')
-            && 0 <= '\0 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3))) {
+            && 0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3))) {
           return;
         }
       }
@@ -2861,7 +2874,7 @@ Scanner.prototype.scanTagHandle = function scanTagHandle(name, startMark) {
 
   if (ch !== ' ') {
     while (/^[0-9A-Za-z]/.test(ch) || 0 <= '-_'.indexOf(ch)) {
-      length++;
+      length += 1;
       ch = this.peek(length);
     }
 
@@ -2871,7 +2884,7 @@ Scanner.prototype.scanTagHandle = function scanTagHandle(name, startMark) {
                              "expected '!', but found " + ch, this.getMark());
     }
 
-    length++;
+    length += 1;
   }
 
   value = this.prefix(length);
@@ -2897,7 +2910,7 @@ Scanner.prototype.scanTagUri = function scanTagUri(name, startMark) {
       length = 0;
       chunks.push(this.scanUriEscapes(name, startMark));
     } else {
-      length++;
+      length += 1;
     }
 
     ch = this.peek(length);
@@ -3228,10 +3241,10 @@ require.define("/lib/js-yaml/parser.js", function (require, module, exports, __d
 'use strict';
 
 
-var $$ = require('./common'),
-    _errors = require('./errors'),
-    _tokens = require('./tokens'),
-    _events = require('./events');
+var $$ = require('./common');
+var _errors = require('./errors');
+var _tokens = require('./tokens');
+var _events = require('./events');
 
 
 function ParserError() {
@@ -3276,7 +3289,7 @@ Parser.prototype.checkEvent = function checkEvent() {
       return true;
     }
 
-    for (i = 0; i < arguments.length; i++) {
+    for (i = 0; i < arguments.length; i += 1) {
       if ($$.isInstanceOf(this.currentEvent, arguments[i])) {
         return true;
       }
@@ -3939,10 +3952,9 @@ function Event(startMark, endMark) {
   this.endMark = endMark || null;
 }
 
-Event.prototype.hash = 
-Event.prototype.toString = function toString() {
+Event.prototype.hash = Event.prototype.toString = function toString() {
   var self = this, values = [];
-  
+
   Object.getOwnPropertyNames(this).forEach(function (key) {
     if (0 <= HASHIFY_KEYS.indexOf(key)) {
       values.push(key + '=' + self[key]);
@@ -4055,10 +4067,10 @@ require.define("/lib/js-yaml/composer.js", function (require, module, exports, _
     'use strict';
 
 
-var $$ = require('./common'),
-    _nodes = require('./nodes'),
-    _events = require('./events'),
-    _errors = require('./errors');
+var $$ = require('./common');
+var _nodes = require('./nodes');
+var _events = require('./events');
+var _errors = require('./errors');
 
 
 function ComposerError() {
@@ -4170,7 +4182,7 @@ Composer.prototype.composeNode = function composeNode(parent, index) {
 
 Composer.prototype.composeScalarNode = function composeScalarNode(anchor) {
   var event, tag, node;
-  
+
   event = this.getEvent();
   tag = event.tag;
 
@@ -4206,7 +4218,7 @@ Composer.prototype.composeSequenceNode = function composeSequenceNode(anchor) {
                              start_event.flowStyle);
 
   if (null !== anchor) {
-      this.anchors[anchor] = node;
+    this.anchors[anchor] = node;
   }
 
   index = 0;
@@ -4239,7 +4251,7 @@ Composer.prototype.composeMappingNode = function composeMappingNode(anchor) {
                             startEvent.flowStyle);
 
   if (null !== anchor) {
-      this.anchors[anchor] = node;
+    this.anchors[anchor] = node;
   }
 
   while (!this.checkEvent(_events.MappingEndEvent)) {
@@ -4325,13 +4337,13 @@ require.define("/lib/js-yaml/resolver.js", function (require, module, exports, _
     'use strict';
 
 
-var $$ = require('./common'),
-    _nodes = require('./nodes');
+var $$ = require('./common');
+var _nodes = require('./nodes');
 
 
-var DEFAULT_SCALAR_TAG = 'tag:yaml.org,2002:str',
-    DEFAULT_SEQUENCE_TAG = 'tag:yaml.org,2002:seq',
-    DEFAULT_MAPPING_TAG = 'tag:yaml.org,2002:map';
+var DEFAULT_SCALAR_TAG = 'tag:yaml.org,2002:str';
+var DEFAULT_SEQUENCE_TAG = 'tag:yaml.org,2002:seq';
+var DEFAULT_MAPPING_TAG = 'tag:yaml.org,2002:map';
 
 
 function BaseResolver() {
@@ -4369,7 +4381,7 @@ BaseResolver.prototype.resolve = function resolve(kind, value, implicit) {
 
     resolvers = resolvers.concat(this.yamlImplicitResolvers[null] || []);
 
-    for (i = 0; i < resolvers.length; i++) {
+    for (i = 0; i < resolvers.length; i += 1) {
       tag = resolvers[i][0];
       regexp = resolvers[i][1];
 
@@ -4467,9 +4479,9 @@ require.define("/lib/js-yaml/constructor.js", function (require, module, exports
     'use strict';
 
 
-var $$ = require('./common'),
-    _errors = require('./errors'),
-    _nodes = require('./nodes');
+var $$ = require('./common');
+var _errors = require('./errors');
+var _nodes = require('./nodes');
 
 
 function ConstructorError() {
@@ -4539,15 +4551,15 @@ BaseConstructor.prototype.getSingleData = function getSingleData() {
 
 BaseConstructor.prototype.constructDocument = function constructDocument(node) {
   var data = this.constructObject(node),
-      statePopulators;
+      stateIterator, statePopulators;
+
+  stateIterator = function (populator) { populator.execute(); };
 
   while (!!this.statePopulators.length) {
     statePopulators = this.statePopulators;
     this.statePopulators = [];
 
-    statePopulators.forEach(function (populator) {
-      populator.execute();
-    });
+    statePopulators.forEach(stateIterator);
   }
 
   this.constructedObjects = new $$.Hash();
@@ -4714,7 +4726,26 @@ SafeConstructor.prototype.constructScalar = function constructScalar(node) {
 };
 
 SafeConstructor.prototype.flattenMapping = function flattenMapping(node) {
-  var self = this, merge = [], index = 0, keyNode, valueNode, submerge;
+  var self = this, merge = [], index = 0, keyNode, valueNode, submerge,
+      pushSingleValue, pushMultipleValues, submergeIterator;
+
+  pushSingleValue = function (value) {
+    merge.push(value);
+  };
+
+  pushMultipleValues = function (values) {
+    values.forEach(pushSingleValue);
+  };
+
+  submergeIterator = function (subnode) {
+    if (!$$.isInstanceOf(subnode, _nodes.MappingNode)) {
+      throw new ConstructorError("while constructing a mapping", node.startMark,
+                  "expected a mapping for merging, but found " + subnode.id,
+                  subnode.startMark);
+    }
+    self.flattenMapping(subnode);
+    submerge.push(subnode.value);
+  };
 
   while (index < node.value.length) {
     keyNode = node.value[index][0];
@@ -4725,26 +4756,11 @@ SafeConstructor.prototype.flattenMapping = function flattenMapping(node) {
 
       if ($$.isInstanceOf(valueNode, _nodes.MappingNode)) {
         self.flattenMapping(valueNode);
-        $$.each(valueNode.value, function (value) {
-          merge.push(value);
-        });
+        $$.each(valueNode.value, pushSingleValue);
       } else if ($$.isInstanceOf(valueNode, _nodes.SequenceNode)) {
         submerge = [];
-        $$.each(valueNode.value, function (subnode) {
-          if (!$$.isInstanceOf(subnode, _nodes.MappingNode)) {
-            throw new ConstructorError("while constructing a mapping", node.startMark,
-                        "expected a mapping for merging, but found " + subnode.id,
-                        subnode.startMark);
-          }
-          self.flattenMapping(subnode);
-          submerge.push(subnode.value);
-        });
-
-        $$.reverse(submerge).forEach(function (values) {
-          values.forEach(function (value) {
-            merge.push(value);
-          });
-        });
+        $$.each(valueNode.value, submergeIterator);
+        $$.reverse(submerge).forEach(pushMultipleValues);
       } else {
         throw new ConstructorError("while constructing a mapping", node.startMark,
                     "expected a mapping or list of mappings for merging, but found " + valueNode.id,
@@ -4752,9 +4768,9 @@ SafeConstructor.prototype.flattenMapping = function flattenMapping(node) {
       }
     } else if ('tag:yaml.org,2002:value' === keyNode.tag) {
       keyNode.tag = 'tag:yaml.org,2002:str';
-      index++;
+      index += 1;
     } else {
-      index++;
+      index += 1;
     }
   }
 
@@ -5084,6 +5100,7 @@ Constructor.prototype.constructJavascriptUndefined = function constructJavascrip
 };
 
 Constructor.prototype.constructJavascriptFunction = function constructJavascriptFunction(node) {
+  /*jslint evil:true*/
   var func = new Function('return ' + this.constructScalar(node));
   return func();
 };
