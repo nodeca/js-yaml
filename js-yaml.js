@@ -20,6 +20,12 @@
  * THE SOFTWARE.
  */
 
+if (!Array.isArray) {
+  // fix for IE and Safari
+  Array.isArray = function isArray(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+  };
+}
 if (!Function.prototype.bind) {
   // fix for IE and Safari
   Function.prototype.bind = function bind(context) {
