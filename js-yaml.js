@@ -20,14 +20,37 @@
  * THE SOFTWARE.
  */
 
+// Extend prototypes and native objects for oldIEs, Safaies and Operas
+
 if (!Array.isArray) {
-  // fix for IE and Safari
   Array.isArray = function isArray(obj) {
     return Object.prototype.toString.call(obj) === '[object Array]';
   };
 }
+
+if (!Array.prototype.indexOf) {
+  Array.prototype.indexOf = function (obj) {
+    var i;
+    for (i=0; i < this.length; i++) {
+      if (this[i] == obj) {
+        return i;
+      }
+    }
+    return -1;
+  };
+}
+
+if (!Array.prototype.forEach) {
+  Array.prototype.forEach = function (iterator, context) {
+    var i, l;
+    context = context || this;
+    for (i = 0, l = this.length; i < l; i += 1) {
+      iterator.call(context, this[i], i);
+    }
+  };
+}
+
 if (!Function.prototype.bind) {
-  // fix for IE and Safari
   Function.prototype.bind = function bind(context) {
     var func = this;
     return function bound() {
@@ -35,8 +58,8 @@ if (!Function.prototype.bind) {
     };
   };
 }
+
 if (!Object.getOwnPropertyNames) {
-  // fix for IE and Safari
   Object.getOwnPropertyNames = function getOwnPropertyNames(obj) {
     var names = [], key;
     for (key in obj) {
@@ -578,7 +601,7 @@ $$.extend = function extend(receiver) {
   }
 
   for (i = 1; i < l; i += 1) {
-    if (arguments[i] && 'object' === typeof arguments[i]) {
+    if (!!arguments[i] && 'object' === typeof arguments[i]) {
       for (key in arguments[i]) {
         if (arguments[i].hasOwnProperty(key) && -1 === skip.indexOf(key)) {
           receiver[key] = arguments[i][key];
@@ -4702,10 +4725,11 @@ BaseConstructor.prototype.constructPairs = function constructPairs(node, deep) {
   }
 
   pairs = [];
-  node.forEachPair(function (key_node, value_node) {
+
+  $$.each(node.value, function (pair) {
     var key, value;
-    key = this.constructObject(key_node, deep);
-    value = this.constructObject(value_node, deep);
+    key = this.constructObject(pair[0], deep);
+    value = this.constructObject(pair[1], deep);
     pairs.store(key, value);
   }, this);
 
