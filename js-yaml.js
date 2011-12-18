@@ -4517,7 +4517,7 @@ var BOOL_VALUES = {
   'true':     true,
   'false':    false,
   'on':       true,
-  'off':      false,
+  'off':      false
 };
 
 
