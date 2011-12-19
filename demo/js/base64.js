@@ -47,9 +47,10 @@
         41,42,43,44, 45,46,47,48, 49,50,51,-1, -1,-1,-1,-1
       ];
 
-  if (console) {
-    logger.warn = console.warn || console.error || console.log || noop;
-    logger.warn = console.error || console.warn || console.log || noop;
+  if (window.console) {
+    logger = window.console;
+    logger.warn = logger.warn || logger.error || logger.log || noop;
+    logger.error = logger.error || logger.warn || logger.log || noop;
   }
 
   // internal helpers //////////////////////////////////////////////////////////
