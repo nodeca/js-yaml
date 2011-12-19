@@ -10,14 +10,25 @@ var exists = require('path').existsSync,
 
 
 try {
-  if (!process.argv[2]) {
-    console.error("Please specify YAML file you want to parse");
-    process.exit(1);
-  }
 
-  var file = realpath(process.argv[2]);
+  var options = require("nomnom")
+    .scriptName("js-yaml.js")
+    .opts({
+      file: {
+        position: 0,
+        help: "YAML file to parse"
+      },
+      compact : {
+        flag : true,
+        string: '-c, --compact',
+        help : 'compact error display'
+      }
+    })
+    .parseArgs();
+
+  var file = realpath(options.file);
   if (!exists(file)) {
-    console.error("Specified file '" + process.argv[2] + "' not found");
+    console.error("Specified file '" + options.file + "' not found");
     process.exit(1);
   }
 
@@ -29,6 +40,6 @@ try {
 
   process.exit(0);
 } catch (err) {
-  console.error(err.stack || err.message || err.toString());
+  console.error(err.stack || err.message || err.toString(options.compact));
   process.exit(1);
 }
