@@ -17,6 +17,11 @@ try {
       file: {
         position: 0,
         help: "YAML file to parse"
+      },
+      compact : {
+        flag : true,
+        string: '-c, --compact',
+        help : 'compact error display'
       }
     })
     .parseArgs();
@@ -35,6 +40,6 @@ try {
 
   process.exit(0);
 } catch (err) {
-  console.error(err.stack || err.message || err.toString());
+  console.error(err.stack || err.message || err.toString(options.compact));
   process.exit(1);
 }
