@@ -1,4 +1,4 @@
-0.3.2 / 2011-12-20
+0.3.3 / 2011-12-20
 ------------------
 
 * jsyaml executable moved to separate module.
