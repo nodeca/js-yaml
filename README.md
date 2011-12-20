@@ -16,8 +16,8 @@ Now you can use all modern YAML feature right in JavaScript. Originally snapshot
 npm install js-yaml
 ```
 
-You can install JS-YAML globally (with `-g` npm argument), and use it to inspect
-your YAML files:
+If you want to inspect your YAML files from CLI, install [js-yaml.bin](https://github.com/nodeca/js-yaml.bin)
+and then you'll be able to call it like this:
 
 ```
 $ jsyaml /home/ixti/example.yml 
