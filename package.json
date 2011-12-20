@@ -6,6 +6,13 @@
   "homepage"        : "https://github.com/nodeca/js-yaml",
 
   "author"          : "Aleksey V Zapparov <ixti@member.fsf.org> (http://www.ixti.net/)",
+  "contributors"    : [
+                        {
+                          "name"  : "Martin Grenfell",
+                          "email" : "martin.grenfell@gmail.com>",
+                          "url"   : "http://got-ravings.blogspot.com"
+                        }
+                      ],
 
   "bugs"            : { "url": "https://github.com/nodeca/js-yaml/issues" },
   "license"         : { "type": "MIT", "url": "https://github.com/nodeca/js-yaml/blob/master/LICENSE" },
