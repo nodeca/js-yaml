@@ -1,7 +1,8 @@
-?.?.? / ????-??-??
+0.3.2 / 2011-12-20
 ------------------
 
 * jsyaml executable moved to separate module.
+* adds `compact` stringification of Errors.
 
 0.3.2 / 2011-12-16
 ------------------
