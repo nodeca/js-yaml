@@ -156,20 +156,22 @@ The list of standard YAML tags and corresponding JavaScipt types. See also
 
 ### Caveats
 
-Note, that if you use arrays as key in JS, it's automatically converted to string.
-So, if you have maps as key in YAML, result will flat:
+Note, that you use arrays or objects as key in JS-YAML. JS do not allows objects
+or array as keys, and stringifies them at the moment of adding them.
 
 ``` yaml
 ---
-? - foo
-  - bar
+? [ foo, bar ]
 : - baz
+? { foo: bar }
+: - baz
+  - baz
 ```
 
 =>
 
 ``` javascript
-{ "foo,bar": ["baz"] }
+{ "": ["baz"], "[object Object]": ["baz", "baz"] }
 ```
 
 ## License
