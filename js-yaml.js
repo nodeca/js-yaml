@@ -828,6 +828,14 @@ var _errors = require('./errors');
 var NON_PRINTABLE = new RegExp('[^\x09\x0A\x0D -~\x85\xA0-\uD7FF\uE000-\uFFFD]');
 
 
+// IE 7-8 hack. As we use ONLY strings in browsers as input stream, there's no
+// need for stream.slice() call and we can simply use stream.charAt() when we
+// are running on that shit...
+var getSingleChar = (undefined === ('a')[0])
+  ? function (str, pos) { return str.charAt(pos); }
+  : function (str, pos) { return str[pos]; };
+
+
 function ReaderError(name, position, character, encoding, reason) {
   _errors.YAMLError.apply(this);
   this.name = 'ReaderError';
@@ -880,11 +888,11 @@ Reader.prototype.peek = function peek(index) {
   var data;
 
   index = +index || 0;
-  data =  this.buffer[this.pointer + index];
+  data = getSingleChar(this.buffer, this.pointer + index);
 
   if (undefined === data) {
     this.update(index + 1);
-    data = this.buffer[this.pointer + index];
+    data = getSingleChar(this.buffer, this.pointer + index);
   }
 
   return data;
@@ -1095,6 +1103,55 @@ function YAMLError(message) {
 $$.inherits(YAMLError, Error);
 
 
+function toStringCompact(self) {
+  var str = "Error ";
+
+  if (null !== self.problemMark) {
+    str += "on line " + (self.problemMark.line+1) + ", col " + (self.problemMark.column+1) + ": ";
+  }
+
+  if (null !== self.problem) {
+    str += self.problem;
+  }
+
+  if (null !== self.note) {
+    str += self.note;
+  }
+
+  return str;
+}
+
+function toStringFull(self) {
+  var lines = [];
+
+  if (null !== self.context) {
+    lines.push(self.context);
+  }
+
+  if (null !== self.contextMark
+      && (null === self.problem || null === self.problemMark
+          || self.contextMark.name !== self.problemMark.name
+          || self.contextMark.line !== self.problemMark.line
+          || self.contextMark.column !== self.problemMark.column)) {
+    lines.push(self.contextMark.toString());
+  }
+
+  if (null !== self.problem) {
+    lines.push(self.problem);
+  }
+
+  if (null !== self.problemMark) {
+    lines.push(self.problemMark.toString());
+  }
+
+  if (null !== self.note) {
+    lines.push(self.note);
+  }
+
+  return lines.join('\n');
+}
+
+
 function MarkedYAMLError(context, contextMark, problem, problemMark, note) {
   YAMLError.call(this);
   this.name = 'MarkedYAMLError';
@@ -1105,34 +1162,8 @@ function MarkedYAMLError(context, contextMark, problem, problemMark, note) {
   this.problemMark = problemMark || null;
   this.note = note || null;
 
-  this.toString = function toString() {
-    var lines = [];
-
-    if (null !== this.context) {
-      lines.push(this.context);
-    }
-
-    if (null !== this.contextMark
-        && (null === this.problem || null === this.problemMark
-            || this.contextMark.name !== this.problemMark.name
-            || this.contextMark.line !== this.problemMark.line
-            || this.contextMark.column !== this.problemMark.column)) {
-      lines.push(this.contextMark.toString());
-    }
-
-    if (null !== this.problem) {
-      lines.push(this.problem);
-    }
-
-    if (null !== this.problemMark) {
-      lines.push(this.problemMark.toString());
-    }
-
-    if (null !== this.note) {
-      lines.push(this.note);
-    }
-
-    return lines.join('\n');
+  this.toString = function toString(compact) {
+    return compact ? toStringCompact(this) : toStringFull(this);
   };
 }
 $$.inherits(MarkedYAMLError, YAMLError);
