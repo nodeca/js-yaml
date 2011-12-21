@@ -1,6 +1,8 @@
 0.3.4 / ????-??-??
 ------------------
 
+* Fixes str[] for oldIEs support.
+* Adds better has change support for browserified demo.
 * improves compact output of Error. Closes #33.
 
 0.3.3 / 2011-12-20
