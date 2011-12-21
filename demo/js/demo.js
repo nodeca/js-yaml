@@ -31,12 +31,9 @@ window.runDemo = function runDemo() {
     parse();
   }
 
-  function watchHashChange() {
-    window.setTimeout(watchHashChange, 750);
-    if (hash !== location.hash.toString()) {
-      hash = location.hash.toString();
-      updateSource();
-    }
+  function handleHashChange(newHash) {
+    hash = newHash;
+    updateSource();
   }
 
   permalink = document.getElementById('permalink');
@@ -77,7 +74,10 @@ window.runDemo = function runDemo() {
   updateSource(document.getElementById('source').value);
 
   // start monitor hash change
-  watchHashChange();
+  hasher.prependHash = '';
+  hasher.changed.add(handleHashChange);
+  hasher.initialized.add(handleHashChange);
+  hasher.init();
 };
 
 
