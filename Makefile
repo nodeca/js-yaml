@@ -10,7 +10,7 @@ CURR_HEAD 	:= $(firstword $(shell git show-ref --hash HEAD | cut --bytes=-6) mas
 GITHUB_NAME := nodeca/js-yaml
 SRC_URL_FMT := https://github.com/${GITHUB_NAME}/blob/${CURR_HEAD}/{file}\#L{line}
 
-JS_FILES    := $(shell find ./lib -type f -name '*.js' -print)
+JS_FILES    := $(shell find ./bin ./lib ./test -type f -name '*.js' -print)
 
 lint:
 	@if test ! `which jslint` ; then \
@@ -23,7 +23,7 @@ lint:
 	# (nomen)   -> tolerate underscores in identifiers (e.g. `var _val = 1`)
 	# (bitwise) -> tolerate bitwise operators (used in base64)
 	# (white) 	-> tolerate messy whitespace
-	jslint --node --nomen --bitwise --white --indent=2 ${JS_FILES}
+	jslint --node --nomen --bitwise --white --indent=2 ./index.js ${JS_FILES}
 
 test: lint
 	@if test ! `which vows` ; then \

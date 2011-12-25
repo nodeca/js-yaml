@@ -1,3 +1,6 @@
+'use strict';
+
+
 var Assert = require('assert');
 var JsYaml = require('../../lib/js-yaml');
 var source = __dirname + '/data/issue-8.yml';

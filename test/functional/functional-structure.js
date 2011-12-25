@@ -1,3 +1,6 @@
+'use strict';
+
+
 var Assert = require('assert');
 var Fs = require('fs');
 var JsYaml = require('../../lib/js-yaml');

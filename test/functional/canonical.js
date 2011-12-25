@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs'),
     assert = require('assert'),
     jsyaml = require(__dirname + '/../../lib/js-yaml'),
@@ -6,6 +8,7 @@ var fs = require('fs'),
     _errors = require(__dirname + '/../../lib/js-yaml/errors'),
     _composer  = require(__dirname + '/../../lib/js-yaml/composer'),
     _constructor = require(__dirname + '/../../lib/js-yaml/construct'),
+    _tokens = require(__dirname + '/../../lib/js-yaml/tokens'),
     _resolver = require(__dirname + '/../../lib/js-yaml/resolver');
 
 
@@ -47,8 +50,8 @@ $$.inherits(CanonicalError, _errors.YAMLError);
 
 
 
-function CanonicalScanner = (data) {
-  this.data = data + '\0';
+function CanonicalScanner(data) {
+  this.data = data + '\x00';
   this.index = 0;
   this.tokens = [];
   this.scanned = false;
@@ -66,7 +69,7 @@ CanonicalScanner.prototype.checkToken = function checkTokencheckToken() {
       return true;
     }
 
-    for (i = 0; i < arguments.length; i++) {
+    for (i = 0; i < arguments.length; i += 1) {
       if (this.tokens[0].isA(arguments[i])) {
         return true;
       }
@@ -105,18 +108,20 @@ CanonicalScanner.prototype.getToken = function getToken(choice) {
 };
 
 CanonicalScanner.prototype.scan = function scan() {
+  var ch;
+
   this.tokens.push(new _tokens.StreamStartToken(null, null));
 
   while (true) {
     this.find_token();
     ch = this.data[this.index];
 
-    if (ch === '\0') {
+    if (ch === '\x00') {
         this.tokens.push(new _tokens.StreamEndToken(null, null));
         break;
     } else if (ch === '%') {
         this.tokens.push(this.scanDirective());
-    } else if (ch === '-' and this.data.silce(this.index, this.index+3) === '---') {
+    } else if (ch === '-' && this.data.silce(this.index, this.index+3) === '---') {
         this.index += 3;
         this.tokens.push(new _tokens.DocumentStartToken(null, null));
     } else if (ch === '[') {
@@ -140,7 +145,7 @@ CanonicalScanner.prototype.scan = function scan() {
     } else if (ch === ',') {
         this.index += 1;
         this.tokens.push(new _tokens.FlowEntryToken(null, null));
-    } else if (ch === '*' or ch === '&') {
+    } else if (ch === '*' || ch === '&') {
         this.tokens.push(this.scanAlias());
     } else if (ch === '!') {
         this.tokens.push(this.scanTag());
@@ -156,9 +161,9 @@ CanonicalScanner.prototype.scan = function scan() {
 
 CanonicalScanner.prototype.scanDirective = function scanDirective() {
   if (this.data.slice(this.index, this.index + DIRECTIVE.length) === this.DIRECTIVE
-      && 0 <= ' \n\0'.indexOf(this.data.slice(this.index + DIRECTIVE.length))) {
+      && 0 <= ' \n\x00'.indexOf(this.data.slice(this.index + DIRECTIVE.length))) {
     this.index += this.DIRECTIVE.length;
-    return new _tokens.DirectiveToken('YAML', (1, 1), null, null);
+    return new _tokens.DirectiveToken('YAML', [1, 1], null, null);
   }
 
   throw new CanonicalError("invalid directive");
@@ -173,7 +178,7 @@ CanonicalScanner.prototype.scanAlias = function scanAlias() {
   this.index += 1;
   start = this.index;
 
-  while (-1 === ', \n\0'.indexOf(this.data[this.index])) {
+  while (-1 === ', \n\x00'.indexOf(this.data[this.index])) {
     this.index += 1;
   }
 
@@ -187,7 +192,7 @@ CanonicalScanner.prototype.scanTag = function scanTag() {
   this.index += 1;
   start = this.index;
 
-  while (-1 === ' \n\0'.indexOf(this.data[this.index])) {
+  while (-1 === ' \n\x00'.indexOf(this.data[this.index])) {
     this.index += 1;
   }
 
@@ -197,7 +202,7 @@ CanonicalScanner.prototype.scanTag = function scanTag() {
     value = '!';
   } else if (value[0] === '!') {
     value = 'tag:yaml.org,2002:' + value.slice(1);
-  } else if (value[0] == '<' && value[value.length-1] == '>') {
+  } else if (value[0] === '<' && value[value.length-1] === '>') {
     value = value.slice(1, value.length-2);
   } else {
       value = '!' + value;
@@ -207,12 +212,12 @@ CanonicalScanner.prototype.scanTag = function scanTag() {
 };
 
 CanonicalScanner.prototype.scanScalar = function scanScalar() {
-  var chinks, start, ignoreSpaces, ch, code;
+  var chunks, start, ignoreSpaces, ch, code, length;
 
   this.index += 1;
   chunks = [];
   start = this.index;
-  ignore_spaces = false;
+  ignoreSpaces = false;
 
   while (this.data[this.index] !== '"') {
     if (this.data[this.index] === '\\') {
@@ -224,13 +229,13 @@ CanonicalScanner.prototype.scanScalar = function scanScalar() {
 
       if (ch === '\n') {
         ignoreSpaces = true;
-      } else if (ch in QUOTE_CODES) {
+      } else if (0 <= QUOTE_CODES.indexOf(ch)) {
         length = QUOTE_CODES[ch];
         code = parseInt(this.data.slice(this.index, this.index+length), 16);
         chunks.puush(String.fromCharCode(code));
         this.index += length;
       } else {
-        if (!(ch in QUOTE_REPLACES)) {
+        if (-1 === QUOTE_REPLACES.indexOf(ch)) {
           throw new CanonicalError("invalid escape code");
         }
 
@@ -243,7 +248,7 @@ CanonicalScanner.prototype.scanScalar = function scanScalar() {
         chunks.push(' ');
         this.index += 1;
         start = this.index;
-        ignore_spaces = true;
+        ignoreSpaces = true;
     } else if (ignoreSpaces && this.data[this.index] === ' ') {
         this.index += 1;
         start = this.index;
@@ -269,11 +274,11 @@ CanonicalScanner.prototype.findToken = function findToken() {
 
     if (this.data[this.index] === '#') {
       while (this.data[this.index] !== '\n') {
-        self.index += 1;
+        this.index += 1;
       }
     }
 
-    if (this.data[this.index] == '\n') {
+    if (this.data[this.index] === '\n') {
       this.index += 1;
     } else {
       found = true;
@@ -283,7 +288,6 @@ CanonicalScanner.prototype.findToken = function findToken() {
 
 
 module.exports.CanonicalScanner = CanonicalScanner;
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2

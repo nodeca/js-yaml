@@ -1,3 +1,4 @@
+'use strict';
 require(__dirname + '/helper')
-  .suite('Functional', __dirname + '/functional', /^functional-.+?\.js$/)
+  .suite('Functional', __dirname + '/functional', new RegExp("^functional-.+?\\.js$"))
   .export(module);

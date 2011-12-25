@@ -1,3 +1,6 @@
+'use strict';
+
+
 var Vows = require('vows');
 var Assert = require('assert');
 var Path = require('path');
@@ -9,17 +12,17 @@ var Helper = module.exports = {};
 
 
 Helper.suite = function suite(name, dirname, regexp) {
-  var suite = Vows.describe(name);
+  var obj = Vows.describe(name);
 
   Fs.readdirSync(dirname).forEach(function (filename) {
     var file = Path.join(dirname, filename);
 
     if (Fs.statSync(file).isFile() && regexp.test(filename)) {
-      suite.addBatch(require(file));
+      obj.addBatch(require(file));
     }
   });
 
-  return suite;
+  return obj;
 };
 
 
