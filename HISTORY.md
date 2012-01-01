@@ -1,3 +1,7 @@
+0.3.5 / ???
+
+* Workagound for .npmignore fuckup under windows. Thanks to airportyh.
+
 0.3.4 / 2011-12-24
 ------------------
 
