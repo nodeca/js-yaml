@@ -29,6 +29,10 @@ var doc = jsyaml.load('greeting: hello\nname: world');
 </script>
 ```
 
+Browser support is still buggy, and mostly done to run online demo. If you
+can help to improve browser compatibility and AMD support - rise pull request.
+
+
 ## API
 
 JS-YAML automatically registers handlers for `.yml` and `.yaml` files. You can load them just with `require`.
