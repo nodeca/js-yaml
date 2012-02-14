@@ -29,8 +29,6 @@ var doc = jsyaml.load('greeting: hello\nname: world');
 </script>
 ```
 
-Also we support AMD loaders, e.g. [RequireJS](http://requirejs.org/).
-
 ## API
 
 JS-YAML automatically registers handlers for `.yml` and `.yaml` files. You can load them just with `require`.
