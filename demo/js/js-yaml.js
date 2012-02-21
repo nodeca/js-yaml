@@ -189,7 +189,11 @@ require.alias = function (from, to) {
     }
     var basedir = path.dirname(res);
     
-    var keys = Object_keys(require.modules);
+    var keys = (Object.keys || function (obj) {
+        var res = [];
+        for (var key in obj) res.push(key)
+        return res;
+    })(require.modules);
     
     for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
@@ -234,17 +238,34 @@ require.define = function (filename, fn) {
     };
 };
 
-var Object_keys = Object.keys || function (obj) {
-    var res = [];
-    for (var key in obj) res.push(key)
-    return res;
-};
-
 if (typeof process === 'undefined') process = {};
 
-if (!process.nextTick) process.nextTick = function (fn) {
-    setTimeout(fn, 0);
-};
+if (!process.nextTick) process.nextTick = (function () {
+    var queue = [];
+    var canPost = typeof window !== 'undefined'
+        && window.postMessage && window.addEventListener
+    ;
+    
+    if (canPost) {
+        window.addEventListener('message', function (ev) {
+            if (ev.source === window && ev.data === 'browserify-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+    }
+    
+    return function (fn) {
+        if (canPost) {
+            queue.push(fn);
+            window.postMessage('browserify-tick', '*');
+        }
+        else setTimeout(fn, 0);
+    };
+})();
 
 if (!process.title) process.title = 'browser';
 
@@ -256,7 +277,7 @@ if (!process.binding) process.binding = function (name) {
 if (!process.cwd) process.cwd = function () { return '.' };
 
 require.define("path", function (require, module, exports, __dirname, __filename) {
-    function filter (xs, fn) {
+function filter (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
         if (fn(xs[i], i, xs)) res.push(xs[i]);
@@ -394,7 +415,7 @@ exports.extname = function(path) {
 });
 
 require.define("/lib/js-yaml.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var fs = require('fs');
@@ -490,12 +511,12 @@ jsyaml.addConstructor = function addConstructor(tag, constructor, Loader) {
 });
 
 require.define("fs", function (require, module, exports, __dirname, __filename) {
-    // nothing to see here... no file methods for the browser
+// nothing to see here... no file methods for the browser
 
 });
 
 require.define("/lib/js-yaml/loader.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var $$ = require('./common');
@@ -572,7 +593,7 @@ module.exports.Loader = Loader;
 });
 
 require.define("/lib/js-yaml/common.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var $$ = module.exports = {};
@@ -816,7 +837,7 @@ $$.Hash = function Hash(defaultValue) {
 });
 
 require.define("/lib/js-yaml/reader.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var fs = require('fs');
@@ -1017,7 +1038,7 @@ module.exports.Reader = Reader;
 });
 
 require.define("/lib/js-yaml/errors.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var $$ = require('./common');
@@ -1181,7 +1202,7 @@ module.exports.MarkedYAMLError = MarkedYAMLError;
 });
 
 require.define("/lib/js-yaml/scanner.js", function (require, module, exports, __dirname, __filename) {
-    // Scanner produces tokens of the following types:
+// Scanner produces tokens of the following types:
 //
 // STREAM-START
 // STREAM-END
@@ -2652,24 +2673,24 @@ Scanner.prototype.scanBlockScalarBreaks = function scanBlockScalarBreaks(indent)
 };
 
 Scanner.prototype.scanFlowScalar = function scanFlowScalar(style) {
-  var double, chunks, length, code, startMark, quote, endMark;
+  var dbl, chunks, length, code, startMark, quote, endMark;
   // See the specification for details.
   // Note that we loose indentation rules for quoted scalars. Quoted
   // scalars don't need to adhere indentation because " and ' clearly
   // mark the beginning and the end of them. Therefore we are less
   // restrictive then the specification requires. We only need to check
   // that document separators are not included in scalars.
-  double = (style === '"');
+  dbl = (style === '"');
   chunks = [];
   startMark = this.getMark();
   quote = this.peek();
   this.forward();
 
-  chunks = chunks.concat(this.scanFlowScalarNonSpaces(double, startMark));
+  chunks = chunks.concat(this.scanFlowScalarNonSpaces(dbl, startMark));
 
   while (this.peek() !== quote) {
-    chunks = chunks.concat(this.scanFlowScalarSpaces(double, startMark));
-    chunks = chunks.concat(this.scanFlowScalarNonSpaces(double, startMark));
+    chunks = chunks.concat(this.scanFlowScalarSpaces(dbl, startMark));
+    chunks = chunks.concat(this.scanFlowScalarNonSpaces(dbl, startMark));
   }
 
   this.forward();
@@ -2678,7 +2699,7 @@ Scanner.prototype.scanFlowScalar = function scanFlowScalar(style) {
   return new _tokens.ScalarToken(chunks.join(''), false, startMark, endMark, style);
 };
 
-Scanner.prototype.scanFlowScalarNonSpaces = function scanFlowScalarNonSpaces(double, startMark) {
+Scanner.prototype.scanFlowScalarNonSpaces = function scanFlowScalarNonSpaces(dbl, startMark) {
   var self = this, chunks, length, ch, code, validator;
 
   validator = function (k) {
@@ -2705,13 +2726,13 @@ Scanner.prototype.scanFlowScalarNonSpaces = function scanFlowScalarNonSpaces(dou
 
     ch = this.peek();
 
-    if (!double && ch === '\'' && this.peek(1) === '\'') {
+    if (!dbl && ch === '\'' && this.peek(1) === '\'') {
       chunks.push('\'');
       this.forward(2);
-    } else if ((double && ch === '\'') || (!double && 0 <= '\"\\'.indexOf(ch))) {
+    } else if ((dbl && ch === '\'') || (!dbl && 0 <= '\"\\'.indexOf(ch))) {
       chunks.push(ch);
       this.forward();
-    } else if (double && ch === '\\') {
+    } else if (dbl && ch === '\\') {
       this.forward();
       ch = this.peek();
 
@@ -2727,7 +2748,7 @@ Scanner.prototype.scanFlowScalarNonSpaces = function scanFlowScalarNonSpaces(dou
         this.forward(length);
       } else if (0 <= '\r\n\x85\u2028\u2029'.indexOf(ch)) {
         this.scanLineBreak();
-        chunks = chunks.concat(this.scanFlowScalarBreaks(double, startMark));
+        chunks = chunks.concat(this.scanFlowScalarBreaks(dbl, startMark));
       } else {
         throw new ScannerError("while scanning a double-quoted scalar", startMark,
                                "found unknown escape character " + ch, this.getMark());
@@ -2738,7 +2759,7 @@ Scanner.prototype.scanFlowScalarNonSpaces = function scanFlowScalarNonSpaces(dou
   }
 };
 
-Scanner.prototype.scanFlowScalarSpaces = function scanFlowScalarSpaces(double, startMark) {
+Scanner.prototype.scanFlowScalarSpaces = function scanFlowScalarSpaces(dbl, startMark) {
   var chunks, length, whitespaces, ch, lineBreak, breaks;
   // See the specification for details.
   chunks = [];
@@ -2757,7 +2778,7 @@ Scanner.prototype.scanFlowScalarSpaces = function scanFlowScalarSpaces(double, s
                            "found unexpected end of stream", this.getMark());
   } else if (0 <= '\r\n\x85\u2028\u2029'.indexOf(ch)) {
     lineBreak = this.scanLineBreak();
-    breaks = this.scanFlowScalarBreaks(double, startMark);
+    breaks = this.scanFlowScalarBreaks(dbl, startMark);
 
     if (lineBreak !== '\n') {
       chunks.push(lineBreak);
@@ -2773,7 +2794,7 @@ Scanner.prototype.scanFlowScalarSpaces = function scanFlowScalarSpaces(double, s
   return chunks;
 };
 
-Scanner.prototype.scanFlowScalarBreaks = function scanFlowScalarBreaks(double, startMark) {
+Scanner.prototype.scanFlowScalarBreaks = function scanFlowScalarBreaks(dbl, startMark) {
   var chunks = [], prefix;
 
   // See the specification for details.
@@ -3074,7 +3095,7 @@ module.exports.Scanner = Scanner;
 });
 
 require.define("/lib/js-yaml/tokens.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var $$ = require('./common');
@@ -3249,7 +3270,7 @@ module.exports.ScalarToken = ScalarToken;
 });
 
 require.define("/lib/js-yaml/parser.js", function (require, module, exports, __dirname, __filename) {
-    // The following YAML grammar is LL(1) and is parsed by a recursive descent
+// The following YAML grammar is LL(1) and is parsed by a recursive descent
 // parser.
 //
 // stream            ::= STREAM-START implicit_document? explicit_document* STREAM-END
@@ -4010,7 +4031,7 @@ module.exports.Parser = Parser;
 });
 
 require.define("/lib/js-yaml/events.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var $$ = require('./common');
@@ -4136,7 +4157,7 @@ module.exports.MappingEndEvent = MappingEndEvent;
 });
 
 require.define("/lib/js-yaml/composer.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var $$ = require('./common');
@@ -4349,7 +4370,7 @@ module.exports.Composer = Composer;
 });
 
 require.define("/lib/js-yaml/nodes.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var $$ = require('./common');
@@ -4406,7 +4427,7 @@ module.exports.MappingNode = MappingNode;
 });
 
 require.define("/lib/js-yaml/resolver.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var $$ = require('./common');
@@ -4548,7 +4569,7 @@ module.exports.Resolver = Resolver;
 });
 
 require.define("/lib/js-yaml/constructor.js", function (require, module, exports, __dirname, __filename) {
-    'use strict';
+'use strict';
 
 
 var $$ = require('./common');
@@ -5209,10 +5230,6 @@ require.define("/index.js", function (require, module, exports, __dirname, __fil
 require("/index.js");
     return require('/lib/js-yaml');
   }());
-  
-  if ('function' === typeof define && define.amd) {
-    define('jsyaml', [], function () { return __jsyaml__; }, 'jsyaml');
-  }
   
   return __jsyaml__;
 }());
