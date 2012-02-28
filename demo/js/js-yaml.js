@@ -503,11 +503,6 @@ jsyaml.addConstructor = function addConstructor(tag, constructor, Loader) {
   }
 }());
 
-
-////////////////////////////////////////////////////////////////////////////////
-// vim:ts=2:sw=2
-////////////////////////////////////////////////////////////////////////////////
-
 });
 
 require.define("fs", function (require, module, exports, __dirname, __filename) {
@@ -582,13 +577,24 @@ $$.extend(Loader.prototype,
          _resolver.Resolver.prototype);
 
 
+BaseLoader.addConstructor = function (tag, constructor) {
+  _constructor.BaseConstructor.addConstructor(tag, constructor);
+};
+
+
+SafeLoader.addConstructor = function (tag, constructor) {
+  _constructor.SafeConstructor.addConstructor(tag, constructor);
+};
+
+
+Loader.addConstructor = function (tag, constructor) {
+  _constructor.Constructor.addConstructor(tag, constructor);
+};
+
+
 module.exports.BaseLoader = BaseLoader;
 module.exports.SafeLoader = SafeLoader;
 module.exports.Loader = Loader;
-
-////////////////////////////////////////////////////////////////////////////////
-// vim:ts=2:sw=2
-////////////////////////////////////////////////////////////////////////////////
 
 });
 
