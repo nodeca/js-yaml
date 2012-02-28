@@ -213,7 +213,29 @@ function: !!js/function >
   function foobar() {
     return 'Wow! JS-YAML Rocks!';
   }
-  </textarea>
+
+
+# Custom Constructors ##########################################################
+################################################################################
+
+
+# JsYaml allows you to specify a custom constructors for your structures.
+# This is an example of custom constructor defined in `js/demo.js` for
+# custom `!sexy` constructor:
+#
+# jsyaml.addConstructor('!sexy', function (node) {
+#   var arr = this.constructSequence(node), i, l;
+#
+#   for (i = 0, l = arr.length; i < l; i += 1) {
+#     arr[i] = 'sexy ' + arr[i];
+#   }
+#
+#   return arr;
+# });
+foobar: !sexy
+  - bunny
+  - chocolate
+</textarea>
 </div>
 <div class='dst'>
   <h5>Result (JS object dump):</h5>

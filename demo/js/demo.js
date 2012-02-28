@@ -4,6 +4,17 @@ window.runDemo = function runDemo() {
   var source, result, initial, permalink, timer1, timer2 = null,
       hash = location.hash.toString();
 
+  // add sexy constructor
+  jsyaml.addConstructor('!sexy', function (node) {
+    var arr = this.constructSequence(node), i, l;
+
+    for (i = 0, l = arr.length; i < l; i += 1) {
+      arr[i] = 'sexy ' + arr[i];
+    }
+
+    return arr;
+  });
+
   function parse() {
     var str;
 
