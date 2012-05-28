@@ -56,3 +56,32 @@ h5 {
 .addthis_toolbox:hover {
   opacity: 1;
 }
+
+.gh-ribbon {
+    -moz-transform: rotate(45deg);
+    background-color: #686868;
+    box-shadow: 0 0 2px rgba(102, 102, 102, 0.4);
+    display: block;
+    padding: 1px 0;
+    position: fixed;
+    right: -60px;
+    top: 44px;
+    width: 230px;
+    z-index: 10000;
+}
+.gh-ribbon a {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    border: 1px solid #AAAAAA;
+    color: #FFFFFF;
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    outline: medium none;
+    padding: 4px 50px 2px;
+    text-align: center;
+    text-decoration: none;
+}
+.csstransforms .gh-ribbon {
+    display: block;
+}
