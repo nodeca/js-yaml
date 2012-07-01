@@ -8,6 +8,16 @@ JS-YAML - YAML 1.1 parser for JavaScript
 This is a native port of [PyYAML](http://pyyaml.org/), the most advanced YAML parser.
 Now you can use all modern YAML feature right in JavaScript. Originally snapshoted version - PyYAML 3.10 (2011-05-30).
 
+
+## Braking changes in 0.3.x -> 0.4.x
+
+- `y`, `yes`, `n`, `no`, `on`, `off` are not converted to Booleans anymore.
+  Decision to drop support of such "magic" was made after speaking with YAML
+  core developers: from now on we try to keep as minimal subset of rules as
+  possible to keep things obvious. Booleans are following YAML 1.2 core schema
+  now: http://www.yaml.org/spec/1.2/spec.html#id2804923
+
+
 ## Installation
 
 ### YAML module for node.js
