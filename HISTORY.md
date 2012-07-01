@@ -1,5 +1,5 @@
-1.0.0 / In development
-----------------------
+1.0.0 / 2012-06-01
+------------------
 
 * `y`, `yes`, `n`, `no`, `on`, `off` are not converted to Booleans anymore.
   Fixes #42.
