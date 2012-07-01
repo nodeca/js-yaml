@@ -67,13 +67,13 @@ gh-pages:
 		echo 'Remote repo URL not found' >&2 ; \
 		exit 128 ; \
 		fi
-	$(MAKE) doc && \
-		cp -r ./doc ${TMP_PATH} && \
-		touch ${TMP_PATH}/.nojekyll
+	mkdir ${TMP_PATH}
+	cp -r demo/* ${TMP_PATH}
+	touch ${TMP_PATH}/.nojekyll
 	cd ${TMP_PATH} && \
 		git init && \
 		git add . && \
-		git commit -q -m 'Recreated docs'
+		git commit -q -m 'Updated browserified demo'
 	cd ${TMP_PATH} && \
 		git remote add remote ${REMOTE_REPO} && \
 		git push --force remote +master:gh-pages 
