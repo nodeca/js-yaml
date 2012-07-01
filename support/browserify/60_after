@@ -1,5 +1,0 @@
-    return require('/lib/js-yaml');
-  }());
-  
-  return __jsyaml__;
-}());

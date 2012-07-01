@@ -70,20 +70,20 @@ if (!Object.getOwnPropertyNames) {
     return names;
   };
 }
-;var jsyaml = (function () {
-  var __jsyaml__ = (function () {
-var require = function (file, cwd) {
+(function(){var require = function (file, cwd) {
     var resolved = require.resolve(file, cwd || '/');
     var mod = require.modules[resolved];
     if (!mod) throw new Error(
         'Failed to resolve module ' + file + ', tried ' + resolved
     );
-    var res = mod._cached ? mod._cached : mod();
+    var cached = require.cache[resolved];
+    var res = cached? cached.exports : mod();
     return res;
 }
 
 require.paths = [];
 require.modules = {};
+require.cache = {};
 require.extensions = [".js",".coffee"];
 
 require._core = {
@@ -100,7 +100,8 @@ require.resolve = (function () {
         
         if (require._core[x]) return x;
         var path = require.modules.path();
-        var y = cwd || '.';
+        cwd = path.resolve('/', cwd);
+        var y = cwd || '/';
         
         if (x.match(/^(?:\.\.?\/|\/)/)) {
             var m = loadAsFileSync(path.resolve(y, x))
@@ -114,6 +115,7 @@ require.resolve = (function () {
         throw new Error("Cannot find module '" + x + "'");
         
         function loadAsFileSync (x) {
+            x = path.normalize(x);
             if (require.modules[x]) {
                 return x;
             }
@@ -126,7 +128,7 @@ require.resolve = (function () {
         
         function loadAsDirectorySync (x) {
             x = x.replace(/\/+$/, '');
-            var pkgfile = x + '/package.json';
+            var pkgfile = path.normalize(x + '/package.json');
             if (require.modules[pkgfile]) {
                 var pkg = require.modules[pkgfile]();
                 var b = pkg.browserify;
@@ -191,7 +193,7 @@ require.alias = function (from, to) {
     
     var keys = (Object.keys || function (obj) {
         var res = [];
-        for (var key in obj) res.push(key)
+        for (var key in obj) res.push(key);
         return res;
     })(require.modules);
     
@@ -207,77 +209,48 @@ require.alias = function (from, to) {
     }
 };
 
-require.define = function (filename, fn) {
-    var dirname = require._core[filename]
-        ? ''
-        : require.modules.path().dirname(filename)
-    ;
+(function () {
+    var process = {};
     
-    var require_ = function (file) {
-        return require(file, dirname)
-    };
-    require_.resolve = function (name) {
-        return require.resolve(name, dirname);
-    };
-    require_.modules = require.modules;
-    require_.define = require.define;
-    var module_ = { exports : {} };
-    
-    require.modules[filename] = function () {
-        require.modules[filename]._cached = module_.exports;
-        fn.call(
-            module_.exports,
-            require_,
-            module_,
-            module_.exports,
-            dirname,
-            filename
-        );
-        require.modules[filename]._cached = module_.exports;
-        return module_.exports;
-    };
-};
-
-if (typeof process === 'undefined') process = {};
-
-if (!process.nextTick) process.nextTick = (function () {
-    var queue = [];
-    var canPost = typeof window !== 'undefined'
-        && window.postMessage && window.addEventListener
-    ;
-    
-    if (canPost) {
-        window.addEventListener('message', function (ev) {
-            if (ev.source === window && ev.data === 'browserify-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-    }
-    
-    return function (fn) {
-        if (canPost) {
-            queue.push(fn);
-            window.postMessage('browserify-tick', '*');
+    require.define = function (filename, fn) {
+        if (require.modules.__browserify_process) {
+            process = require.modules.__browserify_process();
         }
-        else setTimeout(fn, 0);
+        
+        var dirname = require._core[filename]
+            ? ''
+            : require.modules.path().dirname(filename)
+        ;
+        
+        var require_ = function (file) {
+            return require(file, dirname);
+        };
+        require_.resolve = function (name) {
+            return require.resolve(name, dirname);
+        };
+        require_.modules = require.modules;
+        require_.define = require.define;
+        require_.cache = require.cache;
+        var module_ = { exports : {} };
+        
+        require.modules[filename] = function () {
+            require.cache[filename] = module_;
+            fn.call(
+                module_.exports,
+                require_,
+                module_,
+                module_.exports,
+                dirname,
+                filename,
+                process
+            );
+            return module_.exports;
+        };
     };
 })();
 
-if (!process.title) process.title = 'browser';
 
-if (!process.binding) process.binding = function (name) {
-    if (name === 'evals') return require('vm')
-    else throw new Error('No such module')
-};
-
-if (!process.cwd) process.cwd = function () { return '.' };
-
-require.define("path", function (require, module, exports, __dirname, __filename) {
-function filter (xs, fn) {
+require.define("path",function(require,module,exports,__dirname,__filename,process){function filter (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
         if (fn(xs[i], i, xs)) res.push(xs[i]);
@@ -411,11 +384,59 @@ exports.basename = function(path, ext) {
 exports.extname = function(path) {
   return splitPathRe.exec(path)[3] || '';
 };
-
 });
 
-require.define("/lib/js-yaml.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("__browserify_process",function(require,module,exports,__dirname,__filename,process){var process = module.exports = {};
+
+process.nextTick = (function () {
+    var queue = [];
+    var canPost = typeof window !== 'undefined'
+        && window.postMessage && window.addEventListener
+    ;
+    
+    if (canPost) {
+        window.addEventListener('message', function (ev) {
+            if (ev.source === window && ev.data === 'browserify-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+    }
+    
+    return function (fn) {
+        if (canPost) {
+            queue.push(fn);
+            window.postMessage('browserify-tick', '*');
+        }
+        else setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+process.binding = function (name) {
+    if (name === 'evals') return (require)('vm')
+    else throw new Error('No such module. (Possibly not yet loaded)')
+};
+
+(function () {
+    var cwd = '/';
+    var path;
+    process.cwd = function () { return cwd };
+    process.chdir = function (dir) {
+        if (!path) path = require('path');
+        cwd = path.resolve(dir, cwd);
+    };
+})();
+});
+
+require.define("/lib/js-yaml.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var fs = require('fs');
@@ -489,8 +510,7 @@ jsyaml.addConstructor = function addConstructor(tag, constructor, Loader) {
     var fd = fs.openSync(filename, 'r');
 
     // fill in documents
-    module.exports = [];
-    jsyaml.loadAll(fd, function (doc) { module.exports.push(doc); });
+    module.exports = jsyaml.load(fd);
 
     fs.closeSync(fd);
   };
@@ -502,16 +522,12 @@ jsyaml.addConstructor = function addConstructor(tag, constructor, Loader) {
     require.extensions['.yaml'] = require_handler;
   }
 }());
-
 });
 
-require.define("fs", function (require, module, exports, __dirname, __filename) {
-// nothing to see here... no file methods for the browser
-
+require.define("fs",function(require,module,exports,__dirname,__filename,process){// nothing to see here... no file methods for the browser
 });
 
-require.define("/lib/js-yaml/loader.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("/lib/js-yaml/loader.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var $$ = require('./common');
@@ -595,11 +611,9 @@ Loader.addConstructor = function (tag, constructor) {
 module.exports.BaseLoader = BaseLoader;
 module.exports.SafeLoader = SafeLoader;
 module.exports.Loader = Loader;
-
 });
 
-require.define("/lib/js-yaml/common.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("/lib/js-yaml/common.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var $$ = module.exports = {};
@@ -839,11 +853,9 @@ $$.Hash = function Hash(defaultValue) {
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/lib/js-yaml/reader.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("/lib/js-yaml/reader.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var fs = require('fs');
@@ -858,9 +870,9 @@ var NON_PRINTABLE = new RegExp('[^\x09\x0A\x0D -~\x85\xA0-\uD7FF\uE000-\uFFFD]')
 // IE 7-8 hack. As we use ONLY strings in browsers as input stream, there's no
 // need for stream.slice() call and we can simply use stream.charAt() when we
 // are running on that shit...
-var getSingleChar = (undefined === ('a')[0])
-  ? function (str, pos) { return str.charAt(pos); }
-  : function (str, pos) { return str[pos]; };
+var getSingleChar = (undefined === ('a')[0]) ?
+                    function (str, pos) { return str.charAt(pos); }
+                  : function (str, pos) { return str[pos]; };
 
 
 function ReaderError(name, position, character, encoding, reason) {
@@ -950,8 +962,8 @@ Reader.prototype.forward = function forward(length) {
     this.pointer += 1;
     this.index += 1;
 
-    if (0 <= '\n\x85\u2028\u2029'.indexOf(ch)
-        || ('\r' === ch && '\n' !== this.buffer[this.pointer])) {
+    if (0 <= '\n\x85\u2028\u2029'.indexOf(ch) ||
+        ('\r' === ch && '\n' !== this.buffer[this.pointer])) {
       this.line += 1;
       this.column = 0;
     } else if (ch !== '\uFEFF') {
@@ -1040,11 +1052,9 @@ module.exports.Reader = Reader;
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/lib/js-yaml/errors.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("/lib/js-yaml/errors.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var $$ = require('./common');
@@ -1155,11 +1165,11 @@ function toStringFull(self) {
     lines.push(self.context);
   }
 
-  if (null !== self.contextMark
-      && (null === self.problem || null === self.problemMark
-          || self.contextMark.name !== self.problemMark.name
-          || self.contextMark.line !== self.problemMark.line
-          || self.contextMark.column !== self.problemMark.column)) {
+  if (null !== self.contextMark &&
+      (null === self.problem || null === self.problemMark ||
+       self.contextMark.name !== self.problemMark.name ||
+       self.contextMark.line !== self.problemMark.line ||
+       self.contextMark.column !== self.problemMark.column)) {
     lines.push(self.contextMark.toString());
   }
 
@@ -1204,11 +1214,9 @@ module.exports.MarkedYAMLError = MarkedYAMLError;
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/lib/js-yaml/scanner.js", function (require, module, exports, __dirname, __filename) {
-// Scanner produces tokens of the following types:
+require.define("/lib/js-yaml/scanner.js",function(require,module,exports,__dirname,__filename,process){// Scanner produces tokens of the following types:
 //
 // STREAM-START
 // STREAM-END
@@ -1230,7 +1238,7 @@ require.define("/lib/js-yaml/scanner.js", function (require, module, exports, __
 // ANCHOR(value)
 // TAG(value)
 // SCALAR(value, plain, style)
-// 
+//
 // Read comments in the Scanner code for more details.
 
 
@@ -2117,11 +2125,9 @@ Scanner.prototype.checkPlain = function checkPlain() {
   // independent.
   var ch = this.peek();
   return (
-   -1 === '\x00 \t\r\n\x85\u2028\u2029-?:,[]{}#&*!|>\'\"%@`'.indexOf(ch)
-   ||
+   -1 === '\x00 \t\r\n\x85\u2028\u2029-?:,[]{}#&*!|>\'\"%@`'.indexOf(ch) ||
    (
-      -1 === '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(1))
-      &&
+      -1 === '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(1)) &&
       (
         ch === '-' || (!this.flowLevel && 0 <= '?:'.indexOf(ch))
       )
@@ -2679,7 +2685,7 @@ Scanner.prototype.scanBlockScalarBreaks = function scanBlockScalarBreaks(indent)
 };
 
 Scanner.prototype.scanFlowScalar = function scanFlowScalar(style) {
-  var dbl, chunks, length, code, startMark, quote, endMark;
+  var dbl, chunks, startMark, quote, endMark;
   // See the specification for details.
   // Note that we loose indentation rules for quoted scalars. Quoted
   // scalars don't need to adhere indentation because " and ' clearly
@@ -2857,10 +2863,10 @@ Scanner.prototype.scanPlain = function scanPlain() {
     while (true) {
       ch = this.peek(length);
 
-      if (0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(ch)
-          || (!this.flowLevel && ch === ':'
-              && 0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(length + 1)))
-          || (this.flowLevel && 0 <= ',:?[]{}'.indexOf(ch))) {
+      if (0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(ch) || (
+            !this.flowLevel && ch === ':' &&
+            0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(length + 1))
+          ) || (this.flowLevel && 0 <= ',:?[]{}'.indexOf(ch))) {
         break;
       }
 
@@ -2887,8 +2893,8 @@ Scanner.prototype.scanPlain = function scanPlain() {
     endMark = this.getMark();
     spaces = this.scanPlainSpaces(indent, startMark);
 
-    if (!Array.isArray(spaces) || !spaces.length || this.peek() === '#'
-        || (!this.flowLevel && this.column < indent)) {
+    if (!Array.isArray(spaces) || !spaces.length || this.peek() === '#' ||
+        (!this.flowLevel && this.column < indent)) {
       break;
     }
   }
@@ -2919,8 +2925,8 @@ Scanner.prototype.scanPlainSpaces = function scanPlainSpaces(indent, startMark) 
     this.allowSimpleKey = true;
     prefix = this.prefix(3);
 
-    if ((prefix === '---' || prefix === '...')
-        && 0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3))) {
+    if ((prefix === '---' || prefix === '...') &&
+        0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3))) {
       return;
     }
 
@@ -2933,8 +2939,8 @@ Scanner.prototype.scanPlainSpaces = function scanPlainSpaces(indent, startMark) 
         breaks.push(this.scanLineBreak());
         prefix = this.prefix(3);
 
-        if ((prefix === '---' || prefix === '...')
-            && 0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3))) {
+        if ((prefix === '---' || prefix === '...') &&
+            0 <= '\x00 \t\r\n\x85\u2028\u2029'.indexOf(this.peek(3))) {
           return;
         }
       }
@@ -3097,11 +3103,9 @@ module.exports.Scanner = Scanner;
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/lib/js-yaml/tokens.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("/lib/js-yaml/tokens.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var $$ = require('./common');
@@ -3272,11 +3276,9 @@ module.exports.ScalarToken = ScalarToken;
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/lib/js-yaml/parser.js", function (require, module, exports, __dirname, __filename) {
-// The following YAML grammar is LL(1) and is parsed by a recursive descent
+require.define("/lib/js-yaml/parser.js",function(require,module,exports,__dirname,__filename,process){// The following YAML grammar is LL(1) and is parsed by a recursive descent
 // parser.
 //
 // stream            ::= STREAM-START implicit_document? explicit_document* STREAM-END
@@ -3829,7 +3831,7 @@ Parser.prototype.parseBlockMappingKey = function parseBlockMappingKey() {
 };
 
 Parser.prototype.parseBlockMappingValue = function parseBlockMappingValue() {
-  var token, event;
+  var token;
 
   if (this.checkToken(_tokens.ValueToken)) {
     token = this.getToken();
@@ -4033,11 +4035,9 @@ module.exports.Parser = Parser;
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/lib/js-yaml/events.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("/lib/js-yaml/events.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var $$ = require('./common');
@@ -4159,11 +4159,9 @@ module.exports.MappingEndEvent = MappingEndEvent;
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/lib/js-yaml/composer.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("/lib/js-yaml/composer.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var $$ = require('./common');
@@ -4302,7 +4300,7 @@ Composer.prototype.composeScalarNode = function composeScalarNode(anchor) {
 };
 
 Composer.prototype.composeSequenceNode = function composeSequenceNode(anchor) {
-  var start_event, event, tag, node, index, end_event;
+  var start_event, tag, node, index, end_event;
 
   start_event = this.getEvent();
   tag = start_event.tag;
@@ -4335,7 +4333,7 @@ Composer.prototype.composeSequenceNode = function composeSequenceNode(anchor) {
 
 
 Composer.prototype.composeMappingNode = function composeMappingNode(anchor) {
-  var startEvent, event, tag, node, itemKey, itemValue, endEvent;
+  var startEvent, tag, node, itemKey, itemValue, endEvent;
 
   startEvent = this.getEvent();
   tag = startEvent.tag;
@@ -4372,11 +4370,9 @@ module.exports.Composer = Composer;
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/lib/js-yaml/nodes.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("/lib/js-yaml/nodes.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var $$ = require('./common');
@@ -4429,11 +4425,9 @@ module.exports.MappingNode = MappingNode;
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/lib/js-yaml/resolver.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("/lib/js-yaml/resolver.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var $$ = require('./common');
@@ -4515,10 +4509,8 @@ Resolver.yamlImplicitResolvers = {};
 Resolver.addImplicitResolver = BaseResolver.addImplicitResolver;
 
 Resolver.addImplicitResolver('tag:yaml.org,2002:bool',
-  new RegExp('^(?:y|yes|Yes|YES|n|no|No|NO' +
-             '|true|True|TRUE|false|False|FALSE' +
-             '|on|On|ON|off|Off|OFF)$'),
-  ['y', 'Y', 'n', 'N', 't', 'T', 'f', 'F', 'o', 'O']);
+  new RegExp('^(?:true|True|TRUE|false|False|FALSE)$'),
+  ['t', 'T', 'f', 'F']);
 
 Resolver.addImplicitResolver('tag:yaml.org,2002:float',
   new RegExp('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?' +
@@ -4571,11 +4563,9 @@ module.exports.Resolver = Resolver;
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/lib/js-yaml/constructor.js", function (require, module, exports, __dirname, __filename) {
-'use strict';
+require.define("/lib/js-yaml/constructor.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
 var $$ = require('./common');
@@ -4760,7 +4750,7 @@ BaseConstructor.prototype.constructMapping = function constructMapping(node, dee
     var key_node = pair[0], value_node = pair[1], key, value;
 
     key = this.constructObject(key_node, deep);
-    // TODO: Do we need to check 
+    // TODO: Do we need to check
     if (undefined === key_node.hash) {
       throw new ConstructorError("while constructing a mapping", key_node.startMark,
                   "found unhashable key", key_node.startMark);
@@ -4810,7 +4800,7 @@ SafeConstructor.prototype.constructScalar = function constructScalar(node) {
 
   if ($$.isInstanceOf(node, _nodes.MappingNode)) {
     $$.each(node.value, function (pair) {
-      var key_node = pair[0], value_node = pair[1], value;
+      var key_node = pair[0], value_node = pair[1];
 
       if ('tag:yaml.org,2002:value' === key_node.tag) {
         result = this.constructScalar(value_node);
@@ -5226,16 +5216,13 @@ module.exports.Constructor = Constructor;
 ////////////////////////////////////////////////////////////////////////////////
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
-
 });
 
-require.define("/index.js", function (require, module, exports, __dirname, __filename) {
-    module.exports = require('./lib/js-yaml.js');
+require.define("/index.js",function(require,module,exports,__dirname,__filename,process){module.exports = require('./lib/js-yaml.js');
 
+if (window && !window.jsyaml) {
+  window.jsyaml = module.exports;
+}
 });
 require("/index.js");
-    return require('/lib/js-yaml');
-  }());
-  
-  return __jsyaml__;
-}());
+})();
