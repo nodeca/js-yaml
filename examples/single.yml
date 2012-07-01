@@ -86,11 +86,7 @@ binary:
 
 # http://yaml.org/type/bool.html ----------------------------------------------#
 
-bool:
-  canonical: y
-  answer: NO
-  logical: True
-  option: on
+bool: True
 
 # http://yaml.org/type/float.html ---------------------------------------------#
 
