@@ -12,7 +12,7 @@ CURR_HEAD   := $(firstword $(shell git show-ref --hash HEAD | cut --bytes=-6) ma
 GITHUB_PROJ := nodeca/${NPM_PACKAGE}
 SRC_URL_FMT := https://github.com/${GITHUB_PROJ}/blob/${CURR_HEAD}/{file}\#L{line}
 
-JS_FILES    := $(shell find ./bin ./lib ./test -type f -name '*.js' -print)
+JS_FILES    := $(shell find ./lib ./test -type f -name '*.js' -print)
 
 lint:
 	@if test ! `which jslint` ; then \
