@@ -29,7 +29,11 @@ npm install js-yaml
 ```
 
 If you want to inspect your YAML files from CLI,
-install [js-yaml.bin](https://github.com/nodeca/js-yaml.bin).
+install js-yaml globally:
+
+```
+npm install js-yaml -g
+```
 
 
 ### bundled YAML library for browser
