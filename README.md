@@ -9,7 +9,7 @@ This is a native port of [PyYAML](http://pyyaml.org/), the most advanced YAML pa
 Now you can use all modern YAML feature right in JavaScript. Originally snapshoted version - PyYAML 3.10 (2011-05-30).
 
 
-## Braking changes in 0.3.x -> 0.4.x
+## Braking changes in 0.3.x -> 1.0.x
 
 - `y`, `yes`, `n`, `no`, `on`, `off` are not converted to Booleans anymore.
   Decision to drop support of such "magic" was made after speaking with YAML
@@ -18,6 +18,7 @@ Now you can use all modern YAML feature right in JavaScript. Originally snapshot
   now: http://www.yaml.org/spec/1.2/spec.html#id2804923
 - `require('file.yml')` now returns a single document (was array of documents)
   and throws an error when file contains multiple documents.
+- `js-yaml.bin` become part of `js-yaml` again.
 
 
 ## Installation
@@ -28,12 +29,29 @@ Now you can use all modern YAML feature right in JavaScript. Originally snapshot
 npm install js-yaml
 ```
 
-If you want to inspect your YAML files from CLI,
-install js-yaml globally:
+
+### CLI executable
+
+If you want to inspect your YAML files from CLI, install js-yaml globally:
 
 ```
 npm install js-yaml -g
 ```
+
+##### Usage
+
+    usage: js-yaml [-h] [-v] [-c] [-j] [-t] file
+
+    Positional arguments:
+      file           File with YAML document(s)
+
+    Optional arguments:
+      -h, --help     Show this help message and exit.
+      -v, --version  Show program's version number and exit.
+      -c, --compact  Display errors in compact mode
+      -j, --to-json  Output a non-funky boring JSON
+      -t, --trace    Show stack trace on error
+
 
 
 ### bundled YAML library for browser

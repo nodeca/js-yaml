@@ -1,10 +1,11 @@
-0.4.0 / In development
+1.0.0 / In development
 ----------------------
 
 * `y`, `yes`, `n`, `no`, `on`, `off` are not converted to Booleans anymore.
   Fixes #42.
 * `require(filename)` now returns a single document and throws an Error if
   file contains more than one document.
+* CLI was merged back from js-yaml.bin
 
 
 0.3.7 / 2012-02-28
