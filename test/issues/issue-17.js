@@ -10,7 +10,7 @@ module.exports = require('../helper').issue({
   title: "#17: Non-specific `!` tags should resolve to !!str",
   fixed: true,
   test: function () {
-    var str = require(source).shift();
+    var str = require(source);
     Assert.equal('string', typeof str);
   }
 });

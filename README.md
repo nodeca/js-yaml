@@ -16,6 +16,8 @@ Now you can use all modern YAML feature right in JavaScript. Originally snapshot
   core developers: from now on we try to keep as minimal subset of rules as
   possible to keep things obvious. Booleans are following YAML 1.2 core schema
   now: http://www.yaml.org/spec/1.2/spec.html#id2804923
+- `require('file.yml')` now returns a single document (was array of documents)
+  and throws an error when file contains multiple documents.
 
 
 ## Installation
@@ -52,21 +54,10 @@ Just with one string!
 ``` javascript
 require('js-yaml');
 
-// Get array of documents, or throw exception on error
-var docs = require('/home/ixti/examples.yml');
+// Get document, or throw exception on error
+var doc = require('/home/ixti/example.yml');
 
-console.log(docs);
-```
-
-If you are sure, that file has only one document, chained `shift()` will help to exclude array wrapper:
-
-``` javascript
-require('js-yaml');
-
-// Get array of documents, or throw exception on error
-var singleDoc = require('/home/ixti/examples.yml').shift();
-
-console.log(singleDoc);
+console.log(doc);
 ```
 
 

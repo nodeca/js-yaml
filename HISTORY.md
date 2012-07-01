@@ -3,6 +3,8 @@
 
 * `y`, `yes`, `n`, `no`, `on`, `off` are not converted to Booleans anymore.
   Fixes #42.
+* `require(filename)` now returns a single document and throws an Error if
+  file contains more than one document.
 
 
 0.3.7 / 2012-02-28

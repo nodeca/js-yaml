@@ -11,7 +11,7 @@ module.exports = require('../helper').issue({
   fixed: true,
   test: function () {
     Assert.doesNotThrow(function () {
-      require(source).shift();
+      require(source);
     }, TypeError);
   }
 });
