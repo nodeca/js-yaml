@@ -5218,11 +5218,7 @@ module.exports.Constructor = Constructor;
 ////////////////////////////////////////////////////////////////////////////////
 });
 
-require.define("/index.js",function(require,module,exports,__dirname,__filename,process){module.exports = require('./lib/js-yaml.js');
-
-if (window && !window.jsyaml) {
-  window.jsyaml = module.exports;
-}
+require.define("/index.browserify.js",function(require,module,exports,__dirname,__filename,process){window.jsyaml = require('./lib/js-yaml.js');
 });
-require("/index.js");
+require("/index.browserify.js");
 })();

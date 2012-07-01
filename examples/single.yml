@@ -86,7 +86,13 @@ binary:
 
 # http://yaml.org/type/bool.html ----------------------------------------------#
 
-bool: True
+bool:
+  - true
+  - True
+  - TRUE
+  - false
+  - False
+  - FALSE
 
 # http://yaml.org/type/float.html ---------------------------------------------#
 
