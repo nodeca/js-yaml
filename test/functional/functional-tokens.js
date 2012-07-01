@@ -61,8 +61,8 @@ module.exports = {
       });
 
       JsYaml.scan(Fs.readFileSync(dataFile, 'utf8'), function (token) {
-        if (Common.isInstanceOf(token, Tokens.StreamStartToken)
-            || Common.isInstanceOf(token, Tokens.StreamEndToken)) {
+        if (Common.isInstanceOf(token, Tokens.StreamStartToken) ||
+            Common.isInstanceOf(token, Tokens.StreamEndToken)) {
           return;
         }
 

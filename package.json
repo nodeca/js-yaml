@@ -23,9 +23,6 @@
                         "test" : "make test"
                       },
 
-  "devDependencies" : {
-                        "vows"    : "~ 0.6.0",
-                        "jslint"  : "https://github.com/reid/node-jslint/tarball/6131ebf5713274871b89735105e3286131804771"
-                      },
+  "devDependencies" : { "vows": "~ 0.6.0" },
   "engines"         : { "node": "> 0.4.11" }
 }

@@ -160,8 +160,8 @@ CanonicalScanner.prototype.scan = function scan() {
 };
 
 CanonicalScanner.prototype.scanDirective = function scanDirective() {
-  if (this.data.slice(this.index, this.index + DIRECTIVE.length) === this.DIRECTIVE
-      && 0 <= ' \n\x00'.indexOf(this.data.slice(this.index + DIRECTIVE.length))) {
+  if (this.data.slice(this.index, this.index + DIRECTIVE.length) === this.DIRECTIVE &&
+      0 <= ' \n\x00'.indexOf(this.data.slice(this.index + DIRECTIVE.length))) {
     this.index += this.DIRECTIVE.length;
     return new _tokens.DirectiveToken('YAML', [1, 1], null, null);
   }
@@ -172,8 +172,8 @@ CanonicalScanner.prototype.scanDirective = function scanDirective() {
 CanonicalScanner.prototype.scanAlias = function scanAlias() {
   var start, value, TokenClass;
 
-  TokenClass = (this.data[this.index] === '*')
-              ? (_tokens.AliasToken) : (_tokens.AnchorToken);
+  TokenClass = (this.data[this.index] === '*') ? (_tokens.AliasToken)
+             : (_tokens.AnchorToken);
 
   this.index += 1;
   start = this.index;
