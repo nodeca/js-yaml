@@ -97,7 +97,7 @@ browserify:
 	if test ! `which browserify` ; then npm install browserify ; fi
 	if test ! `which uglifyjs` ; then npm install uglify-js ; fi
 	cp -r support/browserify/ ${TMP_PATH}
-	browserify index.browserify.js -o ${TMP_PATH}/50_js-yaml.js
+	browserify -r ./index -o ${TMP_PATH}/50_js-yaml.js
 	cat ${TMP_PATH}/* > js-yaml.js
 	rm -rf ${TMP_PATH}
 	cp js-yaml.js demo/js/

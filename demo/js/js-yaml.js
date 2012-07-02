@@ -70,7 +70,8 @@ if (!Object.getOwnPropertyNames) {
     return names;
   };
 }
-(function(){var require = function (file, cwd) {
+var jsyaml = window.jsyaml = (function () {
+var require = function (file, cwd) {
     var resolved = require.resolve(file, cwd || '/');
     var mod = require.modules[resolved];
     if (!mod) throw new Error(
@@ -434,6 +435,11 @@ process.binding = function (name) {
         cwd = path.resolve(dir, cwd);
     };
 })();
+});
+
+require.define("/package.json",function(require,module,exports,__dirname,__filename,process){module.exports = {"main":"./index.js"}});
+
+require.define("/index.js",function(require,module,exports,__dirname,__filename,process){module.exports = require('./lib/js-yaml.js');
 });
 
 require.define("/lib/js-yaml.js",function(require,module,exports,__dirname,__filename,process){'use strict';
@@ -5217,8 +5223,4 @@ module.exports.Constructor = Constructor;
 // vim:ts=2:sw=2
 ////////////////////////////////////////////////////////////////////////////////
 });
-
-require.define("/index.browserify.js",function(require,module,exports,__dirname,__filename,process){window.jsyaml = require('./lib/js-yaml.js');
-});
-require("/index.browserify.js");
-})();
+return require('./index'); }());
