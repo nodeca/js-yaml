@@ -1,3 +1,8 @@
+1.0.1 / In development
+----------------------
+
+* Fixes `TypeError: 'undefined' is not an object` under Safari. Thanks Phuong.
+
 1.0.0 / 2012-06-01
 ------------------
 

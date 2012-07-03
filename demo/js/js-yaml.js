@@ -54,7 +54,7 @@ if (!Function.prototype.bind) {
   Function.prototype.bind = function bind(context) {
     var func = this;
     return function bound() {
-      func.apply(context, arguments);
+      return func.apply(context, arguments);
     };
   };
 }
