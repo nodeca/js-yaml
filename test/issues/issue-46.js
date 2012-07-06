@@ -7,7 +7,7 @@ var source = __dirname + '/data/issue-46.yml';
 
 module.exports = require('../helper').issue({
   title: "#46: Timestamps are incorrectly parsed in local time",
-  fixed: false,
+  fixed: true,
   test: function () {
       var data = require(source);
 
