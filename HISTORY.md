@@ -2,8 +2,10 @@
 ----------------------
 
 * Fixes `TypeError: 'undefined' is not an object` under Safari. Thanks Phuong.
+* Fix timestamps incorrectly parsed in local time. Thanks @caolan. Closes #46.
 
-1.0.0 / 2012-06-01
+
+1.0.0 / 2012-07-01
 ------------------
 
 * `y`, `yes`, `n`, `no`, `on`, `off` are not converted to Booleans anymore.
