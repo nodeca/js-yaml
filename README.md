@@ -6,7 +6,8 @@ JS-YAML - YAML 1.1 parser for JavaScript
 [Online Demo](http://nodeca.github.com/js-yaml/)
 
 This is a native port of [PyYAML](http://pyyaml.org/), the most advanced YAML parser.
-Now you can use all modern YAML feature right in JavaScript. Originally snapshoted version - PyYAML 3.10 (2011-05-30).
+Now you can use all modern YAML feature right in JavaScript. Originally snapshoted
+version - PyYAML 3.10 (2011-05-30).
 
 
 ## Breaking changes in 0.3.x -> 1.0.x
@@ -17,7 +18,9 @@ Now you can use all modern YAML feature right in JavaScript. Originally snapshot
   possible to keep things obvious. Booleans are following YAML 1.2 core schema
   now: http://www.yaml.org/spec/1.2/spec.html#id2804923
 - `require('file.yml')` now returns a single document (was array of documents)
-  and throws an error when file contains multiple documents.
+  and throws an error when file contains multiple documents. That should improve
+  switching between YAML <-> JSON. `require('file.json')` will give the same
+  result now.
 - `js-yaml.bin` become part of `js-yaml` again.
 
 
