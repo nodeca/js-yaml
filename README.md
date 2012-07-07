@@ -9,7 +9,7 @@ This is a native port of [PyYAML](http://pyyaml.org/), the most advanced YAML pa
 Now you can use all modern YAML feature right in JavaScript. Originally snapshoted version - PyYAML 3.10 (2011-05-30).
 
 
-## Braking changes in 0.3.x -> 1.0.x
+## Breaking changes in 0.3.x -> 1.0.x
 
 - `y`, `yes`, `n`, `no`, `on`, `off` are not converted to Booleans anymore.
   Decision to drop support of such "magic" was made after speaking with YAML
