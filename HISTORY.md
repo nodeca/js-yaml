@@ -1,5 +1,5 @@
-1.0.1 / In development
-----------------------
+1.0.1 / 2012-07-07
+------------------
 
 * Fixes `TypeError: 'undefined' is not an object` under Safari. Thanks Phuong.
 * Fix timestamps incorrectly parsed in local time. Thanks @caolan. Closes #46.
