@@ -48,7 +48,7 @@ doc:
 		exit 128 ; \
 		fi
 	rm -rf ./doc
-	ndoc lib --link-format "{package.homepage}/blob/${CURR_HEAD}/{file}#L{line}"
+	ndoc --link-format "{package.homepage}/blob/${CURR_HEAD}/{file}#L{line}"
 
 
 dev-deps:
@@ -82,6 +82,10 @@ gh-pages:
 publish:
 	@if test 0 -ne `git status --porcelain | wc -l` ; then \
 		echo "Unclean working tree. Commit or stash changes first." >&2 ; \
+		exit 128 ; \
+		fi
+	@if test 0 -ne `git fetch ; git status | grep '^# Your branch' | wc -l` ; then \
+		echo "Local/Remote history differs. Please push/pull changes." >&2 ; \
 		exit 128 ; \
 		fi
 	@if test 0 -ne `git tag -l ${NPM_VERSION} | wc -l` ; then \
