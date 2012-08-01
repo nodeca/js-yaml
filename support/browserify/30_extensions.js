@@ -28,6 +28,17 @@ if (!Array.prototype.forEach) {
   };
 }
 
+if (!Array.prototype.map) {
+  Array.prototype.map = function (iterator, context) {
+    var result = [];
+    context = context || this;
+    this.forEach(function (val, key) {
+      result.push(iterator.call(context, val, key));
+    });
+    return result;
+  };
+}
+
 if (!Function.prototype.bind) {
   Function.prototype.bind = function bind(context) {
     var func = this;
