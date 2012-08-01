@@ -39,6 +39,20 @@ if (!Array.prototype.map) {
   };
 }
 
+if (!Array.prototype.reduce) {
+  Array.prototype.reduce = function (iterator, memo) {
+    if (undefined === memo) {
+      memo = this[0];
+    }
+
+    this.forEach(function (val, key) {
+      memo = iterator(memo, val);
+    });
+
+    return memo;
+  };
+}
+
 if (!Function.prototype.bind) {
   Function.prototype.bind = function bind(context) {
     var func = this;
