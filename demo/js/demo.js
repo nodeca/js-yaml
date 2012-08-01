@@ -16,18 +16,19 @@ window.runDemo = function runDemo() {
   });
 
   function parse() {
-    var str;
+    var str, obj;
 
     try {
       str = source.getValue();
+      obj = jsyaml.load(str);
 
       permalink.href = '#yaml=' + base64.encode(str);
 
       result.setOption('mode', 'javascript');
-      result.setValue(inspect(jsyaml.load(str), false, 10));
+      result.setValue(inspect(obj, false, 10));
     } catch (err) {
       result.setOption('mode', 'text/plain');
-      result.setValue(err.toString());
+      result.setValue(err.stack || err.message || String(err));
     }
   }
 
@@ -38,7 +39,7 @@ window.runDemo = function runDemo() {
       yaml = base64.decode(location.hash.slice(6));
     }
 
-    source.setValue(yaml || fallback);
+    source.setValue(yaml || fallback || '');
     parse();
   }
 
