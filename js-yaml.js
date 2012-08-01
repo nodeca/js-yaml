@@ -50,6 +50,17 @@ if (!Array.prototype.forEach) {
   };
 }
 
+if (!Array.prototype.map) {
+  Array.prototype.map = function (iterator, context) {
+    var result = [];
+    context = context || this;
+    this.forEach(function (val, key) {
+      result.push(iterator.call(context, val, key));
+    });
+    return result;
+  };
+}
+
 if (!Function.prototype.bind) {
   Function.prototype.bind = function bind(context) {
     var func = this;
@@ -80,7 +91,7 @@ var require = function (file, cwd) {
     var cached = require.cache[resolved];
     var res = cached? cached.exports : mod();
     return res;
-}
+};
 
 require.paths = [];
 require.modules = {};
@@ -224,7 +235,14 @@ require.alias = function (from, to) {
         ;
         
         var require_ = function (file) {
-            return require(file, dirname);
+            var requiredModule = require(file, dirname);
+            var cached = require.cache[require.resolve(file, dirname)];
+
+            if (cached.parent === null) {
+                cached.parent = module_;
+            }
+
+            return requiredModule;
         };
         require_.resolve = function (name) {
             return require.resolve(name, dirname);
@@ -232,7 +250,13 @@ require.alias = function (from, to) {
         require_.modules = require.modules;
         require_.define = require.define;
         require_.cache = require.cache;
-        var module_ = { exports : {} };
+        var module_ = {
+            id : filename,
+            filename: filename,
+            exports : {},
+            loaded : false,
+            parent: null
+        };
         
         require.modules[filename] = function () {
             require.cache[filename] = module_;
@@ -245,6 +269,7 @@ require.alias = function (from, to) {
                 filename,
                 process
             );
+            module_.loaded = true;
             return module_.exports;
         };
     };
@@ -442,7 +467,12 @@ require.define("/package.json",function(require,module,exports,__dirname,__filen
 require.define("/index.js",function(require,module,exports,__dirname,__filename,process){module.exports = require('./lib/js-yaml.js');
 });
 
-require.define("/lib/js-yaml.js",function(require,module,exports,__dirname,__filename,process){'use strict';
+require.define("/lib/js-yaml.js",function(require,module,exports,__dirname,__filename,process){/**
+ *  jsyaml
+ **/
+
+
+'use strict';
 
 
 var fs = require('fs');
@@ -500,6 +530,7 @@ jsyaml.safeLoadAll = function loadAll(stream, callback) {
 
 /**
  *  jsyaml.addConstructor(tag, constructor[, Loader]) -> Void
+ *
  *  Add a constructor for the given tag.
  *
  *  Constructor is a function that accepts a Loader instance
@@ -5005,7 +5036,7 @@ SafeConstructor.prototype.constructYamlTimestamp = function constructYamlTimesta
     }
   }
 
-  data = new Date(year, month, day, hour, minute, second, fraction);
+  data = new Date(Date.UTC(year, month, day, hour, minute, second, fraction));
 
   if (!!delta) {
     data.setTime(data.getTime() - delta);
