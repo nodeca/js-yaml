@@ -1,8 +1,11 @@
+/*global window, document, location, CodeMirror, jsyaml, inspect, base64, hasher*/
+
+
 window.runDemo = function runDemo() {
   'use strict';
 
   var source, result, initial, permalink, timer1, timer2 = null,
-      hash = location.hash.toString();
+      fallback = document.getElementById('source').value || '';
 
   // add sexy constructor
   jsyaml.addConstructor('!sexy', function (node) {
@@ -32,20 +35,15 @@ window.runDemo = function runDemo() {
     }
   }
 
-  function updateSource(fallback) {
+  function updateSource() {
     var yaml;
 
     if (location.hash && '#yaml=' === location.hash.toString().slice(0,6)) {
       yaml = base64.decode(location.hash.slice(6));
     }
 
-    source.setValue(yaml || fallback || '');
+    source.setValue(yaml || fallback);
     parse();
-  }
-
-  function handleHashChange(newHash) {
-    hash = newHash;
-    updateSource();
   }
 
   permalink = document.getElementById('permalink');
@@ -83,12 +81,12 @@ window.runDemo = function runDemo() {
   });
 
   // initial source
-  updateSource(document.getElementById('source').value);
+  updateSource();
 
   // start monitor hash change
   hasher.prependHash = '';
-  hasher.changed.add(handleHashChange);
-  hasher.initialized.add(handleHashChange);
+  hasher.changed.add(updateSource);
+  hasher.initialized.add(updateSource);
   hasher.init();
 };
 
