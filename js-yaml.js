@@ -82,11 +82,14 @@ if (!Object.getOwnPropertyNames) {
   };
 }
 
-
 if (!Object.create) {
   Object.create = function () {
     return {};
   }
+}
+
+if (!Object.keys) {
+  Object.keys = Object.getOwnPropertyNames;
 }
 var jsyaml = window.jsyaml = (function () {
 var require = function (file, cwd) {

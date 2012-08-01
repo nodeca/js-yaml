@@ -60,9 +60,12 @@ if (!Object.getOwnPropertyNames) {
   };
 }
 
-
 if (!Object.create) {
   Object.create = function () {
     return {};
   }
+}
+
+if (!Object.keys) {
+  Object.keys = Object.getOwnPropertyNames;
 }
