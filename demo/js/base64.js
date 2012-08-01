@@ -62,13 +62,13 @@
     length = str.length;
 
     while (offset < length) {
-      char = str[offset];
+      char = str.charAt(offset);
       offset += 1;
 
       if ('%' !== char) {
         bytes.push(char.charCodeAt(0));
       } else {
-        char = str[offset] + str[offset + 1];
+        char = str.charAt(offset) + str.charAt(offset + 1);
         bytes.push(parseInt(char, 16));
         offset += 2;
       }
