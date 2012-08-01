@@ -59,3 +59,10 @@ if (!Object.getOwnPropertyNames) {
     return names;
   };
 }
+
+
+if (!Object.create) {
+  Object.create = function () {
+    return {};
+  }
+}

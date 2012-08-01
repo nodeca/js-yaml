@@ -81,6 +81,13 @@ if (!Object.getOwnPropertyNames) {
     return names;
   };
 }
+
+
+if (!Object.create) {
+  Object.create = function () {
+    return {};
+  }
+}
 var jsyaml = window.jsyaml = (function () {
 var require = function (file, cwd) {
     var resolved = require.resolve(file, cwd || '/');
