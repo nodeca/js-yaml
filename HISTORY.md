@@ -1,3 +1,10 @@
+1.0.2 / 2012-08-02
+------------------
+
+* Pull out hand-written shims. Use ES5-Shims for old browsers support. See #44.
+* Fix timstamps incorectly parsed in local time when no time part specified.
+
+
 1.0.1 / 2012-07-07
 ------------------
 
