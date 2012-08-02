@@ -4947,7 +4947,7 @@ SafeConstructor.prototype.constructYamlTimestamp = function constructYamlTimesta
   day = +(match[3]);
 
   if (!match[4]) { // no hour
-    return new Date(year, month, day);
+    return new Date(Date.UTC(year, month, day));
   }
 
   // match: [4] hour [5] minute [6] second [7] fraction
