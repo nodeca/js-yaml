@@ -84,7 +84,7 @@ fs.readFile(options.file, 'utf8', function (err, str) {
   }
 
   if (options.json) {
-    console.log(JSON.stringify(out));
+    console.log(JSON.stringify(out, null, '  '));
     process.exit(0);
   }
 
