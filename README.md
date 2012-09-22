@@ -19,9 +19,9 @@ version - PyYAML 3.10 (2011-05-30).
   now: http://www.yaml.org/spec/1.2/spec.html#id2804923
 - `require('file.yml')` now returns a single document (was array of documents)
   and throws an error when file contains multiple documents. That should improve
-  switching between YAML <-> JSON. `require('file.json')` will give the same
-  result now.
-- `js-yaml.bin` become part of `js-yaml` again.
+  switching between YAML <-> JSON. So `require('file.yml')` will give the same
+  result as if it was `require('file.json')` now.
+- CLI tool `js-yaml` become part of `js-yaml` again.
 
 
 ## Installation
