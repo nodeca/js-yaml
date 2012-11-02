@@ -37,7 +37,7 @@ module.exports = {
     files: ['.single-loader-error'],
     test: function (errorFilename) {
       Assert.throws(function () {
-      JsYaml.load(Fs.readFileSync(errorFilename, 'utf8'));
+        JsYaml.load(Fs.readFileSync(errorFilename, 'utf8'));
       }, YAMLError);
     }
   })

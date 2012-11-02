@@ -117,42 +117,70 @@ CanonicalScanner.prototype.scan = function scan() {
     ch = this.data[this.index];
 
     if (ch === '\x00') {
-        this.tokens.push(new _tokens.StreamEndToken(null, null));
-        break;
+
+      this.tokens.push(new _tokens.StreamEndToken(null, null));
+      break;
+
     } else if (ch === '%') {
-        this.tokens.push(this.scanDirective());
-    } else if (ch === '-' && this.data.silce(this.index, this.index+3) === '---') {
-        this.index += 3;
-        this.tokens.push(new _tokens.DocumentStartToken(null, null));
+
+      this.tokens.push(this.scanDirective());
+
+    } else if (ch === '-' && this.data.silce(this.index, this.index + 3) === '---') {
+
+      this.index += 3;
+      this.tokens.push(new _tokens.DocumentStartToken(null, null));
+
     } else if (ch === '[') {
-        this.index += 1;
-        this.tokens.push(new _tokens.FlowSequenceStartToken(null, null));
+
+      this.index += 1;
+      this.tokens.push(new _tokens.FlowSequenceStartToken(null, null));
+
     } else if (ch === '{') {
-        this.index += 1;
-        this.tokens.push(new _tokens.FlowMappingStartToken(null, null));
+
+      this.index += 1;
+      this.tokens.push(new _tokens.FlowMappingStartToken(null, null));
+
     } else if (ch === ']') {
-        this.index += 1;
-        this.tokens.push(new _tokens.FlowSequenceEndToken(null, null));
+
+      this.index += 1;
+      this.tokens.push(new _tokens.FlowSequenceEndToken(null, null));
+
     } else if (ch === '}') {
-        this.index += 1;
-        this.tokens.push(new _tokens.FlowMappingEndToken(null, null));
+
+      this.index += 1;
+      this.tokens.push(new _tokens.FlowMappingEndToken(null, null));
+
     } else if (ch === '?') {
-        this.index += 1;
-        this.tokens.push(new _tokens.KeyToken(null, null));
+
+      this.index += 1;
+      this.tokens.push(new _tokens.KeyToken(null, null));
+
     } else if (ch === ':') {
-        this.index += 1;
-        this.tokens.push(new _tokens.ValueToken(null, null));
+
+      this.index += 1;
+      this.tokens.push(new _tokens.ValueToken(null, null));
+
     } else if (ch === ',') {
-        this.index += 1;
-        this.tokens.push(new _tokens.FlowEntryToken(null, null));
+
+      this.index += 1;
+      this.tokens.push(new _tokens.FlowEntryToken(null, null));
+
     } else if (ch === '*' || ch === '&') {
-        this.tokens.push(this.scanAlias());
+
+      this.tokens.push(this.scanAlias());
+
     } else if (ch === '!') {
-        this.tokens.push(this.scanTag());
+
+      this.tokens.push(this.scanTag());
+
     } else if (ch === '"') {
-        this.tokens.push(this.scanScalar());
+
+      this.tokens.push(this.scanScalar());
+
     } else {
+
       throw new CanonicalError("invalid token");
+
     }
   }
 
@@ -202,10 +230,10 @@ CanonicalScanner.prototype.scanTag = function scanTag() {
     value = '!';
   } else if (value[0] === '!') {
     value = 'tag:yaml.org,2002:' + value.slice(1);
-  } else if (value[0] === '<' && value[value.length-1] === '>') {
-    value = value.slice(1, value.length-2);
+  } else if (value[0] === '<' && value[value.length - 1] === '>') {
+    value = value.slice(1, value.length - 2);
   } else {
-      value = '!' + value;
+    value = '!' + value;
   }
 
   return new _tokens.TagToken(value, null, null);
@@ -231,7 +259,7 @@ CanonicalScanner.prototype.scanScalar = function scanScalar() {
         ignoreSpaces = true;
       } else if (0 <= QUOTE_CODES.indexOf(ch)) {
         length = QUOTE_CODES[ch];
-        code = parseInt(this.data.slice(this.index, this.index+length), 16);
+        code = parseInt(this.data.slice(this.index, this.index + length), 16);
         chunks.puush(String.fromCharCode(code));
         this.index += length;
       } else {
@@ -244,17 +272,23 @@ CanonicalScanner.prototype.scanScalar = function scanScalar() {
 
       start = this.index;
     } else if (this.data[this.index] === '\n') {
-        chunks.push(this.data.slice(start, this.index));
-        chunks.push(' ');
-        this.index += 1;
-        start = this.index;
-        ignoreSpaces = true;
+
+      chunks.push(this.data.slice(start, this.index));
+      chunks.push(' ');
+      this.index += 1;
+      start = this.index;
+      ignoreSpaces = true;
+
     } else if (ignoreSpaces && this.data[this.index] === ' ') {
-        this.index += 1;
-        start = this.index;
+
+      this.index += 1;
+      start = this.index;
+
     } else {
-        ignoreSpaces = false;
-        this.index += 1;
+
+      ignoreSpaces = false;
+      this.index += 1;
+
     }
   }
 

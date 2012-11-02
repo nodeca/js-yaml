@@ -2,7 +2,6 @@
 
 
 var Vows = require('vows');
-var Assert = require('assert');
 var Path = require('path');
 var Fs = require('fs');
 var Common = require('../lib/js-yaml/common');
