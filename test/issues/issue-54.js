@@ -7,7 +7,7 @@ var source = __dirname + '/data/issue-54.yml';
 
 module.exports = require('../helper').issue({
   title: "#54: Incorrect utf-8 handling on require('file.yaml')",
-  fixed: false,
+  fixed: true,
   test: function () {
     var data = require(source), expected = '', i;
 
