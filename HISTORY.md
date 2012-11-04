@@ -1,3 +1,10 @@
+1.0.3 / WIP
+-----------
+
+* Drop support of raw Buffers and file descriptors as stream sources.
+  Fixes #54.
+
+
 1.0.2 / 2012-08-02
 ------------------
 
