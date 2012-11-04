@@ -483,12 +483,10 @@ jsyaml.addConstructor = function addConstructor(tag, constructor, Loader) {
 // Register extensions handler
 (function () {
   var require_handler = function (module, filename) {
-    var fd = fs.openSync(filename, 'r');
+    var str = fs.readFileSync(filename, 'utf8');
 
     // fill in documents
-    module.exports = jsyaml.load(fd);
-
-    fs.closeSync(fd);
+    module.exports = jsyaml.load(str);
   };
 
   // register require extensions only if we're on node.js
@@ -834,7 +832,6 @@ $$.Hash = function Hash(defaultValue) {
 require.define("/lib/js-yaml/reader.js",function(require,module,exports,__dirname,__filename,process){'use strict';
 
 
-var fs = require('fs');
 var $$ = require('./common');
 var _errors = require('./errors');
 
@@ -876,7 +873,6 @@ function Reader(stream) {
   this.eof = true;
   this.buffer = '';
   this.pointer = 0;
-  this.rawBuffer = null;
   this.encoding = 'utf-8';
   this.index = 0;
   this.line = 0;
@@ -886,38 +882,18 @@ function Reader(stream) {
     this.name = '<unicode string>';
     this.checkPrintable(stream);
     this.buffer = stream + '\x00';
-  } else if (Buffer.isBuffer(stream)) { // buffer
-    this.name = '<buffer>';
-    this.rawBuffer = stream;
-    this.update(1);
-  } else { // file descriptor
-    this.name = '<file>';
-    this.stream = stream;
-    this.eof = false;
-    this.updateRaw();
-    this.update(1);
+  } else {
+    throw new _errors.YAMLError('Invalid source. String or buffer expected.');
   }
 }
 
 Reader.prototype.peek = function peek(index) {
-  var data;
-
   index = +index || 0;
-  data = getSingleChar(this.buffer, this.pointer + index);
-
-  if (undefined === data) {
-    this.update(index + 1);
-    data = getSingleChar(this.buffer, this.pointer + index);
-  }
-
-  return data;
+  return getSingleChar(this.buffer, this.pointer + index);
 };
 
 Reader.prototype.prefix = function prefix(length) {
   length = +length || 1;
-  if (this.pointer + length >= this.buffer.length) {
-    this.update(length);
-  }
   return this.buffer.slice(this.pointer, this.pointer + length);
 };
 
@@ -928,10 +904,6 @@ Reader.prototype.forward = function forward(length) {
   //            <int:0> which is absolutely NOT default length value, so
   //            that's why we have ternary operator instead of lazy assign.
   length = (undefined !== length) ? (+length) : 1;
-
-  if (this.pointer + length + 1 >= this.buffer.length) {
-    this.update(length + 1);
-  }
 
   while (length) {
     ch = this.buffer[this.pointer];
@@ -962,64 +934,14 @@ Reader.prototype.getMark = function getMark() {
 
 
 Reader.prototype.checkPrintable = function checkPrintable(data) {
-  var match = data.toString().match(NON_PRINTABLE), position;
+  var match = String(data).match(NON_PRINTABLE), position;
+
   if (match) {
     position = this.index + this.buffer.length - this.pointer + match.index;
     throw new ReaderError(this.name, position, match[0],
                           'unicode', 'special characters are not allowed');
   }
 };
-
-Reader.prototype.update = function update(length) {
-  var data;
-
-  if (null === this.rawBuffer) {
-    return;
-  }
-
-  this.buffer = this.buffer.slice(this.pointer);
-  this.pointer = 0;
-
-  while (this.buffer.length < length) {
-    if (!this.eof) {
-      this.updateRaw();
-    }
-
-    data = this.rawBuffer;
-
-    this.checkPrintable(data);
-    this.buffer += data;
-    this.rawBuffer = this.rawBuffer.slice(data.length);
-
-    if (this.eof) {
-      this.buffer += '\x00';
-      this.rawBuffer = null;
-      break;
-    }
-  }
-};
-
-Reader.prototype.updateRaw = function updateRaw(size) {
-  var data = new Buffer(+size || 4096), count, tmp;
-
-  count = fs.readSync(this.stream, data, 0, data.length);
-
-  if (null === this.rawBuffer) {
-    this.rawBuffer = data.slice(0, count);
-  } else {
-    tmp = new Buffer(this.rawBuffer.length + count);
-    this.rawBuffer.copy(tmp);
-    data.copy(tmp, this.rawBuffer.length);
-    this.rawBuffer = tmp;
-  }
-
-  this.streamPointer += count;
-
-  if (!count || count < data.length) {
-    this.eof = true;
-  }
-};
-
 
 
 module.exports.Reader = Reader;
@@ -1120,7 +1042,7 @@ function toStringCompact(self) {
   var str = "Error ";
 
   if (null !== self.problemMark) {
-    str += "on line " + (self.problemMark.line+1) + ", col " + (self.problemMark.column+1) + ": ";
+    str += "on line " + (self.problemMark.line + 1) + ", col " + (self.problemMark.column + 1) + ": ";
   }
 
   if (null !== self.problem) {
@@ -1624,8 +1546,8 @@ Scanner.prototype.removePossibleSimpleKey = function removePossibleSimpleKey() {
     key = this.possibleSimpleKeys[this.flowLevel];
 
     if (key.required) {
-       throw new ScannerError("while scanning a simple key", key.mark,
-                              "could not found expected ':'", this.getMark());
+      throw new ScannerError("while scanning a simple key", key.mark,
+                             "could not found expected ':'", this.getMark());
     }
 
     delete this.possibleSimpleKeys[this.flowLevel];
@@ -1894,55 +1816,56 @@ Scanner.prototype.fetchValue = function fetchValue() {
 
   // Do we determine a simple key?
   if (undefined !== this.possibleSimpleKeys[this.flowLevel]) {
-      // Add KEY.
-      key = this.possibleSimpleKeys[this.flowLevel];
-      delete this.possibleSimpleKeys[this.flowLevel];
+    // Add KEY.
+    key = this.possibleSimpleKeys[this.flowLevel];
+    delete this.possibleSimpleKeys[this.flowLevel];
 
-      this.tokens.splice(key.tokenNumber - this.tokensTaken, 0,
-                         new _tokens.KeyToken(key.mark, key.mark));
+    this.tokens.splice(key.tokenNumber - this.tokensTaken, 0,
+                       new _tokens.KeyToken(key.mark, key.mark));
 
-      // If this key starts a new block mapping, we need to add
-      // BLOCK-MAPPING-START.
-      if (!this.flowLevel) {
-        if (this.addIndent(key.column)) {
-          this.tokens.splice(key.tokenNumber - this.tokensTaken, 0,
-                             new _tokens.BlockMappingStartToken(key.mark, key.mark));
-        }
+    // If this key starts a new block mapping, we need to add
+    // BLOCK-MAPPING-START.
+    if (!this.flowLevel) {
+      if (this.addIndent(key.column)) {
+        this.tokens.splice(key.tokenNumber - this.tokensTaken, 0,
+                           new _tokens.BlockMappingStartToken(key.mark, key.mark));
       }
+    }
 
-      // There cannot be two simple keys one after another.
-      this.allowSimpleKey = false;
+    // There cannot be two simple keys one after another.
+    this.allowSimpleKey = false;
 
   // It must be a part of a complex key.
   } else {
-      // Block context needs additional checks.
-      // (Do we really need them? They will be catched by the parser
-      // anyway.)
-      if (!this.flowLevel) {
-        // We are allowed to start a complex value if and only if
-        // we can start a simple key.
-        if (!this.allowSimpleKey) {
-          throw new ScannerError(null, null,
-                                 "mapping values are not allowed here",
-                                 this.getMark());
-        }
+
+    // Block context needs additional checks.
+    // (Do we really need them? They will be catched by the parser
+    // anyway.)
+    if (!this.flowLevel) {
+      // We are allowed to start a complex value if and only if
+      // we can start a simple key.
+      if (!this.allowSimpleKey) {
+        throw new ScannerError(null, null,
+                               "mapping values are not allowed here",
+                               this.getMark());
       }
+    }
 
-      // If this value starts a new block mapping, we need to add
-      // BLOCK-MAPPING-START.  It will be detected as an error later by
-      // the parser.
-      if (!this.flowLevel) {
-        if (this.addIndent(this.column)) {
-          mark = this.getMark();
-          this.tokens.push(new _tokens.BlockMappingStartToken(mark, mark));
-        }
+    // If this value starts a new block mapping, we need to add
+    // BLOCK-MAPPING-START.  It will be detected as an error later by
+    // the parser.
+    if (!this.flowLevel) {
+      if (this.addIndent(this.column)) {
+        mark = this.getMark();
+        this.tokens.push(new _tokens.BlockMappingStartToken(mark, mark));
       }
+    }
 
-      // Simple keys are allowed after ':' in the block context.
-      this.allowSimpleKey = !this.flowLevel;
+    // Simple keys are allowed after ':' in the block context.
+    this.allowSimpleKey = !this.flowLevel;
 
-      // Reset possible simple key on the current level.
-      this.removePossibleSimpleKey();
+    // Reset possible simple key on the current level.
+    this.removePossibleSimpleKey();
   }
 
   // Add VALUE.
@@ -2878,7 +2801,7 @@ Scanner.prototype.scanPlain = function scanPlain() {
   return new _tokens.ScalarToken(chunks.join(''), true, startMark, endMark);
 };
 
-Scanner.prototype.scanPlainSpaces = function scanPlainSpaces(indent, startMark) {
+Scanner.prototype.scanPlainSpaces = function scanPlainSpaces() {
   var chunks, length, whitespaces, ch, prefix, breaks, lineBreak;
 
   // See the specification for details.
@@ -3337,7 +3260,7 @@ var DEFAULT_TAGS = {
 };
 
 
-function Parser(self) {
+function Parser() {
   this.currentEvent = null;
   this.yamlVersion = null;
   this.tagHandles = {};
@@ -3436,7 +3359,7 @@ Parser.prototype.parseDocumentStart = function parseDocumentStart() {
 
   // Parse any extra document end indicators.
   while (this.checkToken(_tokens.DocumentEndToken)) {
-      this.getToken();
+    this.getToken();
   }
 
   if (this.checkToken(_tokens.StreamEndToken)) {
@@ -3488,9 +3411,9 @@ Parser.prototype.parseDocumentEnd = function parseDocumentEnd() {
   explicit = false;
 
   if (this.checkToken(_tokens.DocumentEndToken)) {
-      token = this.getToken();
-      endMark = token.endMark;
-      explicit = true;
+    token = this.getToken();
+    endMark = token.endMark;
+    explicit = true;
   }
 
   event = new _events.DocumentEndEvent(startMark, endMark, explicit);
@@ -3603,22 +3526,24 @@ Parser.prototype.parseNode = function parseNode(block, indentlessSequence) {
       anchor = token.value;
 
       if (this.checkToken(_tokens.TagToken)) {
-          token = this.getToken();
-          tagMark = token.startMark;
-          endMark = token.endMark;
-          tag = token.value;
-      }
-    } else if (this.checkToken(_tokens.TagToken)) {
         token = this.getToken();
-        startMark = tagMark = token.startMark;
+        tagMark = token.startMark;
         endMark = token.endMark;
         tag = token.value;
+      }
+    } else if (this.checkToken(_tokens.TagToken)) {
 
-        if (this.checkToken(_tokens.AnchorToken)) {
-          token = this.getToken();
-          endMark = token.endMark;
-          anchor = token.value;
-        }
+      token = this.getToken();
+      startMark = tagMark = token.startMark;
+      endMark = token.endMark;
+      tag = token.value;
+
+      if (this.checkToken(_tokens.AnchorToken)) {
+        token = this.getToken();
+        endMark = token.endMark;
+        anchor = token.value;
+      }
+
     }
 
     if (null !== tag) {
@@ -3652,47 +3577,59 @@ Parser.prototype.parseNode = function parseNode(block, indentlessSequence) {
       this.state = this.parseIndentlessSequenceEntry.bind(this);
     } else {
       if (this.checkToken(_tokens.ScalarToken)) {
-          token = this.getToken();
-          endMark = token.endMark;
+        token = this.getToken();
+        endMark = token.endMark;
 
-          if ((token.plain && null === tag) || '!' === tag) {
-            implicit = [true, false];
-          } else if (null === tag) {
-            implicit = [false, true];
-          } else {
-            implicit = [false, false];
-          }
+        if ((token.plain && null === tag) || '!' === tag) {
+          implicit = [true, false];
+        } else if (null === tag) {
+          implicit = [false, true];
+        } else {
+          implicit = [false, false];
+        }
 
-          event = new _events.ScalarEvent(anchor, tag, implicit, token.value,
-                                     startMark, endMark, token.style);
-          this.state = this.states.pop();
+        event = new _events.ScalarEvent(anchor, tag, implicit, token.value,
+                                   startMark, endMark, token.style);
+        this.state = this.states.pop();
+
       } else if (this.checkToken(_tokens.FlowSequenceStartToken)) {
-          endMark = this.peekToken().endMark;
-          event = new _events.SequenceStartEvent(anchor, tag, implicit,
-                                            startMark, endMark, true);
-          this.state = this.parseFlowSequenceFirstEntry.bind(this);
+
+        endMark = this.peekToken().endMark;
+        event = new _events.SequenceStartEvent(anchor, tag, implicit,
+                                          startMark, endMark, true);
+        this.state = this.parseFlowSequenceFirstEntry.bind(this);
+
       } else if (this.checkToken(_tokens.FlowMappingStartToken)) {
-          endMark = this.peekToken().endMark;
-          event = new _events.MappingStartEvent(anchor, tag, implicit,
-                                           startMark, endMark, true);
-          this.state = this.parseFlowMappingFirstKey.bind(this);
+
+        endMark = this.peekToken().endMark;
+        event = new _events.MappingStartEvent(anchor, tag, implicit,
+                                         startMark, endMark, true);
+        this.state = this.parseFlowMappingFirstKey.bind(this);
+
       } else if (block && this.checkToken(_tokens.BlockSequenceStartToken)) {
-          endMark = this.peekToken().startMark;
-          event = new _events.SequenceStartEvent(anchor, tag, implicit,
-                                            startMark, endMark, false);
-          this.state = this.parseBlockSequenceFirstEntry.bind(this);
+
+        endMark = this.peekToken().startMark;
+        event = new _events.SequenceStartEvent(anchor, tag, implicit,
+                                          startMark, endMark, false);
+        this.state = this.parseBlockSequenceFirstEntry.bind(this);
+
       } else if (block && this.checkToken(_tokens.BlockMappingStartToken)) {
-          endMark = this.peekToken().startMark;
-          event = new _events.MappingStartEvent(anchor, tag, implicit,
-                                           startMark, endMark, false);
-          this.state = this.parseBlockMappingFirstKey.bind(this);
+
+        endMark = this.peekToken().startMark;
+        event = new _events.MappingStartEvent(anchor, tag, implicit,
+                                         startMark, endMark, false);
+        this.state = this.parseBlockMappingFirstKey.bind(this);
+
       } else if (null !== anchor || null !== tag) {
-          // Empty scalars are allowed even if a tag or an anchor is
-          // specified.
-          event = new _events.ScalarEvent(anchor, tag, [implicit, false], '',
-                                     startMark, endMark);
-          this.state = this.states.pop();
+
+        // Empty scalars are allowed even if a tag or an anchor is
+        // specified.
+        event = new _events.ScalarEvent(anchor, tag, [implicit, false], '',
+                                   startMark, endMark);
+        this.state = this.states.pop();
+
       } else {
+
         node = !!block ? 'block' : 'flow';
         token = this.peekToken();
         throw new ParserError("while parsing a " + node + " node", startMark,
@@ -3715,15 +3652,15 @@ Parser.prototype.parseBlockSequenceEntry = function parseBlockSequenceEntry() {
   var token, event;
 
   if (this.checkToken(_tokens.BlockEntryToken)) {
-      token = this.getToken();
+    token = this.getToken();
 
-      if (!this.checkToken(_tokens.BlockEntryToken, _tokens.BlockEndToken)) {
-          this.states.push(this.parseBlockSequenceEntry.bind(this));
-          return this.parseBlockNode();
-      }
+    if (!this.checkToken(_tokens.BlockEntryToken, _tokens.BlockEndToken)) {
+      this.states.push(this.parseBlockSequenceEntry.bind(this));
+      return this.parseBlockNode();
+    }
 
-      this.state = this.parseBlockSequenceEntry.bind(this);
-      return this.processEmptyScalar(token.endMark);
+    this.state = this.parseBlockSequenceEntry.bind(this);
+    return this.processEmptyScalar(token.endMark);
   }
 
   if (!this.checkToken(_tokens.BlockEndToken)) {
@@ -3750,8 +3687,8 @@ Parser.prototype.parseIndentlessSequenceEntry = function parseIndentlessSequence
 
     if (!this.checkToken(_tokens.BlockEntryToken, _tokens.KeyToken,
                          _tokens.ValueToken, _tokens.BlockEndToken)) {
-        this.states.push(this.parseIndentlessSequenceEntry.bind(this));
-        return this.parseBlockNode();
+      this.states.push(this.parseIndentlessSequenceEntry.bind(this));
+      return this.parseBlockNode();
     }
 
     this.state = this.parseIndentlessSequenceEntry.bind(this);
@@ -3813,8 +3750,8 @@ Parser.prototype.parseBlockMappingValue = function parseBlockMappingValue() {
     token = this.getToken();
 
     if (!this.checkToken(_tokens.KeyToken, _tokens.ValueToken, _tokens.BlockEndToken)) {
-        this.states.push(this.parseBlockMappingKey.bind(this));
-        return this.parseBlockNodeOrIndentlessSequence();
+      this.states.push(this.parseBlockMappingKey.bind(this));
+      return this.parseBlockNodeOrIndentlessSequence();
     }
 
     this.state = this.parseBlockMappingKey.bind(this);
@@ -3885,8 +3822,8 @@ Parser.prototype.parseFlowSequenceEntryMappingKey = function parseFlowSequenceEn
   var token = this.getToken();
 
   if (!this.checkToken(_tokens.ValueToken, _tokens.FlowEntryToken, _tokens.FlowSequenceEndToken)) {
-      this.states.push(this.parseFlowSequenceEntryMappingValue.bind(this));
-      return this.parseFlowNode();
+    this.states.push(this.parseFlowSequenceEntryMappingValue.bind(this));
+    return this.parseFlowNode();
   }
 
   this.state = this.parseFlowSequenceEntryMappingValue.bind(this);
@@ -4218,7 +4155,7 @@ Composer.prototype.composeDocument = function composeDocument() {
   return node;
 };
 
-Composer.prototype.composeNode = function composeNode(parent, index) {
+Composer.prototype.composeNode = function composeNode() {
   var node = null, event, anchor;
 
   if (this.checkEvent(_events.AliasEvent)) {
@@ -4846,7 +4783,7 @@ SafeConstructor.prototype.flattenMapping = function flattenMapping(node) {
   }
 };
 
-SafeConstructor.prototype.constructMapping = function constructMapping(node, deep) {
+SafeConstructor.prototype.constructMapping = function constructMapping(node) {
   if ($$.isInstanceOf(node, _nodes.MappingNode)) {
     this.flattenMapping(node);
   }
@@ -4957,7 +4894,7 @@ SafeConstructor.prototype.constructYamlTimestamp = function constructYamlTimesta
   second = +(match[6]);
 
   if (!!match[7]) {
-    fraction = match[7].slice(0,3);
+    fraction = match[7].slice(0, 3);
     while (fraction.length < 3) { // milli-seconds
       fraction += '0';
     }
@@ -5022,8 +4959,8 @@ SafeConstructor.prototype.constructYamlPairs = function constructYamlPairs(node)
   var self = this, pairs = [];
   return $$.Populator(pairs, function () {
     if (!$$.isInstanceOf(node, _nodes.SequenceNode)) {
-       throw new ConstructorError("while constructing pairs", node.startMark,
-                   "expected a sequence, but found " + node.id, node.startMark);
+      throw new ConstructorError("while constructing pairs", node.startMark,
+                "expected a sequence, but found " + node.id, node.startMark);
     }
 
     node.value.forEach(function (subnode) {
@@ -5148,7 +5085,7 @@ Constructor.addConstructor = SafeConstructor.addConstructor;
 
 Constructor.prototype.constructJavascriptRegExp = function constructJavascriptRegExp(node) {
   var regexp = this.constructScalar(node),
-      tail =/\/([gim]*)$/.exec(regexp),
+      tail = /\/([gim]*)$/.exec(regexp),
       modifiers;
 
   // `/foo/gim` - tail can be maximum 4 chars
@@ -5160,7 +5097,7 @@ Constructor.prototype.constructJavascriptRegExp = function constructJavascriptRe
   return new RegExp(regexp, modifiers);
 };
 
-Constructor.prototype.constructJavascriptUndefined = function constructJavascriptUndefined(node) {
+Constructor.prototype.constructJavascriptUndefined = function constructJavascriptUndefined() {
   var undef;
   return undef;
 };
