@@ -3,7 +3,6 @@
 
 var Assert = require('assert');
 var Fs = require('fs');
-var JsYaml = require('../../lib/js-yaml');
 var Loader = require('../../lib/js-yaml/loader');
 var Events = require('../../lib/js-yaml/events');
 var Helper = require('../helper');
