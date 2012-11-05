@@ -1,8 +1,7 @@
-1.0.3 / WIP
------------
+1.0.3 / 2012-11-05
+------------------
 
-* Drop support of raw Buffers and file descriptors as stream sources.
-  Fixes #54.
+* Fixed utf-8 files loading.
 
 
 1.0.2 / 2012-08-02
