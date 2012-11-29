@@ -849,21 +849,16 @@ var getSingleChar = (undefined === ('a')[0]) ?
 
 
 function ReaderError(name, position, character, encoding, reason) {
-  _errors.YAMLError.apply(this);
-  this.name = 'ReaderError';
-
-  this.name = name;
-  this.position = position;
-  this.character = character;
-  this.encoding = encoding;
-  this.reason = reason;
-
-  this.toString = function toString() {
-    return 'unacceptable character ' + this.character + ': ' + this.reason +
-      '\n in "' + this.name + '", position ' + this.position;
-  };
+  _errors.YAMLError.call(this,
+    'unacceptable character ' + character + ': ' + reason +
+    '\n in "' + name + '", position ' + position);
 }
+
+
 $$.inherits(ReaderError, _errors.YAMLError);
+
+
+ReaderError.prototype.name = 'ReaderError';
 
 
 function Reader(stream) {
@@ -883,7 +878,7 @@ function Reader(stream) {
     this.checkPrintable(stream);
     this.buffer = stream + '\x00';
   } else {
-    throw new _errors.YAMLError('Invalid source. String or buffer expected.');
+    throw new _errors.YAMLError('Invalid source. Unicode string expected.');
   }
 }
 
@@ -906,12 +901,12 @@ Reader.prototype.forward = function forward(length) {
   length = (undefined !== length) ? (+length) : 1;
 
   while (length) {
-    ch = this.buffer[this.pointer];
+    ch = this.buffer.charAt(this.pointer);
     this.pointer += 1;
     this.index += 1;
 
     if (0 <= '\n\x85\u2028\u2029'.indexOf(ch) ||
-        ('\r' === ch && '\n' !== this.buffer[this.pointer])) {
+        ('\r' === ch && '\n' !== this.buffer.charAt(this.pointer))) {
       this.line += 1;
       this.column = 0;
     } else if (ch !== '\uFEFF') {
@@ -989,7 +984,7 @@ Mark.prototype.getSnippet = function (indent, maxLength) {
   head = '';
   start = this.pointer;
 
-  while (start > 0 && -1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.buffer[start - 1])) {
+  while (start > 0 && -1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.buffer.charAt(start - 1))) {
     start -= 1;
     if (this.pointer - start > (maxLength / 2 - 1)) {
       head = ' ... ';
@@ -1001,7 +996,7 @@ Mark.prototype.getSnippet = function (indent, maxLength) {
   tail = '';
   end = this.pointer;
 
-  while (end < this.buffer.length && -1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.buffer[end])) {
+  while (end < this.buffer.length && -1 === '\x00\r\n\x85\u2028\u2029'.indexOf(this.buffer.charAt(end))) {
     end += 1;
     if (end - this.pointer > (maxLength / 2 - 1)) {
       tail = ' ... ';
@@ -1032,10 +1027,16 @@ Mark.prototype.toString = function () {
 
 
 function YAMLError(message) {
-  $$.extend(this, Error.prototype.constructor.call(this, message));
-  this.name = 'YAMLError';
+  this.message = message;
 }
-$$.inherits(YAMLError, Error);
+
+
+YAMLError.prototype.name = 'YAMLError';
+
+
+YAMLError.prototype.toString = function () {
+  return this.name + ': ' + this.message;
+};
 
 
 function toStringCompact(self) {
