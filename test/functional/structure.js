@@ -1,34 +1,33 @@
 'use strict';
 
 
-var Assert = require('assert');
-var Fs = require('fs');
-var Loader = require('../../lib/js-yaml/loader');
-var Events = require('../../lib/js-yaml/events');
-var Helper = require('../helper');
+var assert = require('chai').assert;
+var functional = require('../helpers/functional');
+var _loader = require('../../lib/js-yaml/loader');
+var _events = require('../../lib/js-yaml/events');
 
 
 function convertStructure(loader) {
   var event, sequence, mapping, key, value;
 
-  if (loader.checkEvent(Events.ScalarEvent)) {
+  if (loader.checkEvent(_events.ScalarEvent)) {
     event = loader.getEvent();
     return (!!event.tag || !!event.anchor || !!event.value);
-  } else if (loader.checkEvent(Events.SequenceStartEvent)) {
+  } else if (loader.checkEvent(_events.SequenceStartEvent)) {
     sequence = [];
 
     loader.getEvent();
-    while (!loader.checkEvent(Events.SequenceEndEvent)) {
+    while (!loader.checkEvent(_events.SequenceEndEvent)) {
       sequence.push(convertStructure(loader));
     }
     loader.getEvent();
 
     return sequence;
-  } else if (loader.checkEvent(Events.MappingStartEvent)) {
+  } else if (loader.checkEvent(_events.MappingStartEvent)) {
     mapping = [];
 
     loader.getEvent();
-    while (!loader.checkEvent(Events.MappingEndEvent)) {
+    while (!loader.checkEvent(_events.MappingEndEvent)) {
       key = convertStructure(loader);
       value = convertStructure(loader);
       mapping.push([key, value]);
@@ -36,7 +35,7 @@ function convertStructure(loader) {
     loader.getEvent();
 
     return mapping;
-  } else if (loader.checkEvent(Events.AliasEvent)) {
+  } else if (loader.checkEvent(_events.AliasEvent)) {
     loader.getEvent();
     return '*';
   } else {
@@ -46,35 +45,30 @@ function convertStructure(loader) {
 }
 
 
-module.exports = {
-  "Test tokens": Helper.functional({
-    dirname: __dirname + '/data',
-    files: ['.data', '.structure'],
-    test: function (dataFile, structureFile) {
-      var result = [], expected, loader;
+functional.generateTests({
+  description: 'Test structure.',
+  files: ['.data', '.structure'],
+  handler: function (dataFile, structureFile) {
+    var result = [], expected, loader;
 
-      expected = JSON.parse(Fs.readFileSync(structureFile, 'utf8'));
-      loader = new Loader.SafeLoader(Fs.readFileSync(dataFile, 'utf8'));
+    expected = JSON.parse(structureFile.data);
+    loader = new _loader.SafeLoader(dataFile.data);
 
-      while (loader.checkEvent()) {
-        if (loader.checkEvent(Events.StreamStartEvent, Events.StreamEndEvent,
-                              Events.DocumentStartEvent, Events.DocumentEndEvent)) {
-          loader.getEvent();
-        } else {
-          result.push(convertStructure(loader));
-        }
+    while (loader.checkEvent()) {
+      if (loader.checkEvent(_events.StreamStartEvent,
+                            _events.StreamEndEvent,
+                            _events.DocumentStartEvent,
+                            _events.DocumentEndEvent)) {
+        loader.getEvent();
+      } else {
+        result.push(convertStructure(loader));
       }
-
-      if (1 === result.length) {
-        result = result.shift();
-      }
-
-      Assert.deepEqual(result, expected);
     }
-  })
-};
 
+    if (1 === result.length) {
+      result = result.shift();
+    }
 
-////////////////////////////////////////////////////////////////////////////////
-// vim:ts=2:sw=2
-////////////////////////////////////////////////////////////////////////////////
+    assert.deepEqual(result, expected);
+  }
+});
