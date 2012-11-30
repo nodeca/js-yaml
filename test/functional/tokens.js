@@ -1,14 +1,13 @@
 'use strict';
 
 
-var Assert = require('assert');
-var Fs = require('fs');
-var JsYaml = require('../../lib/js-yaml');
-var Common = require('../../lib/js-yaml/common');
-var Tokens = require('../../lib/js-yaml/tokens');
-var Helper = require('../helper');
+var assert = require('assert');
+var functional = require('../helpers/functional');
+var jsyaml = require('../../lib/js-yaml');
+var $$ = require('../../lib/js-yaml/common');
+var _tokens = require('../../lib/js-yaml/tokens');
 
-// Tokens mnemonic:
+// _tokens mnemonic:
 // directive:            %
 // document_start:       ---
 // document_end:         ...
@@ -27,58 +26,51 @@ var Helper = require('../helper');
 // key:                  ?
 // value:                :
 
-var REPLACES = new Common.Hash();
+var REPLACES = new $$.Hash();
 
-REPLACES.store(Tokens.DirectiveToken,           '%');
-REPLACES.store(Tokens.DocumentStartToken,       '---');
-REPLACES.store(Tokens.DocumentEndToken,         '...');
-REPLACES.store(Tokens.AliasToken,               '*');
-REPLACES.store(Tokens.AnchorToken,              '&');
-REPLACES.store(Tokens.TagToken,                 '!');
-REPLACES.store(Tokens.ScalarToken,              '_');
-REPLACES.store(Tokens.BlockSequenceStartToken,  '[[');
-REPLACES.store(Tokens.BlockMappingStartToken,   '{{');
-REPLACES.store(Tokens.BlockEndToken,            ']}');
-REPLACES.store(Tokens.FlowSequenceStartToken,   '[');
-REPLACES.store(Tokens.FlowSequenceEndToken,     ']');
-REPLACES.store(Tokens.FlowMappingStartToken,    '{');
-REPLACES.store(Tokens.FlowMappingEndToken,      '}');
-REPLACES.store(Tokens.BlockEntryToken,          ',');
-REPLACES.store(Tokens.FlowEntryToken,           ',');
-REPLACES.store(Tokens.KeyToken,                 '?');
-REPLACES.store(Tokens.ValueToken,               ':');
-
-
-module.exports = {
-  "Test tokens": Helper.functional({
-    dirname: __dirname + '/data',
-    files: ['.data', '.tokens'],
-    test: function (dataFile, tokensFile) {
-      var result = [], expected = [];
-      
-      Fs.readFileSync(tokensFile, 'utf8').split(/[ \n]/).forEach(function (t) {
-        if (!!t) { expected.push(t); }
-      });
-
-      JsYaml.scan(Fs.readFileSync(dataFile, 'utf8'), function (token) {
-        if (Common.isInstanceOf(token, Tokens.StreamStartToken) ||
-            Common.isInstanceOf(token, Tokens.StreamEndToken)) {
-          return;
-        }
-
-        result.push(REPLACES.get(token.constructor));
-      });
-
-      Assert.equal(result.length, expected.length);
-
-      result.forEach(function (token, i) {
-        Assert.equal(expected[i], token);
-      });
-    }
-  })
-};
+REPLACES.store(_tokens.DirectiveToken,           '%');
+REPLACES.store(_tokens.DocumentStartToken,       '---');
+REPLACES.store(_tokens.DocumentEndToken,         '...');
+REPLACES.store(_tokens.AliasToken,               '*');
+REPLACES.store(_tokens.AnchorToken,              '&');
+REPLACES.store(_tokens.TagToken,                 '!');
+REPLACES.store(_tokens.ScalarToken,              '_');
+REPLACES.store(_tokens.BlockSequenceStartToken,  '[[');
+REPLACES.store(_tokens.BlockMappingStartToken,   '{{');
+REPLACES.store(_tokens.BlockEndToken,            ']}');
+REPLACES.store(_tokens.FlowSequenceStartToken,   '[');
+REPLACES.store(_tokens.FlowSequenceEndToken,     ']');
+REPLACES.store(_tokens.FlowMappingStartToken,    '{');
+REPLACES.store(_tokens.FlowMappingEndToken,      '}');
+REPLACES.store(_tokens.BlockEntryToken,          ',');
+REPLACES.store(_tokens.FlowEntryToken,           ',');
+REPLACES.store(_tokens.KeyToken,                 '?');
+REPLACES.store(_tokens.ValueToken,               ':');
 
 
-////////////////////////////////////////////////////////////////////////////////
-// vim:ts=2:sw=2
-////////////////////////////////////////////////////////////////////////////////
+functional.generateTests({
+  description: 'Test tokens.',
+  files: ['.data', '.tokens'],
+  handler: function (dataFile, tokensFile) {
+    var result = [], expected = [];
+    
+    tokensFile.data.split(/[ \n]/).forEach(function (t) {
+      if (!!t) { expected.push(t); }
+    });
+
+    jsyaml.scan(dataFile.data, function (token) {
+      if ($$.isInstanceOf(token, _tokens.StreamStartToken) ||
+          $$.isInstanceOf(token, _tokens.StreamEndToken)) {
+        return;
+      }
+
+      result.push(REPLACES.get(token.constructor));
+    });
+
+    assert.equal(result.length, expected.length);
+
+    result.forEach(function (token, i) {
+      assert.equal(expected[i], token);
+    });
+  }
+});
