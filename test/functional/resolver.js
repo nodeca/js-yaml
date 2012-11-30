@@ -1,36 +1,27 @@
 'use strict';
 
 
-var Assert = require('assert');
-var Fs = require('fs');
-var JsYaml = require('../../lib/js-yaml');
-var Common = require('../../lib/js-yaml/common');
-var Nodes = require('../../lib/js-yaml/nodes');
-var Helper = require('../helper');
+var assert = require('chai').assert;
+var functional = require('../helpers/functional');
+var jsyaml = require('../../lib/js-yaml');
+var $$ = require('../../lib/js-yaml/common');
+var _nodes  = require('../../lib/js-yaml/nodes');
 
 
-module.exports = {
-  "Test implicit resolver": Helper.functional({
-    dirname: __dirname + '/data',
-    files: ['.data', '.detect'],
-    test: function (dataFilename, detectFilename) {
-      var correctTag, node;
-      
-      node = JsYaml.compose(Fs.readFileSync(dataFilename, 'utf8'));
-      correctTag = Fs.readFileSync(detectFilename, 'utf8')
-        .replace(/^[ \s]+|[ \s]+$/g, '');
+functional.generateTests({
+  description: "Test implicit resolver.",
+  files: ['.data', '.detect'],
+  handler: function (dataFile, detectFile) {
+    var node, correctTag;
+    
+    node = jsyaml.compose(dataFile.data);
+    correctTag = detectFile.data.replace(/^[ \s]+|[ \s]+$/g, '');
 
-      Assert.equal(Common.isInstanceOf(node, Nodes.SequenceNode), true);
+    assert.isTrue($$.isInstanceOf(node, _nodes.SequenceNode));
 
-      Common.each(node.value, function (scalar) {
-        Assert.equal(Common.isInstanceOf(scalar, Nodes.ScalarNode), true);
-        Assert.equal(scalar.tag, correctTag);
-      });
-    }
-  })
-};
-
-
-////////////////////////////////////////////////////////////////////////////////
-// vim:ts=2:sw=2
-////////////////////////////////////////////////////////////////////////////////
+    $$.each(node.value, function (scalar) {
+      assert.isTrue($$.isInstanceOf(scalar, _nodes.ScalarNode));
+      assert.equal(scalar.tag, correctTag);
+    });
+  }
+});
