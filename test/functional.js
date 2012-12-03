@@ -2,6 +2,7 @@
 
 
 describe('Functional.', function () {
+  require('./functional/constructor');
   require('./functional/errors');
   require('./functional/mark');
   require('./functional/resolver');
