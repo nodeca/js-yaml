@@ -6,8 +6,8 @@ var $$$ = require('../../../lib/js-yaml-test/common');
 
 
 describe('Common.', function () {
-  describe('#areEqualObjects()', function () {
-    var test = $$$.areEqualObjects;
+  describe('#areEqual()', function () {
+    var test = $$$.areEqual;
 
     it('should return false when the passed objects are of different types', function () {
       assert(!test(42, 'answer'));
