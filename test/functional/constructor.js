@@ -2,6 +2,7 @@
 
 
 var assert = require('assert');
+var util = require('util');
 var $$$ = require('../../lib/js-yaml-test/common');
 var functional = require('../../lib/js-yaml-test/functional');
 var TestLoader = require('../../lib/js-yaml-test/test-loader');
@@ -24,6 +25,9 @@ functional.generateTests({
       object1 = object1[0];
     }
 
-    assert($$$.areEqualObjects(object1, object2));
+    assert($$$.areEqual(object1, object2),
+      util.format('Expected\n\n%s\n\n  to be equal to\n\n%s\n',
+        util.inspect(object1),
+        util.inspect(object2)));
   }
 });
