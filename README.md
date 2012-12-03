@@ -70,8 +70,8 @@ Browser support is still buggy, and mostly done to run online demo. If you
 can help to improve browser compatibility and AMD support - rise pull request.
 
 **Support of oldIEs** and some other prehistoric browsers is possible using
-[es5-shims](https://github.com/kriskowal/es5-shim). Just include shims before
-jsyaml to use it with outdated browsers.
+[es5-shims](https://github.com/kriskowal/es5-shim). Just include shims (and
+shams) before jsyaml to use it with outdated browsers.
 
 
 ## API
