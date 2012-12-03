@@ -2,7 +2,7 @@
 
 
 var assert = require('chai').assert;
-var functional = require('../helpers/functional');
+var functional = require('../../lib/js-yaml-test/functional');
 var jsyaml = require('../../lib/js-yaml');
 var $$ = require('../../lib/js-yaml/common');
 var _nodes  = require('../../lib/js-yaml/nodes');
