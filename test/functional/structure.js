@@ -1,7 +1,7 @@
 'use strict';
 
 
-var assert = require('chai').assert;
+var assert = require('assert');
 var functional = require('../../lib/js-yaml-test/functional');
 var _loader = require('../../lib/js-yaml/loader');
 var _events = require('../../lib/js-yaml/events');

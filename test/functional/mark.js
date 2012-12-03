@@ -1,6 +1,6 @@
 'use strict';
 
-var assert = require('chai').assert;
+var assert = require('assert');
 var functional = require('../../lib/js-yaml-test/functional');
 var Mark = require('../../lib/js-yaml/errors').Mark;
 
@@ -13,7 +13,7 @@ functional.generateTests({
       var index = 0, line = 0, column = 0,
           mark, snippet, data, pointer, temp;
 
-      assert.include(input, '*');
+      assert(0 <= input.indexOf('*'));
 
       while (input[index] !== '*') {
         if (input[index] === '\n') {
@@ -28,10 +28,10 @@ functional.generateTests({
       mark = new Mark(marksFile.path, index, line, column, input, index);
       snippet = mark.getSnippet(2, 79);
 
-      assert.isString(snippet);
+      assert(typeof snippet, 'string');
       
       temp = snippet.split('\n');
-      assert.lengthOf(temp, 2);
+      assert.strictEqual(temp.length, 2);
 
       data = temp[0];
       pointer = temp[1];
