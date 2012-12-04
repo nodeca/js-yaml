@@ -1,7 +1,7 @@
-canonical: yes
-answer: NO
-logical: True
-option: on
+canonical: !!bool yes
+answer: !!bool NO
+logical: !!bool True
+option: !!bool on
 
 
 but:
