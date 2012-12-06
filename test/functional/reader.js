@@ -14,7 +14,7 @@ _functional.generateTests({
     assert.throws(function () {
       var stream = new _reader.Reader(errorFile.data);
 
-      while (stream.peek() != '\0') {
+      while (stream.peek() !== '\0') {
         stream.forward();
       }
     }, _reader.ReaderError);
