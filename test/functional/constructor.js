@@ -1,9 +1,7 @@
 'use strict';
 
 
-var assert = require('assert');
 var fullEqual = require('assert-full-equal').fullEqual;
-var util = require('util');
 var jsyaml = require('../../lib/js-yaml');
 
 var _classes = require('../support/classes');
