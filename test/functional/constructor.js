@@ -4,13 +4,14 @@
 var assert = require('assert');
 var util = require('util');
 var jsyaml = require('../../lib/js-yaml');
-var $$$ = require('../support/common');
-var TestLoader = require('../support/test-loader');
+
+var _common = require('../support/common');
 var _classes = require('../support/classes');
-var functional = require('../support/functional');
+var _functional = require('../support/functional');
+var TestLoader = require('../support/test-loader');
 
 
-functional.generateTests({
+_functional.generateTests({
   description: 'Test constructor.',
   files: ['.data', '.code'],
   handler: function (dataFile, codeFile) {
@@ -25,7 +26,7 @@ functional.generateTests({
       object1 = object1[0];
     }
 
-    assert($$$.areEqual(object1, object2),
+    assert(_common.areEqual(object1, object2),
       util.format('Expected\n\n%s\n\n  to be equal to\n\n%s\n',
         util.inspect(object1),
         util.inspect(object2)));

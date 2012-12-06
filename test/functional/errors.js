@@ -3,11 +3,12 @@
 
 var assert = require('assert');
 var jsyaml = require('../../lib/js-yaml');
+
+var _functional = require('../support/functional');
 var YAMLError = require('../../lib/js-yaml/errors').YAMLError;
-var functional = require('../support/functional');
 
 
-functional.generateTests({
+_functional.generateTests({
   description: 'Test errors loading all documents from the string.',
   files: ['.loader-error'],
   handler: function (errorFile) {
@@ -17,7 +18,7 @@ functional.generateTests({
   }
 });
 
-functional.generateTests({
+_functional.generateTests({
   description: 'Test errors loading single documents from the string.',
   files: ['.single-loader-error'],
   handler: function (errorFile) {

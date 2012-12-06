@@ -3,10 +3,11 @@
 
 var assert = require('assert');
 var _reader = require('../../lib/js-yaml/reader');
-var functional = require('../support/functional');
+
+var _functional = require('../support/functional');
 
 
-functional.generateTests({
+_functional.generateTests({
   description: 'Test reader.',
   files: ['.stream-error'],
   handler: function (errorFile) {

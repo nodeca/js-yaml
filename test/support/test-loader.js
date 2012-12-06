@@ -7,7 +7,7 @@ var _parser = require('../../lib/js-yaml/parser');
 var _composer = require('../../lib/js-yaml/composer');
 var _resolver = require('../../lib/js-yaml/resolver');
 
-var $$$ = require('./common');
+var _common = require('./common');
 var TestConstructor = require('./test-constructor');
 
 
@@ -20,13 +20,13 @@ function TestLoader(stream) {
   _resolver.Resolver.call(this);
 }
 
-$$$.extend(TestLoader.prototype,
-         _reader.Reader.prototype,
-         _scanner.Scanner.prototype,
-         _parser.Parser.prototype,
-         _composer.Composer.prototype,
-         TestConstructor.prototype,
-         _resolver.Resolver.prototype);
+_common.extend(TestLoader.prototype,
+               _reader.Reader.prototype,
+               _scanner.Scanner.prototype,
+               _parser.Parser.prototype,
+               _composer.Composer.prototype,
+               TestConstructor.prototype,
+               _resolver.Resolver.prototype);
 
 
 module.exports = TestLoader;

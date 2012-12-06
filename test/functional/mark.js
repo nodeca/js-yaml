@@ -3,10 +3,11 @@
 
 var assert = require('assert');
 var Mark = require('../../lib/js-yaml/errors').Mark;
-var functional = require('../support/functional');
+
+var _functional = require('../support/functional');
 
 
-functional.generateTests({
+_functional.generateTests({
   description: 'Test marks.',
   files: ['.marks'],
   handler: function (marksFile) {

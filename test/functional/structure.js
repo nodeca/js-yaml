@@ -4,7 +4,8 @@
 var assert = require('assert');
 var _loader = require('../../lib/js-yaml/loader');
 var _events = require('../../lib/js-yaml/events');
-var functional = require('../support/functional');
+
+var _functional = require('../support/functional');
 
 
 function convertStructure(loader) {
@@ -45,7 +46,7 @@ function convertStructure(loader) {
 }
 
 
-functional.generateTests({
+_functional.generateTests({
   description: 'Test structure.',
   files: ['.data', '.structure'],
   handler: function (dataFile, structureFile) {

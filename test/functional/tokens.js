@@ -3,9 +3,10 @@
 
 var assert = require('assert');
 var jsyaml = require('../../lib/js-yaml');
-var $$ = require('../../lib/js-yaml/common');
 var _tokens = require('../../lib/js-yaml/tokens');
-var functional = require('../support/functional');
+
+var _common = require('../support/common');
+var _functional = require('../support/functional');
 
 // _tokens mnemonic:
 // directive:            %
@@ -26,7 +27,7 @@ var functional = require('../support/functional');
 // key:                  ?
 // value:                :
 
-var REPLACES = new $$.Hash();
+var REPLACES = new _common.Hash();
 
 REPLACES.store(_tokens.DirectiveToken,           '%');
 REPLACES.store(_tokens.DocumentStartToken,       '---');
@@ -48,7 +49,7 @@ REPLACES.store(_tokens.KeyToken,                 '?');
 REPLACES.store(_tokens.ValueToken,               ':');
 
 
-functional.generateTests({
+_functional.generateTests({
   description: 'Test tokens.',
   files: ['.data', '.tokens'],
   handler: function (dataFile, tokensFile) {
@@ -59,8 +60,8 @@ functional.generateTests({
     });
 
     jsyaml.scan(dataFile.data, function (token) {
-      if ($$.isInstanceOf(token, _tokens.StreamStartToken) ||
-          $$.isInstanceOf(token, _tokens.StreamEndToken)) {
+      if (_common.isInstanceOf(token, _tokens.StreamStartToken) ||
+          _common.isInstanceOf(token, _tokens.StreamEndToken)) {
         return;
       }
 

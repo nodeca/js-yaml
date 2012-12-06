@@ -5,8 +5,8 @@ var assert = require('assert');
 var $$ = require('../../lib/js-yaml/common');
 
 
-var $$$ = module.exports = {};
-$$.extend($$$, $$);
+var _common = module.exports = {};
+$$.extend(_common, $$);
 
 
 function kindOf(object) {
@@ -120,8 +120,8 @@ function makeClassConstructor(Class, params) {
 }
 
 
-$$$.kindOf = kindOf;
-$$$.areEqual = areEqual;
-$$$.areEqualArrays = areEqualArrays;
-$$$.areEqualObjects = areEqualObjects;
-$$$.makeClassConstructor = makeClassConstructor;
+_common.kindOf = kindOf;
+_common.areEqual = areEqual;
+_common.areEqualArrays = areEqualArrays;
+_common.areEqualObjects = areEqualObjects;
+_common.makeClassConstructor = makeClassConstructor;

@@ -1,7 +1,7 @@
 'use strict';
 
 
-var $$$ = require('./common');
+var _common = require('./common');
 
 
 function Tag1(parameters) {
@@ -10,7 +10,7 @@ function Tag1(parameters) {
   this.z = parameters.z || 0;
 }
 
-Tag1.fromYAMLNode = $$$.makeClassConstructor(Tag1, {
+Tag1.fromYAMLNode = _common.makeClassConstructor(Tag1, {
   required: ['x'],
   optional: ['y', 'z']
 });
@@ -20,7 +20,7 @@ function Tag2() {
   Tag1.apply(this, arguments);
 }
 
-$$$.inherits(Tag2, Tag1);
+_common.inherits(Tag2, Tag1);
 
 Tag2.fromYAMLNode = function fromYAMLNode(node) {
   return new Tag2({
@@ -33,9 +33,9 @@ function Tag3() {
   Tag2.apply(this, arguments);
 }
 
-$$$.inherits(Tag3, Tag2);
+_common.inherits(Tag3, Tag2);
 
-Tag3.fromYAMLNode = $$$.makeClassConstructor(Tag3, {
+Tag3.fromYAMLNode = _common.makeClassConstructor(Tag3, {
   map: { '=': 'x' },
   required: ['x'],
   optional: ['y', 'z']
@@ -47,7 +47,7 @@ function Foo(parameters) {
   this.myAnotherParameter = parameters.myAnotherParameter;
 }
 
-Foo.fromYAMLNode = $$$.makeClassConstructor(Foo, {
+Foo.fromYAMLNode = _common.makeClassConstructor(Foo, {
   map: {
     'my-parameter':         'myParameter',
     'my-another-parameter': 'myAnotherParameter'

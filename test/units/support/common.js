@@ -2,12 +2,12 @@
 
 
 var assert = require('assert');
-var $$$ = require('../../support/common');
+var _common = require('../../support/common');
 
 
 describe('Common.', function () {
   describe('#areEqual()', function () {
-    var test = $$$.areEqual;
+    var test = _common.areEqual;
 
     it('should return false when the passed objects are of different types', function () {
       assert(!test(42, 'answer'));
@@ -87,7 +87,7 @@ describe('Common.', function () {
       function Baz() {
         Bar.apply(this, arguments);
       }
-      $$$.inherits(Baz, Bar);
+      _common.inherits(Baz, Bar);
 
       assert(test(new Foo(1, 2), new Foo(1, 2)));
       assert(!test(new Foo(1, 2), new Foo(1, 4)));

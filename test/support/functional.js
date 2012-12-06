@@ -1,9 +1,10 @@
 'use strict'
 
 
-var $$  = require('../../lib/js-yaml/common');
 var path = require('path');
 var fs = require('fs');
+
+var _common = require('./common');
 
 var DATA_DIRECTORY = process.env['JSYAML_TEST_DATA']
   ? path.normalize(process.env['JSYAML_TEST_DATA'])
@@ -43,7 +44,7 @@ function collectDataFiles(directory, callback, context) {
 function selectDataFiles(collection, extnameList) {
   var basenameList = [];
 
-  $$.each(collection, function (availableExts, basename) {
+  _common.each(collection, function (availableExts, basename) {
     function hasExt(extension) {
       return 0 <= availableExts.indexOf(extension);
     }
