@@ -2,10 +2,10 @@
 
 
 var assert = require('assert');
+var fullEqual = require('assert-full-equal').fullEqual;
 var util = require('util');
 var jsyaml = require('../../lib/js-yaml');
 
-var _common = require('../support/common');
 var _classes = require('../support/classes');
 var _functional = require('../support/functional');
 var TestLoader = require('../support/test-loader');
@@ -26,9 +26,6 @@ _functional.generateTests({
       object1 = object1[0];
     }
 
-    assert(_common.areEqual(object1, object2),
-      util.format('Expected\n\n%s\n\n  to be equal to\n\n%s\n',
-        util.inspect(object1),
-        util.inspect(object2)));
+    fullEqual(object1, object2);
   }
 });
