@@ -2,10 +2,10 @@
 
 
 var assert = require('assert');
-var functional = require('../../lib/js-yaml-test/functional');
 var jsyaml = require('../../lib/js-yaml');
 var $$ = require('../../lib/js-yaml/common');
 var _tokens = require('../../lib/js-yaml/tokens');
+var functional = require('../support/functional');
 
 // _tokens mnemonic:
 // directive:            %

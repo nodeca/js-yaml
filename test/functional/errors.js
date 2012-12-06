@@ -4,7 +4,7 @@
 var assert = require('assert');
 var jsyaml = require('../../lib/js-yaml');
 var YAMLError = require('../../lib/js-yaml/errors').YAMLError;
-var functional = require('../../lib/js-yaml-test/functional');
+var functional = require('../support/functional');
 
 
 functional.generateTests({

@@ -7,7 +7,7 @@ var fs = require('fs');
 
 var DATA_DIRECTORY = process.env['JSYAML_TEST_DATA']
   ? path.normalize(process.env['JSYAML_TEST_DATA'])
-  : path.join(__dirname, '../../test/functional/data');
+  : path.join(__dirname, '../functional/data');
 
 
 function listDirectory(directory, callback) {

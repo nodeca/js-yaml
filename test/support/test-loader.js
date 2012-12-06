@@ -1,11 +1,11 @@
 'use strict';
 
 
-var _reader = require('../js-yaml/reader');
-var _scanner = require('../js-yaml/scanner');
-var _parser = require('../js-yaml/parser');
-var _composer = require('../js-yaml/composer');
-var _resolver = require('../js-yaml/resolver');
+var _reader = require('../../lib/js-yaml/reader');
+var _scanner = require('../../lib/js-yaml/scanner');
+var _parser = require('../../lib/js-yaml/parser');
+var _composer = require('../../lib/js-yaml/composer');
+var _resolver = require('../../lib/js-yaml/resolver');
 
 var $$$ = require('./common');
 var TestConstructor = require('./test-constructor');

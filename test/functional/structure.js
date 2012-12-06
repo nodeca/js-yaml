@@ -2,9 +2,9 @@
 
 
 var assert = require('assert');
-var functional = require('../../lib/js-yaml-test/functional');
 var _loader = require('../../lib/js-yaml/loader');
 var _events = require('../../lib/js-yaml/events');
+var functional = require('../support/functional');
 
 
 function convertStructure(loader) {

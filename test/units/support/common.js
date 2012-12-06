@@ -2,7 +2,7 @@
 
 
 var assert = require('assert');
-var $$$ = require('../../../lib/js-yaml-test/common');
+var $$$ = require('../../support/common');
 
 
 describe('Common.', function () {

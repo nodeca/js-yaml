@@ -2,10 +2,10 @@
 
 
 var assert = require('assert');
-var functional = require('../../lib/js-yaml-test/functional');
 var jsyaml = require('../../lib/js-yaml');
 var $$ = require('../../lib/js-yaml/common');
 var _nodes  = require('../../lib/js-yaml/nodes');
+var functional = require('../support/functional');
 
 
 functional.generateTests({

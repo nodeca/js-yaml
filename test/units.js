@@ -2,5 +2,5 @@
 
 
 describe('Code units.', function () {
-  require('./units/js-yaml-test');
+  require('./units/support');
 });

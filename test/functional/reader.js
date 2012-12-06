@@ -2,8 +2,8 @@
 
 
 var assert = require('assert');
-var functional = require('../../lib/js-yaml-test/functional');
 var _reader = require('../../lib/js-yaml/reader');
+var functional = require('../support/functional');
 
 
 functional.generateTests({

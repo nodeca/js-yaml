@@ -3,11 +3,11 @@
 
 var assert = require('assert');
 var util = require('util');
-var $$$ = require('../../lib/js-yaml-test/common');
-var functional = require('../../lib/js-yaml-test/functional');
-var TestLoader = require('../../lib/js-yaml-test/test-loader');
-var _classes = require('../../lib/js-yaml-test/classes');
 var jsyaml = require('../../lib/js-yaml');
+var $$$ = require('../support/common');
+var TestLoader = require('../support/test-loader');
+var _classes = require('../support/classes');
+var functional = require('../support/functional');
 
 
 functional.generateTests({

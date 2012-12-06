@@ -1,7 +1,7 @@
 'use strict';
 
 
-var Constructor = require('../js-yaml/constructor').Constructor;
+var Constructor = require('../../lib/js-yaml/constructor').Constructor;
 
 var $$$ = require('./common');
 var _classes = require('./classes');

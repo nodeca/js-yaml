@@ -2,7 +2,7 @@
 
 
 var assert = require('assert');
-var $$ = require('../js-yaml/common');
+var $$ = require('../../lib/js-yaml/common');
 
 
 var $$$ = module.exports = {};
