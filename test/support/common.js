@@ -122,6 +122,4 @@ function makeClassConstructor(Class, params) {
 
 _common.kindOf = kindOf;
 _common.areEqual = areEqual;
-_common.areEqualArrays = areEqualArrays;
-_common.areEqualObjects = areEqualObjects;
 _common.makeClassConstructor = makeClassConstructor;
