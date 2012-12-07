@@ -1,4 +1,6 @@
-{
+'use strict';
+
+module.exports = {
   'Block style': [
     'Mercury',
     'Venus',
@@ -21,4 +23,4 @@
     'Neptune',
     'Pluto'
   ]
-}
+};
