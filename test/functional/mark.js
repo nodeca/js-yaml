@@ -10,8 +10,8 @@ var _functional = require('../support/functional');
 _functional.generateTests({
   description: 'Test marks.',
   files: ['.marks'],
-  handler: function (marksFile) {
-    marksFile.data.split('---\n').slice(1).forEach(function (input) {
+  test: function (marksFile) {
+    marksFile.content.split('---\n').slice(1).forEach(function (input) {
       var index = 0, line = 0, column = 0,
           mark, snippet, data, pointer, temp;
 

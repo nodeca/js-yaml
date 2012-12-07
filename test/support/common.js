@@ -9,6 +9,17 @@ var _common = module.exports = {};
 $$.extend(_common, $$);
 
 
+function toArray(sequence) {
+  if (Array.isArray(sequence)) {
+    return sequence;
+  } else if (undefined === sequence || null === sequence) {
+    return [];
+  } else {
+    return [ sequence ];
+  }
+}
+
+
 function makeClassConstructor(Class, params) {
   var mapKeys      = params.map      || {},
       requiredKeys = params.required || [],
@@ -42,4 +53,5 @@ function makeClassConstructor(Class, params) {
 }
 
 
+_common.toArray = toArray;
 _common.makeClassConstructor = makeClassConstructor;

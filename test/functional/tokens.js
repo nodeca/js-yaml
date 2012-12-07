@@ -8,6 +8,7 @@ var _tokens = require('../../lib/js-yaml/tokens');
 var _common = require('../support/common');
 var _functional = require('../support/functional');
 
+
 // _tokens mnemonic:
 // directive:            %
 // document_start:       ---
@@ -52,14 +53,14 @@ REPLACES.store(_tokens.ValueToken,               ':');
 _functional.generateTests({
   description: 'Test tokens.',
   files: ['.data', '.tokens'],
-  handler: function (dataFile, tokensFile) {
+  test: function (dataFile, tokensFile) {
     var result = [], expected = [];
     
-    tokensFile.data.split(/[ \n]/).forEach(function (t) {
+    tokensFile.content.split(/[ \n]/).forEach(function (t) {
       if (!!t) { expected.push(t); }
     });
 
-    jsyaml.scan(dataFile.data, function (token) {
+    jsyaml.scan(dataFile.content, function (token) {
       if (_common.isInstanceOf(token, _tokens.StreamStartToken) ||
           _common.isInstanceOf(token, _tokens.StreamEndToken)) {
         return;

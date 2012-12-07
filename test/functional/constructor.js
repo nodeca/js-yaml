@@ -11,12 +11,16 @@ var TestLoader = require('../support/test-loader');
 
 _functional.generateTests({
   description: 'Test constructor.',
-  files: ['.data', '.code'],
-  handler: function (dataFile, codeFile) {
+  files: ['.data', '.js'],
+  test: function (dataFile, codeFile) {
     var object1 = [],
-        object2 = eval('(' + codeFile.data + ')');
+        object2 = codeFile.content;
 
-    jsyaml.loadAll(dataFile.data, function (doc) {
+    if ('function' === object2) {
+      object2 = object2(_classes);
+    }
+
+    jsyaml.loadAll(dataFile.content, function (doc) {
       object1.push(doc);
     }, TestLoader);
 

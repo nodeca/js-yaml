@@ -49,11 +49,11 @@ function convertStructure(loader) {
 _functional.generateTests({
   description: 'Test structure.',
   files: ['.data', '.structure'],
-  handler: function (dataFile, structureFile) {
+  test: function (dataFile, structureFile) {
     var result = [], expected, loader;
 
-    expected = JSON.parse(structureFile.data);
-    loader = new _loader.SafeLoader(dataFile.data);
+    expected = JSON.parse(structureFile.content);
+    loader = new _loader.SafeLoader(dataFile.content);
 
     while (loader.checkEvent()) {
       if (loader.checkEvent(_events.StreamStartEvent,

@@ -12,11 +12,11 @@ var _functional = require('../support/functional');
 _functional.generateTests({
   description: "Test implicit resolver.",
   files: ['.data', '.detect'],
-  handler: function (dataFile, detectFile) {
+  test: function (dataFile, detectFile) {
     var node, correctTag;
     
-    node = jsyaml.compose(dataFile.data);
-    correctTag = detectFile.data.replace(/^[ \s]+|[ \s]+$/g, '');
+    node = jsyaml.compose(dataFile.content);
+    correctTag = detectFile.content.replace(/^[ \s]+|[ \s]+$/g, '');
 
     assert(_common.isInstanceOf(node, _nodes.SequenceNode));
 
