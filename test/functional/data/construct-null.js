@@ -1,4 +1,6 @@
-[
+'use strict';
+
+module.exports = [
   null,
   {
     'empty': null,
@@ -14,5 +16,5 @@
       '4th entry',
       null,
     ],
-  },
-]
+  }
+];
