@@ -1,4 +1,6 @@
-{
+'use strict';
+
+module.exports = {
   'canonical': true,
   'answer': false,
   'logical': true,
@@ -7,4 +9,4 @@
     'y': 'is a string',
     'n': 'is a string'
   }
-}
+};
