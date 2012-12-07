@@ -1,4 +1,6 @@
-{
+'use strict';
+
+module.exports = {
   'baseball players': {
     'Mark McGwire': null,
     'Sammy Sosa': null,
@@ -9,4 +11,4 @@
     'Detroit Tigers': null,
     'New York Yankees': null
   }
-}
+};
