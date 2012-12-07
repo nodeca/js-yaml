@@ -1,4 +1,6 @@
-{
+'use strict';
+
+module.exports = {
   'Block tasks': [
     ['meeting', 'with team.'],
     ['meeting', 'with boss.'],
@@ -8,5 +10,5 @@
   'Flow tasks': [
     ['meeting', 'with team'],
     ['meeting', 'with boss']
-  ],
-}
+  ]
+};
