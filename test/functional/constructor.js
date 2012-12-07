@@ -16,7 +16,7 @@ _functional.generateTests({
     var object1 = [],
         object2 = codeFile.content;
 
-    if ('function' === object2) {
+    if ('[object Function]' === Object.prototype.toString.call(object2)) {
       object2 = object2(_classes);
     }
 
