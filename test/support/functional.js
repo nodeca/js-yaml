@@ -10,7 +10,7 @@ var DataFile = require('./data-file');
 
 
 var DATA_DIRECTORY = process.env['JSYAML_FUNCTIONAL_TEST_DATA'] ?
-  path.normalize(process.env['JSYAML_FUNTIONAL_TEST_DATA']) :
+  path.normalize(process.env['JSYAML_FUNCTIONAL_TEST_DATA']) :
   path.join(__dirname, '../functional/data');
 
 
