@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = "UTF-8";
+module.exports = 'UTF-8';
