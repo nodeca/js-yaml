@@ -49,7 +49,7 @@ CanonicalScanner.prototype.dataChar = function dataChar(index) {
   }
 
   return this.data.charAt(index);
-}
+};
 
 CanonicalScanner.prototype.dataSlice = function dataSlice(options) {
   var fromIndex, toIndex;
@@ -69,7 +69,7 @@ CanonicalScanner.prototype.dataSlice = function dataSlice(options) {
   }
 
   return this.data.slice(fromIndex, toIndex);
-}
+};
 
 CanonicalScanner.prototype.checkToken = function checkToken(/* choices... */) {
   var index, TokenClass;

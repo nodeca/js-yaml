@@ -42,7 +42,7 @@ _functional.generateTests({
   description: 'Test canonical error.',
   files: [ '.data', '.canonical' ],
   skip: [ '.empty' ],
-  test: function (dataFile, canonicalFile) {
+  test: function (dataFile) {
     assert.throws(function () {
       jsyaml.loadAll(dataFile.content, function () {}, CanonicalLoader);
     }, _errors.YAMLError);
