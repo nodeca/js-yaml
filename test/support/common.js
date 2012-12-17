@@ -54,21 +54,23 @@ function makeClassConstructor(Class, params) {
     assert.equal(typeof mapping, 'object');
 
     $$.each(mapKeys, function (newKey, oldKey) {
-      if (Object.prototype.hasOwnProperty.call(mapping, oldKey)) {
+      if (mapping.hasOwnProperty(oldKey)) {
         mapping[newKey] = mapping[oldKey];
         delete mapping[oldKey];
       }
     });
 
     requiredKeys.forEach(function (key) {
-      assert(Object.prototype.hasOwnProperty.call(mapping, key));
+      assert(mapping.hasOwnProperty(key),
+        'Mapping must contain ' + JSON.stringify(key) + ' key');
     });
 
     $$.each(mapping, function (value, key) {
       var hasAsRequired = (0 <= requiredKeys.indexOf(key)),
           hasAsOptional = (0 <= optionalKeys.indexOf(key));
 
-      assert(hasAsRequired || hasAsOptional);
+      assert((hasAsRequired || hasAsOptional),
+        'Mapping should not contain ' + JSON.stringify(key) + ' key');
     });
 
     return new Class(mapping);
