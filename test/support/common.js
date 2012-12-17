@@ -9,6 +9,11 @@ var _common = module.exports = {};
 $$.extend(_common, $$);
 
 
+function isNothing(subject) {
+  return (undefined === subject) || (null === subject);
+}
+
+
 function toArray(sequence) {
   if (Array.isArray(sequence)) {
     return sequence;
@@ -53,5 +58,6 @@ function makeClassConstructor(Class, params) {
 }
 
 
+_common.isNothing = isNothing;
 _common.toArray = toArray;
 _common.makeClassConstructor = makeClassConstructor;
