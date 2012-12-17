@@ -17,7 +17,7 @@ function isNothing(subject) {
 function toArray(sequence) {
   if (Array.isArray(sequence)) {
     return sequence;
-  } else if (undefined === sequence || null === sequence) {
+  } else if (isNothing(sequence)) {
     return [];
   } else {
     return [ sequence ];
