@@ -4,9 +4,7 @@
 
 var path = require('path');
 var fs = require('fs');
-
 var _common = require('./common');
-var DataFile = require('./data-file');
 
 
 var DATA_DIRECTORY = process.env['JSYAML_FUNCTIONAL_TEST_DATA'] ?
@@ -58,7 +56,7 @@ function generateTests(settings) {
       }
 
       function takeFile(ext) {
-        return new DataFile(path.join(directory, (basename + ext)));
+        return new _common.DataFile(path.join(directory, (basename + ext)));
       }
 
       if (shouldTakeFile()) {
