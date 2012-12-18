@@ -1,19 +1,17 @@
 'use strict';
 
 
-require('../../lib/js-yaml');
+var assert = require('assert');
+var jsyaml = require('../../lib/js-yaml');
+var _issues = require('../support/issues');
 
 
-var Assert = require('assert');
-var source = __dirname + '/data/issue-8.yml';
-
-
-module.exports = require('../helper').issue({
-  title: "#8: Parse failed when no document start present",
+_issues.generateTests(8, {
+  title: 'Parse failed when no document start present',
   fixed: true,
-  test: function () {
-    Assert.doesNotThrow(function () {
-      require(source);
+  test: function (file) {
+    assert.doesNotThrow(function () {
+      jsyaml.load(file.content);
     }, TypeError);
   }
 });

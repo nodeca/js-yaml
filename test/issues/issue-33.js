@@ -1,24 +1,25 @@
 'use strict';
 
 
-require('../../lib/js-yaml');
+var assert = require('assert');
+var jsyaml = require('../../lib/js-yaml');
+var _issues = require('../support/issues');
 
 
-var Assert = require('assert');
-var source = __dirname + '/data/issue-33.yml';
-
-
-module.exports = require('../helper').issue({
-  title: "#33: refactor compact variant of MarkedYAMLError.toString",
+_issues.generateTests(33, {
+  title: 'refactor compact variant of MarkedYAMLError.toString',
   fixed: true,
-  test: function () {
+  test: function (file) {
     try {
-      require(source);
+      jsyaml.load(file.content);
     } catch (err) {
-      Assert.equal(
+      assert.equal(
         err.toString(true),
         'Error on line 1, col 12: expected <block end>, but found undefined'
       );
+      return;
     }
+
+    throw new Error('jsyaml.load should throw but it does not');
   }
 });
