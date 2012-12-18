@@ -36,7 +36,7 @@ function generateTests(settings) {
       directory   = settings.directory || DATA_DIRECTORY,
       files       = _common.toArray(settings.files),
       skip        = _common.toArray(settings.skip),
-      test        = settings.test;
+      testHandler = settings.test;
 
   describe(description, function () {
     var availableFiles = collectDataFiles(directory);
@@ -61,7 +61,7 @@ function generateTests(settings) {
 
       if (shouldTakeFile()) {
         it(basename, function () {
-          test.apply(this, files.map(takeFile));
+          testHandler.apply(this, files.map(takeFile));
         });
       }
     });
