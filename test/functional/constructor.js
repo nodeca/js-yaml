@@ -3,8 +3,6 @@
 
 var fullEqual = require('assert-full-equal').fullEqual;
 var jsyaml = require('../../lib/js-yaml');
-
-var _classes = require('../support/classes');
 var _functional = require('../support/functional');
 var TestLoader = require('../support/test-loader');
 
@@ -16,10 +14,6 @@ _functional.generateTests({
     var object1 = [],
         object2 = codeFile.content;
 
-    if ('[object Function]' === Object.prototype.toString.call(object2)) {
-      object2 = object2(_classes);
-    }
-
     jsyaml.loadAll(dataFile.content, function (doc) {
       object1.push(doc);
     }, TestLoader);
@@ -28,6 +22,10 @@ _functional.generateTests({
       object1 = object1[0];
     }
 
-    fullEqual(object1, object2);
+    if ('function' === typeof object2) {
+      object2.call(this, object1);
+    } else {
+      fullEqual(object1, object2);
+    }
   }
 });
