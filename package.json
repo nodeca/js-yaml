@@ -24,7 +24,6 @@
   "scripts"         : { "test": "make test" },
 
   "dependencies"    : { "argparse": "~ 0.1.3" },
-  "devDependencies" : { "mocha": ">= 1.7.4",
-                        "assert-paranoid-equal": "git://github.com/dervus/assert-paranoid-equal.git" },
+  "devDependencies" : { "mocha": ">= 1.7.4" },
   "engines"         : { "node": ">= 0.6.0" }
 }

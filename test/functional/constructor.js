@@ -1,7 +1,7 @@
 'use strict';
 
 
-var paranoidEqual = require('assert-paranoid-equal').paranoidEqual;
+var paranoidEqual = require('../support/assert-paranoid-equal').paranoidEqual;
 var jsyaml = require('../../lib/js-yaml');
 var _functional = require('../support/functional');
 var TestLoader = require('../support/test-loader');
