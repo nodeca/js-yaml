@@ -1,18 +1,15 @@
 'use strict';
+/*global it:false */
 
 
 var assert = require('assert');
-var jsyaml = require('../../lib/js-yaml');
-var _issues = require('../support/issues');
+
+require('../../lib/js-yaml');
 
 
-_issues.generateTests(19, {
-  title: 'Timestamp parsing is one month off',
-  fixed: true,
-  test: function (file) {
-    var doc = jsyaml.load(file.content);
+it('#19: Timestamp parsing is one month off', function () {
+  var data = require('./data/issue-19.yml');
 
-    // JS month starts with 0 (0 => Jan, 1 => Feb, ...)
-    assert.equal(doc.xmas.getTime(), Date.UTC(2011, 11, 24));
-  }
+  // JS month starts with 0 (0 => Jan, 1 => Feb, ...)
+  assert.equal(data.xmas.getTime(), Date.UTC(2011, 11, 24));
 });

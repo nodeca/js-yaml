@@ -1,17 +1,14 @@
 'use strict';
+/*global it:false */
 
 
 var assert = require('assert');
-var jsyaml = require('../../lib/js-yaml');
-var _issues = require('../support/issues');
+
+require('../../lib/js-yaml');
 
 
-_issues.generateTests(26, {
-  title: 'should convert new line into white space',
-  fixed: true,
-  test: function (file) {
-    var doc = jsyaml.load(file.content);
+it('#26: should convert new line into white space', function () {
+  var data = require('./data/issue-26.yml');
 
-    assert.equal(doc.test, 'a b c\n');
-  }
+  assert.equal(data.test, 'a b c\n');
 });

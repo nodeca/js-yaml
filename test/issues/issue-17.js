@@ -1,17 +1,14 @@
 'use strict';
+/*global it:false */
 
 
 var assert = require('assert');
-var jsyaml = require('../../lib/js-yaml');
-var _issues = require('../support/issues');
+
+require('../../lib/js-yaml');
 
 
-_issues.generateTests(17, {
-  title: 'Non-specific "!" tags should resolve to !!str',
-  fixed: true,
-  test: function (file) {
-    var doc = jsyaml.load(file.content);
+it('#17: Non-specific "!" tags should resolve to !!str', function () {
+  var data = require('./data/issue-17.yml');
 
-    assert.equal(typeof doc, 'string');
-  }
+  assert.equal(typeof data, 'string');
 });
