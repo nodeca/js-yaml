@@ -1,7 +1,7 @@
 'use strict';
 
 
-var fullEqual = require('assert-full-equal').fullEqual;
+var paranoidEqual = require('assert-paranoid-equal').paranoidEqual;
 var jsyaml = require('../../lib/js-yaml');
 var _functional = require('../support/functional');
 var TestLoader = require('../support/test-loader');
@@ -25,7 +25,7 @@ _functional.generateTests({
     if ('function' === typeof object2) {
       object2.call(this, object1);
     } else {
-      fullEqual(object1, object2);
+      paranoidEqual(object1, object2);
     }
   }
 });
