@@ -1,5 +1,5 @@
 'use strict';
-/*global it:false */
+/*global it */
 
 
 var assert = require('assert');

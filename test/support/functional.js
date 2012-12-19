@@ -1,5 +1,5 @@
 'use strict';
-/*global describe:false, it:false */
+/*global describe, it */
 
 
 var path = require('path');

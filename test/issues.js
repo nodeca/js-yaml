@@ -1,5 +1,5 @@
 'use strict';
-/*global describe:false */
+/*global describe */
 
 
 describe('Issues.', function () {
