@@ -3,12 +3,12 @@
 
 
 describe('Functional.', function () {
-  require('./functional/canonical');
-  require('./functional/constructor');
-  require('./functional/errors');
-  require('./functional/mark');
   require('./functional/reader');
-  require('./functional/resolver');
-  require('./functional/structure');
+  require('./functional/mark');
   require('./functional/tokens');
+  require('./functional/errors');
+  require('./functional/structure');
+  require('./functional/resolver');
+  require('./functional/constructor');
+  require('./functional/canonical');
 });
