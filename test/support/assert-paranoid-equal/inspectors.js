@@ -42,7 +42,8 @@ function ensureEqual(context, actual, expected) {
 
 
 function ensureEqualValues(context, actual, expected, reason) {
-  if (!(Number.isNaN(actual) && Number.isNaN(expected))) {
+  if (!(ownUtils.isNaNConstant(actual) &&
+        ownUtils.isNaNConstant(expected))) {
     if (actual !== expected) {
       throw new AssertionError({
         actual:   context.actual,

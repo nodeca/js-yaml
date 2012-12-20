@@ -7,10 +7,10 @@ var nodeUtils = require('util');
 var REASONS = {
   'values'                  : 'Given objects are not equal',
   'types'                   : 'Given objects are of different types',
-  'prototypes'              : 'Given objects has different prototypes',
-  'object_property_amounts' : 'Given objects has different key amounts',
-  'object_property_names'   : 'Given objects has different key sets',
-  'date_timestamps'         : 'Given Date objects has different timestamps',
+  'prototypes'              : 'Given objects have different prototypes',
+  'object_property_amounts' : 'Given objects have different key amounts',
+  'object_property_names'   : 'Given objects have different key sets',
+  'date_timestamps'         : 'Given Date objects have different timestamps',
 };
 
 
