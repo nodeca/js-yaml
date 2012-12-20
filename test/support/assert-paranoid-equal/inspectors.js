@@ -2,7 +2,7 @@
 /*jshint latedef:false */
 
 
-require('../shims');
+require('../../shims');
 
 var AssertionError = require('assert').AssertionError;
 var ownUtils = require('./utilities');
