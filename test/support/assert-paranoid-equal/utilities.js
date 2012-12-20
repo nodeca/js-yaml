@@ -11,16 +11,6 @@ function isObject(subject) {
 }
 
 
-function isNaNConstant(subject) {
-  if (undefined !== Number.isNaN) {
-    return Number.isNaN(subject);
-  } else {
-    // There is no Number.isNaN in Node 0.6.x
-    return ('number' === typeof subject) && isNaN(subject);
-  }
-}
-
-
 function isInstanceOf(constructor /*, subjects... */) {
   var index,
       length = arguments.length;
@@ -62,6 +52,5 @@ function collectKeys(subject, include, exclude) {
 
 module.exports.isNothing     = isNothing;
 module.exports.isObject      = isObject;
-module.exports.isNaNConstant = isNaNConstant;
 module.exports.isInstanceOf  = isInstanceOf;
 module.exports.collectKeys   = collectKeys;
