@@ -1,33 +1,28 @@
 'use strict';
+/*global it */
 
+
+var assert = require('assert');
 
 require('../../lib/js-yaml');
 
 
-var Assert = require('assert');
-var source = __dirname + '/data/issue-46.yml';
+it('#46: Timestamps are incorrectly parsed in local time', function () {
+  var data = require('./data/issue-46.yml'), date1, date2;
 
+  date1 = data.date1; // date1: 2010-10-20T20:45:00Z
+  assert.equal(date1.getUTCFullYear(), 2010, 'year');
+  assert.equal(date1.getUTCMonth(), 9, 'month');
+  assert.equal(date1.getUTCDate(), 20, 'date');
+  assert.equal(date1.getUTCHours(), 20);
+  assert.equal(date1.getUTCMinutes(), 45);
+  assert.equal(date1.getUTCSeconds(), 0);
 
-module.exports = require('../helper').issue({
-  title: "#46: Timestamps are incorrectly parsed in local time",
-  fixed: true,
-  test: function () {
-    var data = require(source);
-
-    var d1 = data.date1; // date1: 2010-10-20T20:45:00Z
-    Assert.equal(d1.getUTCFullYear(), 2010, 'year');
-    Assert.equal(d1.getUTCMonth(), 9, 'month');
-    Assert.equal(d1.getUTCDate(), 20, 'date');
-    Assert.equal(d1.getUTCHours(), 20);
-    Assert.equal(d1.getUTCMinutes(), 45);
-    Assert.equal(d1.getUTCSeconds(), 0);
-
-    var d2 = data.date2; // date2: 2010-10-20T20:45:00+0100
-    Assert.equal(d2.getUTCFullYear(), 2010, 'year');
-    Assert.equal(d2.getUTCMonth(), 9, 'month');
-    Assert.equal(d2.getUTCDate(), 20, 'date');
-    Assert.equal(d2.getUTCHours(), 19);
-    Assert.equal(d2.getUTCMinutes(), 45);
-    Assert.equal(d2.getUTCSeconds(), 0);
-  }
+  date2 = data.date2; // date2: 2010-10-20T20:45:00+0100
+  assert.equal(date2.getUTCFullYear(), 2010, 'year');
+  assert.equal(date2.getUTCMonth(), 9, 'month');
+  assert.equal(date2.getUTCDate(), 20, 'date');
+  assert.equal(date2.getUTCHours(), 19);
+  assert.equal(date2.getUTCMinutes(), 45);
+  assert.equal(date2.getUTCSeconds(), 0);
 });
