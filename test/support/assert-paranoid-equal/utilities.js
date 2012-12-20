@@ -12,8 +12,12 @@ function isObject(subject) {
 
 
 function isNaNConstant(subject) {
-  // There is not Number.isNaN in Node 0.6.x
-  return ('number' === typeof subject) && isNaN(subject);
+  if (undefined !== Number.isNaN) {
+    return Number.isNaN(subject);
+  } else {
+    // There is no Number.isNaN in Node 0.6.x
+    return ('number' === typeof subject) && isNaN(subject);
+  }
 }
 
 
