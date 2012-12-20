@@ -5,7 +5,7 @@ var assert = require('assert');
 
 
 function testHandler(actual) {
-  var expected = testHandler.getExpectedData();
+  var expected = testHandler.expected;
 
   assert.strictEqual(actual.length, expected.length);
 
@@ -22,25 +22,23 @@ function testHandler(actual) {
     expected[2]('book'));
 }
 
-testHandler.getExpectedData = function getExpectedData() {
-  return [
-    function () {
-      return 42;
-    },
-    function (x, y) {
-      return x + y;
-    },
-    function (foo) {
-      var result = 'There is my ' + foo + ' at the table.';
+testHandler.expected = [
+  function () {
+    return 42;
+  },
+  function (x, y) {
+    return x + y;
+  },
+  function (foo) {
+    var result = 'There is my ' + foo + ' at the table.';
 
-      return {
-        first: 42,
-        second: 'sum',
-        third: result
-      };
-    }
-  ];
-};
+    return {
+      first: 42,
+      second: 'sum',
+      third: result
+    };
+  }
+];
 
 
 module.exports = testHandler;
