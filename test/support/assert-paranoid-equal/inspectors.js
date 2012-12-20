@@ -2,6 +2,8 @@
 /*jshint latedef:false */
 
 
+require('../shims');
+
 var AssertionError = require('assert').AssertionError;
 var ownUtils = require('./utilities');
 var Report = require('./report');
@@ -42,8 +44,8 @@ function ensureEqual(context, actual, expected) {
 
 
 function ensureEqualValues(context, actual, expected, reason) {
-  if (!(ownUtils.isNaNConstant(actual) &&
-        ownUtils.isNaNConstant(expected))) {
+  if (!(Number.isNaN(actual) &&
+        Number.isNaN(expected))) {
     if (actual !== expected) {
       throw new AssertionError({
         actual:   context.actual,
