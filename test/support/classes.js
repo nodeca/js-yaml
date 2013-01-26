@@ -22,10 +22,8 @@ function Tag2() {
 
 _common.inherits(Tag2, Tag1);
 
-Tag2.fromYAMLNode = function fromYAMLNode(node) {
-  return new Tag2({
-    x: this.constructYamlInt(node)
-  });
+Tag2.fromYAMLNode = function fromYAMLNode(object, explicit) {
+  return new Tag2({ x: object });
 };
 
 

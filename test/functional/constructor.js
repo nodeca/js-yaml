@@ -2,9 +2,9 @@
 
 
 var paranoidEqual = require('../support/assert-paranoid-equal').paranoidEqual;
-var jsyaml = require('../../lib/js-yaml');
-var _functional = require('../support/functional');
-var TestLoader = require('../support/test-loader');
+var jsyaml        = require('../../lib/js-yaml');
+var _functional   = require('../support/functional');
+var TEST_SCHEMA   = require('../support/schema');
 
 
 _functional.generateTests({
@@ -14,9 +14,10 @@ _functional.generateTests({
     var object1 = [],
         object2 = codeFile.content;
 
-    jsyaml.loadAll(dataFile.content, function (doc) {
-      object1.push(doc);
-    }, TestLoader);
+    jsyaml.loadAll(
+      dataFile.content,
+      function (doc) { object1.push(doc); },
+      { schema: TEST_SCHEMA });
 
     if (object1.length === 1) {
       object1 = object1[0];

@@ -43,24 +43,22 @@ function makeClassConstructor(Class, params) {
       requiredKeys = params.required || [],
       optionalKeys = params.optional || [];
 
-  return function fromYAMLNode(node) {
-    var mapping = this.constructMapping(node, true);
-
-    assert.equal(typeof mapping, 'object');
+  return function fromYAMLNode(object, explicit) {
+    assert.equal(typeof object, 'object');
 
     $$.each(mapKeys, function (newKey, oldKey) {
-      if (mapping.hasOwnProperty(oldKey)) {
-        mapping[newKey] = mapping[oldKey];
-        delete mapping[oldKey];
+      if (object.hasOwnProperty(oldKey)) {
+        object[newKey] = object[oldKey];
+        delete object[oldKey];
       }
     });
 
     requiredKeys.forEach(function (key) {
-      assert(mapping.hasOwnProperty(key),
+      assert(object.hasOwnProperty(key),
         'Mapping must contain ' + JSON.stringify(key) + ' key');
     });
 
-    $$.each(mapping, function (value, key) {
+    $$.each(object, function (value, key) {
       var hasAsRequired = (0 <= requiredKeys.indexOf(key)),
           hasAsOptional = (0 <= optionalKeys.indexOf(key));
 
@@ -68,7 +66,7 @@ function makeClassConstructor(Class, params) {
         'Mapping should not contain ' + JSON.stringify(key) + ' key');
     });
 
-    return new Class(mapping);
+    return new Class(object);
   };
 }
 
