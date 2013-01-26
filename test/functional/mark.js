@@ -2,7 +2,7 @@
 
 
 var assert = require('assert');
-var Mark = require('../../lib/js-yaml/errors').Mark;
+var Mark   = require('../../lib/js-yaml/mark');
 
 var _functional = require('../support/functional');
 
@@ -27,7 +27,7 @@ _functional.generateTests({
         index += 1;
       }
 
-      mark = new Mark(marksFile.path, index, line, column, input, index);
+      mark = new Mark(marksFile.path, input, index, line, column);
       snippet = mark.getSnippet(2, 79);
 
       assert(typeof snippet, 'string');

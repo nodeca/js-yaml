@@ -17,7 +17,8 @@ _functional.generateTests({
     jsyaml.loadAll(
       dataFile.content,
       function (doc) { object1.push(doc); },
-      { schema: TEST_SCHEMA });
+      { name: dataFile.path,
+        schema: TEST_SCHEMA });
 
     if (object1.length === 1) {
       object1 = object1[0];
