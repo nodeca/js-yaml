@@ -11,5 +11,5 @@ module.exports = {
     'Brian': 'Ingerson',
     'Oren': 'Ben-Kiki'
   },
-  '': 'baz'
+  'foo,bar': 'baz'
 };
