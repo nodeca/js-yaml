@@ -5,7 +5,8 @@ var assert = require('assert');
 var jsyaml = require('../../lib/js-yaml');
 
 var _functional = require('../support/functional');
-var YAMLError = require('../../lib/js-yaml/error');
+var TEST_SCHEMA = require('../support/schema');
+var YAMLError   = require('../../lib/js-yaml/error');
 
 
 _functional.generateTests({
@@ -17,9 +18,12 @@ _functional.generateTests({
         jsyaml.loadAll(
           errorFile.content,
           function () {},
-          { name: errorFile.path });
+          { name: errorFile.path,
+            schema: TEST_SCHEMA,
+            strict: true });
       },
-      YAMLError);
+      YAMLError,
+      'In file "' + errorFile.path + '"');
   }
 });
 
@@ -31,8 +35,11 @@ _functional.generateTests({
       function () {
         jsyaml.load(
           errorFile.content,
-          { name: errorFile.path });
+          { name: errorFile.path,
+            schema: TEST_SCHEMA,
+            strict: true });
       },
-      YAMLError);
+      YAMLError,
+      'In file "' + errorFile.path + '"');
   }
 });
