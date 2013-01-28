@@ -8,7 +8,6 @@ describe('Functional.', function () {
   //require('./functional/tokens');
   require('./functional/errors');
   //require('./functional/structure');
-  //require('./functional/resolver');
   require('./functional/constructor');
   //require('./functional/canonical');
 });
