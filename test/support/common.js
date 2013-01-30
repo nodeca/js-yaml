@@ -5,6 +5,10 @@ var assert = require('assert');
 var path = require('path');
 var fs = require('fs');
 var $$ = require('../../lib/js-yaml/common');
+var NIL = $$.NIL;
+
+
+var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
 
 var _common = module.exports = {};
@@ -44,26 +48,30 @@ function makeClassConstructor(Class, params) {
       optionalKeys = params.optional || [];
 
   return function fromYAMLNode(object, explicit) {
-    assert.equal(typeof object, 'object');
+    if (!$$.isObject(object)) {
+      return NIL;
+    }
 
     $$.each(mapKeys, function (newKey, oldKey) {
-      if (object.hasOwnProperty(oldKey)) {
+      if (_hasOwnProperty.call(object, oldKey)) {
         object[newKey] = object[oldKey];
         delete object[oldKey];
       }
     });
 
     requiredKeys.forEach(function (key) {
-      assert(object.hasOwnProperty(key),
-        'Mapping must contain ' + JSON.stringify(key) + ' key');
+      if (!_hasOwnProperty.call(object, key)) {
+        return NIL;
+      }
     });
 
     $$.each(object, function (value, key) {
       var hasAsRequired = (0 <= requiredKeys.indexOf(key)),
           hasAsOptional = (0 <= optionalKeys.indexOf(key));
 
-      assert((hasAsRequired || hasAsOptional),
-        'Mapping should not contain ' + JSON.stringify(key) + ' key');
+      if (!hasAsRequired && !hasAsOptional) {
+        return NIL;
+      }
     });
 
     return new Class(object);
