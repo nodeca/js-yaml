@@ -1,6 +1,6 @@
 'use strict';
 
-
+var util = require('util');
 var _common = require('./common');
 
 
@@ -20,7 +20,7 @@ function Tag2() {
   Tag1.apply(this, arguments);
 }
 
-_common.inherits(Tag2, Tag1);
+util.inherits(Tag2, Tag1);
 
 Tag2.fromYAMLNode = function fromYAMLNode(object, explicit) {
   return new Tag2({ x: object });
@@ -31,7 +31,7 @@ function Tag3() {
   Tag2.apply(this, arguments);
 }
 
-_common.inherits(Tag3, Tag2);
+util.inherits(Tag3, Tag2);
 
 Tag3.fromYAMLNode = _common.makeClassConstructor(Tag3, {
   map: { '=': 'x' },

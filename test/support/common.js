@@ -15,6 +15,25 @@ var _common = module.exports = {};
 $$.extend(_common, $$);
 
 
+function each(obj, iterator, context) {
+  var keys, i, l;
+
+  if (null === obj || undefined === obj) {
+    return;
+  }
+
+  context = context || iterator;
+
+  if (obj.forEach === Array.prototype.forEach) {
+    obj.forEach(iterator, context);
+  } else {
+    keys = Object.getOwnPropertyNames(obj);
+    for (i = 0, l = keys.length; i < l; i += 1) {
+      iterator.call(context, obj[keys[i]], keys[i], obj);
+    }
+  }
+}
+
 function toArray(sequence) {
   if (Array.isArray(sequence)) {
     return sequence;
@@ -52,7 +71,7 @@ function makeClassConstructor(Class, params) {
       return NIL;
     }
 
-    $$.each(mapKeys, function (newKey, oldKey) {
+    each(mapKeys, function (newKey, oldKey) {
       if (_hasOwnProperty.call(object, oldKey)) {
         object[newKey] = object[oldKey];
         delete object[oldKey];
@@ -65,7 +84,7 @@ function makeClassConstructor(Class, params) {
       }
     });
 
-    $$.each(object, function (value, key) {
+    each(object, function (value, key) {
       var hasAsRequired = (0 <= requiredKeys.indexOf(key)),
           hasAsOptional = (0 <= optionalKeys.indexOf(key));
 
@@ -79,6 +98,7 @@ function makeClassConstructor(Class, params) {
 }
 
 
+_common.each = each;
 _common.toArray = toArray;
 _common.DataFile = DataFile;
 _common.makeClassConstructor = makeClassConstructor;
