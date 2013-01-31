@@ -1,7 +1,6 @@
 'use strict';
 
 
-var assert = require('assert');
 var path   = require('path');
 var fs     = require('fs');
 var common = require('../../lib/js-yaml/common');
