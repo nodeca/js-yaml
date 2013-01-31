@@ -121,7 +121,7 @@ It may contain the following keys:
    according to YAML rules. If you are sure about the input, you can set it to false
    and (maybe) gain some additional performance.
  * `strict` (default false) makes the loader to throw errors instead of warnings.
- * `legacy` (default false) makes the loader to expect YAML 1.1 docuemnts if such
+ * `legacy` (default false) makes the loader to expect YAML 1.1 documents if such
    documents have no explicit %YAML directive.
  * `name` (default null) is a string to be used as a file path in error/warning messages.
 
@@ -209,7 +209,7 @@ var cookiesType = new yaml.Type('!cookies', function (object, explicit) {
   }
 });
 
-var COOCKIES_SCHEMA = new yaml.Schema({
+var COOKIES_SCHEMA = new yaml.Schema({
   include:  [ yaml.DEFAULT_SCHEMA ],
   explicit: [ cookiesType ]
 });
