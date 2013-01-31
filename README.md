@@ -90,7 +90,7 @@ console.log(doc);
 ```
 
 
-### load (string|buffer|file\_resource)
+### load (string [ , settings ])
 
 Parses source as single YAML document. Returns JS object or throws exception on error.
 
@@ -113,8 +113,22 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
 });
 ```
 
+`settings` is an optional hash-like object allows to change the loader's behavoiur.
+It may contain the following keys:
+ * `schema` specifies a schema to use. It's `yaml.DEFAULT_SCHEMA` by default.
+   See below for more information about the schemas.
+ * `validate` (default true) enables/disables validation of the input stream
+   according to YAML rules. If you are sure about the input, you can set it to false
+   and (maybe) gain some additional performance.
+ * `strict` (default false) makes the loader to throw errors instead of warnings.
+ * `legacy` (default false) makes the loader to expect YAML 1.1 docuemnts if such
+   documents have no explicit %YAML directive.
+ * `name` (default null) is a string to be used as a file path in error/warning messages.
 
-### loadAll (string|buffer|file\_resource, iterator)
+Setting values provided in the above example is the defaults.
+
+
+### loadAll (string, iterator [ , settings ])
 
 Same as `Load`, but understands multi-doc sources and apply iterator to each document.
 
@@ -139,16 +153,73 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
 ```
 
 
-### safeLoad (string|buffer|file\_resource)
+### safeLoad (string [ , settings ])
 
 Same as `load()` but uses _safe_ schema - only recommended tags of YAML
 specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
-### safeLoadAll (string|buffer|file\_resource, iterator)
+### safeLoadAll (string, iterator [ , settings ])
 
 Same as `loadAll()` but uses _safe_ schema - only recommended tags of YAML
 specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
+
+
+### new Schema ({ include, implicit, explicit })
+
+Constructs an object to use by the loader via the `schema` setting described
+above. Schemas are collections of YAML type objects collected in `implicit`
+and `explicit` arrays. The loader will try to resolve each plain scalar in a
+document using the resolver function associeted with each type in the implicit
+list. If a node has an explicit tag, the loader will look for it in the both lists.
+`include` is an array of super schemas. When compiling a schema, the loader will
+take types from super schemas first.
+
+There are predifined schemas in JS-YAML: `MINIMAL_SCHEMA`, `SAFE_SCHEMA`, and
+`DEFAULT_SCHEMA`.
+
+
+### new Type (tag, resolver)
+
+Constructs a YAML type definition object. Such objects are used for
+validation, resolving, interpreting, and represening of primitive YAML
+nodes: scalars (strings), sequences (arrays), and mappings (objects).
+`resolver` is a function of two arguments: `object` is a primitive YAML
+node to resolve and `explicit` is a boolean value. Then a type is contained
+in the implicit list of a schema, and a node has no explicit tag on it,
+`explicit` will be false. Otherwise, it will be true.
+
+
+### NIL
+
+Special object used in type resolvers to represent failure of the resolving
+process. If your resolver cannot to resolve the given object, it should
+return NIL.
+
+Example of using your own schema:
+
+``` javascript
+var yaml = require('js-yaml');
+
+var cookiesType = new yaml.Type('!cookies', function (object, explicit) {
+  if ('string' === typeof object) {
+    return 'A ' + object + ' with some cookies!';
+  } else {
+    return yaml.NIL;
+  }
+});
+
+var COOCKIES_SCHEMA = new yaml.Schema({
+  include:  [ yaml.DEFAULT_SCHEMA ],
+  explicit: [ cookiesType ]
+});
+
+console.log(yaml.load('!cookies coffee', { schema: COOKIES_SCHEMA }));
+```
+=>
+```
+A coffee with some cookies!
+```
 
 
 ## JavaScript YAML tags scheme
@@ -182,7 +253,8 @@ The list of standard YAML tags and corresponding JavaScipt types. See also
 ### Caveats
 
 Note, that you use arrays or objects as key in JS-YAML. JS do not allows objects
-or array as keys, and stringifies them at the moment of adding them.
+or array as keys, and stringifies (by calling .toString method) them at the moment
+of adding them.
 
 ``` yaml
 ---
@@ -196,7 +268,18 @@ or array as keys, and stringifies them at the moment of adding them.
 =>
 
 ``` javascript
-{ "": ["baz"], "[object Object]": ["baz", "baz"] }
+{ "foo,bar": ["baz"], "[object Object]": ["baz", "baz"] }
+```
+
+Also, reading of properies on implicit block mapping keys is not supported yet.
+So, the following YAML document cannot be loaded.
+
+``` yaml
+&anchor foo:
+  foo: bar
+  *anchor: duplicate key
+  baz: bat
+  *anchor: duplicate key
 ```
 
 ## License
