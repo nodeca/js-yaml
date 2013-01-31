@@ -1,14 +1,17 @@
 'use strict';
 
 
+var path   = require('path');
+var jsyaml = require('../../lib/js-yaml');
+var helper = require('../support/helper');
+
 var paranoidEqual = require('../support/assert-paranoid-equal').paranoidEqual;
-var jsyaml        = require('../../lib/js-yaml');
-var _functional   = require('../support/functional');
 var TEST_SCHEMA   = require('../support/schema');
 
 
-_functional.generateTests({
-  description: 'Test constructor.',
+helper.generateTests({
+  description: 'Loader.',
+  directory: path.join(__dirname, 'loader'),
   files: ['.data', '.js'],
   test: function (dataFile, codeFile) {
     var object1 = [],

@@ -3,9 +3,7 @@
 
 
 describe('Functional.', function () {
-  //require('./functional/reader');
-  require('./functional/mark');
+  require('./functional/loader');
   require('./functional/errors');
-  require('./functional/constructor');
-  //require('./functional/canonical');
+  require('./functional/single-errors');
 });

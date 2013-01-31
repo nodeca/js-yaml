@@ -11,15 +11,14 @@ var YAMLError   = require('../../lib/js-yaml/error');
 
 
 helper.generateTests({
-  description: 'Errors on loading a series of documents.',
-  directory: path.join(__dirname, 'errors'),
-  files: ['.loader-error'],
+  description: 'Errors on loading a single document.',
+  directory: path.join(__dirname, 'single-errors'),
+  files: ['.single-loader-error'],
   test: function (errorFile) {
     assert.throws(
       function () {
-        jsyaml.loadAll(
+        jsyaml.load(
           errorFile.content,
-          function () {},
           { name: errorFile.path,
             schema: TEST_SCHEMA,
             strict: true });

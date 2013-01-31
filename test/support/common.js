@@ -2,17 +2,13 @@
 
 
 var assert = require('assert');
-var path = require('path');
-var fs = require('fs');
-var $$ = require('../../lib/js-yaml/common');
-var NIL = $$.NIL;
+var path   = require('path');
+var fs     = require('fs');
+var common = require('../../lib/js-yaml/common');
 
 
+var NIL = common.NIL;
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
-
-
-var _common = module.exports = {};
-$$.extend(_common, $$);
 
 
 function each(obj, iterator, context) {
@@ -37,7 +33,7 @@ function each(obj, iterator, context) {
 function toArray(sequence) {
   if (Array.isArray(sequence)) {
     return sequence;
-  } else if ($$.isNothing(sequence)) {
+  } else if (common.isNothing(sequence)) {
     return [];
   } else {
     return [ sequence ];
@@ -67,7 +63,7 @@ function makeClassConstructor(Class, params) {
       optionalKeys = params.optional || [];
 
   return function fromYAMLNode(object, explicit) {
-    if (!$$.isObject(object)) {
+    if (!common.isObject(object)) {
       return NIL;
     }
 
@@ -98,7 +94,13 @@ function makeClassConstructor(Class, params) {
 }
 
 
-_common.each = each;
-_common.toArray = toArray;
-_common.DataFile = DataFile;
-_common.makeClassConstructor = makeClassConstructor;
+module.exports = {};
+
+common.extend(module.exports, common);
+
+common.extend(module.exports, {
+  each:                 each,
+  toArray:              toArray,
+  DataFile:             DataFile,
+  makeClassConstructor: makeClassConstructor
+});

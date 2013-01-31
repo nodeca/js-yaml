@@ -4,12 +4,7 @@
 
 var path = require('path');
 var fs = require('fs');
-var _common = require('./common');
-
-
-var DATA_DIRECTORY = process.env['JSYAML_FUNCTIONAL_TEST_DATA'] ?
-  path.normalize(process.env['JSYAML_FUNCTIONAL_TEST_DATA']) :
-  path.join(__dirname, '../functional/data');
+var common = require('./common');
 
 
 function collectDataFiles(directory) {
@@ -33,15 +28,15 @@ function collectDataFiles(directory) {
 
 function generateTests(settings) {
   var description = settings.description,
-      directory   = settings.directory || DATA_DIRECTORY,
-      files       = _common.toArray(settings.files),
-      skip        = _common.toArray(settings.skip),
+      directory   = settings.directory,
+      files       = common.toArray(settings.files),
+      skip        = common.toArray(settings.skip),
       testHandler = settings.test;
 
   describe(description, function () {
     var availableFiles = collectDataFiles(directory);
 
-    _common.each(availableFiles, function (extnames, basename) {
+    common.each(availableFiles, function (extnames, basename) {
 
       function shouldSkipFile() {
         return extnames.some(function (ext) {
@@ -56,7 +51,7 @@ function generateTests(settings) {
       }
 
       function takeFile(ext) {
-        return new _common.DataFile(path.join(directory, (basename + ext)));
+        return new common.DataFile(path.join(directory, (basename + ext)));
       }
 
       if (shouldTakeFile()) {
@@ -69,6 +64,5 @@ function generateTests(settings) {
 }
 
 
-module.exports.DATA_DIRECTORY   = DATA_DIRECTORY;
 module.exports.collectDataFiles = collectDataFiles;
 module.exports.generateTests    = generateTests;
