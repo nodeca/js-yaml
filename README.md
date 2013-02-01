@@ -188,7 +188,9 @@ and `explicit` arrays. The loader will try to resolve each plain scalar in a
 document using the resolver function associeted with each type in the implicit
 list. If a node has an explicit tag, the loader will look for it in the both
 lists. `include` is an array of super schemas. When compiling a schema, the
-loader will take types from super schemas first.
+loader will take types in bottom-top order; the specified schema comes first,
+and all of super schemas come next in order of they are placed in the include
+list. Recursively.
 
 There are predifined schemas in JS-YAML: `MINIMAL_SCHEMA`, `SAFE_SCHEMA`, and
 `DEFAULT_SCHEMA`.
