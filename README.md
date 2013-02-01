@@ -89,8 +89,8 @@ jsyaml to use it with outdated browsers.
 ## API
 
 JS-YAML automatically registers handlers for `.yml` and `.yaml` files. You can
-load them just with `require`. That's mostly equivalent to calling loadAll() on
-file handler ang gathering all documents into array. Just with one string!
+load them just with `require`. That's mostly equivalent to calling `load()` on
+fetched content of a file. Just with one string!
 
 ``` javascript
 require('js-yaml');
