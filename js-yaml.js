@@ -1735,15 +1735,13 @@ function loadAll(input, output, settings) {
         type,
         typeIndex,
         typeQuantity,
+        flowIndent,
         blockIndent,
-        _line,
         _result;
 
     tag    = null;
     anchor = null;
     result = null;
-
-    _line = line;
 
     allowBlockStyles = allowBlockScalars = allowBlockCollections =
       CONTEXT_BLOCK_OUT === nodeContext ||
@@ -1791,25 +1789,35 @@ function loadAll(input, output, settings) {
       allowBlockCollections = atNewLine || allowCompact;
     }
 
-    if (CONTEXT_BLOCK_OUT === nodeContext || isIndented) {
+    if (isIndented || CONTEXT_BLOCK_OUT === nodeContext) {
+      if (CONTEXT_FLOW_IN === nodeContext || CONTEXT_FLOW_OUT === nodeContext) {
+        flowIndent = parentIndent;
+      } else {
+        flowIndent = parentIndent + 1;
+      }
+
       blockIndent = position - lineStart;
 
-      if (!isIndented) {
-        hasContent = allowBlockCollections && readBlockSequence(blockIndent);
-      } else {
-        if (allowBlockCollections && (readBlockSequence(blockIndent) ||
-                                      readBlockMapping(blockIndent)) ||
-            readFlowCollection(parentIndent + 1)) {
+      if (isIndented) {
+        if (allowBlockCollections &&
+            (readBlockSequence(blockIndent) ||
+             readBlockMapping(blockIndent)) ||
+            readFlowCollection(flowIndent)) {
           hasContent = true;
-          
         } else {
-          if ((allowBlockScalars && readBlockScalar(parentIndent + 1)) ||
-              readSingleQuotedScalar(parentIndent + 1) ||
-              readDoubleQuotedScalar(parentIndent + 1) ||
-              readAlias()) {
+          if ((allowBlockScalars && readBlockScalar(flowIndent)) ||
+              readSingleQuotedScalar(flowIndent) ||
+              readDoubleQuotedScalar(flowIndent)) {
             hasContent = true;
+
+          } else if (readAlias()) {
+            hasContent = true;
+
+            if (null !== tag || null !== anchor) {
+              throwError('alias node should not have any properties');
+            }
             
-          } else if (readPlainScalar(parentIndent + 1, CONTEXT_FLOW_IN === nodeContext)) {
+          } else if (readPlainScalar(flowIndent, CONTEXT_FLOW_IN === nodeContext)) {
             hasContent = true;
           
             if (null === tag) {
@@ -1821,6 +1829,8 @@ function loadAll(input, output, settings) {
             anchorMap[anchor] = result;
           }
         }
+      } else {
+        hasContent = allowBlockCollections && readBlockSequence(blockIndent);
       }
     }
 
