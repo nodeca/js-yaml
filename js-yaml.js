@@ -997,10 +997,6 @@ function loadAll(input, output, settings) {
           character = input.charCodeAt(position);
           break;
         }
-
-      } else if (CHAR_SPACE !== character &&
-                 CHAR_TAB !== character) {
-        captureEnd = position + 1;
       }
 
       if (hasPendingContent) {
@@ -1008,6 +1004,10 @@ function loadAll(input, output, settings) {
         writeFoldedLines(line - _line);
         captureStart = captureEnd = position;
         hasPendingContent = false;
+      }
+
+      if (CHAR_SPACE !== character && CHAR_TAB !== character) {
+        captureEnd = position + 1;
       }
 
       character = input.charCodeAt(++position);
