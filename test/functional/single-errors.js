@@ -6,8 +6,8 @@ var assert = require('assert');
 var jsyaml = require('../../lib/js-yaml');
 var helper = require('../support/helper');
 
-var TEST_SCHEMA = require('../support/schema');
-var YAMLError   = require('../../lib/js-yaml/error');
+var TEST_SCHEMA   = require('../support/schema');
+var YAMLException = require('../../lib/js-yaml/exception');
 
 
 helper.generateTests({
@@ -23,7 +23,7 @@ helper.generateTests({
             schema: TEST_SCHEMA,
             strict: true });
       },
-      YAMLError,
+      YAMLException,
       'In file "' + errorFile.path + '"');
   }
 });
