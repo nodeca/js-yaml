@@ -503,15 +503,16 @@ function deprecated(name) {
 }
 
 
+module.exports.Type           = require('./js-yaml/type');
 module.exports.Schema         = require('./js-yaml/schema');
 module.exports.MINIMAL_SCHEMA = require('./js-yaml/schema/minimal');
 module.exports.SAFE_SCHEMA    = require('./js-yaml/schema/safe');
 module.exports.DEFAULT_SCHEMA = require('./js-yaml/schema/default');
-module.exports.Type           = require('./js-yaml/type');
 module.exports.load           = loader.load;
 module.exports.loadAll        = loader.loadAll;
 module.exports.safeLoad       = loader.safeLoad;
 module.exports.safeLoadAll    = loader.safeLoadAll;
+module.exports.YAMLException  = require('./js-yaml/exception');
 module.exports.scan           = deprecated('scan');
 module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
@@ -526,7 +527,7 @@ require.define("/lib/js-yaml/loader.js",function(require,module,exports,__dirnam
 
 
 var common         = require('./common');
-var YAMLError      = require('./error');
+var YAMLException  = require('./exception');
 var Mark           = require('./mark');
 var NIL            = common.NIL;
 var SAFE_SCHEMA    = require('./schema/safe');
@@ -661,7 +662,7 @@ function loadAll(input, output, settings) {
       result;
 
   function generateError(message) {
-    return new YAMLError(
+    return new YAMLException(
       message,
       new Mark(name, input, position, line, (position - lineStart)));
   }
@@ -891,6 +892,7 @@ function loadAll(input, output, settings) {
         following,
         captureStart,
         captureEnd,
+        hasPendingContent,
         _line,
         _lineStart,
         _lineIndent,
@@ -939,6 +941,7 @@ function loadAll(input, output, settings) {
 
     result = '';
     captureStart = captureEnd = position;
+    hasPendingContent = false;
 
     while (position < length) {
       if (CHAR_COLON === character) {
@@ -984,9 +987,8 @@ function loadAll(input, output, settings) {
         skipSeparationSpace(false, -1);
 
         if (lineIndent >= nodeIndent) {
-          captureSegment(captureStart, captureEnd, false);
-          writeFoldedLines(line - _line);
-          captureStart = captureEnd = position;
+          hasPendingContent = true;
+          continue;
         } else {
           position = captureEnd;
           line = _line;
@@ -999,6 +1001,13 @@ function loadAll(input, output, settings) {
       } else if (CHAR_SPACE !== character &&
                  CHAR_TAB !== character) {
         captureEnd = position + 1;
+      }
+
+      if (hasPendingContent) {
+        captureSegment(captureStart, captureEnd, false);
+        writeFoldedLines(line - _line);
+        captureStart = captureEnd = position;
+        hasPendingContent = false;
       }
 
       character = input.charCodeAt(++position);
@@ -2013,7 +2022,7 @@ function load(input, settings) {
       result = data;
       received = true;
     } else {
-      throw new YAMLError('expected a single document in the stream, but found more');
+      throw new YAMLException('expected a single document in the stream, but found more');
     }
   }
 
@@ -2097,11 +2106,11 @@ module.exports.extend       = extend;
 
 });
 
-require.define("/lib/js-yaml/error.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+require.define("/lib/js-yaml/exception.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
 
 
-function YAMLError(reason, mark) {
-  this.name = 'YAMLError';
+function YAMLException(reason, mark) {
+  this.name = 'YAMLException';
   this.message = 'JS-YAML: ';
 
   if (reason) {
@@ -2116,12 +2125,12 @@ function YAMLError(reason, mark) {
 }
 
 
-YAMLError.prototype.toString = function toString() {
+YAMLException.prototype.toString = function toString() {
   return this.message;
 };
 
 
-module.exports = YAMLError;
+module.exports = YAMLException;
 
 });
 
