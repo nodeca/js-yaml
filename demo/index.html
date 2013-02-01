@@ -219,23 +219,35 @@ function: !!js/function >
   }
 
 
-# Custom Constructors ##########################################################
+# Custom types #################################################################
 ################################################################################
 
 
-# JsYaml allows you to specify a custom constructors for your structures.
+# JS-YAML allows you to specify a custom YAML types for your structures.
 # This is an example of custom constructor defined in `js/demo.js` for
 # custom `!sexy` constructor:
 #
-# jsyaml.addConstructor('!sexy', function (node) {
-#   var arr = this.constructSequence(node), i, l;
+# var sexyType = new jsyaml.Type('!sexy', function (object, explicit) {
+#   var index, length;
 #
-#   for (i = 0, l = arr.length; i < l; i += 1) {
-#     arr[i] = 'sexy ' + arr[i];
+#   if (!Array.isArray(object)) {
+#     return jsyaml.NIL;
 #   }
 #
-#   return arr;
+#   for (index = 0, length = object.length; index < length; index += 1) {
+#     object[index] = 'sexy ' + object[index];
+#   }
+#
+#   return object;
 # });
+#
+# var SEXY_SCHEMA = new jsyaml.Schema({
+#   include:  [ jsyaml.DEFAULT_SCHEMA ],
+#   explicit: [ sexyType ]
+# });
+#
+# result = jsyaml.load(yourData, { schema: SEXY_SCHEMA });
+
 foobar: !sexy
   - bunny
   - chocolate

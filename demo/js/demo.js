@@ -8,25 +8,23 @@ window.runDemo = function runDemo() {
       fallback = document.getElementById('source').value || '';
 
   // add sexy constructor
-  var DEMO_SCHEMA = new jsyaml.Schema({
-    include: [
-      jsyaml.DEFAULT_SCHEMA
-    ],
-    explicit: [
-      new jsyaml.Type('!sexy', function (object, explicit) {
-        var i, l;
+  var sexyType = new jsyaml.Type('!sexy', function (object, explicit) {
+    var index, length;
 
-        if (!Array.isArray(object)) {
-          return jsyaml.NIL;
-        }
+    if (!Array.isArray(object)) {
+      return jsyaml.NIL;
+    }
 
-        for (i = 0, l = object.length; i < l; i += 1) {
-          object[i] = 'sexy ' + object[i];
-        }
+    for (index = 0, length = object.length; index < length; index += 1) {
+      object[index] = 'sexy ' + object[index];
+    }
 
-        return object;
-      })
-    ]
+    return object;
+  });
+
+  var SEXY_SCHEMA = new jsyaml.Schema({
+    include:  [ jsyaml.DEFAULT_SCHEMA ],
+    explicit: [ sexyType ]
   });
 
   function parse() {
@@ -34,7 +32,7 @@ window.runDemo = function runDemo() {
 
     try {
       str = source.getValue();
-      obj = jsyaml.load(str, { schema: DEMO_SCHEMA });
+      obj = jsyaml.load(str, { schema: SEXY_SCHEMA });
 
       permalink.href = '#yaml=' + base64.encode(str);
 
