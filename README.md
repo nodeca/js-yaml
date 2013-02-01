@@ -1,13 +1,25 @@
-JS-YAML - YAML 1.1 parser for JavaScript
+JS-YAML - YAML 1.2 parser for JavaScript
 ========================================
 
 [![Build Status](https://secure.travis-ci.org/nodeca/js-yaml.png)](http://travis-ci.org/nodeca/js-yaml)
 
 [Online Demo](http://nodeca.github.com/js-yaml/)
 
-This is a native port of [PyYAML](http://pyyaml.org/), the most advanced YAML parser.
-Now you can use all modern YAML feature right in JavaScript. Originally snapshoted
-version - PyYAML 3.10 (2011-05-30).
+
+This is an implementation of [YAML](http://yaml.org/), a human friendly data
+serialization language.
+
+Previously, it was a native port of [PyYAML](http://pyyaml.org/). Now, it is
+rewritten from scratch, directly from version 1.2 of the specification.
+
+
+## Breaking changes in 1.0.x -> 2.0.x
+
+- `scan`, `parse`, `compose`, `addConstructor` functions and all of the classes
+  like `Loader`, `Constructor`, `Resolver` was dropped because of complete
+  architecture overhaul. However, `load`, `loadAll`, `safeLoad` and
+  `safeLoadAll` functions are almost backward-compatible. See the updated API
+  listing for details.
 
 
 ## Breaking changes in 0.3.x -> 1.0.x
@@ -57,7 +69,7 @@ npm install js-yaml -g
 
 
 
-### bundled YAML library for browser
+### Bundled YAML library for browsers
 
 ``` html
 <script src="js-yaml.min.js"></script>
@@ -76,9 +88,9 @@ jsyaml to use it with outdated browsers.
 
 ## API
 
-JS-YAML automatically registers handlers for `.yml` and `.yaml` files. You can load them just with `require`.
-That's mostly equivalent to calling loadAll() on file handler ang gathering all documents into array.
-Just with one string!
+JS-YAML automatically registers handlers for `.yml` and `.yaml` files. You can
+load them just with `require`. That's mostly equivalent to calling loadAll() on
+file handler ang gathering all documents into array. Just with one string!
 
 ``` javascript
 require('js-yaml');
@@ -92,9 +104,25 @@ console.log(doc);
 
 ### load (string [ , settings ])
 
-Parses source as single YAML document. Returns JS object or throws exception on error.
+Parses `string` as single YAML document. Returns JS object or throws `YAMLError`
+exception on error.
 
-This function does NOT understands multi-doc sources, it throws exception on those.
+NOTE: This function does NOT understands multi-doc sources, it throws exception
+on those.
+
+`settings` is an optional hash-like object allows to change the loader's
+behavoiur. It may contain the following keys:
+
+- `schema` specifies a schema to use. It's `yaml.DEFAULT_SCHEMA` by default.
+  See below for more information about the schemas.
+- `validate` (default true) enables/disables validation of the input stream
+  according to YAML rules. If you are sure about the input, you can set it to
+  false and (maybe) gain some additional performance.
+- `strict` (default false) makes the loader to throw errors instead of warnings.
+- `legacy` (default false) makes the loader to expect YAML 1.1 documents if such
+  documents have no explicit %YAML directive.
+- `name` (default null) is a string to be used as a file path in error/warning
+  messages.
 
 ``` javascript
 var yaml = require('js-yaml');
@@ -113,24 +141,11 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
 });
 ```
 
-`settings` is an optional hash-like object allows to change the loader's behavoiur.
-It may contain the following keys:
- * `schema` specifies a schema to use. It's `yaml.DEFAULT_SCHEMA` by default.
-   See below for more information about the schemas.
- * `validate` (default true) enables/disables validation of the input stream
-   according to YAML rules. If you are sure about the input, you can set it to false
-   and (maybe) gain some additional performance.
- * `strict` (default false) makes the loader to throw errors instead of warnings.
- * `legacy` (default false) makes the loader to expect YAML 1.1 documents if such
-   documents have no explicit %YAML directive.
- * `name` (default null) is a string to be used as a file path in error/warning messages.
-
-Setting values provided in the above example is the defaults.
-
 
 ### loadAll (string, iterator [ , settings ])
 
-Same as `Load`, but understands multi-doc sources and apply iterator to each document.
+Same as `load()`, but understands multi-doc sources and apply `iterator` to each
+document.
 
 ``` javascript
 var yaml = require('js-yaml');
@@ -171,9 +186,9 @@ Constructs an object to use by the loader via the `schema` setting described
 above. Schemas are collections of YAML type objects collected in `implicit`
 and `explicit` arrays. The loader will try to resolve each plain scalar in a
 document using the resolver function associeted with each type in the implicit
-list. If a node has an explicit tag, the loader will look for it in the both lists.
-`include` is an array of super schemas. When compiling a schema, the loader will
-take types from super schemas first.
+list. If a node has an explicit tag, the loader will look for it in the both
+lists. `include` is an array of super schemas. When compiling a schema, the
+loader will take types from super schemas first.
 
 There are predifined schemas in JS-YAML: `MINIMAL_SCHEMA`, `SAFE_SCHEMA`, and
 `DEFAULT_SCHEMA`.
@@ -181,22 +196,23 @@ There are predifined schemas in JS-YAML: `MINIMAL_SCHEMA`, `SAFE_SCHEMA`, and
 
 ### new Type (tag, resolver)
 
-Constructs a YAML type definition object. Such objects are used for
-validation, resolving, interpreting, and represening of primitive YAML
-nodes: scalars (strings), sequences (arrays), and mappings (objects).
-`resolver` is a function of two arguments: `object` is a primitive YAML
-node to resolve and `explicit` is a boolean value. Then a type is contained
-in the implicit list of a schema, and a node has no explicit tag on it,
-`explicit` will be false. Otherwise, it will be true.
+Constructs a YAML type definition object. Such objects are used for validation,
+resolving, interpreting, and representing of primitive YAML nodes: scalars
+(strings), sequences (arrays), and mappings (objects). `resolver` is a function
+of two arguments: `object` is a primitive YAML node to resolve and `explicit` is
+a boolean value. Then a type is contained in the implicit list of a schema, and
+a node has no explicit tag on it, `explicit` will be false. Otherwise, it will
+be true.
 
 
 ### NIL
 
 Special object used in type resolvers to represent failure of the resolving
-process. If your resolver cannot to resolve the given object, it should
-return NIL.
+process. If your resolver cannot to resolve the given object, it should return
+NIL.
 
-Example of using your own schema:
+
+### Example of using your own schema
 
 ``` javascript
 var yaml = require('js-yaml');
@@ -222,10 +238,11 @@ A coffee with some cookies!
 ```
 
 
-## JavaScript YAML tags scheme
+## Supported YAML types
 
 The list of standard YAML tags and corresponding JavaScipt types. See also
-[YAML Tag Discussion](http://pyyaml.org/wiki/YAMLTagDiscussion) and [Yaml Types](http://yaml.org/type/).
+[YAML tag discussion](http://pyyaml.org/wiki/YAMLTagDiscussion) and
+[YAML types repository](http://yaml.org/type/).
 
 ```
 !!null ''                   # null
@@ -250,11 +267,11 @@ The list of standard YAML tags and corresponding JavaScipt types. See also
 !!js/function 'function () {...}'   # Function
 ```
 
-### Caveats
+## Caveats
 
 Note, that you use arrays or objects as key in JS-YAML. JS do not allows objects
-or array as keys, and stringifies (by calling .toString method) them at the moment
-of adding them.
+or array as keys, and stringifies (by calling .toString method) them at the
+moment of adding them.
 
 ``` yaml
 ---
@@ -264,14 +281,12 @@ of adding them.
 : - baz
   - baz
 ```
-
 =>
-
 ``` javascript
 { "foo,bar": ["baz"], "[object Object]": ["baz", "baz"] }
 ```
 
-Also, reading of properies on implicit block mapping keys is not supported yet.
+Also, reading of properties on implicit block mapping keys is not supported yet.
 So, the following YAML document cannot be loaded.
 
 ``` yaml
@@ -284,4 +299,5 @@ So, the following YAML document cannot be loaded.
 
 ## License
 
-View the [LICENSE](https://github.com/nodeca/js-yaml/blob/master/LICENSE) file (MIT).
+View the [LICENSE](https://github.com/nodeca/js-yaml/blob/master/LICENSE) file
+(MIT).
