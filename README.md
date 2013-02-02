@@ -13,13 +13,75 @@ Previously, it was a native port of [PyYAML](http://pyyaml.org/). Now, it is
 rewritten from scratch, directly from version 1.2 of the specification.
 
 
-## Breaking changes in 1.0.x -> 2.0.x
+## Breaking changes in 1.x.x -> 2.0.x
 
+- The last argument of loader functions (`load`, `loadAll`, 'safeLoad`, and
+  `safeLoadAll`) was changed. Now, it is an optional `settings` plain object.
+  See the API listing on `load` function for details.
 - `scan`, `parse`, `compose`, `addConstructor` functions and all of the classes
   like `Loader`, `Constructor`, `Resolver` was dropped because of complete
-  architecture overhaul. However, `load`, `loadAll`, `safeLoad` and
-  `safeLoadAll` functions are almost backward-compatible. See the updated API
-  listing for details.
+  architecture overhaul.
+- The parsing process consists of only one stage now. The loader constructs the
+  resulting strings, arrays, and objects (mappings) without any interim
+  representation objects. So, tag interpreters receive native JavaScript objects
+  directly.
+
+
+### How to migrate
+
+If your code does not use neither custom tags nor explicitly specified Loader
+class (the last argument of `load` function), you are not required to change
+anything.
+
+Otherwise, you should rewrite your tag constructors and custom Loader classes to
+conform the new schema-based API. It consists of two classes: Schema and Type.
+The both are described below in the API listing. Here is an example of the
+difference:
+
+JS-YAML 1.x.x
+``` javascript
+var yaml = require('js-yaml');
+
+yaml.addConstructor('!cookies', function (node) {
+  var array, index, length;
+
+  array = this.constructSequence(node);
+
+  for (index = 0, length = array.length; index < length; index += 1) {
+    array[index] = 'A ' + array[index] + ' with some cookies!';
+  }
+
+  return array;
+});
+
+result = yaml.load(data);
+```
+
+JS-YAML 2.0.x
+``` javascript
+var yaml = require('js-yaml');
+
+var cookiesType = new yaml.Type('!cookies', function (array, explicit) {
+  var index, length;
+
+  if (!Array.isArray(array)) {
+    return yaml.NIL;
+  }
+
+  for (index = 0, length = array.length; index < length; index += 1) {
+    array[index] = 'A ' + array[index] + ' with some cookies!';
+  }
+
+  return array;
+});
+
+var COOKIES_SCHEMA = new yaml.Schema({
+  include:  [ yaml.DEFAULT_SCHEMA ],
+  explicit: [ cookiesType ]
+});
+
+result = yaml.load(data, { schema: COOKIES_SCHEMA });
+```
 
 
 ## Breaking changes in 0.3.x -> 1.0.x
