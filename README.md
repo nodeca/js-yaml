@@ -15,7 +15,7 @@ rewritten from scratch, directly from version 1.2 of the specification.
 
 ## Breaking changes in 1.x.x -> 2.0.x
 
-- The last argument of loader functions (`load`, `loadAll`, 'safeLoad`, and
+- The last argument of loader functions (`load`, `loadAll`, `safeLoad`, and
   `safeLoadAll`) was changed. Now, it is an optional `settings` plain object.
   See the API listing on `load` function for details.
 - `scan`, `parse`, `compose`, `addConstructor` functions and all of the classes
