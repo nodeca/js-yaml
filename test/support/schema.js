@@ -10,9 +10,29 @@ module.exports = new jsyaml.Schema({
     jsyaml.DEFAULT_SCHEMA
   ],
   explicit: [
-    new jsyaml.Type('!tag1', classes.Tag1.fromYAMLNode),
-    new jsyaml.Type('!tag2', classes.Tag2.fromYAMLNode),
-    new jsyaml.Type('!tag3', classes.Tag3.fromYAMLNode),
-    new jsyaml.Type('!foo',  classes.Foo.fromYAMLNode)
+    new jsyaml.Type('!tag1', {
+      loader: {
+        kind: 'object',
+        resolver: classes.Tag1.fromYAMLNode
+      }
+    }),
+    new jsyaml.Type('!tag2', {
+      loader: {
+        kind: 'string',
+        resolver: classes.Tag2.fromYAMLNode
+      }
+    }),
+    new jsyaml.Type('!tag3', {
+      loader: {
+        kind: 'object',
+        resolver: classes.Tag3.fromYAMLNode
+      }
+    }),
+    new jsyaml.Type('!foo', {
+      loader: {
+        kind: 'object',
+        resolver: classes.Foo.fromYAMLNode
+      }
+    })
   ]
 });
