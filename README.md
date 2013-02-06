@@ -185,6 +185,10 @@ behavoiur. It may contain the following keys:
   documents have no explicit %YAML directive.
 - `name` (default null) is a string to be used as a file path in error/warning
   messages.
+- `resolve` (default true) enables/disables resolving of nodes with non-specific
+  `'?'` tag. That are plain scalars without any explicit tag. The result of
+  switching it to false is that all of the plain scalars will loaded as strings.
+  This may significantly increase parsing performance.
 
 ``` javascript
 var yaml = require('js-yaml');
