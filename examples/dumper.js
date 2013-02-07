@@ -2,30 +2,7 @@
 
 
 var yaml = require('../lib/js-yaml');
-
-
-var object = {
-  name: 'Wizzard',
-  level: 17,
-  sanity: null,
-  inventory: [
-    {
-      name: 'Hat',
-      features: [ 'magic', 'pointed' ],
-      traits: {}
-    },
-    {
-      name: 'Staff',
-      features: [],
-      traits: { damage: 10 }
-    },
-    {
-      name: 'Cloak',
-      features: [ 'old' ],
-      traits: { defence: 0, comfort: 3 }
-    }
-  ]
-};
+var object = require('./dumper.json');
 
 
 console.log(yaml.dump(object, {
