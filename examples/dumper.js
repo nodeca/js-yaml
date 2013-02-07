@@ -42,7 +42,7 @@ console.log(yaml.dump(object, {
 // "name": "Wizzard"
 // "level": 0x11
 // "sanity": Null
-// "inventory": 
+// "inventory":
 //   - "name": "Hat"
 //     "features": ["magic", "pointed"]
 //     "traits": {}
