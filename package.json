@@ -1,12 +1,21 @@
 {
   "name"            : "js-yaml",
   "version"         : "1.0.3",
-  "description"     : "YAML 1.1 Parser",
-  "keywords"        : ["yaml", "parser", "pyyaml"],
+  "description"     : "YAML 1.2 parser and serializer",
+  "keywords"        : ["yaml", "parser", "serializer", "pyyaml"],
   "homepage"        : "https://github.com/nodeca/js-yaml",
 
-  "author"          : "Aleksey V Zapparov <ixti@member.fsf.org> (http://www.ixti.net/)",
+  "author"          : {
+                        "name"  : "Dervus Grim",
+                        "email" : "dervus@lavabit.com"
+                      },
+
   "contributors"    : [
+                        {
+                          "name"  : "Aleksey V Zapparov",
+                          "email" : "ixti@member.fsf.org",
+                          "url"   : "http://www.ixti.net/"
+                        },
                         {
                           "name"  : "Martin Grenfell",
                           "email" : "martin.grenfell@gmail.com>",
