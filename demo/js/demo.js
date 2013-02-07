@@ -8,18 +8,19 @@ window.runDemo = function runDemo() {
       fallback = document.getElementById('source').value || '';
 
   // add sexy constructor
-  var sexyType = new jsyaml.Type('!sexy', function (object, explicit) {
-    var index, length;
+  var sexyType = new jsyaml.Type('!sexy', {
+    loader: {
+      kind: 'array',
+      resolver: function (object, explicit) {
+        var index, length;
 
-    if (!Array.isArray(object)) {
-      return jsyaml.NIL;
+        for (index = 0, length = object.length; index < length; index += 1) {
+          object[index] = 'sexy ' + object[index];
+        }
+
+        return object;
+      }
     }
-
-    for (index = 0, length = object.length; index < length; index += 1) {
-      object[index] = 'sexy ' + object[index];
-    }
-
-    return object;
   });
 
   var SEXY_SCHEMA = new jsyaml.Schema({
