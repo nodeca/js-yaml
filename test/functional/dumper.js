@@ -14,10 +14,11 @@ helper.generateTests({
   directory: path.join(__dirname, 'loader'),
   files: ['.js'],
   test: function (codeFile) {
-    var object, serialized, deserialized;
+    var object, data, serialized, deserialized;
 
     object       = codeFile.content;
-    serialized   = jsyaml.dump(object,     { schema: TEST_SCHEMA });
+    data         = 'function' === typeof object ? object.expected : object;
+    serialized   = jsyaml.dump(data,       { schema: TEST_SCHEMA });
     deserialized = jsyaml.load(serialized, { schema: TEST_SCHEMA });
 
     if ('function' === typeof object) {

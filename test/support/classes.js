@@ -24,7 +24,13 @@ function Tag2() {
 util.inherits(Tag2, Tag1);
 
 Tag2.fromYAMLNode = function fromYAMLNode(object, explicit) {
-  return new Tag2({ x: object });
+  return new Tag2({
+    x: ('number' === typeof object) ? object : parseInt(object, 10)
+  });
+};
+
+Tag2.toYAMLNode = function toYAMLNode(object, style) {
+  return String(object.x);
 };
 
 
@@ -40,6 +46,14 @@ Tag3.fromYAMLNode = common.makeClassConstructor(Tag3, {
   optional: ['y', 'z']
 });
 
+Tag3.toYAMLNode = function toYAMLNode(object, style) {
+  return {
+    '=' : object.x,
+    'y' : object.y,
+    'z' : object.z,
+  };
+};
+
 
 function Foo(parameters) {
   this.myParameter        = parameters.myParameter;
@@ -53,6 +67,13 @@ Foo.fromYAMLNode = common.makeClassConstructor(Foo, {
   },
   optional: ['myParameter', 'myAnotherParameter']
 });
+
+Foo.toYAMLNode = function toYAMLNode(object, style) {
+  return {
+    'my-parameter'         : object.myParameter,
+    'my-another-parameter' : object.myAnotherParameter,
+  };
+};
 
 
 module.exports.Tag1 = Tag1;
