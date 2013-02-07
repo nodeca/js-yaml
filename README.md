@@ -1,5 +1,5 @@
-JS-YAML - YAML 1.2 parser for JavaScript
-========================================
+JS-YAML - YAML 1.2 parser and serializer for JavaScript
+=======================================================
 
 [![Build Status](https://secure.travis-ci.org/nodeca/js-yaml.png)](http://travis-ci.org/nodeca/js-yaml)
 
@@ -61,18 +61,19 @@ JS-YAML 2.0.x
 ``` javascript
 var yaml = require('js-yaml');
 
-var cookiesType = new yaml.Type('!cookies', function (array, explicit) {
-  var index, length;
+var cookiesType = new yaml.Type('!cookies', {
+  loader: {
+    kind: 'array',
+    resolver: function (array, explicit) {
+      var index, length;
 
-  if (!Array.isArray(array)) {
-    return yaml.NIL;
+      for (index = 0, length = array.length; index < length; index += 1) {
+        array[index] = 'A ' + array[index] + ' with some cookies!';
+      }
+
+      return array;
+    }
   }
-
-  for (index = 0, length = array.length; index < length; index += 1) {
-    array[index] = 'A ' + array[index] + ' with some cookies!';
-  }
-
-  return array;
 });
 
 var COOKIES_SCHEMA = new yaml.Schema({
@@ -166,17 +167,17 @@ console.log(doc);
 
 ### load (string [ , settings ])
 
-Parses `string` as single YAML document. Returns JS object or throws `YAMLError`
-exception on error.
+Parses `string` as single YAML document. Returns JS object or throws
+`YAMLException` on error.
 
-NOTE: This function does NOT understands multi-doc sources, it throws exception
-on those.
+NOTE: This function **does not** understands multi-document sources, it throws
+exception on those.
 
 `settings` is an optional hash-like object allows to change the loader's
-behavoiur. It may contain the following keys:
+behaviour. It may contain the following keys:
 
-- `schema` specifies a schema to use. It's `yaml.DEFAULT_SCHEMA` by default.
-  See below for more information about the schemas.
+- `schema` specifies a schema to use. It's `DEFAULT_SCHEMA` by default. See
+  below for more information about the schemas.
 - `validate` (default true) enables/disables validation of the input stream
   according to YAML rules. If you are sure about the input, you can set it to
   false and (maybe) gain some additional performance.
@@ -236,13 +237,84 @@ fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
 
 ### safeLoad (string [ , settings ])
 
-Same as `load()` but uses _safe_ schema - only recommended tags of YAML
+Same as `load()` but uses SAFE_SCHEMA by default - only recommended tags of YAML
 specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
 ### safeLoadAll (string, iterator [ , settings ])
 
-Same as `loadAll()` but uses _safe_ schema - only recommended tags of YAML
+Same as `loadAll()` but uses SAFE_SCHEMA by default - only recommended tags of
+YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
+
+
+### dump (object [ , settings ])
+
+Serializes `object` as single, bare YAML document. `settings` is an optional
+hash-like object allows to change the dumper's behaviour. It may contain the
+following keys:
+
+- `schema` specifies a schema to use. It's `DEFAULT_SCHEMA` by default. See
+  below for more information about the schemas.
+- `indent` (default 2) indentation width to use (in spaces).
+- `flowLevel` (default -1) specifies level of nesting on which the dumper must
+  switch to the flow style (i.e. JSON-like) of collection nodes.
+- `styles` is a "tag" => "style" map. Each tag may have own set of styles. See
+  below for full listing standard tag styles.
+
+``` javascript
+var yaml = require('js-yaml');
+
+var object = {
+  name: 'Wizzard',
+  level: 17,
+  sanity: null,
+  inventory: [
+    {
+      name: 'Hat',
+      features: [ 'magic', 'pointed' ],
+      traits: {}
+    },
+    {
+      name: 'Staff',
+      features: [],
+      traits: { damage: 10 }
+    },
+    {
+      name: 'Cloak',
+      features: [ 'old' ],
+      traits: { defence: 0, comfort: 3 }
+    }
+  ]
+};
+
+console.log(yaml.dump(object, {
+  flowLevel: 3,
+  styles: {
+    '!!int'  : 'hexadecimal',
+    '!!null' : 'camelcase'
+  }
+}));
+```
+``` yaml
+"name": "Wizzard"
+"level": 0x11
+"sanity": Null
+"inventory": 
+  - "name": "Hat"
+    "features": ["magic", "pointed"]
+    "traits": {}
+  - "name": "Staff"
+    "features": []
+    "traits": {"damage": 0xA}
+  - "name": "Cloak"
+    "features": ["old"]
+    "traits": {"defence": 0x0, "comfort": 0x3}
+```
+
+
+### safeDump (object [ , settings ])
+
+Same as `dump()` but uses SAFE_SCHEMA by default - only recommended tags of YAML
 specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
@@ -258,26 +330,54 @@ loader will take types in bottom-top order; the specified schema comes first,
 and all of super schemas come next in order of they are placed in the include
 list. Recursively.
 
+NOTE: Schemas must be immutable. So, it's better to use CONSTANT_LIKE_NAMES for
+them.
+
 There are predifined schemas in JS-YAML: `MINIMAL_SCHEMA`, `SAFE_SCHEMA`, and
 `DEFAULT_SCHEMA`.
 
 
-### new Type (tag, resolver)
+### new Type (tag, { loader, dumper })
 
 Constructs a YAML type definition object. Such objects are used for validation,
 resolving, interpreting, and representing of primitive YAML nodes: scalars
-(strings), sequences (arrays), and mappings (objects). `resolver` is a function
-of two arguments: `object` is a primitive YAML node to resolve and `explicit` is
-a boolean value. Then a type is contained in the implicit list of a schema, and
-a node has no explicit tag on it, `explicit` will be false. Otherwise, it will
-be true.
+(strings), sequences (arrays), and mappings (objects). The second argument is an
+object of two keys: `loader` and `dumper`. At least one of these must be
+specified. Both of the keys are objects too.
+
+
+#### loader settings
+
+`kind` (required) is a string identifier ("string", "array", or "object")
+restricts type of acceptable nodes.
+
+`resolver` (optional) is a function of two arguments: `object` is a primitive
+YAML node to resolve and `explicit` is a boolean value. When a type is contained
+in the implicit list of a schema, and a node has no explicit tag on it,
+`explicit` will be false. Otherwise, it will be true.
+
+
+#### dumper settings
+
+`kind` (required) is a string identifier restricts type of acceptable objects.
+Allowed values are: "undefined", "null", "boolean", "integer", "float",
+"string", "array", "object", and "function".
+
+`instanceOf` (optional) allows to restrict acceptable objects with exactly one
+class. i.e. constructor function.
+
+`predicate` (optional) is a function of one argument. It takes an object and
+returns true to accept and false to discard.
+
+`representer` (optional) is a function intended to convert objects to simple,
+"dumpable" form. That is a string, an array, or a plain object.
 
 
 ### NIL
 
-Special object used in type resolvers to represent failure of the resolving
-process. If your resolver cannot to resolve the given object, it should return
-NIL.
+Special object used in type resolvers/representers to report failure of the
+resolving/representing process. If your type handler cannot to process the given
+object, it should return NIL.
 
 
 ### Example of using your own schema
@@ -285,11 +385,24 @@ NIL.
 ``` javascript
 var yaml = require('js-yaml');
 
-var cookiesType = new yaml.Type('!cookies', function (object, explicit) {
-  if ('string' === typeof object) {
-    return 'A ' + object + ' with some cookies!';
-  } else {
-    return yaml.NIL;
+var cookiesType = new yaml.Type('!cookies', {
+  loader: {
+    kind: 'string',
+    resolver: function (object, explicit) {
+      return 'A ' + object + ' with some cookies!';
+    }
+  },
+  dumper: {
+    kind: 'string',
+    representer: function (object, style) {
+      var match = /^A (.+?) with some cookies!$/.exec(object);
+
+      if (null !== match) {
+        return match[1];
+      } else {
+        return yaml.NIL;
+      }
+    }
   }
 });
 
@@ -298,11 +411,15 @@ var COOKIES_SCHEMA = new yaml.Schema({
   explicit: [ cookiesType ]
 });
 
-console.log(yaml.load('!cookies coffee', { schema: COOKIES_SCHEMA }));
+var loaded = yaml.load('!cookies coffee', { schema: COOKIES_SCHEMA });
+var dumped = yaml.dump(loaded,            { schema: COOKIES_SCHEMA });
+
+console.log(loaded);
+console.log(dumped);
 ```
-=>
 ```
 A coffee with some cookies!
+!<!cookies> "coffee"
 ```
 
 
@@ -335,6 +452,28 @@ The list of standard YAML tags and corresponding JavaScipt types. See also
 !!js/function 'function () {...}'   # Function
 ```
 
+
+### Representing styles
+
+```
+!!null
+  "canonical"   => "~"
+
+!!int
+  "binary"      => "0b1", "0b101010", "0b1110001111010"
+  "octal"       => "01", "052", "016172"
+  "decimal"     => "1", "42", "7290"
+  "hexadecimal" => "0x1", "0x2A", "0x1C7A"
+
+!!null, !!bool, !!float
+  "lowercase"   => "null", "true", "false", ".nan", '.inf'
+  "uppercase"   => "NULL", "TRUE", "FALSE", ".NAN", '.INF'
+  "camelcase"   => "Null", "True", "False", ".NaN", '.Inf'
+```
+
+By default, !!int uses `decimal`, and !!null, !!bool, !!float use `lowercase`.
+
+
 ## Caveats
 
 Note, that you use arrays or objects as key in JS-YAML. JS do not allows objects
@@ -349,7 +488,6 @@ moment of adding them.
 : - baz
   - baz
 ```
-=>
 ``` javascript
 { "foo,bar": ["baz"], "[object Object]": ["baz", "baz"] }
 ```
