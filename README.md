@@ -35,68 +35,8 @@ anything.
 
 Otherwise, you should rewrite your tag constructors and custom Loader classes to
 conform the new schema-based API. It consists of two classes: Schema and Type.
-The both are described below in the API listing. Here is an example of the
-difference:
-
-JS-YAML 1.x.x
-``` javascript
-var yaml = require('js-yaml');
-
-yaml.addConstructor('!cookies', function (node) {
-  var array, index, length;
-
-  array = this.constructSequence(node);
-
-  for (index = 0, length = array.length; index < length; index += 1) {
-    array[index] = 'A ' + array[index] + ' with some cookies!';
-  }
-
-  return array;
-});
-
-result = yaml.load(data);
-```
-
-JS-YAML 2.0.x
-``` javascript
-var yaml = require('js-yaml');
-
-var cookiesType = new yaml.Type('!cookies', {
-  loader: {
-    kind: 'array',
-    resolver: function (array, explicit) {
-      var index, length;
-
-      for (index = 0, length = array.length; index < length; index += 1) {
-        array[index] = 'A ' + array[index] + ' with some cookies!';
-      }
-
-      return array;
-    }
-  }
-});
-
-var COOKIES_SCHEMA = new yaml.Schema({
-  include:  [ yaml.DEFAULT_SCHEMA ],
-  explicit: [ cookiesType ]
-});
-
-result = yaml.load(data, { schema: COOKIES_SCHEMA });
-```
-
-
-## Breaking changes in 0.3.x -> 1.0.x
-
-- `y`, `yes`, `n`, `no`, `on`, `off` are not converted to Booleans anymore.
-  Decision to drop support of such "magic" was made after speaking with YAML
-  core developers: from now on we try to keep as minimal subset of rules as
-  possible to keep things obvious. Booleans are following YAML 1.2 core schema
-  now: http://www.yaml.org/spec/1.2/spec.html#id2804923
-- `require('file.yml')` now returns a single document (was array of documents)
-  and throws an error when file contains multiple documents. That should improve
-  switching between YAML <-> JSON. So `require('file.yml')` will give the same
-  result as if it was `require('file.json')` now.
-- CLI tool `js-yaml` become part of `js-yaml` again.
+The both are described below in the API listing. For example of this, see
+`examples/custom_type_old_1xx.js` and `examples/custom_type_new_20x.js` files.
 
 
 ## Installation
@@ -116,20 +56,21 @@ If you want to inspect your YAML files from CLI, install js-yaml globally:
 npm install js-yaml -g
 ```
 
-##### Usage
+#### Usage
 
-    usage: js-yaml [-h] [-v] [-c] [-j] [-t] file
+```
+usage: js-yaml [-h] [-v] [-c] [-j] [-t] file
 
-    Positional arguments:
-      file           File with YAML document(s)
+Positional arguments:
+  file           File with YAML document(s)
 
-    Optional arguments:
-      -h, --help     Show this help message and exit.
-      -v, --version  Show program's version number and exit.
-      -c, --compact  Display errors in compact mode
-      -j, --to-json  Output a non-funky boring JSON
-      -t, --trace    Show stack trace on error
-
+Optional arguments:
+  -h, --help     Show this help message and exit.
+  -v, --version  Show program's version number and exit.
+  -c, --compact  Display errors in compact mode
+  -j, --to-json  Output a non-funky boring JSON
+  -t, --trace    Show stack trace on error
+```
 
 
 ### Bundled YAML library for browsers
@@ -164,10 +105,13 @@ var doc = require('/home/ixti/example.yml');
 console.log(doc);
 ```
 
+See `examples/` directory for the examples. Take especially a look at
+`examples/loader.js` and `examples/dumper.js` files. 
+
 
 ### load (string [ , settings ])
 
-Parses `string` as single YAML document. Returns JS object or throws
+Parses `string` as single YAML document. Returns a JavaScript object or throws
 `YAMLException` on error.
 
 NOTE: This function **does not** understands multi-document sources, it throws
@@ -187,50 +131,21 @@ behaviour. It may contain the following keys:
 - `name` (default null) is a string to be used as a file path in error/warning
   messages.
 - `resolve` (default true) enables/disables resolving of nodes with non-specific
-  `'?'` tag. That are plain scalars without any explicit tag. The result of
+  `?` tag. That are plain scalars without any explicit tag. The result of
   switching it to false is that all of the plain scalars will loaded as strings.
   This may significantly increase parsing performance.
-
-``` javascript
-var yaml = require('js-yaml');
-
-// pass the string
-fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
-  if (err) {
-    // handle error
-    return;
-  }
-  try {
-    console.log( yaml.load(data) );
-  } catch(e) {
-    console.log(e);
-  }
-});
-```
 
 
 ### loadAll (string, iterator [ , settings ])
 
-Same as `load()`, but understands multi-doc sources and apply `iterator` to each
-document.
+Same as `load()`, but understands multi-document sources and apply `iterator` to
+each document.
 
 ``` javascript
 var yaml = require('js-yaml');
 
-// pass the string
-fs.readFile('/home/ixti/example.yml', 'utf8', function (err, data) {
-  if (err) {
-    // handle error
-    return;
-  }
-
-  try {
-    yaml.loadAll(data, function (doc) {
-      console.log(doc);
-    });
-  } catch(e) {
-    console.log(e);
-  }
+yaml.loadAll(data, function (doc) {
+  console.log(doc);
 });
 ```
 
@@ -260,56 +175,6 @@ following keys:
   switch to the flow style (i.e. JSON-like) of collection nodes.
 - `styles` is a "tag" => "style" map. Each tag may have own set of styles. See
   below for full listing standard tag styles.
-
-``` javascript
-var yaml = require('js-yaml');
-
-var object = {
-  name: 'Wizzard',
-  level: 17,
-  sanity: null,
-  inventory: [
-    {
-      name: 'Hat',
-      features: [ 'magic', 'pointed' ],
-      traits: {}
-    },
-    {
-      name: 'Staff',
-      features: [],
-      traits: { damage: 10 }
-    },
-    {
-      name: 'Cloak',
-      features: [ 'old' ],
-      traits: { defence: 0, comfort: 3 }
-    }
-  ]
-};
-
-console.log(yaml.dump(object, {
-  flowLevel: 3,
-  styles: {
-    '!!int'  : 'hexadecimal',
-    '!!null' : 'camelcase'
-  }
-}));
-```
-``` yaml
-"name": "Wizzard"
-"level": 0x11
-"sanity": Null
-"inventory": 
-  - "name": "Hat"
-    "features": ["magic", "pointed"]
-    "traits": {}
-  - "name": "Staff"
-    "features": []
-    "traits": {"damage": 0xA}
-  - "name": "Cloak"
-    "features": ["old"]
-    "traits": {"defence": 0x0, "comfort": 0x3}
-```
 
 
 ### safeDump (object [ , settings ])
@@ -378,49 +243,6 @@ returns true to accept and false to discard.
 Special object used in type resolvers/representers to report failure of the
 resolving/representing process. If your type handler cannot to process the given
 object, it should return NIL.
-
-
-### Example of using your own schema
-
-``` javascript
-var yaml = require('js-yaml');
-
-var cookiesType = new yaml.Type('!cookies', {
-  loader: {
-    kind: 'string',
-    resolver: function (object, explicit) {
-      return 'A ' + object + ' with some cookies!';
-    }
-  },
-  dumper: {
-    kind: 'string',
-    representer: function (object, style) {
-      var match = /^A (.+?) with some cookies!$/.exec(object);
-
-      if (null !== match) {
-        return match[1];
-      } else {
-        return yaml.NIL;
-      }
-    }
-  }
-});
-
-var COOKIES_SCHEMA = new yaml.Schema({
-  include:  [ yaml.DEFAULT_SCHEMA ],
-  explicit: [ cookiesType ]
-});
-
-var loaded = yaml.load('!cookies coffee', { schema: COOKIES_SCHEMA });
-var dumped = yaml.dump(loaded,            { schema: COOKIES_SCHEMA });
-
-console.log(loaded);
-console.log(dumped);
-```
-```
-A coffee with some cookies!
-!<!cookies> "coffee"
-```
 
 
 ## Supported YAML types
