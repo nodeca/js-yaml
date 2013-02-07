@@ -15,28 +15,24 @@ rewritten from scratch, directly from version 1.2 of the specification.
 
 ## Breaking changes in 1.x.x -> 2.0.x
 
-- The last argument of loader functions (`load`, `loadAll`, `safeLoad`, and
-  `safeLoadAll`) was changed. Now, it is an optional `settings` plain object.
-  See the API listing on `load` function for details.
-- `scan`, `parse`, `compose`, `addConstructor` functions and all of the classes
-  like `Loader`, `Constructor`, `Resolver` was dropped because of complete
-  architecture overhaul.
-- The parsing process consists of only one stage now. The loader constructs the
-  resulting strings, arrays, and objects (mappings) without any interim
-  representation objects. So, tag interpreters receive native JavaScript objects
-  directly.
-
-
-### How to migrate
-
 If your code does not use neither custom tags nor explicitly specified Loader
-class (the last argument of `load` function), you are not required to change
-anything.
+class (the last argument of `load` function), **you are not required to change
+anything**.
 
 Otherwise, you should rewrite your tag constructors and custom Loader classes to
 conform the new schema-based API. It consists of two classes: Schema and Type.
 The both are described below in the API listing. For example of this, see
 `examples/custom_type_old_1xx.js` and `examples/custom_type_new_20x.js` files.
+
+
+### Summary
+
+- The last argument of loader functions (`load`, `loadAll`, `safeLoad`, and
+  `safeLoadAll`) was changed. Now, it is an `options` plain object. See the API
+  listing on `load` function for details.
+- `scan`, `parse`, `compose`, `addConstructor` functions and all of the classes
+  like `Loader`, `Constructor`, `Resolver` was dropped because of complete
+  architecture overhaul.
 
 
 ## Installation
@@ -109,7 +105,7 @@ See `examples/` directory for the examples. Take especially a look at
 `examples/loader.js` and `examples/dumper.js` files. 
 
 
-### load (string [ , settings ])
+### load (string [ , options ])
 
 Parses `string` as single YAML document. Returns a JavaScript object or throws
 `YAMLException` on error.
@@ -117,7 +113,7 @@ Parses `string` as single YAML document. Returns a JavaScript object or throws
 NOTE: This function **does not** understands multi-document sources, it throws
 exception on those.
 
-`settings` is an optional hash-like object allows to change the loader's
+`options` is an optional hash-like object allows to change the loader's
 behaviour. It may contain the following keys:
 
 - `schema` specifies a schema to use. It's `DEFAULT_SCHEMA` by default. See
@@ -136,7 +132,7 @@ behaviour. It may contain the following keys:
   This may significantly increase parsing performance.
 
 
-### loadAll (string, iterator [ , settings ])
+### loadAll (string, iterator [ , options ])
 
 Same as `load()`, but understands multi-document sources and apply `iterator` to
 each document.
@@ -150,21 +146,21 @@ yaml.loadAll(data, function (doc) {
 ```
 
 
-### safeLoad (string [ , settings ])
+### safeLoad (string [ , options ])
 
 Same as `load()` but uses SAFE_SCHEMA by default - only recommended tags of YAML
 specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
-### safeLoadAll (string, iterator [ , settings ])
+### safeLoadAll (string, iterator [ , options ])
 
 Same as `loadAll()` but uses SAFE_SCHEMA by default - only recommended tags of
 YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
-### dump (object [ , settings ])
+### dump (object [ , options ])
 
-Serializes `object` as single, bare YAML document. `settings` is an optional
+Serializes `object` as single, bare YAML document. `options` is an optional
 hash-like object allows to change the dumper's behaviour. It may contain the
 following keys:
 
@@ -178,7 +174,7 @@ following keys:
   below for full listing of standard tag styles.
 
 
-### safeDump (object [ , settings ])
+### safeDump (object [ , options ])
 
 Same as `dump()` but uses SAFE_SCHEMA by default - only recommended tags of YAML
 specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
@@ -211,32 +207,24 @@ resolving, interpreting, and representing of primitive YAML nodes: scalars
 object of two keys: `loader` and `dumper`. At least one of these must be
 specified. Both of the keys are objects too.
 
+**loader**
+- `kind` (required) is a string identifier ("string", "array", or "object")
+  restricts type of acceptable nodes.
+- `resolver` (optional) is a function of two arguments: `object` is a primitive
+  YAML node to resolve and `explicit` is a boolean value. When a type is
+  contained in the implicit list of a schema, and a node has no explicit tag on
+  it, `explicit` will be false. Otherwise, it will be true.
 
-#### loader settings
-
-`kind` (required) is a string identifier ("string", "array", or "object")
-restricts type of acceptable nodes.
-
-`resolver` (optional) is a function of two arguments: `object` is a primitive
-YAML node to resolve and `explicit` is a boolean value. When a type is contained
-in the implicit list of a schema, and a node has no explicit tag on it,
-`explicit` will be false. Otherwise, it will be true.
-
-
-#### dumper settings
-
-`kind` (required) is a string identifier restricts type of acceptable objects.
-Allowed values are: "undefined", "null", "boolean", "integer", "float",
-"string", "array", "object", and "function".
-
-`instanceOf` (optional) allows to restrict acceptable objects with exactly one
-class. i.e. constructor function.
-
-`predicate` (optional) is a function of one argument. It takes an object and
-returns true to accept and false to discard.
-
-`representer` (optional) is a function intended to convert objects to simple,
-"dumpable" form. That is a string, an array, or a plain object.
+**dumper**
+- `kind` (required) is a string identifier restricts type of acceptable objects.
+  Allowed values are: "undefined", "null", "boolean", "integer", "float",
+  "string", "array", "object", and "function".
+- `instanceOf` (optional) allows to restrict acceptable objects with exactly one
+  class. i.e. constructor function.
+- `predicate` (optional) is a function of one argument. It takes an object and
+  returns true to accept and false to discard.
+- `representer` (optional) is a function intended to convert objects to simple,
+  "dumpable" form. That is a string, an array, or a plain object.
 
 
 ### NIL
