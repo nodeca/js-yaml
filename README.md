@@ -7,35 +7,24 @@ JS-YAML - YAML 1.2 parser and serializer for JavaScript
 
 
 This is an implementation of [YAML](http://yaml.org/), a human friendly data
-serialization language.
-
-Previously, it was a native port of [PyYAML](http://pyyaml.org/). Now, it is
-rewritten from scratch, directly from version 1.2 of the specification.
+serialization language. Started as [PyYAML](http://pyyaml.org/), it was
+completely rewritten from scratch. Now it's very fast, and supports 1.2 spec.
 
 
-## Breaking changes in 1.x.x -> 2.0.x
+Breaking changes in 1.x.x -> 2.0.x
+----------------------------------
 
-If your code does not use neither custom tags nor explicitly specified Loader
-class (the last argument of `load` function), **you are not required to change
-anything**.
+If your have not used do not use custom tags or loader classes - no changes
+needed. Just upgrade version and enjoy high parse speed.
 
-Otherwise, you should rewrite your tag constructors and custom Loader classes to
-conform the new schema-based API. It consists of two classes: Schema and Type.
-The both are described below in the API listing. For example of this, see
-`examples/custom_type_old_1xx.js` and `examples/custom_type_new_20x.js` files.
-
-
-### Summary
-
-- The last argument of loader functions (`load`, `loadAll`, `safeLoad`, and
-  `safeLoadAll`) was changed. Now, it is an `options` plain object. See the API
-  listing on `load` function for details.
-- `scan`, `parse`, `compose`, `addConstructor` functions and all of the classes
-  like `Loader`, `Constructor`, `Resolver` was dropped because of complete
-  architecture overhaul.
+In other case, you should rewrite your tag constructors and custom loader
+classes, to conform new schema-based API. See
+[examples](https://github.com/nodeca/js-yaml/tree/master/examples) for details.
+Note, that parser internals were completely rewritten.
 
 
-## Installation
+Installation
+------------
 
 ### YAML module for node.js
 
@@ -78,12 +67,9 @@ var doc = jsyaml.load('greeting: hello\nname: world');
 </script>
 ```
 
-Browser support is still buggy, and mostly done to run online demo. If you
-can help to improve browser compatibility and AMD support - rise pull request.
-
-**Support of oldIEs** and some other prehistoric browsers is possible using
-[es5-shims](https://github.com/kriskowal/es5-shim). Just include shims before
-jsyaml to use it with outdated browsers.
+Browser support was done mostly for online demo. If you find eny errors - feel
+free to send pull requests with fixes. Also note, that IE and other old browsers
+needs [es5-shims](https://github.com/kriskowal/es5-shim) to operate.
 
 
 ## API
@@ -101,8 +87,8 @@ var doc = require('/home/ixti/example.yml');
 console.log(doc);
 ```
 
-See `examples/` directory for the examples. Take especially a look at
-`examples/loader.js` and `examples/dumper.js` files. 
+See [examples](https://github.com/nodeca/js-yaml/tree/master/examples) for
+more details.
 
 
 ### load (string [ , options ])
@@ -113,23 +99,22 @@ Parses `string` as single YAML document. Returns a JavaScript object or throws
 NOTE: This function **does not** understands multi-document sources, it throws
 exception on those.
 
-`options` is an optional hash-like object allows to change the loader's
-behaviour. It may contain the following keys:
+options:
 
-- `schema` specifies a schema to use. It's `DEFAULT_SCHEMA` by default. See
-  below for more information about the schemas.
-- `validate` (default true) enables/disables validation of the input stream
-  according to YAML rules. If you are sure about the input, you can set it to
-  false and (maybe) gain some additional performance.
-- `strict` (default false) makes the loader to throw errors instead of warnings.
-- `legacy` (default false) makes the loader to expect YAML 1.1 documents if such
-  documents have no explicit %YAML directive.
-- `name` (default null) is a string to be used as a file path in error/warning
+- `schema` _(default: `DEFAULT_SCHEMA`)_ - specifies a schema to use.
+- `validate` _(default: true)_ - enables/disables input stream validation
+  (unprintable symbols and other YAML requirements). If you are sure about
+  input - set false to get some speed boost
+- `strict` _(default - false)_ makes the loader to throw errors instead of
+  warnings.
+- `legacy` _(default: false)_ - makes the loader to expect YAML 1.1 documents if
+  such documents have no explicit %YAML directive.
+- `name` _(default: null)_ - string to be used as a file path in error/warning
   messages.
-- `resolve` (default true) enables/disables resolving of nodes with non-specific
-  `?` tag. That are plain scalars without any explicit tag. The result of
-  switching it to false is that all of the plain scalars will loaded as strings.
-  This may significantly increase parsing performance.
+- `resolve` _(default - true)_ enables/disables resolving of nodes with
+  non-specific `?` tag. That are plain scalars without any explicit tag.
+  When false, all plain scalars will loaded as strings (that will inprove
+  loading speed).
 
 
 ### loadAll (string, iterator [ , options ])
@@ -148,30 +133,47 @@ yaml.loadAll(data, function (doc) {
 
 ### safeLoad (string [ , options ])
 
-Same as `load()` but uses SAFE_SCHEMA by default - only recommended tags of YAML
-specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
+Same as `load()` but uses `SAFE_SCHEMA` by default - only recommended tags of
+YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
 ### safeLoadAll (string, iterator [ , options ])
 
-Same as `loadAll()` but uses SAFE_SCHEMA by default - only recommended tags of
+Same as `loadAll()` but uses `SAFE_SCHEMA` by default - only recommended tags of
 YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
 ### dump (object [ , options ])
 
-Serializes `object` as single, bare YAML document. `options` is an optional
-hash-like object allows to change the dumper's behaviour. It may contain the
-following keys:
+Serializes `object` as YAML document.
 
-- `schema` specifies a schema to use. It's `DEFAULT_SCHEMA` by default. See
-  below for more information about the schemas.
-- `indent` (default 2) indentation width to use (in spaces).
-- `flowLevel` (default -1) specifies level of nesting on which the dumper must
-  switch to the flow style (i.e. JSON-like) of collection nodes. Use a nagitive
-  number to disable.
-- `styles` is a "tag" => "style" map. Each tag may have own set of styles. See
-  below for full listing of standard tag styles.
+Options:
+
+- `indent` _(default: 2)_ - indentation width to use (in spaces).
+- `flowLevel` (default: -1) - specifies level of nesting, when to switch from
+  block to flow style for collections. -1 means block style everwhere
+- `schema` _(default: `DEFAULT_SCHEMA`)_ specifies a schema to use.
+- `styles` - "tag" => "style" map. Each tag may have own set of styles.
+
+styles:
+
+``` none
+!!null
+  "canonical"   => "~"
+
+!!int
+  "binary"      => "0b1", "0b101010", "0b1110001111010"
+  "octal"       => "01", "052", "016172"
+  "decimal"     => "1", "42", "7290"
+  "hexadecimal" => "0x1", "0x2A", "0x1C7A"
+
+!!null, !!bool, !!float
+  "lowercase"   => "null", "true", "false", ".nan", '.inf'
+  "uppercase"   => "NULL", "TRUE", "FALSE", ".NAN", '.INF'
+  "camelcase"   => "Null", "True", "False", ".NaN", '.Inf'
+```
+
+By default, !!int uses `decimal`, and !!null, !!bool, !!float use `lowercase`.
 
 
 ### safeDump (object [ , options ])
@@ -207,23 +209,25 @@ resolving, interpreting, and representing of primitive YAML nodes: scalars
 object of two keys: `loader` and `dumper`. At least one of these must be
 specified. Both of the keys are objects too.
 
-**loader**
-- `kind` (required) is a string identifier ("string", "array", or "object")
+loader:
+
+- `kind` (required) - string identifier ("string", "array", or "object")
   restricts type of acceptable nodes.
-- `resolver` (optional) is a function of two arguments: `object` is a primitive
+- `resolver` (optional) - function of two arguments: `object` is a primitive
   YAML node to resolve and `explicit` is a boolean value. When a type is
   contained in the implicit list of a schema, and a node has no explicit tag on
   it, `explicit` will be false. Otherwise, it will be true.
 
-**dumper**
-- `kind` (required) is a string identifier restricts type of acceptable objects.
+dumper:
+
+- `kind` (required) - string identifier restricts type of acceptable objects.
   Allowed values are: "undefined", "null", "boolean", "integer", "float",
   "string", "array", "object", and "function".
-- `instanceOf` (optional) allows to restrict acceptable objects with exactly one
-  class. i.e. constructor function.
-- `predicate` (optional) is a function of one argument. It takes an object and
+- `instanceOf` (optional) - allows to restrict acceptable objects with exactly
+  one class. i.e. constructor function.
+- `predicate` (optional) - function of one argument. It takes an object and
   returns true to accept and false to discard.
-- `representer` (optional) is a function intended to convert objects to simple,
+- `representer` (optional) - function intended to convert objects to simple,
   "dumpable" form. That is a string, an array, or a plain object.
 
 
@@ -264,25 +268,6 @@ The list of standard YAML tags and corresponding JavaScipt types. See also
 ```
 
 
-### Representing styles
-
-```
-!!null
-  "canonical"   => "~"
-
-!!int
-  "binary"      => "0b1", "0b101010", "0b1110001111010"
-  "octal"       => "01", "052", "016172"
-  "decimal"     => "1", "42", "7290"
-  "hexadecimal" => "0x1", "0x2A", "0x1C7A"
-
-!!null, !!bool, !!float
-  "lowercase"   => "null", "true", "false", ".nan", '.inf'
-  "uppercase"   => "NULL", "TRUE", "FALSE", ".NAN", '.INF'
-  "camelcase"   => "Null", "True", "False", ".NaN", '.Inf'
-```
-
-By default, !!int uses `decimal`, and !!null, !!bool, !!float use `lowercase`.
 
 
 ## Caveats
