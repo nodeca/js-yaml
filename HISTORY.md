@@ -1,9 +1,9 @@
-2.0.0 / 2013-02-07
+2.0.0 / 2013-02-08
 ------------------
 
 * Full rewrite. New architecture. Fast one-stage parsing.
 * Changed custom types API.
-* Implemented the dumper.
+* Added YAML dumper.
 
 
 1.0.3 / 2012-11-05
