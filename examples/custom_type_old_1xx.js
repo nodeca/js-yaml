@@ -1,6 +1,9 @@
 // JS-YAML version 1.x.x (deprecated)
+'use strict';
 
-var yaml = require('js-yaml');
+
+var yaml = require('../lib/js-yaml');
+
 
 yaml.addConstructor('!cookies', function (node) {
   var array, index, length;
@@ -14,4 +17,12 @@ yaml.addConstructor('!cookies', function (node) {
   return array;
 });
 
-console.log(yaml.load(data));
+
+console.log(yaml.load('!cookies [ coffee, tea, milk ]'));
+
+
+// Output:
+//==============================================================================
+// [ 'A coffee with some cookies!',
+//   'A tea with some cookies!',
+//   'A milk with some cookies!' ]

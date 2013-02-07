@@ -1,7 +1,7 @@
 'use strict';
 
 
-var yaml = require('js-yaml');
+var yaml = require('../lib/js-yaml');
 
 
 var cookiesType = new yaml.Type('!cookies', {
@@ -34,5 +34,11 @@ var loaded = yaml.load('!cookies coffee', { schema: COOKIES_SCHEMA });
 var dumped = yaml.dump(loaded,            { schema: COOKIES_SCHEMA });
 
 
-console.log(loaded); // A coffee with some cookies!
-console.log(dumped); // !<!cookies> "coffee"
+console.log(loaded);
+console.log(dumped);
+
+
+// Output:
+//==============================================================================
+// A coffee with some cookies!
+// !<!cookies> "coffee"

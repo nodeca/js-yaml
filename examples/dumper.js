@@ -1,7 +1,7 @@
 'use strict';
 
 
-var yaml = require('js-yaml');
+var yaml = require('../lib/js-yaml');
 
 
 var object = {
