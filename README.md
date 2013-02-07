@@ -172,9 +172,10 @@ following keys:
   below for more information about the schemas.
 - `indent` (default 2) indentation width to use (in spaces).
 - `flowLevel` (default -1) specifies level of nesting on which the dumper must
-  switch to the flow style (i.e. JSON-like) of collection nodes.
+  switch to the flow style (i.e. JSON-like) of collection nodes. Use a nagitive
+  number to disable.
 - `styles` is a "tag" => "style" map. Each tag may have own set of styles. See
-  below for full listing standard tag styles.
+  below for full listing of standard tag styles.
 
 
 ### safeDump (object [ , settings ])
