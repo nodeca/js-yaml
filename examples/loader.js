@@ -7,13 +7,13 @@ var yaml = require('../lib/js-yaml');
 var cookiesType = new yaml.Type('!cookies', {
   loader: {
     kind: 'string',
-    resolver: function (object, explicit) {
+    resolver: function (object /*, explicit*/) {
       return 'A ' + object + ' with some cookies!';
     }
   },
   dumper: {
     kind: 'string',
-    representer: function (object, style) {
+    representer: function (object /*, style*/) {
       var match = /^A (.+?) with some cookies!$/.exec(object);
 
       if (null !== match) {

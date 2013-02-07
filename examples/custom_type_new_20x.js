@@ -8,7 +8,7 @@ var yaml = require('../lib/js-yaml');
 var cookiesType = new yaml.Type('!cookies', {
   loader: {
     kind: 'array',
-    resolver: function (array, explicit) {
+    resolver: function (array /*, explicit*/) {
       var index, length;
 
       for (index = 0, length = array.length; index < length; index += 1) {

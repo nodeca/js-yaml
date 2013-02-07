@@ -61,7 +61,7 @@ function makeClassConstructor(Class, params) {
       requiredKeys = params.required || [],
       optionalKeys = params.optional || [];
 
-  return function fromYAMLNode(object, explicit) {
+  return function fromYAMLNode(object /*, explicit*/) {
     if (!common.isObject(object)) {
       return NIL;
     }
