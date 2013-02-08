@@ -2,20 +2,30 @@
   // Enforcing Options /////////////////////////////////////////////////////////
 
   "bitwise"       : false,  // Prohibit bitwise operators (&, |, ^, etc.).
+                            // false - specific for js-yaml
+
+  "camelcase"     : false,  // Require variable names to be camelCase style or UPPER_CASE
   "curly"         : true,   // Require {} for every new block or scope.
   "eqeqeq"        : true,   // Require triple equals i.e. `===`.
   "forin"         : false,  // Tolerate `for in` loops without `hasOwnPrototype`.
   "immed"         : true,   // Require immediate invocations to be wrapped in parens e.g. `( function(){}() );`
+  "indent"        : 2,      // This option enforces specific tab width for your code
   "latedef"       : true,   // Prohibit hariable use before definition.
   "newcap"        : true,   // Require capitalization of all constructor functions e.g. `new F()`.
   "noarg"         : true,   // Prohibit use of `arguments.caller` and `arguments.callee`.
   "noempty"       : true,   // Prohibit use of empty blocks.
   "nonew"         : true,   // Prohibit use of constructors for side-effects.
   "plusplus"      : false,  // Prohibit use of `++` & `--`.
+  "quotmark"      : false,  // Enforces the consistency of quotation marks used throughout your code.
   "regexp"        : false,  // Prohibit `.` and `[^...]` in regular expressions.
   "undef"         : true,   // Require all non-global variables be declared before they are used.
+  "unused"        : false,  // This option warns when you define and never use your variables.
   "strict"        : true,   // Require `use strict` pragma  in every file.
   "trailing"      : true,   // Prohibit trailing whitespaces.
+  "maxparams"     : 5,      // Enforce max number of formal parameters allowed per function
+  "maxdepth"      : 5,      // Enforce max depth of nested blocks
+  "maxstatements" : false,  // Enforce max amount of statements per function
+  "maxcomplexity" : false,  // Enforce cyclomatic complexity level
 
   // Relaxing Options //////////////////////////////////////////////////////////
 
@@ -56,6 +66,7 @@
   "nonstandard"   : false,  // Defines non-standard but widely adopted globals such as escape and unescape
   "prototypejs"   : false,  // Defines globals exposed by the Prototype
   "rhino"         : false,  // Defines globals exposed when running under Rhino
+  "worker"        : false,  // Defines globals exposed when running Web Worker
   "wsh"           : false,  // Defines globals exposed when running under WSH
 
   // Legacy ////////////////////////////////////////////////////////////////////
@@ -65,8 +76,7 @@
   "passfail"      : false,  // Stop on first error.
   "white"         : false,  // Check against strict whitespace and indentation rules.
 
-  // Undocumented //////////////////////////////////////////////////////////////
+  // Other /////////////////////////////////////////////////////////////////////
 
-  "maxerr"        : 100,    // Maximum error before stopping.
-  "indent"        : 2       // Specify indentation spacing
+  "maxerr"        : 100     // Maximum error before stopping.
 }
