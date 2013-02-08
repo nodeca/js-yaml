@@ -108,19 +108,11 @@ exception on those.
 
 options:
 
-- `schema` _(default: `DEFAULT_SCHEMA`)_ - specifies a schema to use.
-- `validate` _(default: true)_ - enables/disables input stream validation
-  (unprintable symbols and other YAML requirements). If you are sure about
-  input - set false to get small speed boost
+- `filename` _(default: null)_ - string to be used as a file path in
+  error/warning messages.
 - `strict` _(default - false)_ makes the loader to throw errors instead of
   warnings.
-- `legacy` _(default: false)_ - makes the loader to expect YAML 1.1 documents if
-  such documents have no explicit %YAML directive.
-- `name` _(default: null)_ - string to be used as a file path in error/warning
-  messages.
-- `resolve` _(default - true)_ enables/disables resolving plain scalars without
-  any explicit tag. When false, all plain scalars will loaded as strings
-  (that will improve loading speed).
+- `schema` _(default: `DEFAULT_SCHEMA`)_ - specifies a schema to use.
 
 
 ### loadAll (string, iterator [ , options ])
@@ -158,8 +150,8 @@ options:
 - `indent` _(default: 2)_ - indentation width to use (in spaces).
 - `flowLevel` (default: -1) - specifies level of nesting, when to switch from
   block to flow style for collections. -1 means block style everwhere
-- `schema` _(default: `DEFAULT_SCHEMA`)_ specifies a schema to use.
 - `styles` - "tag" => "style" map. Each tag may have own set of styles.
+- `schema` _(default: `DEFAULT_SCHEMA`)_ specifies a schema to use.
 
 styles:
 
@@ -184,8 +176,8 @@ By default, !!int uses `decimal`, and !!null, !!bool, !!float use `lowercase`.
 
 ### safeDump (object [ , options ])
 
-Same as `dump()` but uses SAFE_SCHEMA by default - only recommended tags of YAML
-specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
+Same as `dump()` but uses `SAFE_SCHEMA` by default - only recommended tags of
+YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
 Supported YAML types
@@ -235,6 +227,7 @@ moment of adding them.
 : - baz
   - baz
 ```
+
 ``` javascript
 { "foo,bar": ["baz"], "[object Object]": ["baz", "baz"] }
 ```
