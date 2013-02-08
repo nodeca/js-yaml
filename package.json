@@ -32,7 +32,7 @@
   "bin"             : { "js-yaml": "bin/js-yaml.js" },
   "scripts"         : { "test": "make test" },
 
-  "dependencies"    : { "argparse": "~ 0.1.3" },
-  "devDependencies" : { "mocha": ">= 1.7.4" },
+  "dependencies"    : { "argparse": "~ 0.1.11" },
+  "devDependencies" : { "mocha": "*" },
   "engines"         : { "node": ">= 0.6.0" }
 }
