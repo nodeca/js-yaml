@@ -7,15 +7,15 @@ JS-YAML - YAML 1.2 parser and serializer for JavaScript
 
 
 This is an implementation of [YAML](http://yaml.org/), a human friendly data
-serialization language. Started as [PyYAML](http://pyyaml.org/), it was
+serialization language. Started as [PyYAML](http://pyyaml.org/) port, it was
 completely rewritten from scratch. Now it's very fast, and supports 1.2 spec.
 
 
 Breaking changes in 1.x.x -> 2.0.x
 ----------------------------------
 
-If your have not used do not use custom tags or loader classes - no changes
-needed. Just upgrade version and enjoy high parse speed.
+If your have not used __custom__ tags or loader classes - no changes needed. Just
+upgrade library and enjoy high parse speed.
 
 In other case, you should rewrite your tag constructors and custom loader
 classes, to conform new schema-based API. See
@@ -72,7 +72,8 @@ free to send pull requests with fixes. Also note, that IE and other old browsers
 needs [es5-shims](https://github.com/kriskowal/es5-shim) to operate.
 
 
-## API
+API
+---
 
 JS-YAML automatically registers handlers for `.yml` and `.yaml` files. You can
 load them just with `require`. That's mostly equivalent to calling `load()` on
@@ -147,7 +148,7 @@ YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 Serializes `object` as YAML document.
 
-Options:
+options:
 
 - `indent` _(default: 2)_ - indentation width to use (in spaces).
 - `flowLevel` (default: -1) - specifies level of nesting, when to switch from
@@ -182,63 +183,8 @@ Same as `dump()` but uses SAFE_SCHEMA by default - only recommended tags of YAML
 specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
-### new Schema ({ include, implicit, explicit })
-
-Constructs an object to use by the loader via the `schema` setting described
-above. Schemas are collections of YAML type objects collected in `implicit`
-and `explicit` arrays. The loader will try to resolve each plain scalar in a
-document using the resolver function associeted with each type in the implicit
-list. If a node has an explicit tag, the loader will look for it in the both
-lists. `include` is an array of super schemas. When compiling a schema, the
-loader will take types in bottom-top order; the specified schema comes first,
-and all of super schemas come next in order of they are placed in the include
-list. Recursively.
-
-NOTE: Schemas must be immutable. So, it's better to use CONSTANT_LIKE_NAMES for
-them.
-
-There are predifined schemas in JS-YAML: `MINIMAL_SCHEMA`, `SAFE_SCHEMA`, and
-`DEFAULT_SCHEMA`.
-
-
-### new Type (tag, { loader, dumper })
-
-Constructs a YAML type definition object. Such objects are used for validation,
-resolving, interpreting, and representing of primitive YAML nodes: scalars
-(strings), sequences (arrays), and mappings (objects). The second argument is an
-object of two keys: `loader` and `dumper`. At least one of these must be
-specified. Both of the keys are objects too.
-
-loader:
-
-- `kind` (required) - string identifier ("string", "array", or "object")
-  restricts type of acceptable nodes.
-- `resolver` (optional) - function of two arguments: `object` is a primitive
-  YAML node to resolve and `explicit` is a boolean value. When a type is
-  contained in the implicit list of a schema, and a node has no explicit tag on
-  it, `explicit` will be false. Otherwise, it will be true.
-
-dumper:
-
-- `kind` (required) - string identifier restricts type of acceptable objects.
-  Allowed values are: "undefined", "null", "boolean", "integer", "float",
-  "string", "array", "object", and "function".
-- `instanceOf` (optional) - allows to restrict acceptable objects with exactly
-  one class. i.e. constructor function.
-- `predicate` (optional) - function of one argument. It takes an object and
-  returns true to accept and false to discard.
-- `representer` (optional) - function intended to convert objects to simple,
-  "dumpable" form. That is a string, an array, or a plain object.
-
-
-### NIL
-
-Special object used in type resolvers/representers to report failure of the
-resolving/representing process. If your type handler cannot to process the given
-object, it should return NIL.
-
-
-## Supported YAML types
+Supported YAML types
+--------------------
 
 The list of standard YAML tags and corresponding JavaScipt types. See also
 [YAML tag discussion](http://pyyaml.org/wiki/YAMLTagDiscussion) and
