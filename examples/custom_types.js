@@ -83,7 +83,7 @@ var SPACE_SCHEMA = yaml.Schema.create([ spaceYamlType, pointYamlType ]);
 
 // And read a document using that schema.
 
-fs.readFile(path.join(__dirname, 'loader.yaml'), 'utf8', function (error, data) {
+fs.readFile(path.join(__dirname, 'custom_types.yaml'), 'utf8', function (error, data) {
   var loaded;
 
   if (!error) {
