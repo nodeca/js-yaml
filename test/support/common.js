@@ -29,16 +29,6 @@ function each(obj, iterator, context) {
   }
 }
 
-function toArray(sequence) {
-  if (Array.isArray(sequence)) {
-    return sequence;
-  } else if (common.isNothing(sequence)) {
-    return [];
-  } else {
-    return [ sequence ];
-  }
-}
-
 
 function DataFile(filepath) {
   this.path = path.normalize(filepath);
@@ -99,7 +89,6 @@ common.extend(module.exports, common);
 
 common.extend(module.exports, {
   each:                 each,
-  toArray:              toArray,
   DataFile:             DataFile,
   makeClassConstructor: makeClassConstructor
 });
