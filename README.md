@@ -19,7 +19,8 @@ upgrade library and enjoy high parse speed.
 
 In other case, you should rewrite your tag constructors and custom loader
 classes, to conform new schema-based API. See
-[examples](https://github.com/nodeca/js-yaml/tree/master/examples) for details.
+[examples](https://github.com/nodeca/js-yaml/tree/master/examples) and
+[wiki](https://github.com/nodeca/js-yaml/wiki) for details.
 Note, that parser internals were completely rewritten.
 
 
@@ -75,21 +76,26 @@ needs [es5-shims](https://github.com/kriskowal/es5-shim) to operate.
 API
 ---
 
-JS-YAML automatically registers handlers for `.yml` and `.yaml` files. You can
-load them just with `require`. That's mostly equivalent to calling `load()` on
-fetched content of a file. Just with one string!
+Here we cover the most 'useful' methods. If you need advanced details (creating
+your own tags), see [wiki](https://github.com/nodeca/js-yaml/wiki) and
+[examples](https://github.com/nodeca/js-yaml/tree/master/examples) for more
+info.
+
+In node.js JS-YAML automatically registers handlers for `.yml` and `.yaml`
+files. You can load them just with `require`. That's mostly equivalent to
+calling `load()` on fetched content of a file. Just with one string!
 
 ``` javascript
 require('js-yaml');
 
 // Get document, or throw exception on error
-var doc = require('/home/ixti/example.yml');
-
-console.log(doc);
+try {
+  var doc = require('/home/ixti/example.yml');
+  console.log(doc);
+} catch (e) {
+  console.log(e);
+}
 ```
-
-See [examples](https://github.com/nodeca/js-yaml/tree/master/examples) for
-more details.
 
 
 ### load (string [ , options ])
@@ -105,17 +111,16 @@ options:
 - `schema` _(default: `DEFAULT_SCHEMA`)_ - specifies a schema to use.
 - `validate` _(default: true)_ - enables/disables input stream validation
   (unprintable symbols and other YAML requirements). If you are sure about
-  input - set false to get some speed boost
+  input - set false to get small speed boost
 - `strict` _(default - false)_ makes the loader to throw errors instead of
   warnings.
 - `legacy` _(default: false)_ - makes the loader to expect YAML 1.1 documents if
   such documents have no explicit %YAML directive.
 - `name` _(default: null)_ - string to be used as a file path in error/warning
   messages.
-- `resolve` _(default - true)_ enables/disables resolving of nodes with
-  non-specific `?` tag. That are plain scalars without any explicit tag.
-  When false, all plain scalars will loaded as strings (that will inprove
-  loading speed).
+- `resolve` _(default - true)_ enables/disables resolving plain scalars without
+  any explicit tag. When false, all plain scalars will loaded as strings
+  (that will improve loading speed).
 
 
 ### loadAll (string, iterator [ , options ])
