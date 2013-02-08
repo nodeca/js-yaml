@@ -242,10 +242,7 @@ function: !!js/function >
 #   }
 # });
 #
-# var SEXY_SCHEMA = new jsyaml.Schema({
-#   include:  [ jsyaml.DEFAULT_SCHEMA ],
-#   explicit: [ sexyType ]
-# });
+# var SEXY_SCHEMA = jsyaml.Schema.create([ sexyType ]);
 #
 # result = jsyaml.load(yourData, { schema: SEXY_SCHEMA });
 

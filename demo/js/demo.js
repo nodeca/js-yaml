@@ -23,10 +23,7 @@ window.runDemo = function runDemo() {
     }
   });
 
-  var SEXY_SCHEMA = new jsyaml.Schema({
-    include:  [ jsyaml.DEFAULT_SCHEMA ],
-    explicit: [ sexyType ]
-  });
+  var SEXY_SCHEMA = jsyaml.Schema.create([ sexyType ]);
 
   function parse() {
     var str, obj;
