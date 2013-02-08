@@ -47,7 +47,7 @@ cli.addArgument(['-t', '--trace'], {
 
 
 cli.addArgument(['file'], {
-  help:   'File with YAML document(s)'
+  help:   'File to read'
 });
 
 
@@ -60,34 +60,66 @@ var options = cli.parseArgs();
 ////////////////////////////////////////////////////////////////////////////////
 
 
-fs.readFile(options.file, 'utf8', function (err, str) {
-  var docs = [], out;
+fs.readFile(options.file, 'utf8', function (error, input) {
+  var output, isYaml;
 
-  if (err) {
-    if ('ENOENT' === err.code) {
+  if (error) {
+    if ('ENOENT' === error.code) {
       console.error('File not found: ' + options.file);
       process.exit(2);
     }
 
-    // Fatal fuckup
-    console.error(options.trace && err.stack || err.message || String(err));
+    console.error(
+      options.trace && error.stack ||
+      error.message ||
+      String(error));
+
     process.exit(1);
   }
 
   try {
-    // try load all documents from the file
-    yaml.loadAll(str, function (doc) { docs.push(doc); });
-    out = (1 >= docs.length) ? (docs.shift() || null) : docs;
-  } catch (err) {
-    console.error(options.trace && err.stack || err.message || err.toString(options.compact));
-    process.exit(1);
+    output = JSON.parse(input);
+    isYaml = false;
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      try {
+        output = [];
+        yaml.loadAll(input, function (doc) { output.push(doc); }, {});
+        isYaml = true;
+
+        if (0 === output.length) {
+          output = null;
+        } else if (1 === output.length) {
+          output = output[0];
+        }
+      } catch (error) {
+        if (options.trace && error.stack) {
+          console.error(error.stack);
+        } else {
+          console.error(error.toString(options.compact));
+        }
+
+        process.exit(1);
+      }
+    } else {
+      console.error(
+        options.trace && error.stack ||
+        error.message ||
+        String(error));
+
+      process.exit(1);
+    }
   }
 
-  if (options.json) {
-    console.log(JSON.stringify(out, null, '  '));
-    process.exit(0);
+  if (isYaml) {
+    if (options.json) {
+      console.log(JSON.stringify(output, null, '  '));
+    } else {
+      console.log("\n" + util.inspect(output, false, 10, true) + "\n");
+    }
+  } else {
+    console.log(yaml.dump(output));
   }
 
-  console.log("\n" + util.inspect(out, false, 10, true) + "\n");
   process.exit(0);
 });
