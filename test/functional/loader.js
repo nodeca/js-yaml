@@ -20,7 +20,7 @@ helper.generateTests({
     jsyaml.loadAll(
       dataFile.content,
       function (doc) { object1.push(doc); },
-      { name: dataFile.path,
+      { filename: dataFile.path,
         schema: TEST_SCHEMA });
 
     if (object1.length === 1) {

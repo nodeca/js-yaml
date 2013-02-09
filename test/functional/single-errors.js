@@ -19,7 +19,7 @@ helper.generateTests({
       function () {
         jsyaml.load(
           errorFile.content,
-          { name: errorFile.path,
+          { filename: errorFile.path,
             schema: TEST_SCHEMA,
             strict: true });
       },
