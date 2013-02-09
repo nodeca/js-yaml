@@ -1,3 +1,9 @@
+2.0.1 / 2013-02-09
+------------------
+
+* Fixed error, when options not passed to function cass
+
+
 2.0.0 / 2013-02-09
 ------------------
 
