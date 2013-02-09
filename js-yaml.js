@@ -614,13 +614,15 @@ var PATTERN_TAG_HANDLE            = /^(?:!|!!|![a-z\-]+!)$/i;
 var PATTERN_TAG_URI               = /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i;
 
 
-function loadAll(input, output, settings) {
-  var filename = common.getOption(settings, 'filename', null),
-      schema   = common.getOption(settings, 'schema',   DEFAULT_SCHEMA),
-      resolve  = common.getOption(settings, 'resolve',  true),
-      validate = common.getOption(settings, 'validate', true),
-      strict   = common.getOption(settings, 'strict',   false),
-      legacy   = common.getOption(settings, 'legacy',   false),
+function loadAll(input, output, options) {
+  options = options || {};
+
+  var filename = options['filename'] || null,
+      schema   = options['schema']   || DEFAULT_SCHEMA,
+      resolve  = options['resolve']  || true,
+      validate = options['validate'] || true,
+      strict   = options['strict']   || false,
+      legacy   = options['legacy']   || false,
 
       directiveHandlers = {},
       implicitTypes     = schema.compiledImplicit,
@@ -2013,7 +2015,7 @@ function loadAll(input, output, settings) {
 }
 
 
-function load(input, settings) {
+function load(input, options) {
   var result = null, received = false;
 
   function callback(data) {
@@ -2025,19 +2027,19 @@ function load(input, settings) {
     }
   }
 
-  loadAll(input, callback, settings);
+  loadAll(input, callback, options);
 
   return result;
 }
 
 
-function safeLoadAll(input, output, settings) {
-  loadAll(input, output, common.extend({ schema: SAFE_SCHEMA }, settings));
+function safeLoadAll(input, output, options) {
+  loadAll(input, output, common.extend({ schema: SAFE_SCHEMA }, options));
 }
 
 
-function safeLoad(input, settings) {
-  return load(input, common.extend({ schema: SAFE_SCHEMA }, settings));
+function safeLoad(input, options) {
+  return load(input, common.extend({ schema: SAFE_SCHEMA }, options));
 }
 
 
@@ -2049,9 +2051,6 @@ module.exports.safeLoad    = safeLoad;
 });
 
 require.define("/lib/js-yaml/common.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
-
-
-var YAMLException = require('./exception');
 
 
 var NIL = {};
@@ -2078,30 +2077,16 @@ function toArray(sequence) {
 }
 
 
-function getSetting(settings, name) {
-  if (!isNothing(settings) && !isNothing(settings[name])) {
-    return settings[name];
-  } else {
-    throw new YAMLException('Required "' + name + '" setting is missed.');
-  }
-}
-
-
-function getOption(options, name, alternative) {
-  if (!isNothing(options) && !isNothing(options[name])) {
-    return options[name];
-  } else {
-    return alternative;
-  }
-}
-
-
 function extend(target, source) {
-  var index, length, key, sourceKeys = Object.keys(source);
+  var index, length, key, sourceKeys;
 
-  for (index = 0, length = sourceKeys.length; index < length; index += 1) {
-    key = sourceKeys[index];
-    target[key] = source[key];
+  if (source) {
+    sourceKeys = Object.keys(source);
+
+    for (index = 0, length = sourceKeys.length; index < length; index += 1) {
+      key = sourceKeys[index];
+      target[key] = source[key];
+    }
   }
 
   return target;
@@ -2123,8 +2108,6 @@ module.exports.NIL        = NIL;
 module.exports.isNothing  = isNothing;
 module.exports.isObject   = isObject;
 module.exports.toArray    = toArray;
-module.exports.getSetting = getSetting;
-module.exports.getOption  = getOption;
 module.exports.repeat     = repeat;
 module.exports.extend     = extend;
 
@@ -2376,15 +2359,16 @@ module.exports = Schema;
 require.define("/lib/js-yaml/type.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
 
 
-var common        = require('./common');
 var YAMLException = require('./exception');
 
 
 // TODO: Add tag format check.
-function Type(tag, settings) {
+function Type(tag, options) {
+  options = options || {};
+
   this.tag    = tag;
-  this.loader = common.getOption(settings, 'loader', null);
-  this.dumper = common.getOption(settings, 'dumper', null);
+  this.loader = options['loader'] || null;
+  this.dumper = options['dumper'] || null;
 
   if (null === this.loader && null === this.dumper) {
     throw new YAMLException('Incomplete YAML type definition. "loader" or "dumper" setting must be specified.');
@@ -2400,9 +2384,11 @@ function Type(tag, settings) {
 }
 
 
-Type.Loader = function TypeLoader(settings) {
-  this.kind     = common.getSetting(settings, 'kind');
-  this.resolver = common.getOption(settings, 'resolver', null);
+Type.Loader = function TypeLoader(options) {
+  options = options || {};
+
+  this.kind     = options['kind']     || null;
+  this.resolver = options['resolver'] || null;
 
   if ('string' !== this.kind &&
       'array'  !== this.kind &&
@@ -2427,13 +2413,15 @@ function compileAliases(map) {
 }
 
 
-Type.Dumper = function TypeDumper(settings) {
-  this.kind         = common.getSetting(settings, 'kind');
-  this.defaultStyle = common.getOption(settings, 'defaultStyle', null);
-  this.instanceOf   = common.getOption(settings, 'instanceOf',   null);
-  this.predicate    = common.getOption(settings, 'predicate',    null);
-  this.representer  = common.getOption(settings, 'representer',  null);
-  this.styleAliases = compileAliases(common.getOption(settings, 'styleAliases', null));
+Type.Dumper = function TypeDumper(options) {
+  options = options || {};
+
+  this.kind         = options['kind']         || null;
+  this.defaultStyle = options['defaultStyle'] || null;
+  this.instanceOf   = options['instanceOf']   || null;
+  this.predicate    = options['predicate']    || null;
+  this.representer  = options['representer']  || null;
+  this.styleAliases = compileAliases(options['styleAliases'] || null);
 
   if ('undefined' !== this.kind &&
       'null'      !== this.kind &&
@@ -5784,11 +5772,13 @@ function encodeHex(character) {
 }
 
 
-function dump(input, settings) {
-  var schema    = common.getOption(settings, 'schema', DEFAULT_SCHEMA),
-      indent    = Math.max(1, common.getOption(settings, 'indent', 2)),
-      flowLevel = common.getOption(settings, 'flowLevel', -1),
-      styleMap  = compileStyleMap(schema, common.getOption(settings, 'styles', null)),
+function dump(input, options) {
+  options = options || {};
+
+  var schema    = options['schema'] || DEFAULT_SCHEMA,
+      indent    = Math.max(1, (options['indent'] || 2)),
+      flowLevel = (common.isNothing(options['flowLevel']) ? -1 : options['flowLevel']),
+      styleMap  = compileStyleMap(schema, options['styles'] || null),
 
       implicitTypes = schema.compiledImplicit,
       explicitTypes = schema.compiledExplicit,
@@ -6085,8 +6075,8 @@ function dump(input, settings) {
 }
 
 
-function safeDump(input, settings) {
-  return dump(input, common.extend({ schema: SAFE_SCHEMA }, settings));
+function safeDump(input, options) {
+  return dump(input, common.extend({ schema: SAFE_SCHEMA }, options));
 }
 
 
