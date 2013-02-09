@@ -2941,7 +2941,7 @@ require.define("/lib/js-yaml/type/binary.js",function(require,module,exports,__d
 'use strict';
 
 
-var NodeBuffer = require('buffer').Buffer;
+var NodeBuffer = require('buffer').Buffer; // A trick for browserified version.
 var common     = require('../common');
 var NIL        = common.NIL;
 var Type       = require('../type');
@@ -6102,12 +6102,12 @@ var fs     = require('fs');
 var loader = require('./loader');
 
 
-var yamlRequireHandler = function (module, filename) {
+function yamlRequireHandler(module, filename) {
   var content = fs.readFileSync(filename, 'utf8');
 
   // fill in documents
-  module.exports = loader.load(content, { name: filename });
-};
+  module.exports = loader.load(content, { filename: filename });
+}
 
 // register require extensions only if we're on node.js
 // hack for browserify
