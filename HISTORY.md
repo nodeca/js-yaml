@@ -1,4 +1,4 @@
-2.0.0 / 2013-02-08
+2.0.0 / 2013-02-09
 ------------------
 
 * Full rewrite. New architecture. Fast one-stage parsing.
