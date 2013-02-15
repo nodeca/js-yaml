@@ -7,7 +7,7 @@ var assert = require('assert');
 var yaml = require('../../lib/js-yaml');
 
 
-it('#8: Wrong error message when yaml file contains tabs', function () {
+it('#64: Wrong error message when yaml file contains tabs', function () {
   assert.doesNotThrow(
     function () { require('./data/issue-64.yml'); },
     yaml.YAMLException);
