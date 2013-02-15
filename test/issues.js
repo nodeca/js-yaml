@@ -10,4 +10,5 @@ describe('Issues.', function () {
   require('./issues/issue-33.js');
   require('./issues/issue-46.js');
   require('./issues/issue-54.js');
+  require('./issues/issue-64.js');
 });
