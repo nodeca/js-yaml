@@ -7,7 +7,7 @@ var assert = require('assert');
 require('../../lib/js-yaml');
 
 
-it('#46: Timestamps are incorrectly parsed in local time', function () {
+it('Timestamps are incorrectly parsed in local time', function () {
   var data = require('./data/issue-46.yml'), date1, date2;
 
   date1 = data.date1; // date1: 2010-10-20T20:45:00Z

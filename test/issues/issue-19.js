@@ -7,7 +7,7 @@ var assert = require('assert');
 require('../../lib/js-yaml');
 
 
-it('#19: Timestamp parsing is one month off', function () {
+it('Timestamp parsing is one month off', function () {
   var data = require('./data/issue-19.yml');
 
   // JS month starts with 0 (0 => Jan, 1 => Feb, ...)

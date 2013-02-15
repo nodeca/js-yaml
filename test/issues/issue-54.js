@@ -7,7 +7,7 @@ var assert = require('assert');
 require('../../lib/js-yaml');
 
 
-it("#54: Incorrect utf-8 handling on require('file.yaml')", function () {
+it("Incorrect utf-8 handling on require('file.yaml')", function () {
   var data = require('./data/issue-54.yml'),
       expected = '',
       index;

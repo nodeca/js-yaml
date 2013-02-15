@@ -7,7 +7,7 @@ var assert = require('assert');
 require('../../lib/js-yaml');
 
 
-it('#33: refactor compact variant of MarkedYAMLError.toString', function () {
+it('refactor compact variant of MarkedYAMLError.toString', function () {
   assert.throws(
     function () { require('./data/issue-33.yml'); },
     "require('issue-33.yml') should throw, but it does not");
