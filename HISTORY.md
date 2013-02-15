@@ -1,7 +1,7 @@
 2.0.2 / 2013-02-15
 ------------------
 
-* Fixed a bug in the validation mode: tabs are printable characters.
+* Fixed input validation: tabs are printable characters.
 
 
 2.0.1 / 2013-02-09
