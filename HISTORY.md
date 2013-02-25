@@ -1,3 +1,9 @@
+2.0.3 / 2013-02-26
+------------------
+
+* Fixed dumping of empty arrays ans objects. ([] and {} instead of null)
+
+
 2.0.2 / 2013-02-15
 ------------------
 
