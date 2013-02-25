@@ -16,13 +16,13 @@ function ensureEqual(context, actual, expected) {
 
   if (ownUtils.isObject(actual) &&
       ownUtils.isObject(expected)) {
-        
+
     ensureEqualValues(
       context,
       Object.getPrototypeOf(actual),
       Object.getPrototypeOf(expected),
       'prototypes');
-    
+
     if (ownUtils.isInstanceOf(Date, actual, expected)) {
       ensureEqualDates(context, actual, expected);
 

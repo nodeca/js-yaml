@@ -32,7 +32,7 @@ it('Mark', function () {
     snippet = mark.getSnippet(2, 79);
 
     assert(typeof snippet, 'string');
-    
+
     temp = snippet.split('\n');
     assert.strictEqual(temp.length, 2);
 
