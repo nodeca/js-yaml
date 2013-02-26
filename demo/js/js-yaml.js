@@ -21,448 +21,10 @@
  */
 
 var jsyaml = window.jsyaml = (function () {
-var require = function (file, cwd) {
-    var resolved = require.resolve(file, cwd || '/');
-    var mod = require.modules[resolved];
-    if (!mod) throw new Error(
-        'Failed to resolve module ' + file + ', tried ' + resolved
-    );
-    var cached = require.cache[resolved];
-    var res = cached? cached.exports : mod();
-    return res;
-};
+require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{"./index":[function(require,module,exports){module.exports = require('0xXynW');
+},{}],"0xXynW":[function(require,module,exports){module.exports = require('./lib/js-yaml.js');
 
-require.paths = [];
-require.modules = {};
-require.cache = {};
-require.extensions = [".js",".coffee",".json"];
-
-require._core = {
-    'assert': true,
-    'events': true,
-    'fs': true,
-    'path': true,
-    'vm': true
-};
-
-require.resolve = (function () {
-    return function (x, cwd) {
-        if (!cwd) cwd = '/';
-        
-        if (require._core[x]) return x;
-        var path = require.modules.path();
-        cwd = path.resolve('/', cwd);
-        var y = cwd || '/';
-        
-        if (x.match(/^(?:\.\.?\/|\/)/)) {
-            var m = loadAsFileSync(path.resolve(y, x))
-                || loadAsDirectorySync(path.resolve(y, x));
-            if (m) return m;
-        }
-        
-        var n = loadNodeModulesSync(x, y);
-        if (n) return n;
-        
-        throw new Error("Cannot find module '" + x + "'");
-        
-        function loadAsFileSync (x) {
-            x = path.normalize(x);
-            if (require.modules[x]) {
-                return x;
-            }
-            
-            for (var i = 0; i < require.extensions.length; i++) {
-                var ext = require.extensions[i];
-                if (require.modules[x + ext]) return x + ext;
-            }
-        }
-        
-        function loadAsDirectorySync (x) {
-            x = x.replace(/\/+$/, '');
-            var pkgfile = path.normalize(x + '/package.json');
-            if (require.modules[pkgfile]) {
-                var pkg = require.modules[pkgfile]();
-                var b = pkg.browserify;
-                if (typeof b === 'object' && b.main) {
-                    var m = loadAsFileSync(path.resolve(x, b.main));
-                    if (m) return m;
-                }
-                else if (typeof b === 'string') {
-                    var m = loadAsFileSync(path.resolve(x, b));
-                    if (m) return m;
-                }
-                else if (pkg.main) {
-                    var m = loadAsFileSync(path.resolve(x, pkg.main));
-                    if (m) return m;
-                }
-            }
-            
-            return loadAsFileSync(x + '/index');
-        }
-        
-        function loadNodeModulesSync (x, start) {
-            var dirs = nodeModulesPathsSync(start);
-            for (var i = 0; i < dirs.length; i++) {
-                var dir = dirs[i];
-                var m = loadAsFileSync(dir + '/' + x);
-                if (m) return m;
-                var n = loadAsDirectorySync(dir + '/' + x);
-                if (n) return n;
-            }
-            
-            var m = loadAsFileSync(x);
-            if (m) return m;
-        }
-        
-        function nodeModulesPathsSync (start) {
-            var parts;
-            if (start === '/') parts = [ '' ];
-            else parts = path.normalize(start).split('/');
-            
-            var dirs = [];
-            for (var i = parts.length - 1; i >= 0; i--) {
-                if (parts[i] === 'node_modules') continue;
-                var dir = parts.slice(0, i + 1).join('/') + '/node_modules';
-                dirs.push(dir);
-            }
-            
-            return dirs;
-        }
-    };
-})();
-
-require.alias = function (from, to) {
-    var path = require.modules.path();
-    var res = null;
-    try {
-        res = require.resolve(from + '/package.json', '/');
-    }
-    catch (err) {
-        res = require.resolve(from, '/');
-    }
-    var basedir = path.dirname(res);
-    
-    var keys = (Object.keys || function (obj) {
-        var res = [];
-        for (var key in obj) res.push(key);
-        return res;
-    })(require.modules);
-    
-    for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        if (key.slice(0, basedir.length + 1) === basedir + '/') {
-            var f = key.slice(basedir.length);
-            require.modules[to + f] = require.modules[basedir + f];
-        }
-        else if (key === basedir) {
-            require.modules[to] = require.modules[basedir];
-        }
-    }
-};
-
-(function () {
-    var process = {};
-    var global = typeof window !== 'undefined' ? window : {};
-    var definedProcess = false;
-    
-    require.define = function (filename, fn) {
-        if (!definedProcess && require.modules.__browserify_process) {
-            process = require.modules.__browserify_process();
-            definedProcess = true;
-        }
-        
-        var dirname = require._core[filename]
-            ? ''
-            : require.modules.path().dirname(filename)
-        ;
-        
-        var require_ = function (file) {
-            var requiredModule = require(file, dirname);
-            var cached = require.cache[require.resolve(file, dirname)];
-
-            if (cached && cached.parent === null) {
-                cached.parent = module_;
-            }
-
-            return requiredModule;
-        };
-        require_.resolve = function (name) {
-            return require.resolve(name, dirname);
-        };
-        require_.modules = require.modules;
-        require_.define = require.define;
-        require_.cache = require.cache;
-        var module_ = {
-            id : filename,
-            filename: filename,
-            exports : {},
-            loaded : false,
-            parent: null
-        };
-        
-        require.modules[filename] = function () {
-            require.cache[filename] = module_;
-            fn.call(
-                module_.exports,
-                require_,
-                module_,
-                module_.exports,
-                dirname,
-                filename,
-                process,
-                global
-            );
-            module_.loaded = true;
-            return module_.exports;
-        };
-    };
-})();
-
-
-require.define("path",function(require,module,exports,__dirname,__filename,process,global){function filter (xs, fn) {
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (fn(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length; i >= 0; i--) {
-    var last = parts[i];
-    if (last == '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Regex to split a filename into [*, dir, basename, ext]
-// posix version
-var splitPathRe = /^(.+\/(?!$)|\/)?((?:.+?)?(\.[^.]*)?)$/;
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-var resolvedPath = '',
-    resolvedAbsolute = false;
-
-for (var i = arguments.length; i >= -1 && !resolvedAbsolute; i--) {
-  var path = (i >= 0)
-      ? arguments[i]
-      : process.cwd();
-
-  // Skip empty and invalid entries
-  if (typeof path !== 'string' || !path) {
-    continue;
-  }
-
-  resolvedPath = path + '/' + resolvedPath;
-  resolvedAbsolute = path.charAt(0) === '/';
-}
-
-// At this point the path should be resolved to a full absolute path, but
-// handle relative paths to be safe (might happen when process.cwd() fails)
-
-// Normalize the path
-resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-var isAbsolute = path.charAt(0) === '/',
-    trailingSlash = path.slice(-1) === '/';
-
-// Normalize the path
-path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-  
-  return (isAbsolute ? '/' : '') + path;
-};
-
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    return p && typeof p === 'string';
-  }).join('/'));
-};
-
-
-exports.dirname = function(path) {
-  var dir = splitPathRe.exec(path)[1] || '';
-  var isWindows = false;
-  if (!dir) {
-    // No dirname
-    return '.';
-  } else if (dir.length === 1 ||
-      (isWindows && dir.length <= 3 && dir.charAt(1) === ':')) {
-    // It is just a slash or a drive letter with a slash
-    return dir;
-  } else {
-    // It is a full dirname, strip trailing slash
-    return dir.substring(0, dir.length - 1);
-  }
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPathRe.exec(path)[2] || '';
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPathRe.exec(path)[3] || '';
-};
-
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-});
-
-require.define("__browserify_process",function(require,module,exports,__dirname,__filename,process,global){var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-        && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-        && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            if (ev.source === window && ev.data === 'browserify-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('browserify-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-process.binding = function (name) {
-    if (name === 'evals') return (require)('vm')
-    else throw new Error('No such module. (Possibly not yet loaded)')
-};
-
-(function () {
-    var cwd = '/';
-    var path;
-    process.cwd = function () { return cwd };
-    process.chdir = function (dir) {
-        if (!path) path = require('path');
-        cwd = path.resolve(dir, cwd);
-    };
-})();
-
-});
-
-require.define("/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"./index.js"}
-});
-
-require.define("/index.js",function(require,module,exports,__dirname,__filename,process,global){module.exports = require('./lib/js-yaml.js');
-
-});
-
-require.define("/lib/js-yaml.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"./lib/js-yaml.js":1}],1:[function(require,module,exports){'use strict';
 
 
 var loader = require('./js-yaml/loader');
@@ -496,9 +58,7 @@ module.exports.addConstructor = deprecated('addConstructor');
 
 require('./js-yaml/require');
 
-});
-
-require.define("/lib/js-yaml/loader.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"./js-yaml/loader":2,"./js-yaml/dumper":3,"./js-yaml/type":4,"./js-yaml/schema":5,"./js-yaml/schema/minimal":6,"./js-yaml/schema/safe":7,"./js-yaml/schema/default":8,"./js-yaml/exception":9,"./js-yaml/require":10}],2:[function(require,module,exports){'use strict';
 
 
 var common         = require('./common');
@@ -607,7 +167,7 @@ HEXADECIMAL_ESCAPE_SEQUENCES[CHAR_SMALL_U]   = 4;
 HEXADECIMAL_ESCAPE_SEQUENCES[CHAR_CAPITAL_U] = 8;
 
 
-var PATTERN_NON_PRINTABLE         = /[\x00-\x09\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uD800-\uDFFF\uFFFE\uFFFF]/;
+var PATTERN_NON_PRINTABLE         = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uD800-\uDFFF\uFFFE\uFFFF]/;
 var PATTERN_NON_ASCII_LINE_BREAKS = /[\x85\u2028\u2029]/;
 var PATTERN_FLOW_INDICATORS       = /[,\[\]\{\}]/;
 var PATTERN_TAG_HANDLE            = /^(?:!|!!|![a-z\-]+!)$/i;
@@ -627,14 +187,14 @@ function loadAll(input, output, options) {
       directiveHandlers = {},
       implicitTypes     = schema.compiledImplicit,
       typeMap           = schema.compiledTypeMap,
-      
+
       length     = input.length,
       position   = 0,
       line       = 0,
       lineStart  = 0,
       lineIndent = 0,
       character  = input.charCodeAt(position),
-      
+
       version,
       checkLineBreaks,
       tagMap,
@@ -751,7 +311,7 @@ function loadAll(input, output, options) {
     }
 
     sourceKeys = Object.keys(source);
-    
+
     for (index = 0, quantity = sourceKeys.length; index < quantity; index += 1) {
       key = sourceKeys[index];
 
@@ -781,7 +341,7 @@ function loadAll(input, output, options) {
     } else {
       _result[keyNode] = valueNode;
     }
-    
+
     return _result;
   }
 
@@ -841,7 +401,7 @@ function loadAll(input, output, options) {
 
   function testDocumentSeparator() {
     var _position, _character;
-    
+
     if (position === lineStart &&
         (CHAR_MINUS === character || CHAR_DOT === character) &&
         input.charCodeAt(position + 1) === character &&
@@ -931,7 +491,7 @@ function loadAll(input, output, options) {
     while (position < length) {
       if (CHAR_COLON === character) {
         following = input.charCodeAt(position + 1);
-     
+
         if (CHAR_SPACE                 === following ||
             CHAR_TAB                   === following ||
             CHAR_LINE_FEED             === following ||
@@ -954,7 +514,7 @@ function loadAll(input, output, options) {
             CHAR_CARRIAGE_RETURN === preceding) {
           break;
         }
-        
+
       } else if ((position === lineStart && testDocumentSeparator()) ||
                  withinFlowCollection &&
                  (CHAR_COMMA                === character ||
@@ -1051,7 +611,7 @@ function loadAll(input, output, options) {
 
     throwError('unexpected end of the stream within a single quoted scalar');
   }
-  
+
   function readDoubleQuotedScalar(nodeIndent) {
     var captureStart,
         captureEnd,
@@ -1115,7 +675,7 @@ function loadAll(input, output, options) {
         } else {
           throwError('unknown escape sequence');
         }
-        
+
         captureStart = captureEnd = position;
 
       } else if (CHAR_LINE_FEED === character ||
@@ -1298,7 +858,7 @@ function loadAll(input, output, options) {
                CHAR_CARRIAGE_RETURN !== character);
       }
     }
-      
+
     while (position < length) {
       readLineBreak();
       lineIndent = 0;
@@ -1562,7 +1122,7 @@ function loadAll(input, output, options) {
         isNamed    = false,
         tagHandle,
         tagName;
-    
+
     if (CHAR_EXCLAMATION !== character) {
       return false;
     }
@@ -1645,7 +1205,7 @@ function loadAll(input, output, options) {
 
     } else if ('!!' === tagHandle) {
       tag = 'tag:yaml.org,2002:' + tagName;
-      
+
     } else {
       throwError('undeclared tag handle "' + tagHandle + '"');
     }
@@ -1759,7 +1319,7 @@ function loadAll(input, output, options) {
 
         } else if (lineIndent > parentIndent) {
           isIndented = true;
-          
+
         } else {
           return false;
         }
@@ -1819,10 +1379,10 @@ function loadAll(input, output, options) {
             if (null !== tag || null !== anchor) {
               throwError('alias node should not have any properties');
             }
-            
+
           } else if (readPlainScalar(flowIndent, CONTEXT_FLOW_IN === nodeContext)) {
             hasContent = true;
-          
+
             if (null === tag) {
               tag = '?';
             }
@@ -2048,9 +1608,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-});
-
-require.define("/lib/js-yaml/common.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"./common":11,"./exception":9,"./mark":12,"./schema/safe":7,"./schema/default":8}],11:[function(require,module,exports){'use strict';
 
 
 var NIL = {};
@@ -2111,9 +1669,7 @@ module.exports.toArray    = toArray;
 module.exports.repeat     = repeat;
 module.exports.extend     = extend;
 
-});
-
-require.define("/lib/js-yaml/exception.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{}],9:[function(require,module,exports){'use strict';
 
 
 function YAMLException(reason, mark) {
@@ -2126,7 +1682,7 @@ function YAMLException(reason, mark) {
 
 YAMLException.prototype.toString = function toString(compact) {
   var result;
-  
+
   result = 'JS-YAML: ' + (this.reason || '(unknown reason)');
 
   if (!compact && this.mark) {
@@ -2139,9 +1695,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-});
-
-require.define("/lib/js-yaml/mark.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{}],12:[function(require,module,exports){'use strict';
 
 
 var common = require('./common');
@@ -2220,9 +1774,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-});
-
-require.define("/lib/js-yaml/schema/safe.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"./common":11}],7:[function(require,module,exports){'use strict';
 
 
 var Schema = require('../schema');
@@ -2248,9 +1800,7 @@ module.exports = new Schema({
   ]
 });
 
-});
-
-require.define("/lib/js-yaml/schema.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../schema":5,"./minimal":6,"../type/null":13,"../type/bool":14,"../type/int":15,"../type/float":16,"../type/timestamp":17,"../type/merge":18,"../type/binary":19,"../type/omap":20,"../type/pairs":21,"../type/set":22}],5:[function(require,module,exports){'use strict';
 
 
 var common        = require('./common');
@@ -2271,7 +1821,7 @@ function compileList(schema, name, result) {
         exclude.push(previousIndex);
       }
     });
-    
+
     result.push(currentType);
   });
 
@@ -2354,9 +1904,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-});
-
-require.define("/lib/js-yaml/type.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"./common":11,"./exception":9,"./type":4}],4:[function(require,module,exports){'use strict';
 
 
 var YAMLException = require('./exception');
@@ -2439,9 +1987,7 @@ Type.Dumper = function TypeDumper(options) {
 
 module.exports = Type;
 
-});
-
-require.define("/lib/js-yaml/schema/minimal.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"./exception":9}],6:[function(require,module,exports){'use strict';
 
 
 var Schema = require('../schema');
@@ -2455,9 +2001,7 @@ module.exports = new Schema({
   ]
 });
 
-});
-
-require.define("/lib/js-yaml/type/str.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../schema":5,"../type/str":23,"../type/seq":24,"../type/map":25}],23:[function(require,module,exports){'use strict';
 
 
 var Type = require('../type');
@@ -2469,9 +2013,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/seq.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../type":4}],24:[function(require,module,exports){'use strict';
 
 
 var Type = require('../type');
@@ -2483,9 +2025,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/map.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../type":4}],25:[function(require,module,exports){'use strict';
 
 
 var Type = require('../type');
@@ -2497,9 +2037,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/null.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../type":4}],13:[function(require,module,exports){'use strict';
 
 
 var NIL  = require('../common').NIL;
@@ -2536,9 +2074,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/bool.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../common":11,"../type":4}],14:[function(require,module,exports){'use strict';
 
 
 var NIL  = require('../common').NIL;
@@ -2613,9 +2149,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/int.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../common":11,"../type":4}],15:[function(require,module,exports){'use strict';
 
 
 var NIL  = require('../common').NIL;
@@ -2701,9 +2235,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/float.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../common":11,"../type":4}],16:[function(require,module,exports){'use strict';
 
 
 var NIL  = require('../common').NIL;
@@ -2806,9 +2338,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/timestamp.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../common":11,"../type":4}],17:[function(require,module,exports){'use strict';
 
 
 var NIL  = require('../common').NIL;
@@ -2900,9 +2430,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/merge.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../common":11,"../type":4}],18:[function(require,module,exports){'use strict';
 
 
 var NIL  = require('../common').NIL;
@@ -2921,9 +2449,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/binary.js",function(require,module,exports,__dirname,__filename,process,global){// Modified from:
+},{"../common":11,"../type":4}],19:[function(require,module,exports){// Modified from:
 // https://raw.github.com/kanaka/noVNC/d890e8640f20fba3215ba7be8e0ff145aeb8c17c/include/base64.js
 
 'use strict';
@@ -3042,15 +2568,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   }
 });
 
-});
-
-require.define("buffer",function(require,module,exports,__dirname,__filename,process,global){module.exports = require("buffer-browserify")
-});
-
-require.define("/node_modules/buffer-browserify/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"index.js","browserify":"index.js"}
-});
-
-require.define("/node_modules/buffer-browserify/index.js",function(require,module,exports,__dirname,__filename,process,global){function SlowBuffer (size) {
+},{"buffer":26,"../common":11,"../type":4}],26:[function(require,module,exports){function SlowBuffer (size) {
     this.length = size;
 };
 
@@ -4333,9 +3851,7 @@ SlowBuffer.prototype.writeFloatBE = Buffer.prototype.writeFloatBE;
 SlowBuffer.prototype.writeDoubleLE = Buffer.prototype.writeDoubleLE;
 SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 
-});
-
-require.define("assert",function(require,module,exports,__dirname,__filename,process,global){// UTILITY
+},{"assert":27,"base64-js":28,"./buffer_ieee754":29}],27:[function(require,module,exports){// UTILITY
 var util = require('util');
 var Buffer = require("buffer").Buffer;
 var pSlice = Array.prototype.slice;
@@ -4650,9 +4166,7 @@ assert.doesNotThrow = function(block, /*optional*/error, /*optional*/message) {
 
 assert.ifError = function(err) { if (err) {throw err;}};
 
-});
-
-require.define("util",function(require,module,exports,__dirname,__filename,process,global){var events = require('events');
+},{"util":30,"buffer":26}],30:[function(require,module,exports){var events = require('events');
 
 exports.isArray = isArray;
 exports.isDate = function(obj){return Object.prototype.toString.call(obj) === '[object Date]'};
@@ -5004,9 +4518,7 @@ exports.format = function(f) {
   return str;
 };
 
-});
-
-require.define("events",function(require,module,exports,__dirname,__filename,process,global){if (!process.EventEmitter) process.EventEmitter = function () {};
+},{"events":31}],31:[function(require,module,exports){(function(process){if (!process.EventEmitter) process.EventEmitter = function () {};
 
 var EventEmitter = exports.EventEmitter = process.EventEmitter;
 var isArray = typeof Array.isArray === 'function'
@@ -5171,6 +4683,11 @@ EventEmitter.prototype.removeListener = function(type, listener) {
 };
 
 EventEmitter.prototype.removeAllListeners = function(type) {
+  if (arguments.length === 0) {
+    this._events = {};
+    return this;
+  }
+
   // does not use listeners(), so no side effect of creating _events[type]
   if (type && this._events && this._events[type]) this._events[type] = null;
   return this;
@@ -5185,12 +4702,61 @@ EventEmitter.prototype.listeners = function(type) {
   return this._events[type];
 };
 
-});
+})(require("__browserify_process"))
+},{"__browserify_process":32}],32:[function(require,module,exports){// shim for using process in browser
 
-require.define("/node_modules/buffer-browserify/node_modules/base64-js/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"lib/b64.js"}
-});
+var process = module.exports = {};
 
-require.define("/node_modules/buffer-browserify/node_modules/base64-js/lib/b64.js",function(require,module,exports,__dirname,__filename,process,global){(function (exports) {
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            if (ev.source === window && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],28:[function(require,module,exports){(function (exports) {
 	'use strict';
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -5275,9 +4841,7 @@ require.define("/node_modules/buffer-browserify/node_modules/base64-js/lib/b64.j
 	module.exports.fromByteArray = uint8ToBase64;
 }());
 
-});
-
-require.define("/node_modules/buffer-browserify/buffer_ieee754.js",function(require,module,exports,__dirname,__filename,process,global){exports.readIEEE754 = function(buffer, offset, isBE, mLen, nBytes) {
+},{}],29:[function(require,module,exports){exports.readIEEE754 = function(buffer, offset, isBE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
       eMax = (1 << eLen) - 1,
@@ -5362,9 +4926,7 @@ exports.writeIEEE754 = function(buffer, value, offset, isBE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-});
-
-require.define("/lib/js-yaml/type/omap.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{}],20:[function(require,module,exports){'use strict';
 
 
 var NIL  = require('../common').NIL;
@@ -5418,9 +4980,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/pairs.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../common":11,"../type":4}],21:[function(require,module,exports){'use strict';
 
 
 var NIL  = require('../common').NIL;
@@ -5462,9 +5022,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/set.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../common":11,"../type":4}],22:[function(require,module,exports){'use strict';
 
 
 var NIL  = require('../common').NIL;
@@ -5496,9 +5054,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/schema/default.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../common":11,"../type":4}],8:[function(require,module,exports){'use strict';
 
 
 var Schema = require('../schema');
@@ -5515,9 +5071,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-});
-
-require.define("/lib/js-yaml/type/js/undefined.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../schema":5,"./safe":7,"../type/js/undefined":33,"../type/js/regexp":34,"../type/js/function":35}],33:[function(require,module,exports){'use strict';
 
 
 var Type = require('../../type');
@@ -5546,9 +5100,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/js/regexp.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../../type":4}],34:[function(require,module,exports){(function(){'use strict';
 
 
 var NIL  = require('../../common').NIL;
@@ -5605,9 +5157,8 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/type/js/function.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+})()
+},{"../../common":11,"../../type":4}],35:[function(require,module,exports){'use strict';
 
 
 var NIL  = require('../../common').NIL;
@@ -5617,7 +5168,7 @@ var Type = require('../../type');
 function resolveJavascriptFunction(object /*, explicit*/) {
   /*jslint evil:true*/
   var func;
-  
+
   try {
     func = new Function('return ' + object);
     return func();
@@ -5643,9 +5194,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   }
 });
 
-});
-
-require.define("/lib/js-yaml/dumper.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"../../common":11,"../../type":4}],3:[function(require,module,exports){'use strict';
 
 
 var common         = require('./common');
@@ -5767,7 +5316,7 @@ function encodeHex(character) {
   } else {
     throw new YAMLException('code point within a string may not be greater than 0xFFFFFFFF');
   }
-  
+
   return '\\' + handle + common.repeat('0', length - string.length) + string;
 }
 
@@ -6046,13 +5595,13 @@ function dump(input, options) {
     }
 
     if ('object' === kind) {
-      if (block) {
+      if (block && (0 !== Object.keys(result).length)) {
         writeBlockMapping(level, result, compact);
       } else {
         writeFlowMapping(level, result);
       }
     } else if ('array' === kind) {
-      if (block) {
+      if (block && (0 !== result.length)) {
         writeBlockSequence(level, result, compact);
       } else {
         writeFlowSequence(level, result);
@@ -6083,9 +5632,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-});
-
-require.define("/lib/js-yaml/require.js",function(require,module,exports,__dirname,__filename,process,global){'use strict';
+},{"./common":11,"./exception":9,"./schema/default":8,"./schema/safe":7}],10:[function(require,module,exports){'use strict';
 
 
 var fs     = require('fs');
@@ -6109,9 +5656,6 @@ if (undefined !== require.extensions) {
 
 module.exports = require;
 
-});
+},{"fs":36,"./loader":2}],36:[function(require,module,exports){// nothing to see here... no file methods for the browser
 
-require.define("fs",function(require,module,exports,__dirname,__filename,process,global){// nothing to see here... no file methods for the browser
-
-});
-return require('./index'); }());
+},{}]},{},[]);return require('./index'); }());
