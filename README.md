@@ -68,7 +68,7 @@ var doc = jsyaml.load('greeting: hello\nname: world');
 </script>
 ```
 
-Browser support was done mostly for online demo. If you find eny errors - feel
+Browser support was done mostly for online demo. If you find any errors - feel
 free to send pull requests with fixes. Also note, that IE and other old browsers
 needs [es5-shims](https://github.com/kriskowal/es5-shim) to operate.
 
