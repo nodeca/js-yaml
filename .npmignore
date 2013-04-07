@@ -6,3 +6,8 @@
 /js-yaml.min.js
 /support/browserify/
 !/lib/js-yaml.js
+
+test
+examples
+HISTORY.md
+Makefile
