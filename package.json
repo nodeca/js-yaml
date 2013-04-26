@@ -32,7 +32,8 @@
   "bin"             : { "js-yaml": "bin/js-yaml.js" },
   "scripts"         : { "test": "make test" },
 
-  "dependencies"    : { "argparse": "~ 0.1.11" },
+  "dependencies"    : { "argparse": "~ 0.1.11",
+                        "esprima":  "~ 1.0.2" },
   "devDependencies" : { "mocha": "*" },
   "engines"         : { "node": ">= 0.6.0" }
 }

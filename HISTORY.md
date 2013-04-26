@@ -1,3 +1,10 @@
+2.0.5 / --
+------------------
+
+* Close security issue in !!js/function constructor.
+  Big thanks to @nealpoole for security audit.
+
+
 2.0.4 / 2013-04-08
 ------------------
 
