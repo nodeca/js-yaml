@@ -1,4 +1,4 @@
-2.0.5 / --
+2.0.5 / 2013-04-26
 ------------------
 
 * Close security issue in !!js/function constructor.
