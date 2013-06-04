@@ -7,7 +7,7 @@ var classes = require('./classes');
 
 module.exports = new jsyaml.Schema({
   include: [
-    jsyaml.DEFAULT_SCHEMA
+    jsyaml.DEFAULT_FULL_SCHEMA
   ],
   explicit: [
     new jsyaml.Type('!tag3', {

@@ -1,3 +1,11 @@
+2.1.0 / --
+------------------
+
+* Add standard YAML schemas: Failsafe, JSON and Core.
+* Rename `DEFAULT_SCHEMA` to `DEFAULT_FULL_SCHEMA`
+  and `SAFE_SCHEMA` to `DEFAULT_SAFE_SCHEMA`.
+
+
 2.0.5 / 2013-04-26
 ------------------
 
