@@ -98,13 +98,10 @@ try {
 ```
 
 
-### load (string [ , options ])
+### safeLoad (string [ , options ])
 
-Parses `string` as single YAML document. Returns a JavaScript object or throws
-`YAMLException` on error.
-
-NOTE: This function **does not** understands multi-document sources, it throws
-exception on those.
+**Recommended.** Parses `string` as single YAML document. Returns a JavaScript
+object or throws `YAMLException` on error.
 
 options:
 
@@ -113,17 +110,20 @@ options:
 - `strict` _(default - false)_ makes the loader to throw errors instead of
   warnings.
 - `schema` _(default: `DEFAULT_FULL_SCHEMA`)_ - specifies a schema to use.
+  - `FAILSAFE_SCHEMA` - only strings, arrays and plain objects:
+    http://www.yaml.org/spec/1.2/spec.html#id2802346
+  - `JSON_SCHEMA` - all from `FAILSAFE_SCHEMA` plus numbers, booleans and nulls:
+    http://www.yaml.org/spec/1.2/spec.html#id2803231
+  - `CORE_SCHEMA` - same as `JSON_SCHEMA`:
+    http://www.yaml.org/spec/1.2/spec.html#id2804923
+  - `DEFAULT_SAFE_SCHEMA` - all from `CORE_SCHEMA` plus extra types
+    `!!timestamp`, `!!binary`, `!!merge`, `!!omap`, `!!pairs` and `!!set`:
+    http://yaml.org/type/
+  - `DEFAULT_FULL_SCHEMA` - all from `DEFAULT_SAFE_SCHEMA` plus
+    JavaScript-specific types: `!!js/undefined`, `!!js/regexp` and `!!js/function`.
 
-
-##### Available (out of the box) schemas:
-
-- `FAILSAFE_SCHEMA` - standard: http://www.yaml.org/spec/1.2/spec.html#id2802346
-- `JSON_SCHEMA` - standard: http://www.yaml.org/spec/1.2/spec.html#id2803231
-- `CORE_SCHEMA` - standard: http://www.yaml.org/spec/1.2/spec.html#id2804923
-- `DEFAULT_SAFE_SCHEMA` - inherits `CORE_SCHEMA` and includes most of types from
-  the YAML tag repository: http://yaml.org/type/
-- `DEFAULT_FULL_SCHEMA` - inherits `DEFAULT_SAFE_SCHEMA` and includes
-  JavaScript-specific types: `!!js/undefined`, `!!js/regexp`, `!!js/function`.
+NOTE: This function **does not** understands multi-document sources, it throws
+exception on those.
 
 NOTE: JS-YAML **does not** support schema-specific tag resolution restrictions.
 So, JSON schema is not such strict as defined in the YAML specification.
@@ -131,33 +131,33 @@ It allows numbers in any notaion, use `Null` and `NULL` as `null`, etc.
 Core schema also has no such restrictions. It allows binary notation for integers.
 
 
-### loadAll (string, iterator [ , options ])
+### load (string [ , options ])
 
-Same as `load()`, but understands multi-document sources and apply `iterator` to
-each document.
-
-``` javascript
-var yaml = require('js-yaml');
-
-yaml.loadAll(data, function (doc) {
-  console.log(doc);
-});
-```
-
-
-### safeLoad (string [ , options ])
-
-Same as `load()` but uses `DEFAULT_SAFE_SCHEMA` by default - only recommended
-tags of YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
+Same as `safeLoad()` but uses `DEFAULT_FULL_SCHEMA` by default - adds some
+JavaScript-specific types: `!!js/function`, `!!js/regexp` and `!!js/undefined`.
+**Use with care - only for trusted sources.** There are some tricks to execute
+malware code via `!!js/function`.
 
 
 ### safeLoadAll (string, iterator [ , options ])
 
-Same as `loadAll()` but uses `DEFAULT_SAFE_SCHEMA` by default - only recommended
-tags of YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
+**Recommended.** Same as `safeLoad()`, but understands multi-document sources
+and apply `iterator` to each document.
+
+``` javascript
+var yaml = require('js-yaml');
+
+yaml.safeLoadAll(data, function (doc) {
+  console.log(doc);
+});
+```
+
+### loadAll (string, iterator [ , options ])
+
+Same as `safeLoadAll()` but uses `DEFAULT_FULL_SCHEMA` by default.
 
 
-### dump (object [ , options ])
+### safeDump (object [ , options ])
 
 Serializes `object` as YAML document.
 
@@ -169,7 +169,7 @@ options:
 - `flowLevel` (default: -1) - specifies level of nesting, when to switch from
   block to flow style for collections. -1 means block style everwhere
 - `styles` - "tag" => "style" map. Each tag may have own set of styles.
-- `schema` _(default: `DEFAULT_FULL_SCHEMA`)_ specifies a schema to use.
+- `schema` _(default: `DEFAULT_SAFE_SCHEMA`)_ specifies a schema to use.
 
 styles:
 
@@ -192,10 +192,9 @@ styles:
 By default, !!int uses `decimal`, and !!null, !!bool, !!float use `lowercase`.
 
 
-### safeDump (object [ , options ])
+### dump (object [ , options ])
 
-Same as `dump()` but uses `DEFAULT_SAFE_SCHEMA` by default - only recommended
-tags of YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
+Same as `safeDump()` but uses `DEFAULT_FULL_SCHEMA` by default.
 
 
 Supported YAML types
