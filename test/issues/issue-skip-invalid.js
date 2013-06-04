@@ -18,9 +18,7 @@ var sample = {
 
 var expected = {
   number: 42,
-  undef:  null,
   string: 'hello',
-  func:   null,
   regexp: {},
   array:  [1, 2, 3]
 };
@@ -33,6 +31,6 @@ it('Dumper must throw an exception on invalid type when option `skipInvalid` is 
 });
 
 
-it('Dumper must write `null` for invalid types when option `skipInvalid` is true.', function () {
+it('Dumper must skip pairs and values with invalid types when option `skipInvalid` is true.', function () {
   assert.deepEqual(yaml.load(yaml.safeDump(sample, { skipInvalid: true })), expected);
 });
