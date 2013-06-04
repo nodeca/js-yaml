@@ -115,21 +115,20 @@ options:
 - `schema` _(default: `DEFAULT_FULL_SCHEMA`)_ - specifies a schema to use.
 
 
-#### Available (out of the box) schemas:
+##### Available (out of the box) schemas:
 
-- `FAILSAFE_SCHEMA` - standard: [http://www.yaml.org/spec/1.2/spec.html#id2802346]
-- `JSON_SCHEMA` - standard: [http://www.yaml.org/spec/1.2/spec.html#id2803231]
-- `CORE_SCHEMA` - standard: [http://www.yaml.org/spec/1.2/spec.html#id2804923]
+- `FAILSAFE_SCHEMA` - standard: http://www.yaml.org/spec/1.2/spec.html#id2802346
+- `JSON_SCHEMA` - standard: http://www.yaml.org/spec/1.2/spec.html#id2803231
+- `CORE_SCHEMA` - standard: http://www.yaml.org/spec/1.2/spec.html#id2804923
 - `DEFAULT_SAFE_SCHEMA` - inherits `CORE_SCHEMA` and includes most of types from
-  the YAML tags repository: [http://yaml.org/type/]
+  the YAML tag repository: http://yaml.org/type/
 - `DEFAULT_FULL_SCHEMA` - inherits `DEFAULT_SAFE_SCHEMA` and includes
   JavaScript-specific types: `!!js/undefined`, `!!js/regexp`, `!!js/function`.
 
 NOTE: JS-YAML **does not** support schema-specific tag resolution restrictions.
 So, JSON schema is not such strict as defined in the YAML specification.
 It allows numbers in any notaion, use `Null` and `NULL` as `null`, etc.
-Core schema also has no such restrictions. It allows binary notation in
-contrast to the specification.
+Core schema also has no such restrictions. It allows binary notation for integers.
 
 
 ### loadAll (string, iterator [ , options ])
