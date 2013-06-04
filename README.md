@@ -112,7 +112,24 @@ options:
   error/warning messages.
 - `strict` _(default - false)_ makes the loader to throw errors instead of
   warnings.
-- `schema` _(default: `DEFAULT_SCHEMA`)_ - specifies a schema to use.
+- `schema` _(default: `DEFAULT_FULL_SCHEMA`)_ - specifies a schema to use.
+
+
+#### Available (out of the box) schemas:
+
+- `FAILSAFE_SCHEMA` - standard: [http://www.yaml.org/spec/1.2/spec.html#id2802346]
+- `JSON_SCHEMA` - standard: [http://www.yaml.org/spec/1.2/spec.html#id2803231]
+- `CORE_SCHEMA` - standard: [http://www.yaml.org/spec/1.2/spec.html#id2804923]
+- `DEFAULT_SAFE_SCHEMA` - inherits `CORE_SCHEMA` and includes most of types from
+  the YAML tags repository: [http://yaml.org/type/]
+- `DEFAULT_FULL_SCHEMA` - inherits `DEFAULT_SAFE_SCHEMA` and includes
+  JavaScript-specific types: `!!js/undefined`, `!!js/regexp`, `!!js/function`.
+
+NOTE: JS-YAML **does not** support schema-specific tag resolution restrictions.
+So, JSON schema is not such strict as defined in the YAML specification.
+It allows numbers in any notaion, use `Null` and `NULL` as `null`, etc.
+Core schema also has no such restrictions. It allows binary notation in
+contrast to the specification.
 
 
 ### loadAll (string, iterator [ , options ])
@@ -131,14 +148,14 @@ yaml.loadAll(data, function (doc) {
 
 ### safeLoad (string [ , options ])
 
-Same as `load()` but uses `SAFE_SCHEMA` by default - only recommended tags of
-YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
+Same as `load()` but uses `DEFAULT_SAFE_SCHEMA` by default - only recommended
+tags of YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
 ### safeLoadAll (string, iterator [ , options ])
 
-Same as `loadAll()` but uses `SAFE_SCHEMA` by default - only recommended tags of
-YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
+Same as `loadAll()` but uses `DEFAULT_SAFE_SCHEMA` by default - only recommended
+tags of YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
 ### dump (object [ , options ])
@@ -151,7 +168,7 @@ options:
 - `flowLevel` (default: -1) - specifies level of nesting, when to switch from
   block to flow style for collections. -1 means block style everwhere
 - `styles` - "tag" => "style" map. Each tag may have own set of styles.
-- `schema` _(default: `DEFAULT_SCHEMA`)_ specifies a schema to use.
+- `schema` _(default: `DEFAULT_FULL_SCHEMA`)_ specifies a schema to use.
 
 styles:
 
@@ -176,8 +193,8 @@ By default, !!int uses `decimal`, and !!null, !!bool, !!float use `lowercase`.
 
 ### safeDump (object [ , options ])
 
-Same as `dump()` but uses `SAFE_SCHEMA` by default - only recommended tags of
-YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
+Same as `dump()` but uses `DEFAULT_SAFE_SCHEMA` by default - only recommended
+tags of YAML specification (no JavaScript-specific tags, e.g. `!!js/regexp`).
 
 
 Supported YAML types
