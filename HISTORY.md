@@ -1,7 +1,8 @@
 2.1.0 / --
 ------------------
 
-* Add standard YAML schemas: Failsafe, JSON and Core.
+* Add standard YAML schemas: Failsafe (`FAILSAFE_SCHEMA`),
+  JSON (`JSON_SCHEMA`) and Core (`CORE_SCHEMA`).
 * Rename `DEFAULT_SCHEMA` to `DEFAULT_FULL_SCHEMA`
   and `SAFE_SCHEMA` to `DEFAULT_SAFE_SCHEMA`.
 * Bug fix: export `NIL` constant from the public interface.
