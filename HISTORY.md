@@ -5,6 +5,7 @@
 * Rename `DEFAULT_SCHEMA` to `DEFAULT_FULL_SCHEMA`
   and `SAFE_SCHEMA` to `DEFAULT_SAFE_SCHEMA`.
 * Bug fix: export `NIL` constant from the public interface.
+* Add `skipInvalid` dumper option.
 
 
 2.0.5 / 2013-04-26

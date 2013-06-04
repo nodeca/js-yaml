@@ -164,6 +164,8 @@ Serializes `object` as YAML document.
 options:
 
 - `indent` _(default: 2)_ - indentation width to use (in spaces).
+- `skipInvalid` _(default: false)_ - do not throw on invalid types (like function
+  in the safe schema) and write `null` instead of values of such types.
 - `flowLevel` (default: -1) - specifies level of nesting, when to switch from
   block to flow style for collections. -1 means block style everwhere
 - `styles` - "tag" => "style" map. Each tag may have own set of styles.
