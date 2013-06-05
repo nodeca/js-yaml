@@ -7,7 +7,7 @@
   and `SAFE_SCHEMA` to `DEFAULT_SAFE_SCHEMA`.
 * Bug fix: export `NIL` constant from the public interface.
 * Add `skipInvalid` dumper option.
-* Use `safeLoad` within the require extension.
+* Use `safeLoad` for `require` extension.
 
 
 2.0.5 / 2013-04-26
