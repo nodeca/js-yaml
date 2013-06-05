@@ -11,19 +11,6 @@ serialization language. Started as [PyYAML](http://pyyaml.org/) port, it was
 completely rewritten from scratch. Now it's very fast, and supports 1.2 spec.
 
 
-Breaking changes in 1.x.x -> 2.0.x
-----------------------------------
-
-If your have not used __custom__ tags or loader classes - no changes needed. Just
-upgrade library and enjoy high parse speed.
-
-In other case, you should rewrite your tag constructors and custom loader
-classes, to conform new schema-based API. See
-[examples](https://github.com/nodeca/js-yaml/tree/master/examples) and
-[wiki](https://github.com/nodeca/js-yaml/wiki) for details.
-Note, that parser internals were completely rewritten.
-
-
 Installation
 ------------
 
@@ -100,8 +87,9 @@ try {
 
 ### safeLoad (string [ , options ])
 
-**Recommended.** Parses `string` as single YAML document. Returns a JavaScript
-object or throws `YAMLException` on error.
+**Recommended loading way.** Parses `string` as single YAML document. Returns a JavaScript
+object or throws `YAMLException` on error. By default, does not support regexps,
+functions and undefined. This method is safe for untrusted data.
 
 options:
 
@@ -112,17 +100,16 @@ options:
 - `schema` _(default: `DEFAULT_FULL_SCHEMA`)_ - specifies a schema to use.
   - `FAILSAFE_SCHEMA` - only strings, arrays and plain objects:
     http://www.yaml.org/spec/1.2/spec.html#id2802346
-  - `JSON_SCHEMA` - all from `FAILSAFE_SCHEMA` plus numbers, booleans and nulls:
+  - `JSON_SCHEMA` - all JSON-supported types:
     http://www.yaml.org/spec/1.2/spec.html#id2803231
   - `CORE_SCHEMA` - same as `JSON_SCHEMA`:
     http://www.yaml.org/spec/1.2/spec.html#id2804923
-  - `DEFAULT_SAFE_SCHEMA` - all from `CORE_SCHEMA` plus extra types
-    `!!timestamp`, `!!binary`, `!!merge`, `!!omap`, `!!pairs` and `!!set`:
+  - `DEFAULT_SAFE_SCHEMA` - all supported YAML types, without unsafe ones
+    (`!!js/undefined`, `!!js/regexp` and `!!js/function`):
     http://yaml.org/type/
-  - `DEFAULT_FULL_SCHEMA` - all from `DEFAULT_SAFE_SCHEMA` plus
-    JavaScript-specific types: `!!js/undefined`, `!!js/regexp` and `!!js/function`.
+  - `DEFAULT_FULL_SCHEMA` - all supported YAML types.
 
-NOTE: This function **does not** understands multi-document sources, it throws
+NOTE: This function **does not** understand multi-document sources, it throws
 exception on those.
 
 NOTE: JS-YAML **does not** support schema-specific tag resolution restrictions.
@@ -133,16 +120,23 @@ Core schema also has no such restrictions. It allows binary notation for integer
 
 ### load (string [ , options ])
 
-Same as `safeLoad()` but uses `DEFAULT_FULL_SCHEMA` by default - adds some
-JavaScript-specific types: `!!js/function`, `!!js/regexp` and `!!js/undefined`.
-**Use with care - only for trusted sources.** There are some tricks to execute
-malware code via `!!js/function`.
+**Use with care with untrusted sources**. The same as `safeLoad()` but uses
+`DEFAULT_FULL_SCHEMA` by default - adds some JavaScript-specific types:
+`!!js/function`, `!!js/regexp` and `!!js/undefined`. For untrusted sources you
+must additionally validate object structure, to avoid injections:
+
+``` javascript
+var untrusted_code = '"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"';
+
+// I'm just converting that string, what could possibly go wrong?
+require('js-yaml').load(untrusted_code) + ''
+```
 
 
 ### safeLoadAll (string, iterator [ , options ])
 
-**Recommended.** Same as `safeLoad()`, but understands multi-document sources
-and apply `iterator` to each document.
+Same as `safeLoad()`, but understands multi-document sources and apply
+`iterator` to each document.
 
 ``` javascript
 var yaml = require('js-yaml');
@@ -152,6 +146,7 @@ yaml.safeLoadAll(data, function (doc) {
 });
 ```
 
+
 ### loadAll (string, iterator [ , options ])
 
 Same as `safeLoadAll()` but uses `DEFAULT_FULL_SCHEMA` by default.
@@ -159,7 +154,9 @@ Same as `safeLoadAll()` but uses `DEFAULT_FULL_SCHEMA` by default.
 
 ### safeDump (object [ , options ])
 
-Serializes `object` as YAML document.
+Serializes `object` as YAML document. Uses `DEFAULT_SAFE_SCHEMA`, so it will
+throw exception if you try to dump regexps or functions. However, you can
+disable exceptions by `skipInvalid` option.
 
 options:
 
@@ -192,9 +189,10 @@ styles:
 By default, !!int uses `decimal`, and !!null, !!bool, !!float use `lowercase`.
 
 
+
 ### dump (object [ , options ])
 
-Same as `safeDump()` but uses `DEFAULT_FULL_SCHEMA` by default.
+Same as `safeDump()` but without limits (uses `DEFAULT_FULL_SCHEMA` by default).
 
 
 Supported YAML types
@@ -227,10 +225,8 @@ The list of standard YAML tags and corresponding JavaScipt types. See also
 !!js/function 'function () {...}'   # Function
 ```
 
-
-
-
-## Caveats
+Caveats
+-------
 
 Note, that you use arrays or objects as key in JS-YAML. JS do not allows objects
 or array as keys, and stringifies (by calling .toString method) them at the
@@ -260,7 +256,22 @@ So, the following YAML document cannot be loaded.
   *anchor: duplicate key
 ```
 
-## License
+
+Breaking changes in 1.x.x -> 2.0.x
+----------------------------------
+
+If your have not used __custom__ tags or loader classes - no changes needed. Just
+upgrade library and enjoy high parse speed.
+
+In other case, you should rewrite your tag constructors and custom loader
+classes, to conform new schema-based API. See
+[examples](https://github.com/nodeca/js-yaml/tree/master/examples) and
+[wiki](https://github.com/nodeca/js-yaml/wiki) for details.
+Note, that parser internals were completely rewritten.
+
+
+License
+-------
 
 View the [LICENSE](https://github.com/nodeca/js-yaml/blob/master/LICENSE) file
 (MIT).

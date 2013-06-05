@@ -1,4 +1,4 @@
-2.1.0 / --
+2.1.0 / 2013-06-05
 ------------------
 
 * Add standard YAML schemas: Failsafe (`FAILSAFE_SCHEMA`),
