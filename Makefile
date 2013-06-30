@@ -104,7 +104,7 @@ browserify:
 	cat ${TMP_PATH}/* > js-yaml.js
 	rm -rf ${TMP_PATH}
 	cp js-yaml.js demo/js/
-	uglifyjs js-yaml.js > js-yaml.min.js
+	uglifyjs js-yaml.js -m > js-yaml.min.js
 
 
 todo:
