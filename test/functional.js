@@ -7,4 +7,5 @@ describe('Functional.', function () {
   require('./functional/errors');
   require('./functional/single-errors');
   require('./functional/dumper');
+  require('./functional/scalar');
 });
