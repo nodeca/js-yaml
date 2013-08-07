@@ -39,7 +39,7 @@ module.exports = new jsyaml.Schema({
       },
       dumper: {
         kind: 'object',
-        instanceOf: classes.Tag1,
+        instanceOf: classes.Tag1
       }
     }),
     new jsyaml.Type('!foo', {

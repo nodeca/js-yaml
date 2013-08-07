@@ -10,7 +10,7 @@ var REASONS = {
   'prototypes'              : 'Given objects have different prototypes',
   'object_property_amounts' : 'Given objects have different key amounts',
   'object_property_names'   : 'Given objects have different key sets',
-  'date_timestamps'         : 'Given Date objects have different timestamps',
+  'date_timestamps'         : 'Given Date objects have different timestamps'
 };
 
 

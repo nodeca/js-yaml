@@ -6,5 +6,5 @@ module.exports = {
   'fixed': 685230.15,
   'sexagesimal': 685230.15,
   'negative infinity': Number.NEGATIVE_INFINITY,
-  'not a number': NaN,
+  'not a number': NaN
 };
