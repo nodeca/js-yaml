@@ -70,7 +70,7 @@ info.
 
 In node.js JS-YAML automatically registers handlers for `.yml` and `.yaml`
 files. You can load them just with `require`. That's mostly equivalent to
-calling `load()` on fetched content of a file. Just with one string!
+calling `safeLoad()` on fetched content of a file. Just with one string!
 
 ``` javascript
 require('js-yaml');
@@ -97,7 +97,7 @@ options:
   error/warning messages.
 - `strict` _(default - false)_ makes the loader to throw errors instead of
   warnings.
-- `schema` _(default: `DEFAULT_FULL_SCHEMA`)_ - specifies a schema to use.
+- `schema` _(default: `DEFAULT_SAFE_SCHEMA`)_ - specifies a schema to use.
   - `FAILSAFE_SCHEMA` - only strings, arrays and plain objects:
     http://www.yaml.org/spec/1.2/spec.html#id2802346
   - `JSON_SCHEMA` - all JSON-supported types:
