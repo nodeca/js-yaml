@@ -50,7 +50,7 @@ Tag3.toYAMLNode = function toYAMLNode(object /*, style*/) {
   return {
     '=' : object.x,
     'y' : object.y,
-    'z' : object.z,
+    'z' : object.z
   };
 };
 
@@ -71,7 +71,7 @@ Foo.fromYAMLNode = common.makeClassConstructor(Foo, {
 Foo.toYAMLNode = function toYAMLNode(object /*, style*/) {
   return {
     'my-parameter'         : object.myParameter,
-    'my-another-parameter' : object.myAnotherParameter,
+    'my-another-parameter' : object.myAnotherParameter
   };
 };
 
