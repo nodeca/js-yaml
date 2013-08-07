@@ -6,7 +6,7 @@ module.exports = [
     'empty': null,
     'canonical': null,
     'english': null,
-    null: 'null key'
+    'null': 'null key'
   },
   {
     'sparse': [
@@ -14,7 +14,7 @@ module.exports = [
       '2nd entry',
       null,
       '4th entry',
-      null,
-    ],
+      null
+    ]
   }
 ];
