@@ -29,7 +29,7 @@ lint:
 		echo "  $ make dev-deps" >&2 ; \
 		exit 128 ; \
 		fi
-	jshint . --show-non-errors
+	jshint . --show-non-errors # GNU Make 3.81 (OS X) requires a comment, "quote" or VAR= otherwise it resets the env!?
 
 
 test: lint
