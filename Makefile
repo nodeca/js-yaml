@@ -29,7 +29,7 @@ lint:
 		echo "  $ make dev-deps" >&2 ; \
 		exit 128 ; \
 		fi
-	jshint . --show-non-errors
+	jshint . --show-non-errors # GNU Make 3.81 (OS X) requires a comment, "quote" or VAR= otherwise it resets the env!?
 
 
 test: lint
@@ -44,7 +44,7 @@ test: lint
 doc:
 	@if test ! `which ndoc` ; then \
 		echo "You need 'ndoc' installed in order to generate docs." >&2 ; \
-		echo "  $ npm install -g ndoc" >&2 ; \
+		echo "  $ make dev-deps" >&2 ; \
 		exit 128 ; \
 		fi
 	rm -rf ./doc
@@ -57,8 +57,7 @@ dev-deps:
 		echo "  See: http://npmjs.org/" >&2 ; \
 		exit 128 ; \
 		fi
-	npm install -g jshint
-	npm install
+	npm install --dev
 
 
 gh-pages:
