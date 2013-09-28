@@ -1,9 +1,33 @@
-canonical: !!bool yes
-answer: !!bool NO
-logical: !!bool True
-option: !!bool on
+# Valid notation. (YAML 1.2)
+#
+valid_true:
+  - true
+  - True
+  - TRUE
 
+valid_false:
+  - false
+  - False
+  - FALSE
 
-but:
-    y: is a string
-    n: is a string
+# Deprecated notation. (YAML 1.0/1.1)
+#
+deprecated_true:
+  - y
+  - Y
+  - yes
+  - Yes
+  - YES
+  - on
+  - On
+  - ON
+
+deprecated_false:
+  - n
+  - N
+  - no
+  - No
+  - NO
+  - off
+  - Off
+  - OFF
