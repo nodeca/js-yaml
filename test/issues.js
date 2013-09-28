@@ -11,6 +11,7 @@ describe('Issues.', function () {
   require('./issues/issue-46.js');
   require('./issues/issue-54.js');
   require('./issues/issue-64.js');
+  require('./issues/issue-85.js');
   require('./issues/issue-parse-function-security.js');
   require('./issues/issue-skip-invalid.js');
 });
