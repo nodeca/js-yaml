@@ -1,3 +1,10 @@
+2.1.1 / --
+------------------
+
+* Dumper now respects deprecated booleans syntax from YAML 1.0/1.1
+* Fixed reader bug in JSON-like sequences/mappings.
+
+
 2.1.0 / 2013-06-05
 ------------------
 
