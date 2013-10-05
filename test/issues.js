@@ -13,6 +13,7 @@ describe('Issues.', function () {
   require('./issues/issue-64.js');
   require('./issues/issue-85.js');
   require('./issues/issue-92.js');
+  require('./issues/issue-93.js');
   require('./issues/issue-parse-function-security.js');
   require('./issues/issue-skip-invalid.js');
 });
