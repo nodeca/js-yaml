@@ -1,4 +1,4 @@
-2.1.2 / --
+2.1.2 / 2013-10-07
 ------------------
 
 - Fix unwanted line breaks in folded scalars.
