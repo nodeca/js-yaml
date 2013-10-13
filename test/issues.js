@@ -2,19 +2,16 @@
 /*global describe */
 
 
+var path = require('path');
+var fs   = require('fs');
+
+
 describe('Issues.', function () {
-  require('./issues/issue-8.js');
-  require('./issues/issue-17.js');
-  require('./issues/issue-19.js');
-  require('./issues/issue-26.js');
-  require('./issues/issue-33.js');
-  require('./issues/issue-46.js');
-  require('./issues/issue-54.js');
-  require('./issues/issue-64.js');
-  require('./issues/issue-85.js');
-  require('./issues/issue-92.js');
-  require('./issues/issue-93.js');
-  require('./issues/issue-95.js');
-  require('./issues/issue-parse-function-security.js');
-  require('./issues/issue-skip-invalid.js');
+  var issues = path.resolve(__dirname, 'issues');
+
+  fs.readdirSync(issues).forEach(function (file) {
+    if ('.js' === path.extname(file)) {
+      require(path.resolve(issues, file));
+    }
+  });
 });
