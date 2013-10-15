@@ -1,4 +1,4 @@
-2.1.3 / --
+2.1.3 / 2013-10-16
 ------------------
 
 - Fix wrong loading of empty block scalars.
