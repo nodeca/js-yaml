@@ -47,7 +47,7 @@ cli.addArgument(['-t', '--trace'], {
 
 
 cli.addArgument(['file'], {
-  help:   'File to read'
+  help:   'File to read, utf-8 encoded without BOM'
 });
 
 
