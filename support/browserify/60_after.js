@@ -1,1 +1,1 @@
-return require('./index'); }());
+return require('./lib/js-yaml.js'); }());
