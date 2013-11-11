@@ -1,0 +1,2 @@
+require("../../index");
+require("./shims");

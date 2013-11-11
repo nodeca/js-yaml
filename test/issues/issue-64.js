@@ -3,8 +3,7 @@
 
 
 var assert = require('assert');
-
-var yaml = require('../../lib/js-yaml');
+var yaml   = require('../../lib/js-yaml');
 
 
 it('Wrong error message when yaml file contains tabs', function () {

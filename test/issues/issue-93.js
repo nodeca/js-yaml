@@ -4,8 +4,6 @@
 
 var assert = require('assert');
 
-require('../../lib/js-yaml');
-
 
 it('Unwanted line breaks in folded scalars', function () {
   var data = require('./data/issue-93.yml');
