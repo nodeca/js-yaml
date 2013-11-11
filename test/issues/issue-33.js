@@ -4,8 +4,6 @@
 
 var assert = require('assert');
 
-require('../../lib/js-yaml');
-
 
 it('refactor compact variant of MarkedYAMLError.toString', function () {
   assert.throws(
