@@ -112,7 +112,7 @@ fs.readFile(options.file, 'utf8', function (error, input) {
   }
 
   if (isYaml) {
-    if (options.json) {
+    if (options.json || !process.stdout.isTTY) {
       console.log(JSON.stringify(output, null, '  '));
     } else {
       console.log("\n" + util.inspect(output, false, 10, true) + "\n");
