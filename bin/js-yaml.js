@@ -6,7 +6,6 @@
 
 // stdlib
 var fs    = require('fs');
-var util  = require('util');
 
 
 // 3rd-party
@@ -33,21 +32,19 @@ cli.addArgument(['-c', '--compact'], {
 });
 
 
-cli.addArgument(['-j', '--to-json'], {
-  help:   'Output a non-funky boring JSON',
-  dest:   'json',
-  action: 'storeTrue'
-});
-
-
 cli.addArgument(['-t', '--trace'], {
   help:   'Show stack trace on error',
   action: 'storeTrue'
 });
 
-
 cli.addArgument(['file'], {
   help:   'File to read, utf-8 encoded without BOM'
+});
+
+cli.addArgument(['-j', '--to-json'], {
+  help:   'Output a non-funky boring JSON (deprecated)',
+  dest:   'json',
+  action: 'storeTrue'
 });
 
 
@@ -112,11 +109,7 @@ fs.readFile(options.file, 'utf8', function (error, input) {
   }
 
   if (isYaml) {
-    if (options.json || !process.stdout.isTTY) {
-      console.log(JSON.stringify(output, null, '  '));
-    } else {
-      console.log("\n" + util.inspect(output, false, 10, true) + "\n");
-    }
+    console.log(JSON.stringify(output, null, '  '));
   } else {
     console.log(yaml.dump(output));
   }
