@@ -9,7 +9,7 @@ var fs    = require('fs');
 
 
 // 3rd-party
-var ArgumentParser = require('argparse').ArgumentParser;
+var ArgParse = require('argparse');
 
 
 // internal
@@ -19,7 +19,7 @@ var yaml = require('..');
 ////////////////////////////////////////////////////////////////////////////////
 
 
-var cli = new ArgumentParser({
+var cli = new ArgParse.ArgumentParser({
   prog:     'js-yaml',
   version:  require('../package.json').version,
   addHelp:  true
@@ -41,9 +41,13 @@ cli.addArgument(['file'], {
   help:   'File to read, utf-8 encoded without BOM'
 });
 
+/* Deprecated
+ *
+ * CLI now outputs non-decorated JSON by default
+ * This flag is still supported for backward compatibility
+ */
 cli.addArgument(['-j', '--to-json'], {
-  help:   'Output a non-funky boring JSON (deprecated)',
-  dest:   'json',
+  help:   ArgParse.Const.SUPPRESS,
   action: 'storeTrue'
 });
 
