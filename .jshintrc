@@ -10,7 +10,7 @@
   "forin"         : false,  // Tolerate `for in` loops without `hasOwnPrototype`.
   "immed"         : true,   // Require immediate invocations to be wrapped in parens e.g. `( function(){}() );`
   "indent"        : 2,      // This option enforces specific tab width for your code
-  "latedef"       : true,   // Prohibit hariable use before definition.
+  "latedef"       : false,   // Prohibit hariable use before definition.
   "newcap"        : true,   // Require capitalization of all constructor functions e.g. `new F()`.
   "noarg"         : true,   // Prohibit use of `arguments.caller` and `arguments.callee`.
   "noempty"       : true,   // Prohibit use of empty blocks.
