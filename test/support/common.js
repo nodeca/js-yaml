@@ -6,7 +6,6 @@ var fs     = require('fs');
 var common = require('../../lib/js-yaml/common');
 
 
-var NIL = common.NIL;
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
 
