@@ -23,10 +23,11 @@ function Tag2() {
 
 util.inherits(Tag2, Tag1);
 
-Tag2.fromYAMLNode = function fromYAMLNode(object /*, explicit*/) {
-  return new Tag2({
-    x: ('number' === typeof object) ? object : parseInt(object, 10)
+Tag2.fromYAMLNode = function fromYAMLNode(state /*, explicit*/) {
+  state.result = new Tag2({
+    x: ('number' === typeof state.result) ? state.result : parseInt(state.result, 10)
   });
+  return true;
 };
 
 Tag2.toYAMLNode = function toYAMLNode(object /*, style*/) {

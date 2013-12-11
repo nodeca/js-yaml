@@ -51,9 +51,11 @@ function makeClassConstructor(Class, params) {
       requiredKeys = params.required || [],
       optionalKeys = params.optional || [];
 
-  return function fromYAMLNode(object /*, explicit*/) {
+  return function fromYAMLNode(state /*, explicit*/) {
+    var object = state.result;
+
     if (!common.isObject(object)) {
-      return NIL;
+      return false;
     }
 
     each(mapKeys, function (newKey, oldKey) {
@@ -65,7 +67,7 @@ function makeClassConstructor(Class, params) {
 
     requiredKeys.forEach(function (key) {
       if (!_hasOwnProperty.call(object, key)) {
-        return NIL;
+        return false;
       }
     });
 
@@ -74,11 +76,12 @@ function makeClassConstructor(Class, params) {
           hasAsOptional = (0 <= optionalKeys.indexOf(key));
 
       if (!hasAsRequired && !hasAsOptional) {
-        return NIL;
+        return false;
       }
     });
 
-    return new Class(object);
+    state.result = new Class(object);
+    return true;
   };
 }
 
