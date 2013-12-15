@@ -1,4 +1,4 @@
-2.2.0 / WIP
+3.0.0 / WIP
 ------------------
 
 - Refactored code. Changed API for custom types.
@@ -8,6 +8,8 @@
   - !!bin now returns Array in browser
 - AMD support.
 - Don't quote dumped strings because of `-` & `?` (if not first char).
+- __Deprecated__ loading yaml files via `require()`, as not recommended
+  behaviour for node.
 
 
 2.1.3 / 2013-10-16

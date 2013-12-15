@@ -26,7 +26,7 @@ npm install js-yaml
 If you want to inspect your YAML files from CLI, install js-yaml globally:
 
 ```
-npm install js-yaml -g
+npm install -g js-yaml
 ```
 
 #### Usage
@@ -65,9 +65,9 @@ Notes:
 1. We have no resourses to support browserified version. Don't expect it to be
    well tested. Don't expect fast fixes if something goes wrong there.
 2. `!!js/function` in browser bundle will not work by default. If you really need
-   it - load `esprima` parser first (via amd or directly)
-3. `!!bin` in browser will return Array, because browsers do not support
-   node.js Buffer and adding Buffer shims is completely useless on practice.
+   it - load `esprima` parser first (via amd or directly).
+3. `!!bin` in browser will return `Array`, because browsers do not support
+   node.js `Buffer` and adding Buffer shims is completely useless on practice.
 
 
 API
@@ -78,16 +78,13 @@ your own tags), see [wiki](https://github.com/nodeca/js-yaml/wiki) and
 [examples](https://github.com/nodeca/js-yaml/tree/master/examples) for more
 info.
 
-In node.js JS-YAML automatically registers handlers for `.yml` and `.yaml`
-files. You can load them just with `require`. That's mostly equivalent to
-calling `safeLoad()` on fetched content of a file. Just with one string!
-
 ``` javascript
-require('js-yaml');
+yaml = require('js-yaml');
+fs   = require('fs');
 
 // Get document, or throw exception on error
 try {
-  var doc = require('/home/ixti/example.yml');
+  var doc = yaml.safeLoad(fs.readFileSync('/home/ixti/example.yml', 'utf8'));
   console.log(doc);
 } catch (e) {
   console.log(e);
@@ -123,7 +120,7 @@ NOTE: This function **does not** understand multi-document sources, it throws
 exception on those.
 
 NOTE: JS-YAML **does not** support schema-specific tag resolution restrictions.
-So, JSON schema is not such strict as defined in the YAML specification.
+So, JSON schema is not as strict as defined in the YAML specification.
 It allows numbers in any notaion, use `Null` and `NULL` as `null`, etc.
 Core schema also has no such restrictions. It allows binary notation for integers.
 
@@ -267,17 +264,20 @@ So, the following YAML document cannot be loaded.
 ```
 
 
-Breaking changes in 1.x.x -> 2.0.x
+Breaking changes in 2.x.x -> 3.0.x
 ----------------------------------
 
-If your have not used __custom__ tags or loader classes - no changes needed. Just
-upgrade library and enjoy high parse speed.
+If your have not used __custom__ tags or loader classes and not loaded yaml
+files fia require - no changes needed. Just upgrade library.
 
-In other case, you should rewrite your tag constructors and custom loader
-classes, to conform new schema-based API. See
-[examples](https://github.com/nodeca/js-yaml/tree/master/examples) and
-[wiki](https://github.com/nodeca/js-yaml/wiki) for details.
-Note, that parser internals were completely rewritten.
+In other case, you should:
+
+1. Replace all occurences of `require('xxxx.yml')` by `fs.readFileSync()` +
+  `yaml.safeLoad()`.
+2. rewrite your custom tags constructors and custom loader
+  classes, to conform new API. See
+  [examples](https://github.com/nodeca/js-yaml/tree/master/examples) and
+  [wiki](https://github.com/nodeca/js-yaml/wiki) for details.
 
 
 License
