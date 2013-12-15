@@ -11,47 +11,27 @@ module.exports = new jsyaml.Schema({
   ],
   explicit: [
     new jsyaml.Type('!tag3', {
-      loader: {
-        kind: 'object',
-        resolver: classes.Tag3.fromYAMLNode
-      },
-      dumper: {
-        kind: 'object',
-        instanceOf: classes.Tag3,
-        representer: classes.Tag3.toYAMLNode
-      }
+      loadKind: 'mapping',
+      loadResolver: classes.Tag3.fromYAMLNode,
+      dumpInstanceOf: classes.Tag3,
+      dumpRepresenter: classes.Tag3.toYAMLNode
     }),
     new jsyaml.Type('!tag2', {
-      loader: {
-        kind: 'string',
-        resolver: classes.Tag2.fromYAMLNode
-      },
-      dumper: {
-        kind: 'object',
-        instanceOf: classes.Tag2,
-        representer: classes.Tag2.toYAMLNode
-      }
+      loadKind: 'scalar',
+      loadResolver: classes.Tag2.fromYAMLNode,
+      dumpInstanceOf: classes.Tag2,
+      dumpRepresenter: classes.Tag2.toYAMLNode
     }),
     new jsyaml.Type('!tag1', {
-      loader: {
-        kind: 'object',
-        resolver: classes.Tag1.fromYAMLNode
-      },
-      dumper: {
-        kind: 'object',
-        instanceOf: classes.Tag1
-      }
+      loadKind: 'mapping',
+      loadResolver: classes.Tag1.fromYAMLNode,
+      dumpInstanceOf: classes.Tag1
     }),
     new jsyaml.Type('!foo', {
-      loader: {
-        kind: 'object',
-        resolver: classes.Foo.fromYAMLNode
-      },
-      dumper: {
-        kind: 'object',
-        instanceOf: classes.Foo,
-        representer: classes.Foo.toYAMLNode
-      }
+      loadKind: 'mapping',
+      loadResolver: classes.Foo.fromYAMLNode,
+      dumpInstanceOf: classes.Foo,
+      dumpRepresenter: classes.Foo.toYAMLNode
     })
   ]
 });

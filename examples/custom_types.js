@@ -31,48 +31,44 @@ function Space(height, width, points) {
 }
 
 
-// Let define YAML types to load and dump our Point/Space objects.
+// Let's define YAML types to load and dump our Point/Space objects.
 
 var pointYamlType = new yaml.Type('!point', {
+  //
   // The information used to load a Point.
-  loader: {
-    kind: 'array', // It must be an array. (sequence in YAML)
-    resolver: function (object) {
-      // It must contain exactly tree elements.
-      if (3 === object.length) {
-        return new Point(object[0], object[1], object[2]);
+  //
+  loadKind: 'sequence', // See node kinds in YAML spec: http://www.yaml.org/spec/1.2/spec.html#kind//
+  loadResolver: function (state) {
+    // You can access actual data from YAML via `state.result`.
+    // After the resolving, you should put the resolved value into `state.result`.
 
-      // Otherwise, it is NOT a Point.
-      } else {
-        return yaml.NIL;
-      }
+    if (3 === state.result.length) { // `state.result`
+      state.result = new Point(state.result[0], state.result[1], state.result[2]);
+      return true; // Resolved successfully.
+    } else {
+      return false; // Can't resolve.
     }
   },
+  //
   // The information used to dump a Point.
-  dumper: {
-    kind: 'object', // It must be an object but not an array.
-    instanceOf: Point, // Also, it must be an instance of Point class.
-    representer: function (point) {
-      // And it should be represented in YAML as three-element sequence.
-      return [ point.x, point.y, point.z ];
-    }
+  //
+  dumpInstanceOf: Point, // Dump only instances of Point constructor as this YAML type.
+  dumpRepresenter: function (point) {
+    // Represent in YAML as three-element sequence.
+    return [ point.x, point.y, point.z ];
   }
 });
 
 
 var spaceYamlType = new yaml.Type('!space', {
-  loader: {
-    kind: 'object', // 'object' here means 'mapping' in YAML.
-    resolver: function (object) {
-      return new Space(object.height, object.width, object.points);
-    }
+  loadKind: 'mapping',
+  loadResolver: function (state) {
+    state.result = new Space(state.result.height, state.result.width, state.result.points);
+    return true;
   },
-  dumper: {
-    kind: 'object',
-    instanceOf: Space
-    // The representer is omitted here. So, Space objects will be dumped as is.
-    // That is regular mapping with three key-value pairs but with !space tag.
-  }
+  dumpInstanceOf: Space
+  // `dumpRepresenter` is omitted here. So, Space objects will be dumped as is.
+  // That is regular mapping with three key-value pairs but with !space tag.
 });
 
 

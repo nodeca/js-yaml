@@ -19,7 +19,6 @@ var sample = {
 var expected = {
   number: 42,
   string: 'hello',
-  regexp: {},
   array:  [1, 2, 3]
 };
 
