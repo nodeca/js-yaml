@@ -3,6 +3,10 @@
 
 - Refactored code. Changed API for custom types.
 - Removed output colors in CLI, dump json by default.
+- Removed big dependencies from browser version (esprima, buffer)
+  - load `esprima` manually, if !!js/function needed
+  - !!bin now returns Array in browser
+- AMD support.
 
 
 2.1.3 / 2013-10-16
