@@ -6,11 +6,10 @@
 
 // stdlib
 var fs    = require('fs');
-var util  = require('util');
 
 
 // 3rd-party
-var ArgumentParser = require('argparse').ArgumentParser;
+var argparse = require('argparse');
 
 
 // internal
@@ -20,7 +19,7 @@ var yaml = require('..');
 ////////////////////////////////////////////////////////////////////////////////
 
 
-var cli = new ArgumentParser({
+var cli = new argparse.ArgumentParser({
   prog:     'js-yaml',
   version:  require('../package.json').version,
   addHelp:  true
@@ -33,8 +32,10 @@ cli.addArgument(['-c', '--compact'], {
 });
 
 
+// deprecated (not needed after we removed output colors)
+// option suppressed, but not completely removed for compatibility
 cli.addArgument(['-j', '--to-json'], {
-  help:   'Output a non-funky boring JSON',
+  help:   argparse.Const.SUPPRESS,
   dest:   'json',
   action: 'storeTrue'
 });
@@ -112,11 +113,7 @@ fs.readFile(options.file, 'utf8', function (error, input) {
   }
 
   if (isYaml) {
-    if (options.json) {
-      console.log(JSON.stringify(output, null, '  '));
-    } else {
-      console.log("\n" + util.inspect(output, false, 10, true) + "\n");
-    }
+    console.log(JSON.stringify(output, null, '  '));
   } else {
     console.log(yaml.dump(output));
   }

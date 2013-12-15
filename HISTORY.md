@@ -1,3 +1,10 @@
+2.2.0 / WIP
+------------------
+
+- Refactored code. Changed API for custom types.
+- Removed output colors in CLI, dump json by default.
+
+
 2.1.3 / 2013-10-16
 ------------------
 

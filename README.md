@@ -32,7 +32,7 @@ npm install js-yaml -g
 #### Usage
 
 ```
-usage: js-yaml [-h] [-v] [-c] [-j] [-t] file
+usage: js-yaml [-h] [-v] [-c] [-t] file
 
 Positional arguments:
   file           File with YAML document(s)
@@ -41,7 +41,6 @@ Optional arguments:
   -h, --help     Show this help message and exit.
   -v, --version  Show program's version number and exit.
   -c, --compact  Display errors in compact mode
-  -j, --to-json  Output a non-funky boring JSON
   -t, --trace    Show stack trace on error
 ```
 
