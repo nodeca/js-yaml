@@ -1,6 +1,4 @@
-!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.jsyaml=e():"undefined"!=typeof global?global.jsyaml=e():"undefined"!=typeof self&&(self.jsyaml=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
-},{}],2:[function(require,module,exports){
+/* js-yaml 2.1.3 https://github.com/nodeca/js-yaml */!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.jsyaml=e():"undefined"!=typeof global?global.jsyaml=e():"undefined"!=typeof self&&(self.jsyaml=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
 
@@ -9,7 +7,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":3}],3:[function(require,module,exports){
+},{"./lib/js-yaml.js":2}],2:[function(require,module,exports){
 'use strict';
 
 
@@ -50,7 +48,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":5,"./js-yaml/exception":6,"./js-yaml/loader":7,"./js-yaml/schema":9,"./js-yaml/schema/core":10,"./js-yaml/schema/default_full":11,"./js-yaml/schema/default_safe":12,"./js-yaml/schema/failsafe":13,"./js-yaml/schema/json":14,"./js-yaml/type":15}],4:[function(require,module,exports){
+},{"./js-yaml/dumper":4,"./js-yaml/exception":5,"./js-yaml/loader":6,"./js-yaml/schema":8,"./js-yaml/schema/core":9,"./js-yaml/schema/default_full":10,"./js-yaml/schema/default_safe":11,"./js-yaml/schema/failsafe":12,"./js-yaml/schema/json":13,"./js-yaml/type":14}],3:[function(require,module,exports){
 'use strict';
 
 
@@ -108,7 +106,7 @@ module.exports.toArray    = toArray;
 module.exports.repeat     = repeat;
 module.exports.extend     = extend;
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 
@@ -118,6 +116,7 @@ var DEFAULT_FULL_SCHEMA = require('./schema/default_full');
 var DEFAULT_SAFE_SCHEMA = require('./schema/default_safe');
 
 
+var _toString       = Object.prototype.toString;
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
 
@@ -171,21 +170,6 @@ var DEPRECATED_BOOLEANS_SYNTAX = [
 ];
 
 
-function kindOf(object) {
-  var kind = typeof object;
-
-  if (null === object) {
-    return 'null';
-  } else if ('number' === kind) {
-    return 0 === object % 1 ? 'integer' : 'float';
-  } else if ('object' === kind && Array.isArray(object)) {
-    return 'array';
-  } else {
-    return kind;
-  }
-}
-
-
 function compileStyleMap(schema, map) {
   var result, keys, index, length, tag, style, type;
 
@@ -206,10 +190,8 @@ function compileStyleMap(schema, map) {
 
     type = schema.compiledTypeMap[tag];
 
-    if (type && type.dumper) {
-      if (_hasOwnProperty.call(type.dumper.styleAliases, style)) {
-        style = type.dumper.styleAliases[style];
-      }
+    if (type && _hasOwnProperty.call(type.dumpStyleAliases, style)) {
+      style = type.dumpStyleAliases[style];
     }
 
     result[tag] = style;
@@ -251,7 +233,6 @@ function State(options) {
   this.implicitTypes = this.schema.compiledImplicit;
   this.explicitTypes = this.schema.compiledExplicit;
 
-  this.kind = null;
   this.tag = null;
   this.result = '';
 }
@@ -267,7 +248,7 @@ function testImplicitResolving(state, str) {
   for (index = 0, length = state.implicitTypes.length; index < length; index += 1) {
     type = state.implicitTypes[index];
 
-    if (null !== type.loader && type.loader.resolver({ result: str })) {
+    if (type.loadResolver && type.loadResolver({ result: str })) {
       return true;
     }
   }
@@ -276,21 +257,25 @@ function testImplicitResolving(state, str) {
 }
 
 function writeScalar(state, object) {
-  var isQuoted, checkpoint, position, length, character;
+  var isQuoted, checkpoint, position, length, character, first;
 
   state.dump = '';
   isQuoted = false;
   checkpoint = 0;
+  first = object.charCodeAt(0) || 0;
 
-  // Ensure compatibility with YAML 1.0/1.1 loaders.
-  // TODO: This check should be moved into boolean type definition.
   if (-1 !== DEPRECATED_BOOLEANS_SYNTAX.indexOf(object)) {
+    // Ensure compatibility with YAML 1.0/1.1 loaders.
     isQuoted = true;
-  }
-
-  if (0          === object.length ||
-      CHAR_SPACE === object.charCodeAt(0) ||
-      CHAR_SPACE === object.charCodeAt(object.length - 1)) {
+  } else if (0 === object.length) {
+    // Quote empty string
+    isQuoted = true;
+  } else if (CHAR_SPACE    === first ||
+             CHAR_SPACE    === object.charCodeAt(object.length - 1)) {
+    isQuoted = true;
+  } else if (CHAR_MINUS    === first ||
+             CHAR_QUESTION === first) {
+    // Don't check second symbol for simplicity
     isQuoted = true;
   }
 
@@ -316,10 +301,8 @@ function writeScalar(state, object) {
           CHAR_DOUBLE_QUOTE         === character ||
           CHAR_PERCENT              === character ||
           CHAR_COMMERCIAL_AT        === character ||
-          CHAR_GRAVE_ACCENT         === character ||
-          CHAR_QUESTION             === character ||
           CHAR_COLON                === character ||
-          CHAR_MINUS                === character) {
+          CHAR_GRAVE_ACCENT         === character) {
         isQuoted = true;
       }
     }
@@ -489,28 +472,27 @@ function detectType(state, object, explicit) {
   var _result, typeList, index, length, type, style;
 
   typeList = explicit ? state.explicitTypes : state.implicitTypes;
-  state.kind = kindOf(object);
 
   for (index = 0, length = typeList.length; index < length; index += 1) {
     type = typeList[index];
 
-    if ((null !== type.dumper) &&
-        (null === type.dumper.kind       || state.kind === type.dumper.kind) &&
-        (null === type.dumper.instanceOf || object instanceof type.dumper.instanceOf)) {
+    if ((type.dumpInstanceOf  || type.dumpPredicate) &&
+        (!type.dumpInstanceOf || (('object' === typeof object) && (object instanceof type.dumpInstanceOf))) &&
+        (!type.dumpPredicate  || type.dumpPredicate(object))) {
+
       state.tag = explicit ? type.tag : '?';
 
-      if (null !== type.dumper.representer) {
-        style = state.styleMap[type.tag] || type.dumper.defaultStyle;
+      if (type.dumpRepresenter) {
+        style = state.styleMap[type.tag] || type.dumpDefaultStyle;
 
-        if ('function' === typeof type.dumper.representer) {
-          _result = type.dumper.representer(object, style);
-        } else if (_hasOwnProperty.call(type.dumper.representer, style)) {
-          _result = type.dumper.representer[style](object, style);
+        if ('[object Function]' === _toString.call(type.dumpRepresenter)) {
+          _result = type.dumpRepresenter(object, style);
+        } else if (_hasOwnProperty.call(type.dumpRepresenter, style)) {
+          _result = type.dumpRepresenter[style](object, style);
         } else {
           throw new YAMLException('!<' + type.tag + '> tag resolver accepts not "' + style + '" style');
         }
 
-        state.kind = kindOf(_result);
         state.dump = _result;
       }
 
@@ -532,6 +514,8 @@ function writeNode(state, level, object, block, compact) {
     detectType(state, object, true);
   }
 
+  var type = _toString.call(state.dump);
+
   if (block) {
     block = (0 > state.flowLevel || state.flowLevel > level);
   }
@@ -540,26 +524,26 @@ function writeNode(state, level, object, block, compact) {
     compact = false;
   }
 
-  if ('object' === state.kind) {
+  if ('[object Object]' === type) {
     if (block && (0 !== Object.keys(state.dump).length)) {
       writeBlockMapping(state, level, state.dump, compact);
     } else {
       writeFlowMapping(state, level, state.dump);
     }
-  } else if ('array' === state.kind) {
+  } else if ('[object Array]' === type) {
     if (block && (0 !== state.dump.length)) {
       writeBlockSequence(state, level, state.dump, compact);
     } else {
       writeFlowSequence(state, level, state.dump);
     }
-  } else if ('string' === state.kind) {
+  } else if ('[object String]' === type) {
     if ('?' !== state.tag) {
       writeScalar(state, state.dump);
     }
   } else if (state.skipInvalid) {
     return false;
   } else {
-    throw new YAMLException('unacceptabe kind of an object to dump (' + state.kind + ')');
+    throw new YAMLException('unacceptabe kind of an object to dump ' + type);
   }
 
   if (null !== state.tag && '?' !== state.tag) {
@@ -590,7 +574,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":4,"./exception":6,"./schema/default_full":11,"./schema/default_safe":12}],6:[function(require,module,exports){
+},{"./common":3,"./exception":5,"./schema/default_full":10,"./schema/default_safe":11}],5:[function(require,module,exports){
 'use strict';
 
 
@@ -617,7 +601,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 
@@ -629,11 +613,6 @@ var DEFAULT_FULL_SCHEMA = require('./schema/default_full');
 
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
-
-
-var KIND_STRING = 'string';
-var KIND_ARRAY  = 'array';
-var KIND_OBJECT = 'object';
 
 
 var CONTEXT_FLOW_IN   = 1;
@@ -738,8 +717,6 @@ function State(input, options) {
 
   this.filename = options['filename'] || null;
   this.schema   = options['schema']   || DEFAULT_FULL_SCHEMA;
-  this.resolve  = options['resolve']  || true;
-  this.validate = options['validate'] || true;
   this.strict   = options['strict']   || false;
   this.legacy   = options['legacy']   || false;
 
@@ -856,7 +833,7 @@ function captureSegment(state, start, end, checkJson) {
   if (start < end) {
     _result = state.input.slice(start, end);
 
-    if (checkJson && state.validate) {
+    if (checkJson) {
       for (_position = 0, _length = _result.length;
            _position < _length;
            _position += 1) {
@@ -1053,7 +1030,7 @@ function readPlainScalar(state, nodeIndent, withinFlowCollection) {
     }
   }
 
-  state.kind = KIND_STRING;
+  state.kind = 'scalar';
   state.result = '';
   captureStart = captureEnd = state.position;
   hasPendingContent = false;
@@ -1146,7 +1123,7 @@ function readSingleQuotedScalar(state, nodeIndent) {
     return false;
   }
 
-  state.kind = KIND_STRING;
+  state.kind = 'scalar';
   state.result = '';
   state.character = state.input.charCodeAt(++state.position);
   captureStart = captureEnd = state.position;
@@ -1194,7 +1171,7 @@ function readDoubleQuotedScalar(state, nodeIndent) {
     return false;
   }
 
-  state.kind = KIND_STRING;
+  state.kind = 'scalar';
   state.result = '';
   state.character = state.input.charCodeAt(++state.position);
   captureStart = captureEnd = state.position;
@@ -1310,7 +1287,7 @@ function readFlowCollection(state, nodeIndent) {
     if (state.character === terminator) {
       state.character = state.input.charCodeAt(++state.position);
       state.tag = _tag;
-      state.kind = isMapping ? KIND_OBJECT : KIND_ARRAY;
+      state.kind = isMapping ? 'mapping' : 'sequence';
       state.result = _result;
       return true;
     } else if (!readNext) {
@@ -1391,7 +1368,7 @@ function readBlockScalar(state, nodeIndent) {
     return false;
   }
 
-  state.kind = KIND_STRING;
+  state.kind = 'scalar';
   state.result = '';
 
   while (state.position < state.length) {
@@ -1564,7 +1541,7 @@ function readBlockSequence(state, nodeIndent) {
 
   if (detected) {
     state.tag = _tag;
-    state.kind = KIND_ARRAY;
+    state.kind = 'sequence';
     state.result = _result;
     return true;
   } else {
@@ -1715,7 +1692,7 @@ function readBlockMapping(state, nodeIndent) {
   // Expose the resulting mapping.
   if (detected) {
     state.tag = _tag;
-    state.kind = KIND_OBJECT;
+    state.kind = 'mapping';
     state.result = _result;
   }
 
@@ -1775,7 +1752,7 @@ function readTagProperty(state) {
         if (!isNamed) {
           tagHandle = state.input.slice(_position - 1, state.position + 1);
 
-          if (state.validate && !PATTERN_TAG_HANDLE.test(tagHandle)) {
+          if (!PATTERN_TAG_HANDLE.test(tagHandle)) {
             throwError(state, 'named tag handle cannot contain such characters');
           }
 
@@ -1791,12 +1768,12 @@ function readTagProperty(state) {
 
     tagName = state.input.slice(_position, state.position);
 
-    if (state.validate && PATTERN_FLOW_INDICATORS.test(tagName)) {
+    if (PATTERN_FLOW_INDICATORS.test(tagName)) {
       throwError(state, 'tag suffix cannot contain flow indicator characters');
     }
   }
 
-  if (state.validate && tagName && !PATTERN_TAG_URI.test(tagName)) {
+  if (tagName && !PATTERN_TAG_URI.test(tagName)) {
     throwError(state, 'tag name cannot contain such characters: ' + tagName);
   }
 
@@ -1902,7 +1879,6 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
       typeIndex,
       typeQuantity,
       type,
-      typeLoader,
       flowIndent,
       blockIndent,
       _result;
@@ -2005,34 +1981,30 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
 
   if (null !== state.tag && '!' !== state.tag) {
     if ('?' === state.tag) {
-      if (state.resolve) {
-        for (typeIndex = 0, typeQuantity = state.implicitTypes.length;
-             typeIndex < typeQuantity;
-             typeIndex += 1) {
-          type = state.implicitTypes[typeIndex];
+      for (typeIndex = 0, typeQuantity = state.implicitTypes.length;
+           typeIndex < typeQuantity;
+           typeIndex += 1) {
+        type = state.implicitTypes[typeIndex];
 
-          // Implicit resolving is not allowed for non-scalar types, and '?'
-          // non-specific tag is only assigned to plain scalars. So, it isn't
-          // needed to check for 'kind' conformity.
+        // Implicit resolving is not allowed for non-scalar types, and '?'
+        // non-specific tag is only assigned to plain scalars. So, it isn't
+        // needed to check for 'kind' conformity.
 
-          if (type.loader.resolver(state)) { // `state.result` updated in resolver if matched
-            state.tag = type.tag;
-            break;
-          }
-
+        if (type.loadResolver && type.loadResolver(state)) { // `state.result` updated in resolver if matched
+          state.tag = type.tag;
+          break;
         }
+
       }
     } else if (_hasOwnProperty.call(state.typeMap, state.tag)) {
-      typeLoader = state.typeMap[state.tag].loader;
+      type = state.typeMap[state.tag];
 
-      if (null !== state.result && typeLoader.kind !== state.kind) {
-        throwError(state, 'unacceptable node kind for !<' + state.tag + '> tag; it should be "' + typeLoader.kind + '", not "' + state.kind + '"');
+      if (null !== state.result && type.loadKind !== state.kind) {
+        throwError(state, 'unacceptable node kind for !<' + state.tag + '> tag; it should be "' + type.loadKind + '", not "' + state.kind + '"');
       }
 
-      if (typeLoader.resolver) {
-        if (!typeLoader.resolver(state)) { // `state.result` updated in resolver if matched
-          throwError(state, 'cannot resolve a node with !<' + state.tag + '> explicit tag');
-        }
+      if (type.loadResolver && !type.loadResolver(state)) { // `state.result` updated in resolver if matched
+        throwError(state, 'cannot resolve a node with !<' + state.tag + '> explicit tag');
       }
     } else {
       throwWarning(state, 'unknown tag !<' + state.tag + '>');
@@ -2138,7 +2110,7 @@ function readDocument(state, iterator) {
   composeNode(state, state.lineIndent - 1, CONTEXT_BLOCK_OUT, false, true);
   skipSeparationSpace(state, true, -1);
 
-  if (state.validate && state.checkLineBreaks &&
+  if (state.checkLineBreaks &&
       PATTERN_NON_ASCII_LINE_BREAKS.test(state.input.slice(documentStart, state.position))) {
     throwWarning(state, 'non-ASCII line breaks are interpreted as content');
   }
@@ -2168,7 +2140,7 @@ function loadAll(input, iterator, options) {
 
   var state = new State(input, options);
 
-  if (state.validate && PATTERN_NON_PRINTABLE.test(state.input)) {
+  if (PATTERN_NON_PRINTABLE.test(state.input)) {
     throwError(state, 'the stream contains non-printable characters');
   }
 
@@ -2216,7 +2188,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":4,"./exception":6,"./mark":8,"./schema/default_full":11,"./schema/default_safe":12}],8:[function(require,module,exports){
+},{"./common":3,"./exception":5,"./mark":7,"./schema/default_full":10,"./schema/default_safe":11}],7:[function(require,module,exports){
 'use strict';
 
 
@@ -2296,7 +2268,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":4}],9:[function(require,module,exports){
+},{"./common":3}],8:[function(require,module,exports){
 'use strict';
 
 
@@ -2349,7 +2321,7 @@ function Schema(definition) {
   this.explicit = definition.explicit || [];
 
   this.implicit.forEach(function (type) {
-    if (null !== type.loader && 'string' !== type.loader.kind) {
+    if (type.loadKind && 'scalar' !== type.loadKind) {
       throw new YAMLException('There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.');
     }
   });
@@ -2401,7 +2373,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":4,"./exception":6,"./type":15}],10:[function(require,module,exports){
+},{"./common":3,"./exception":5,"./type":14}],9:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -2421,7 +2393,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":9,"./json":14}],11:[function(require,module,exports){
+},{"../schema":8,"./json":13}],10:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -2448,7 +2420,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":9,"../type/js/function":20,"../type/js/regexp":21,"../type/js/undefined":22,"./default_safe":12}],12:[function(require,module,exports){
+},{"../schema":8,"../type/js/function":19,"../type/js/regexp":20,"../type/js/undefined":21,"./default_safe":11}],11:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -2478,7 +2450,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":9,"../type/binary":16,"../type/merge":24,"../type/omap":26,"../type/pairs":27,"../type/set":29,"../type/timestamp":31,"./core":10}],13:[function(require,module,exports){
+},{"../schema":8,"../type/binary":15,"../type/merge":23,"../type/omap":25,"../type/pairs":26,"../type/set":28,"../type/timestamp":30,"./core":9}],12:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -2497,7 +2469,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":9,"../type/map":23,"../type/seq":28,"../type/str":30}],14:[function(require,module,exports){
+},{"../schema":8,"../type/map":22,"../type/seq":27,"../type/str":29}],13:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -2524,50 +2496,32 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":9,"../type/bool":17,"../type/float":18,"../type/int":19,"../type/null":25,"./failsafe":13}],15:[function(require,module,exports){
+},{"../schema":8,"../type/bool":16,"../type/float":17,"../type/int":18,"../type/null":24,"./failsafe":12}],14:[function(require,module,exports){
 'use strict';
 
 
 var YAMLException = require('./exception');
 
 
-// TODO: Add tag format check.
-function Type(tag, options) {
-  options = options || {};
-
-  this.tag    = tag;
-  this.loader = options['loader'] || null;
-  this.dumper = options['dumper'] || null;
-
-  if (null === this.loader && null === this.dumper) {
-    throw new YAMLException('Incomplete YAML type definition. "loader" or "dumper" setting must be specified.');
-  }
-
-  if (null !== this.loader) {
-    this.loader = new Type.Loader(this.loader);
-  }
-
-  if (null !== this.dumper) {
-    this.dumper = new Type.Dumper(this.dumper);
-  }
-}
+var TYPE_CONSTRUCTOR_OPTIONS = [
+  'loadKind',
+  'loadResolver',
+  'dumpInstanceOf',
+  'dumpPredicate',
+  'dumpRepresenter',
+  'dumpDefaultStyle',
+  'dumpStyleAliases'
+];
 
 
-Type.Loader = function TypeLoader(options) {
-  options = options || {};
-
-  this.kind     = options['kind']     || null;
-  this.resolver = options['resolver'] || null;
-
-  if ('string' !== this.kind &&
-      'array'  !== this.kind &&
-      'object' !== this.kind) {
-    throw new YAMLException('Unacceptable "kind" setting of a type loader.');
-  }
-};
+var YAML_NODE_KINDS = [
+  'scalar',
+  'sequence',
+  'mapping'
+];
 
 
-function compileAliases(map) {
+function compileStyleAliases(map) {
   var result = {};
 
   if (null !== map) {
@@ -2582,32 +2536,34 @@ function compileAliases(map) {
 }
 
 
-Type.Dumper = function TypeDumper(options) {
+function Type(tag, options) {
   options = options || {};
 
-  this.kind         = options['kind']         || null;
-  this.defaultStyle = options['defaultStyle'] || null;
-  this.instanceOf   = options['instanceOf']   || null;
-  this.representer  = options['representer']  || null;
-  this.styleAliases = compileAliases(options['styleAliases'] || null);
+  Object.keys(options).forEach(function (name) {
+    if (-1 === TYPE_CONSTRUCTOR_OPTIONS.indexOf(name)) {
+      throw new YAMLException('Unknown option "' + name + '" is met in definition of "' + tag + '" YAML type.');
+    }
+  });
 
-  if ('undefined' !== this.kind &&
-      'null'      !== this.kind &&
-      'boolean'   !== this.kind &&
-      'integer'   !== this.kind &&
-      'float'     !== this.kind &&
-      'string'    !== this.kind &&
-      'array'     !== this.kind &&
-      'object'    !== this.kind &&
-      'function'  !== this.kind) {
-    throw new YAMLException('Unacceptable "kind" setting of a type dumper.');
+  // TODO: Add tag format check.
+  this.tag              = tag;
+  this.loadKind         = options['loadKind']         || null;
+  this.loadResolver     = options['loadResolver']     || null;
+  this.dumpInstanceOf   = options['dumpInstanceOf']   || null;
+  this.dumpPredicate    = options['dumpPredicate']    || null;
+  this.dumpRepresenter  = options['dumpRepresenter']  || null;
+  this.dumpDefaultStyle = options['dumpDefaultStyle'] || null;
+  this.dumpStyleAliases = compileStyleAliases(options['dumpStyleAliases'] || null);
+
+  if (-1 === YAML_NODE_KINDS.indexOf(this.loadKind)) {
+    throw new YAMLException('Unknown loadKind "' + this.loadKind + '" is specified for "' + tag + '" YAML type.');
   }
-};
+}
 
 
 module.exports = Type;
 
-},{"./exception":6}],16:[function(require,module,exports){
+},{"./exception":5}],15:[function(require,module,exports){
 // Modified from:
 // https://raw.github.com/kanaka/noVNC/d890e8640f20fba3215ba7be8e0ff145aeb8c17c/include/base64.js
 
@@ -2683,10 +2639,8 @@ function resolveYamlBinary(state) {
   } else {
     // Wrap into Buffer for NodeJS and leave Array for browser
     if (NodeBuffer && NodeBuffer.isBuffer) {
-      console.log("==== cast buffer ====");
       state.result = new NodeBuffer(result);
     } else {
-      console.log("==== return array ====");
       state.result = result;
     }
     return true;
@@ -2726,19 +2680,19 @@ function representYamlBinary(object /*, style*/) {
 }
 
 
+function isBinary(object) {
+  return NodeBuffer && NodeBuffer.isBuffer(object);
+}
+
+
 module.exports = new Type('tag:yaml.org,2002:binary', {
-  loader: {
-    kind: 'string',
-    resolver: resolveYamlBinary
-  },
-  dumper: {
-    kind: 'object',
-    instanceOf: NodeBuffer || {},
-    representer: representYamlBinary
-  }
+  loadKind: 'scalar',
+  loadResolver: resolveYamlBinary,
+  dumpPredicate: isBinary,
+  dumpRepresenter: representYamlBinary
 });
 
-},{"../type":15,"buffer":1}],17:[function(require,module,exports){
+},{"../type":14,"buffer":31}],16:[function(require,module,exports){
 'use strict';
 
 
@@ -2790,23 +2744,24 @@ function resolveYamlBoolean(state) {
 }
 
 
+function isBoolean(object) {
+  return '[object Boolean]' === Object.prototype.toString.call(object);
+}
+
+
 module.exports = new Type('tag:yaml.org,2002:bool', {
-  loader: {
-    kind: 'string',
-    resolver: resolveYamlBoolean
+  loadKind: 'scalar',
+  loadResolver: resolveYamlBoolean,
+  dumpPredicate: isBoolean,
+  dumpRepresenter: {
+    lowercase: function (object) { return object ? 'true' : 'false'; },
+    uppercase: function (object) { return object ? 'TRUE' : 'FALSE'; },
+    camelcase: function (object) { return object ? 'True' : 'False'; }
   },
-  dumper: {
-    kind: 'boolean',
-    defaultStyle: 'lowercase',
-    representer: {
-      lowercase: function (object) { return object ? 'true' : 'false'; },
-      uppercase: function (object) { return object ? 'TRUE' : 'FALSE'; },
-      camelcase: function (object) { return object ? 'True' : 'False'; }
-    }
-  }
+  dumpDefaultStyle: 'lowercase'
 });
 
-},{"../type":15}],18:[function(require,module,exports){
+},{"../type":14}],17:[function(require,module,exports){
 'use strict';
 
 
@@ -2902,19 +2857,21 @@ function representYamlFloat(object, style) {
 }
 
 
+function isFloat(object) {
+  return ('[object Number]' === Object.prototype.toString.call(object)) &&
+         (0 !== object % 1);
+}
+
+
 module.exports = new Type('tag:yaml.org,2002:float', {
-  loader: {
-    kind: 'string',
-    resolver: resolveYamlFloat
-  },
-  dumper: {
-    kind: 'float',
-    defaultStyle: 'lowercase',
-    representer: representYamlFloat
-  }
+  loadKind: 'scalar',
+  loadResolver: resolveYamlFloat,
+  dumpPredicate: isFloat,
+  dumpRepresenter: representYamlFloat,
+  dumpDefaultStyle: 'lowercase'
 });
 
-},{"../type":15}],19:[function(require,module,exports){
+},{"../type":14}],18:[function(require,module,exports){
 'use strict';
 
 
@@ -2984,30 +2941,32 @@ function resolveYamlInteger(state) {
 }
 
 
+function isInteger(object) {
+  return ('[object Number]' === Object.prototype.toString.call(object)) &&
+         (0 === object % 1);
+}
+
+
 module.exports = new Type('tag:yaml.org,2002:int', {
-  loader: {
-    kind: 'string',
-    resolver: resolveYamlInteger
+  loadKind: 'scalar',
+  loadResolver: resolveYamlInteger,
+  dumpPredicate: isInteger,
+  dumpRepresenter: {
+    binary:      function (object) { return '0b' + object.toString(2); },
+    octal:       function (object) { return '0'  + object.toString(8); },
+    decimal:     function (object) { return        object.toString(10); },
+    hexadecimal: function (object) { return '0x' + object.toString(16).toUpperCase(); }
   },
-  dumper: {
-    kind: 'integer',
-    defaultStyle: 'decimal',
-    representer: {
-      binary:      function (object) { return '0b' + object.toString(2); },
-      octal:       function (object) { return '0'  + object.toString(8); },
-      decimal:     function (object) { return        object.toString(10); },
-      hexadecimal: function (object) { return '0x' + object.toString(16).toUpperCase(); }
-    },
-    styleAliases: {
-      binary:      [ 2,  'bin' ],
-      octal:       [ 8,  'oct' ],
-      decimal:     [ 10, 'dec' ],
-      hexadecimal: [ 16, 'hex' ]
-    }
+  dumpDefaultStyle: 'decimal',
+  dumpStyleAliases: {
+    binary:      [ 2,  'bin' ],
+    octal:       [ 8,  'oct' ],
+    decimal:     [ 10, 'dec' ],
+    hexadecimal: [ 16, 'hex' ]
   }
 });
 
-},{"../type":15}],20:[function(require,module,exports){
+},{"../type":14}],19:[function(require,module,exports){
 'use strict';
 
 
@@ -3068,18 +3027,19 @@ function representJavascriptFunction(object /*, style*/) {
 }
 
 
+function isFunction(object) {
+  return '[object Function]' === Object.prototype.toString.call(object);
+}
+
+
 module.exports = new Type('tag:yaml.org,2002:js/function', {
-  loader: {
-    kind: 'string',
-    resolver: resolveJavascriptFunction
-  },
-  dumper: {
-    kind: 'function',
-    representer: representJavascriptFunction
-  }
+  loadKind: 'scalar',
+  loadResolver: resolveJavascriptFunction,
+  dumpPredicate: isFunction,
+  dumpRepresenter: representJavascriptFunction
 });
 
-},{"../../type":15,"esprima":"S2ZkVY"}],21:[function(require,module,exports){
+},{"../../type":14,"esprima":"S2ZkVY"}],20:[function(require,module,exports){
 'use strict';
 
 
@@ -3125,19 +3085,19 @@ function representJavascriptRegExp(object /*, style*/) {
 }
 
 
+function isRegExp(object) {
+  return '[object RegExp]' === Object.prototype.toString.call(object);
+}
+
+
 module.exports = new Type('tag:yaml.org,2002:js/regexp', {
-  loader: {
-    kind: 'string',
-    resolver: resolveJavascriptRegExp
-  },
-  dumper: {
-    kind: 'object',
-    instanceOf: RegExp,
-    representer: representJavascriptRegExp
-  }
+  loadKind: 'scalar',
+  loadResolver: resolveJavascriptRegExp,
+  dumpPredicate: isRegExp,
+  dumpRepresenter: representJavascriptRegExp
 });
 
-},{"../../type":15}],22:[function(require,module,exports){
+},{"../../type":14}],21:[function(require,module,exports){
 'use strict';
 
 
@@ -3155,18 +3115,19 @@ function representJavascriptUndefined(/*object, explicit*/) {
 }
 
 
+function isUndefined(object) {
+  return 'undefined' === typeof object;
+}
+
+
 module.exports = new Type('tag:yaml.org,2002:js/undefined', {
-  loader: {
-    kind: 'string',
-    resolver: resolveJavascriptUndefined
-  },
-  dumper: {
-    kind: 'undefined',
-    representer: representJavascriptUndefined
-  }
+  loadKind: 'scalar',
+  loadResolver: resolveJavascriptUndefined,
+  dumpPredicate: isUndefined,
+  dumpRepresenter: representJavascriptUndefined
 });
 
-},{"../../type":15}],23:[function(require,module,exports){
+},{"../../type":14}],22:[function(require,module,exports){
 'use strict';
 
 
@@ -3174,12 +3135,10 @@ var Type = require('../type');
 
 
 module.exports = new Type('tag:yaml.org,2002:map', {
-  loader: {
-    kind: 'object'
-  }
+  loadKind: 'mapping'
 });
 
-},{"../type":15}],24:[function(require,module,exports){
+},{"../type":14}],23:[function(require,module,exports){
 'use strict';
 
 
@@ -3192,13 +3151,11 @@ function resolveYamlMerge(state) {
 
 
 module.exports = new Type('tag:yaml.org,2002:merge', {
-  loader: {
-    kind: 'string',
-    resolver: resolveYamlMerge
-  }
+  loadKind: 'scalar',
+  loadResolver: resolveYamlMerge
 });
 
-},{"../type":15}],25:[function(require,module,exports){
+},{"../type":14}],24:[function(require,module,exports){
 'use strict';
 
 
@@ -3222,24 +3179,25 @@ function resolveYamlNull(state) {
 }
 
 
+function isNull(object) {
+  return null === object;
+}
+
+
 module.exports = new Type('tag:yaml.org,2002:null', {
-  loader: {
-    kind: 'string',
-    resolver: resolveYamlNull
+  loadKind: 'scalar',
+  loadResolver: resolveYamlNull,
+  dumpPredicate: isNull,
+  dumpRepresenter: {
+    canonical: function () { return '~';    },
+    lowercase: function () { return 'null'; },
+    uppercase: function () { return 'NULL'; },
+    camelcase: function () { return 'Null'; }
   },
-  dumper: {
-    kind: 'null',
-    defaultStyle: 'lowercase',
-    representer: {
-      canonical: function () { return '~';    },
-      lowercase: function () { return 'null'; },
-      uppercase: function () { return 'NULL'; },
-      camelcase: function () { return 'Null'; }
-    }
-  }
+  dumpDefaultStyle: 'lowercase'
 });
 
-},{"../type":15}],26:[function(require,module,exports){
+},{"../type":14}],25:[function(require,module,exports){
 'use strict';
 
 
@@ -3288,13 +3246,11 @@ function resolveYamlOmap(state) {
 
 
 module.exports = new Type('tag:yaml.org,2002:omap', {
-  loader: {
-    kind: 'array',
-    resolver: resolveYamlOmap
-  }
+  loadKind: 'sequence',
+  loadResolver: resolveYamlOmap
 });
 
-},{"../type":15}],27:[function(require,module,exports){
+},{"../type":14}],26:[function(require,module,exports){
 'use strict';
 
 
@@ -3332,13 +3288,11 @@ function resolveYamlPairs(state) {
 
 
 module.exports = new Type('tag:yaml.org,2002:pairs', {
-  loader: {
-    kind: 'array',
-    resolver: resolveYamlPairs
-  }
+  loadKind: 'sequence',
+  loadResolver: resolveYamlPairs
 });
 
-},{"../type":15}],28:[function(require,module,exports){
+},{"../type":14}],27:[function(require,module,exports){
 'use strict';
 
 
@@ -3346,12 +3300,10 @@ var Type = require('../type');
 
 
 module.exports = new Type('tag:yaml.org,2002:seq', {
-  loader: {
-    kind: 'array'
-  }
+  loadKind: 'sequence'
 });
 
-},{"../type":15}],29:[function(require,module,exports){
+},{"../type":14}],28:[function(require,module,exports){
 'use strict';
 
 
@@ -3377,13 +3329,11 @@ function resolveYamlSet(state) {
 
 
 module.exports = new Type('tag:yaml.org,2002:set', {
-  loader: {
-    kind: 'object',
-    resolver: resolveYamlSet
-  }
+  loadKind: 'mapping',
+  loadResolver: resolveYamlSet
 });
 
-},{"../type":15}],30:[function(require,module,exports){
+},{"../type":14}],29:[function(require,module,exports){
 'use strict';
 
 
@@ -3391,12 +3341,10 @@ var Type = require('../type');
 
 
 module.exports = new Type('tag:yaml.org,2002:str', {
-  loader: {
-    kind: 'string'
-  }
+  loadKind: 'scalar'
 });
 
-},{"../type":15}],31:[function(require,module,exports){
+},{"../type":14}],30:[function(require,module,exports){
 'use strict';
 
 
@@ -3479,18 +3427,15 @@ function representYamlTimestamp(object /*, style*/) {
 
 
 module.exports = new Type('tag:yaml.org,2002:timestamp', {
-  loader: {
-    kind: 'string',
-    resolver: resolveYamlTimestamp
-  },
-  dumper: {
-    kind: 'object',
-    instanceOf: Date,
-    representer: representYamlTimestamp
-  }
+  loadKind: 'scalar',
+  loadResolver: resolveYamlTimestamp,
+  dumpInstanceOf: Date,
+  dumpRepresenter: representYamlTimestamp
 });
 
-},{"../type":15}]},{},[2])
-(2)
+},{"../type":14}],31:[function(require,module,exports){
+
+},{}]},{},[1])
+(1)
 });
 ;
