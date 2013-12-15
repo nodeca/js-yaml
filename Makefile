@@ -94,9 +94,9 @@ browserify:
 		browserify -r ./index_browser.js -s jsyaml -x esprima -i buffer \
 		) > js-yaml.js
 	# Minify
-	( echo -n "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" ; \
-		uglifyjs js-yaml.js -m \
-		) > js-yaml.min.js
+	uglifyjs js-yaml.js -m \
+		--preamble "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" \
+		> js-yaml.min.js
 	# Update bower package
 	sed -i -r -e \
 		"s/(\"version\":\s*)\"[0-9]+[.][0-9]+[.][0-9]+\"/\1\"${NPM_VERSION}\"/" \
