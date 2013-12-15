@@ -7,6 +7,7 @@
   - load `esprima` manually, if !!js/function needed
   - !!bin now returns Array in browser
 - AMD support.
+- Don't quote dumped strings because of `-` & `?` (if not first char).
 
 
 2.1.3 / 2013-10-16
