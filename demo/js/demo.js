@@ -9,17 +9,17 @@ window.runDemo = function runDemo() {
 
   // add sexy constructor
   var sexyType = new jsyaml.Type('!sexy', {
-    loader: {
-      kind: 'array',
-      resolver: function (object, explicit) {
-        var index, length;
+    loadKind: 'sequence', // See node kinds in YAML spec: http://www.yaml.org/spec/1.2/spec.html#kind//
+    loadResolver: function (state) {
+      // You can access actual data from YAML via `state.result`.
+      // After the resolving, you should put the resolved value into `state.result`.
+      var index, length;
 
-        for (index = 0, length = object.length; index < length; index += 1) {
-          object[index] = 'sexy ' + object[index];
-        }
-
-        return object;
+      for (index = 0, length = state.result.length; index < length; index += 1) {
+        state.result[index] = 'sexy ' + state.result[index];
       }
+      
+      return true;
     }
   });
 
