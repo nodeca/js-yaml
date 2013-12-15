@@ -102,7 +102,7 @@ browserify:
 	cp -r support/browserify/ ${TMP_PATH}
 	#browserify -r ./index_browser.js -o ${TMP_PATH}/50_js-yaml.js
 	#cat ${TMP_PATH}/* > js-yaml.js
-	browserify -r ./index_browser.js -s jsyaml -x esprima -o js-yaml.js
+	browserify -r ./index_browser.js -s jsyaml -x esprima -i buffer -o js-yaml.js
 	rm -rf ${TMP_PATH}
 	cp js-yaml.js demo/js/
 	uglifyjs js-yaml.js -m > js-yaml.min.js
