@@ -9,7 +9,7 @@ REMOTE_NAME ?= origin
 REMOTE_REPO ?= $(shell git config --get remote.${REMOTE_NAME}.url)
 
 CURR_HEAD   := $(firstword $(shell git show-ref --hash HEAD | cut -b -6) master)
-GITHUB_PROJ := nodeca/${NPM_PACKAGE}
+GITHUB_PROJ := https://github.com/nodeca/${NPM_PACKAGE}
 
 
 help:
@@ -65,7 +65,7 @@ gh-pages:
 		git commit -q -m 'Updated browserified demo'
 	cd ${TMP_PATH} && \
 		git remote add remote ${REMOTE_REPO} && \
-		git push --force remote +master:gh-pages 
+		git push --force remote +master:gh-pages
 	rm -rf ${TMP_PATH}
 
 
@@ -83,19 +83,26 @@ publish:
 		exit 128 ; \
 		fi
 	git tag ${NPM_VERSION} && git push origin ${NPM_VERSION}
-	npm publish https://github.com/${GITHUB_PROJ}/tarball/${NPM_VERSION}
+	npm publish ${GITHUB_PROJ}/tarball/${NPM_VERSION}
 
 
 browserify:
 	if test ! `which browserify` ; then npm install browserify ; fi
 	if test ! `which uglifyjs` ; then npm install uglify-js ; fi
-	cp -r support/browserify/ ${TMP_PATH}
-	#browserify -r ./index_browser.js -o ${TMP_PATH}/50_js-yaml.js
-	#cat ${TMP_PATH}/* > js-yaml.js
-	browserify -r ./index_browser.js -s jsyaml -x esprima -i buffer > js-yaml.js
-	rm -rf ${TMP_PATH}
+	# Browserify
+	( echo -n "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" ; \
+		browserify -r ./index_browser.js -s jsyaml -x esprima -i buffer \
+		) > js-yaml.js
+	# Minify
+	( echo -n "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" ; \
+		uglifyjs js-yaml.js -m \
+		) > js-yaml.min.js
+	# Update bower package
+	sed -i -r -e \
+		"s/(\"version\":\s*)\"[0-9]+[.][0-9]+[.][0-9]+\"/\1\"${NPM_VERSION}\"/" \
+		bower.json
+	# Update browser demo
 	cp js-yaml.js demo/js/
-	uglifyjs js-yaml.js -m > js-yaml.min.js
 
 
 todo:
