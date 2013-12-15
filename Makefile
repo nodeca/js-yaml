@@ -16,7 +16,7 @@ help:
 	echo "make help       - Print this help"
 	echo "make lint       - Lint sources with JSHint"
 	echo "make test       - Lint sources and run all tests"
-	echo "make doc        - Build API docs"
+	echo "make browserify - Build browserified version"
 	echo "make dev-deps   - Install developer dependencies"
 	echo "make gh-pages   - Build and push API docs into gh-pages branch"
 	echo "make publish    - Set new version tag and publish npm package"
@@ -39,16 +39,6 @@ test: lint
 		exit 128 ; \
 		fi
 	NODE_ENV=test mocha -R spec
-
-
-doc:
-	@if test ! `which ndoc` ; then \
-		echo "You need 'ndoc' installed in order to generate docs." >&2 ; \
-		echo "  $ npm install -g ndoc" >&2 ; \
-		exit 128 ; \
-		fi
-	rm -rf ./doc
-	ndoc --link-format "{package.homepage}/blob/${CURR_HEAD}/{file}#L{line}"
 
 
 dev-deps:
@@ -102,7 +92,7 @@ browserify:
 	cp -r support/browserify/ ${TMP_PATH}
 	#browserify -r ./index_browser.js -o ${TMP_PATH}/50_js-yaml.js
 	#cat ${TMP_PATH}/* > js-yaml.js
-	browserify -r ./index_browser.js -s jsyaml -x esprima -i buffer -o js-yaml.js
+	browserify -r ./index_browser.js -s jsyaml -x esprima -i buffer > js-yaml.js
 	rm -rf ${TMP_PATH}
 	cp js-yaml.js demo/js/
 	uglifyjs js-yaml.js -m > js-yaml.min.js
@@ -112,5 +102,5 @@ todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true
 
 
-.PHONY: publish lint test doc dev-deps gh-pages todo
-.SILENT: help lint test doc todo
+.PHONY: publish lint test dev-deps gh-pages todo
+.SILENT: help lint test todo
