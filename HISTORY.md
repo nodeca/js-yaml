@@ -1,4 +1,4 @@
-3.0.0 / WIP
+3.0.0 / 2013-12-16
 ------------------
 
 - Refactored code. Changed API for custom types.
