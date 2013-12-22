@@ -1,8 +1,9 @@
-3.0.1 / WIP
+3.0.1 / 2013-12-22
 ------------------
-- Fix parsing of literal scalars. (issue #108)
-- Prevent adding unnecessary spaces in object dumps. (issue #68)
-- Fix dumping of objects with very long (> 1024 in length) keys.
+
+- Fixed parsing of literal scalars. (issue #108)
+- Prevented adding unnecessary spaces in object dumps. (issue #68)
+- Fixed dumping of objects with very long (> 1024 in length) keys.
 
 
 3.0.0 / 2013-12-16
