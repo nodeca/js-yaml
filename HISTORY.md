@@ -1,3 +1,9 @@
+3.0.1 / WIP
+------------------
+- Fix parsing of literal scalars. (issue #108)
+- Prevent adding unnecessary spaces in object dumps. (issue #68)
+
+
 3.0.0 / 2013-12-16
 ------------------
 
