@@ -442,10 +442,15 @@ function writeBlockMapping(state, level, object, compact) {
       continue; // Skip this pair because of invalid key.
     }
 
-    explicitPair = (null !== state.tag && '?' !== state.tag && state.dump.length <= 1024);
+    explicitPair = (null !== state.tag && '?' !== state.tag) ||
+                   (state.dump && state.dump.length > 1024);
 
     if (explicitPair) {
-      pairBuffer += '? ';
+      if (state.dump && CHAR_LINE_FEED === state.dump.charCodeAt(0)) {
+        pairBuffer += '?';
+      } else {
+        pairBuffer += '? ';
+      }
     }
 
     pairBuffer += state.dump;
@@ -458,7 +463,13 @@ function writeBlockMapping(state, level, object, compact) {
       continue; // Skip this pair because of invalid value.
     }
 
-    pairBuffer += ': ' + state.dump;
+    if (state.dump && CHAR_LINE_FEED === state.dump.charCodeAt(0)) {
+      pairBuffer += ':';
+    } else {
+      pairBuffer += ': ';
+    }
+
+    pairBuffer += state.dump;
 
     // Both key and value are valid.
     _result += pairBuffer;
@@ -1473,7 +1484,15 @@ function readBlockScalar(state, nodeIndent) {
 
     // Literal style: just add exact number of line breaks between content lines.
     } else {
-      state.result += common.repeat('\n', emptyLines + 1);
+
+      // If current line isn't the first one - count line break from the last content line.
+      if (detectedIndent) {
+        state.result += common.repeat('\n', emptyLines + 1);
+
+      // In case of the first content line - count only empty lines.
+      } else {
+        state.result += common.repeat('\n', emptyLines);
+      }
     }
 
     detectedIndent = true;
@@ -3039,7 +3058,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   dumpRepresenter: representJavascriptFunction
 });
 
-},{"../../type":14,"esprima":"S2ZkVY"}],20:[function(require,module,exports){
+},{"../../type":14,"esprima":"UYGR5l"}],20:[function(require,module,exports){
 'use strict';
 
 
@@ -3438,4 +3457,3 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 },{}]},{},[1])
 (1)
 });
-;
