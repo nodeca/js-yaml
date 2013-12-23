@@ -90,12 +90,12 @@ browserify:
 	if test ! `which browserify` ; then npm install browserify ; fi
 	if test ! `which uglifyjs` ; then npm install uglify-js ; fi
 	# Browserify
-	( echo -n "/* ${NPM_PACKAGE} ${NPM_VERSION} https://github.com/${GITHUB_PROJ} */" ; \
-		browserify -r ./index_browser.js -s jsyaml -x esprima -i buffer \
+	( echo -n "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" ; \
+		browserify -r ./ -s jsyaml -x esprima \
 		) > js-yaml.js
 	# Minify
 	uglifyjs js-yaml.js -c -m \
-		--preamble "/* ${NPM_PACKAGE} ${NPM_VERSION} https://github.com/${GITHUB_PROJ} */" \
+		--preamble "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" \
 		> js-yaml.min.js
 	# Update bower package
 	sed -i -r -e \

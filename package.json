@@ -5,22 +5,12 @@
   "keywords"        : ["yaml", "parser", "serializer", "pyyaml"],
   "homepage"        : "https://github.com/nodeca/js-yaml",
 
-  "author"          : {
-                        "name"  : "Dervus Grim",
-                        "email" : "dervus.grim@gmail.com"
-                      },
+  "author"          : "Dervus Grim <dervus.grim@gmail.com>",
 
   "contributors"    : [
-                        {
-                          "name"  : "Aleksey V Zapparov",
-                          "email" : "ixti@member.fsf.org",
-                          "url"   : "http://www.ixti.net/"
-                        },
-                        {
-                          "name"  : "Martin Grenfell",
-                          "email" : "martin.grenfell@gmail.com",
-                          "url"   : "http://got-ravings.blogspot.com"
-                        }
+                        "Aleksey V Zapparov <ixti@member.fsf.org> (http://www.ixti.net/)",
+                        "Vitaly Puzrin <vitaly@rcdesign.ru> (https://github.com/puzrin)",
+                        "Martin Grenfell <martin.grenfell@gmail.com> (http://got-ravings.blogspot.com)"
                       ],
 
   "bugs"            : { "url": "https://github.com/nodeca/js-yaml/issues" },
@@ -30,10 +20,12 @@
   "main"            : "./index.js",
 
   "bin"             : { "js-yaml": "bin/js-yaml.js" },
-  "scripts"         : { "test": "make test" },
 
   "dependencies"    : { "argparse": "~ 0.1.11",
                         "esprima":  "~ 1.0.2" },
   "devDependencies" : { "mocha": "*" },
-  "engines"         : { "node": ">= 0.6.0" }
+  "browser"         : {
+                        "./index.js": "./index_browser.js",
+                        "buffer": false
+                      }
 }
