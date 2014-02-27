@@ -1,4 +1,4 @@
-3.0.2 / --
+3.0.2 / 2014-02-27
 ------------------
 
 - Fixed bug: "constructor" string parsed as `null`.
