@@ -23,7 +23,11 @@
 
   "dependencies"    : { "argparse": "~ 0.1.11",
                         "esprima":  "~ 1.0.2" },
-  "devDependencies" : { "mocha": "*" },
+  "devDependencies" : {
+                        "ansi": "*",
+                        "benchmark": "*",
+                        "mocha": "*"
+                      },
   "browser"         : {
                         "./index.js": "./index_browser.js",
                         "buffer": false
