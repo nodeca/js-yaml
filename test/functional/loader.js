@@ -6,7 +6,7 @@ var jsyaml = require('../../lib/js-yaml');
 var helper = require('../support/helper');
 
 var paranoidEqual = require('../support/assert-paranoid-equal').paranoidEqual;
-var TEST_SCHEMA   = require('../support/schema');
+var TEST_SCHEMA   = require('../support/schema').TEST_SCHEMA;
 
 
 helper.generateTests({

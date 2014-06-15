@@ -6,7 +6,7 @@ var assert = require('assert');
 var jsyaml = require('../../lib/js-yaml');
 var helper = require('../support/helper');
 
-var TEST_SCHEMA   = require('../support/schema');
+var TEST_SCHEMA   = require('../support/schema').TEST_SCHEMA;
 var YAMLException = require('../../lib/js-yaml/exception');
 
 
