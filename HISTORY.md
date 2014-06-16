@@ -1,3 +1,14 @@
+3.1.0 / WIP
+------------------
+
+- 1.5x-2x speed boost.
+- Removed deprecated `require('xxx.yml')` support.
+- Significant code cleanup and refactoring.
+- Internal API changed. If you used custom validators - see updated examples.
+  Others are not affected.
+- Added benchmark scripts.
+
+
 3.0.2 / 2014-02-27
 ------------------
 
