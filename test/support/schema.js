@@ -31,7 +31,7 @@ var TEST_SCHEMA = yaml.Schema.create([
   // class from this array.
   new yaml.Type('!tag3', {
     loadKind: 'mapping',
-    loadValidator: function (data) {
+    loadValidate: function (data) {
       if (null === data) {
         return false;
       }
@@ -44,27 +44,27 @@ var TEST_SCHEMA = yaml.Schema.create([
       }
       return true;
     },
-    loadResolver: function (data) {
+    loadCreate: function (data) {
       return new Tag3({ x: (data['='] || data.x), y: data.y, z: data.z });
     },
     dumpInstanceOf: Tag3,
-    dumpRepresenter: function (object) {
+    dumpRepresent: function (object) {
       return { '=': object.x, y: object.y, z: object.z };
     }
   }),
   new yaml.Type('!tag2', {
     loadKind: 'scalar',
-    loadResolver: function (data) {
+    loadCreate: function (data) {
       return new Tag2({ x: ('number' === typeof data) ? data : parseInt(data, 10) });
     },
     dumpInstanceOf: Tag2,
-    dumpRepresenter: function (object) {
+    dumpRepresent: function (object) {
       return String(object.x);
     }
   }),
   new yaml.Type('!tag1', {
     loadKind: 'mapping',
-    loadValidator: function (data) {
+    loadValidate: function (data) {
       if (null === data) {
         return false;
       }
@@ -76,14 +76,14 @@ var TEST_SCHEMA = yaml.Schema.create([
       }
       return true;
     },
-    loadResolver: function (data) {
+    loadCreate: function (data) {
       return new Tag1({ x: data.x, y: data.y, z: data.z });
     },
     dumpInstanceOf: Tag1
   }),
   new yaml.Type('!foo', {
     loadKind: 'mapping',
-    loadValidator: function (data) {
+    loadValidate: function (data) {
       if (null === data) {
         return false;
       }
@@ -92,14 +92,14 @@ var TEST_SCHEMA = yaml.Schema.create([
       }
       return true;
     },
-    loadResolver: function (data) {
+    loadCreate: function (data) {
       return new Foo({
         myParameter:        data['my-parameter'],
         myAnotherParameter: data['my-another-parameter']
       });
     },
     dumpInstanceOf: Foo,
-    dumpRepresenter: function (object) {
+    dumpRepresent: function (object) {
       return {
         'my-parameter':         object.myParameter,
         'my-another-parameter': object.myAnotherParameter
