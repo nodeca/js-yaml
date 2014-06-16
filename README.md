@@ -1,7 +1,8 @@
 JS-YAML - YAML 1.2 parser and serializer for JavaScript
 =======================================================
 
-[![Build Status](https://secure.travis-ci.org/nodeca/js-yaml.png)](http://travis-ci.org/nodeca/js-yaml)
+[![Build Status](https://travis-ci.org/nodeca/js-yaml.svg?branch=master)](https://travis-ci.org/nodeca/js-yaml)
+[![NPM version](https://img.shields.io/npm/v/js-yaml.svg)](https://www.npmjs.org/package/js-yaml)
 
 [Online Demo](http://nodeca.github.com/js-yaml/)
 
