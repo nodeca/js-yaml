@@ -3,10 +3,12 @@
 
 
 var assert = require('assert');
+var yaml = require('../../');
+var readFileSync = require('fs').readFileSync;
 
 
 it('should convert new line into white space', function () {
-  var data = require('./data/issue-26.yml');
+  var data = yaml.safeLoad(readFileSync(__dirname + '/data/issue-26.yml', 'utf8'));
 
   assert.equal(data.test, 'a b c\n');
 });

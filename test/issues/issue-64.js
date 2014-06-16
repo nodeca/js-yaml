@@ -3,11 +3,12 @@
 
 
 var assert = require('assert');
-var yaml   = require('../../lib/js-yaml');
+var yaml = require('../../');
+var readFileSync = require('fs').readFileSync;
 
 
 it('Wrong error message when yaml file contains tabs', function () {
   assert.doesNotThrow(
-    function () { require('./data/issue-64.yml'); },
+    function () { yaml.safeLoad(readFileSync(__dirname + '/data/issue-64.yml', 'utf8')); },
     yaml.YAMLException);
 });

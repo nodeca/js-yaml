@@ -3,10 +3,12 @@
 
 
 var assert = require('assert');
+var yaml = require('../../');
+var readFileSync = require('fs').readFileSync;
 
 
 it('Timestamp parsing is one month off', function () {
-  var data = require('./data/issue-19.yml');
+  var data = yaml.safeLoad(readFileSync(__dirname + '/data/issue-19.yml', 'utf8'));
 
   // JS month starts with 0 (0 => Jan, 1 => Feb, ...)
   assert.equal(data.xmas.getTime(), Date.UTC(2011, 11, 24));

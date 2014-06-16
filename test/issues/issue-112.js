@@ -3,7 +3,7 @@
 
 
 var assert = require('assert');
-var yaml   = require('../../lib/js-yaml');
+var yaml   = require('../../');
 
 
 it('Plain scalar "constructor" parsed as `null`', function () {

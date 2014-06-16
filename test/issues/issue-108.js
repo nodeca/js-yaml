@@ -3,7 +3,7 @@
 
 
 var assert = require('assert');
-var yaml   = require('../../lib/js-yaml');
+var yaml   = require('../../');
 
 
 it('Literal scalars have an unwanted leading line break', function () {

@@ -29,7 +29,6 @@
                         "mocha": "*"
                       },
   "browser"         : {
-                        "./index.js": "./index_browser.js",
                         "buffer": false
                       }
 }

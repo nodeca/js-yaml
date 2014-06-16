@@ -3,7 +3,7 @@
 
 
 var assert = require('assert');
-var yaml   = require('../../lib/js-yaml');
+var yaml   = require('../../');
 
 
 it('Prevent adding unnecessary space character to end of a line within block collections', function () {
