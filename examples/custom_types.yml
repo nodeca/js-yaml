@@ -15,4 +15,4 @@ spaces:
   - !point [ 12, 43, 0 ]
   - !point [ 1, 4, 90 ]
 
-- !space {} # An empty space
+- !space # An empty space
