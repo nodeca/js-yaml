@@ -225,25 +225,17 @@ function: !!js/function >
 
 
 # JS-YAML allows you to specify a custom YAML types for your structures.
-# This is an example of custom constructor defined in `js/demo.js` for
-# custom `!sexy` constructor:
+# This is a simple example of custom constructor defined in `js/demo.js` for
+# custom `!sexy` type:
 #
-# var sexyType = new jsyaml.Type('!sexy', {
-#   loader: {
-#     kind: 'array',
-#     resolver: function (object, explicit) {
-#       var index, length;
-#
-#       for (index = 0, length = object.length; index < length; index += 1) {
-#         object[index] = 'sexy ' + object[index];
-#       }
-#
-#       return object;
-#     }
+# var SexyYamlType = new jsyaml.Type('!sexy', {
+#   kind: 'sequence',
+#   construct: function (data) {
+#     return data.map(function (string) { return 'sexy ' + string; });
 #   }
 # });
 #
-# var SEXY_SCHEMA = jsyaml.Schema.create([ sexyType ]);
+# var SEXY_SCHEMA = jsyaml.Schema.create([ SexyYamlType ]);
 #
 # result = jsyaml.load(yourData, { schema: SEXY_SCHEMA });
 
