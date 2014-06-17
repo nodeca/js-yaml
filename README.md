@@ -103,8 +103,8 @@ options:
 
 - `filename` _(default: null)_ - string to be used as a file path in
   error/warning messages.
-- `strict` _(default - false)_ makes the loader to throw errors instead of
-  warnings.
+- `onWarning` _(default: null)_ - function to call on warning messages.
+  Loader will throw on warnings if this function is not provided.
 - `schema` _(default: `DEFAULT_SAFE_SCHEMA`)_ - specifies a schema to use.
   - `FAILSAFE_SCHEMA` - only strings, arrays and plain objects:
     http://www.yaml.org/spec/1.2/spec.html#id2802346
