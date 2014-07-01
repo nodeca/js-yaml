@@ -6,7 +6,7 @@ var assert = require('assert');
 var yaml   = require('../../');
 
 
-it.skip('Invalid errors/warnings of invalid indentation on flow scalars', function () {
+it('Invalid errors/warnings of invalid indentation on flow scalars', function () {
   var sources = [
     'text:\n    hello\n  world',   // plain style
     "text:\n    'hello\n  world'", // single-quoted style
