@@ -8,7 +8,7 @@ var readFileSync = require('fs').readFileSync;
 
 
 it('should convert new line into white space', function () {
-  var data = yaml.safeLoad(readFileSync(__dirname + '/data/issue-26.yml', 'utf8'));
+  var data = yaml.safeLoad(readFileSync(__dirname + '/0026.yml', 'utf8'));
 
   assert.equal(data.test, 'a b c\n');
 });

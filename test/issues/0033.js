@@ -8,7 +8,9 @@ var readFileSync = require('fs').readFileSync;
 
 
 it('refactor compact variant of MarkedYAMLError.toString', function () {
-  assert.throws(
-    function () { yaml.safeLoad(readFileSync(__dirname + '/data/issue-33.yml', 'utf8')); },
-    "require('issue-33.yml') should throw, but it does not");
+  var source = readFileSync(__dirname + '/0033.yml', 'utf8');
+
+  assert.throws(function () {
+    yaml.safeLoad(source);
+  }, "require('issue-33.yml') should throw, but it does not");
 });
