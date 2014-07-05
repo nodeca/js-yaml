@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var schema = require('../../support/schema');
+var schema = require('../support/schema');
 
 var expected = [
   new schema.Tag1({ x: 1 }),

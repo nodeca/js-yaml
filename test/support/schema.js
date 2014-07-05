@@ -1,7 +1,9 @@
 'use strict';
 
+
 var util = require('util');
 var yaml = require('../../lib/js-yaml');
+
 
 function Tag1(parameters) {
   this.x = parameters.x;
@@ -9,20 +11,24 @@ function Tag1(parameters) {
   this.z = parameters.z || 0;
 }
 
+
 function Tag2() {
   Tag1.apply(this, arguments);
 }
 util.inherits(Tag2, Tag1);
+
 
 function Tag3() {
   Tag2.apply(this, arguments);
 }
 util.inherits(Tag3, Tag2);
 
+
 function Foo(parameters) {
   this.myParameter        = parameters.myParameter;
   this.myAnotherParameter = parameters.myAnotherParameter;
 }
+
 
 var TEST_SCHEMA = yaml.Schema.create([
   // NOTE: Type order matters!
@@ -108,8 +114,9 @@ var TEST_SCHEMA = yaml.Schema.create([
   })
 ]);
 
-exports.Tag1 = Tag1;
-exports.Tag2 = Tag2;
-exports.Tag3 = Tag3;
-exports.Foo = Foo;
-exports.TEST_SCHEMA = TEST_SCHEMA;
+
+module.exports.Tag1 = Tag1;
+module.exports.Tag2 = Tag2;
+module.exports.Tag3 = Tag3;
+module.exports.Foo = Foo;
+module.exports.TEST_SCHEMA = TEST_SCHEMA;
