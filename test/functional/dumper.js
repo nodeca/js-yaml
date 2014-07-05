@@ -1,12 +1,12 @@
 'use strict';
 
 
+var assert = require('assert');
 var path   = require('path');
 var jsyaml = require('../../lib/js-yaml');
 var helper = require('../support/helper');
 
-var paranoidEqual = require('../support/assert-paranoid-equal').paranoidEqual;
-var TEST_SCHEMA   = require('../support/schema').TEST_SCHEMA;
+var TEST_SCHEMA = require('../support/schema').TEST_SCHEMA;
 
 
 helper.generateTests({
@@ -24,7 +24,7 @@ helper.generateTests({
     if ('function' === typeof object) {
       object.call(this, deserialized);
     } else {
-      paranoidEqual(deserialized, object);
+      assert.deepEqual(deserialized, object);
     }
   }
 });
