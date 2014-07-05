@@ -5,7 +5,7 @@ var assert = require('assert');
 var yaml   = require('../../');
 
 
-it('Empty block scalars loaded wrong', function () {
+test('Empty block scalars loaded wrong', function () {
   assert.deepEqual(yaml.load('a: |\nb: .'),  { a: '', b: '.' });
   assert.deepEqual(yaml.load('a: |+\nb: .'), { a: '', b: '.' });
   assert.deepEqual(yaml.load('a: |-\nb: .'), { a: '', b: '.' });

@@ -5,7 +5,7 @@ var assert = require('assert');
 var yaml   = require('../../');
 
 
-it('Loading multidocument source using `load` should cause an error', function () {
+test('Loading multidocument source using `load` should cause an error', function () {
   assert.throws(function () {
     yaml.load('--- # first document\n--- # second document\n');
   }, yaml.YAMLException);

@@ -6,7 +6,7 @@ var yaml = require('../../');
 var readFileSync = require('fs').readFileSync;
 
 
-it('refactor compact variant of MarkedYAMLError.toString', function () {
+test('refactor compact variant of MarkedYAMLError.toString', function () {
   var source = readFileSync(__dirname + '/0033.yml', 'utf8');
 
   assert.throws(function () {

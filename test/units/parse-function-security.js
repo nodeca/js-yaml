@@ -15,7 +15,7 @@ global.makeBadThing = function (thing) {
 };
 
 
-it('Function constructor must not allow to execute any code while parsing.', function () {
+test('Function constructor must not allow to execute any code while parsing.', function () {
   var filename = path.join(__dirname, 'parse-function-security.yml'),
       contents = fs.readFileSync(filename, 'utf8');
 

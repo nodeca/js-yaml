@@ -9,7 +9,7 @@ var yaml   = require('../');
 var TEST_SCHEMA = require('./support/schema').TEST_SCHEMA;
 
 
-describe('Loader', function () {
+suite('Loader', function () {
   var samplesDir = path.resolve(__dirname, 'samples-common');
 
   fs.readdirSync(samplesDir).forEach(function (jsFile) {
@@ -19,7 +19,7 @@ describe('Loader', function () {
 
     var yamlFile = path.resolve(samplesDir, path.basename(jsFile, '.js') + '.yml');
 
-    it(path.basename(jsFile, '.js'), function () {
+    test(path.basename(jsFile, '.js'), function () {
       var expected = require(path.resolve(samplesDir, jsFile)),
           actual   = [];
 

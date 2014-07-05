@@ -5,7 +5,7 @@ var assert = require('assert');
 var yaml   = require('../../');
 
 
-it('Plain scalar "constructor" parsed as `null`', function () {
+test('Plain scalar "constructor" parsed as `null`', function () {
   assert.strictEqual(yaml.load('constructor'),          'constructor');
   assert.deepEqual(yaml.load('constructor: value'),     { 'constructor': 'value' });
   assert.deepEqual(yaml.load('key: constructor'),       { 'key': 'constructor' });

@@ -1,4 +1,4 @@
 {
   "extends" : "../.jshintrc",
-  "predef"  : [ "describe", "it" ]
+  "predef"  : [ "suite", "test" ]
 }

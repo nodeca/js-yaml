@@ -5,7 +5,7 @@ var path = require('path');
 var fs   = require('fs');
 
 
-describe('Units', function () {
+suite('Units', function () {
   var directory = path.resolve(__dirname, 'units');
 
   fs.readdirSync(directory).forEach(function (file) {
