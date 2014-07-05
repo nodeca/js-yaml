@@ -4,8 +4,10 @@
 - 1.5x-2x speed boost.
 - Removed deprecated `require('xxx.yml')` support.
 - Significant code cleanup and refactoring.
-- Internal API changed. If you used custom validators - see updated examples.
+- Internal API changed. If you used custom types - see updated examples.
   Others are not affected.
+- Even if the input string has no trailing line break character,
+  it will be parsed as if it has one.
 - Added benchmark scripts.
 
 
