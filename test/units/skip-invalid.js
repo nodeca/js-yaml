@@ -3,7 +3,7 @@
 
 
 var assert = require('assert');
-var yaml = require('../../');
+var yaml   = require('../../');
 
 
 var sample = {
