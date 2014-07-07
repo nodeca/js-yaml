@@ -265,7 +265,7 @@ So, the following YAML document cannot be loaded.
 ```
 
 
-Breaking changes in 2.x.x -> 3.0.x
+Breaking changes in 2.x.x -> 3.x.x
 ----------------------------------
 
 If your have not used __custom__ tags or loader classes and not loaded yaml
