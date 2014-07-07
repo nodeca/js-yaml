@@ -1,18 +1,18 @@
-/* js-yaml 3.0.2 https://github.com/nodeca/js-yaml */!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.jsyaml=e():"undefined"!=typeof global?global.jsyaml=e():"undefined"!=typeof self&&(self.jsyaml=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/* js-yaml 3.2.0 https://github.com/nodeca/js-yaml */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jsyaml=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 'use strict';
 
 
-var yaml = require('./lib/js-yaml.js');
+var yaml = _dereq_('./lib/js-yaml.js');
 
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":2}],2:[function(require,module,exports){
+},{"./lib/js-yaml.js":2}],2:[function(_dereq_,module,exports){
 'use strict';
 
 
-var loader = require('./js-yaml/loader');
-var dumper = require('./js-yaml/dumper');
+var loader = _dereq_('./js-yaml/loader');
+var dumper = _dereq_('./js-yaml/dumper');
 
 
 function deprecated(name) {
@@ -22,25 +22,25 @@ function deprecated(name) {
 }
 
 
-module.exports.Type                = require('./js-yaml/type');
-module.exports.Schema              = require('./js-yaml/schema');
-module.exports.FAILSAFE_SCHEMA     = require('./js-yaml/schema/failsafe');
-module.exports.JSON_SCHEMA         = require('./js-yaml/schema/json');
-module.exports.CORE_SCHEMA         = require('./js-yaml/schema/core');
-module.exports.DEFAULT_SAFE_SCHEMA = require('./js-yaml/schema/default_safe');
-module.exports.DEFAULT_FULL_SCHEMA = require('./js-yaml/schema/default_full');
+module.exports.Type                = _dereq_('./js-yaml/type');
+module.exports.Schema              = _dereq_('./js-yaml/schema');
+module.exports.FAILSAFE_SCHEMA     = _dereq_('./js-yaml/schema/failsafe');
+module.exports.JSON_SCHEMA         = _dereq_('./js-yaml/schema/json');
+module.exports.CORE_SCHEMA         = _dereq_('./js-yaml/schema/core');
+module.exports.DEFAULT_SAFE_SCHEMA = _dereq_('./js-yaml/schema/default_safe');
+module.exports.DEFAULT_FULL_SCHEMA = _dereq_('./js-yaml/schema/default_full');
 module.exports.load                = loader.load;
 module.exports.loadAll             = loader.loadAll;
 module.exports.safeLoad            = loader.safeLoad;
 module.exports.safeLoadAll         = loader.safeLoadAll;
 module.exports.dump                = dumper.dump;
 module.exports.safeDump            = dumper.safeDump;
-module.exports.YAMLException       = require('./js-yaml/exception');
+module.exports.YAMLException       = _dereq_('./js-yaml/exception');
 
 // Deprecared schema names from JS-YAML 2.0.x
-module.exports.MINIMAL_SCHEMA = require('./js-yaml/schema/failsafe');
-module.exports.SAFE_SCHEMA    = require('./js-yaml/schema/default_safe');
-module.exports.DEFAULT_SCHEMA = require('./js-yaml/schema/default_full');
+module.exports.MINIMAL_SCHEMA = _dereq_('./js-yaml/schema/failsafe');
+module.exports.SAFE_SCHEMA    = _dereq_('./js-yaml/schema/default_safe');
+module.exports.DEFAULT_SCHEMA = _dereq_('./js-yaml/schema/default_full');
 
 // Deprecated functions from JS-YAML 1.x.x
 module.exports.scan           = deprecated('scan');
@@ -48,7 +48,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":4,"./js-yaml/exception":5,"./js-yaml/loader":6,"./js-yaml/schema":8,"./js-yaml/schema/core":9,"./js-yaml/schema/default_full":10,"./js-yaml/schema/default_safe":11,"./js-yaml/schema/failsafe":12,"./js-yaml/schema/json":13,"./js-yaml/type":14}],3:[function(require,module,exports){
+},{"./js-yaml/dumper":4,"./js-yaml/exception":5,"./js-yaml/loader":6,"./js-yaml/schema":8,"./js-yaml/schema/core":9,"./js-yaml/schema/default_full":10,"./js-yaml/schema/default_safe":11,"./js-yaml/schema/failsafe":12,"./js-yaml/schema/json":13,"./js-yaml/type":14}],3:[function(_dereq_,module,exports){
 'use strict';
 
 
@@ -100,20 +100,26 @@ function repeat(string, count) {
 }
 
 
-module.exports.isNothing  = isNothing;
-module.exports.isObject   = isObject;
-module.exports.toArray    = toArray;
-module.exports.repeat     = repeat;
-module.exports.extend     = extend;
+function isNegativeZero(number) {
+  return (0 === number) && (Number.NEGATIVE_INFINITY === 1 / number);
+}
 
-},{}],4:[function(require,module,exports){
+
+module.exports.isNothing      = isNothing;
+module.exports.isObject       = isObject;
+module.exports.toArray        = toArray;
+module.exports.repeat         = repeat;
+module.exports.isNegativeZero = isNegativeZero;
+module.exports.extend         = extend;
+
+},{}],4:[function(_dereq_,module,exports){
 'use strict';
 
 
-var common              = require('./common');
-var YAMLException       = require('./exception');
-var DEFAULT_FULL_SCHEMA = require('./schema/default_full');
-var DEFAULT_SAFE_SCHEMA = require('./schema/default_safe');
+var common              = _dereq_('./common');
+var YAMLException       = _dereq_('./exception');
+var DEFAULT_FULL_SCHEMA = _dereq_('./schema/default_full');
+var DEFAULT_SAFE_SCHEMA = _dereq_('./schema/default_safe');
 
 
 var _toString       = Object.prototype.toString;
@@ -585,7 +591,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":3,"./exception":5,"./schema/default_full":10,"./schema/default_safe":11}],5:[function(require,module,exports){
+},{"./common":3,"./exception":5,"./schema/default_full":10,"./schema/default_safe":11}],5:[function(_dereq_,module,exports){
 'use strict';
 
 
@@ -612,15 +618,15 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],6:[function(require,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 'use strict';
 
 
-var common              = require('./common');
-var YAMLException       = require('./exception');
-var Mark                = require('./mark');
-var DEFAULT_SAFE_SCHEMA = require('./schema/default_safe');
-var DEFAULT_FULL_SCHEMA = require('./schema/default_full');
+var common              = _dereq_('./common');
+var YAMLException       = _dereq_('./exception');
+var Mark                = _dereq_('./mark');
+var DEFAULT_SAFE_SCHEMA = _dereq_('./schema/default_safe');
+var DEFAULT_FULL_SCHEMA = _dereq_('./schema/default_full');
 
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -653,8 +659,10 @@ function is_WHITE_SPACE(c) {
 }
 
 function is_WS_OR_EOL(c) {
-  return (c === 0x09/* Tab */) || (c === 0x20/* Space */) ||
-         (c === 0x0A/* LF */) || (c === 0x0D/* CR */);
+  return (c === 0x09/* Tab */) ||
+         (c === 0x20/* Space */) ||
+         (c === 0x0A/* LF */) ||
+         (c === 0x0D/* CR */);
 }
 
 function is_FLOW_INDICATOR(c) {
@@ -680,7 +688,7 @@ function fromHexCode(c) {
   return -1;
 }
 
-function escapedHexBase(c) {
+function escapedHexLen(c) {
   if (c === 0x78/* x */) { return 2; }
   if (c === 0x75/* u */) { return 4; }
   if (c === 0x55/* U */) { return 8; }
@@ -716,23 +724,32 @@ function simpleEscapeSequence(c) {
         (c === 0x50/* P */) ? '\u2029' : '';
 }
 
+var simpleEscapeCheck = new Array(256); // integer, for fast access
+var simpleEscapeMap = new Array(256);
+for (var i = 0; i < 256; i++) {
+  simpleEscapeCheck[i] = simpleEscapeSequence(i) ? 1 : 0;
+  simpleEscapeMap[i] = simpleEscapeSequence(i);
+}
+
 
 function State(input, options) {
-  this.input    = input;
+  this.input = input;
 
-  this.filename = options['filename'] || null;
-  this.schema   = options['schema']   || DEFAULT_FULL_SCHEMA;
-  this.strict   = options['strict']   || false;
-  this.legacy   = options['legacy']   || false;
+  this.filename  = options['filename']  || null;
+  this.schema    = options['schema']    || DEFAULT_FULL_SCHEMA;
+  this.onWarning = options['onWarning'] || null;
+  this.legacy    = options['legacy']    || false;
 
-  this.implicitTypes     = this.schema.compiledImplicit;
-  this.typeMap           = this.schema.compiledTypeMap;
+  this.implicitTypes = this.schema.compiledImplicit;
+  this.typeMap       = this.schema.compiledTypeMap;
 
   this.length     = input.length;
   this.position   = 0;
   this.line       = 0;
   this.lineStart  = 0;
   this.lineIndent = 0;
+
+  this.documents = [];
 
   /*
   this.version;
@@ -760,10 +777,10 @@ function throwError(state, message) {
 function throwWarning(state, message) {
   var error = generateError(state, message);
 
-  if (state.strict) {
-    throw error;
+  if (state.onWarning) {
+    state.onWarning.call(null, error);
   } else {
-    console.warn(error.toString());
+    throw error;
   }
 }
 
@@ -898,18 +915,13 @@ function storeMappingPair(state, _result, keyTag, keyNode, valueNode) {
 function readLineBreak(state) {
   var ch;
 
-  if (state.position === state.length) {
-    throwError(state, 'a line break is expected');
-    return;
-  }
-
   ch = state.input.charCodeAt(state.position);
 
   if (0x0A/* LF */ === ch) {
     state.position++;
   } else if (0x0D/* CR */ === ch) {
     state.position++;
-    if (state.position < state.length && 0x0A/* LF */ === state.input.charCodeAt(state.position)) {
+    if (0x0A/* LF */ === state.input.charCodeAt(state.position)) {
       state.position++;
     }
   } else {
@@ -922,36 +934,29 @@ function readLineBreak(state) {
 
 function skipSeparationSpace(state, allowComments, checkIndent) {
   var lineBreaks = 0,
-      ch;
-
-  if (state.position >= state.length) { return lineBreaks; }
-
-  ch = state.input.charCodeAt(state.position);
-
-  while (state.position < state.length) {
-    while (is_WHITE_SPACE(ch)) {
-      if (++state.position === state.length) { ch = 0; break; }
       ch = state.input.charCodeAt(state.position);
+
+  while (0 !== ch) {
+    while (is_WHITE_SPACE(ch)) {
+      ch = state.input.charCodeAt(++state.position);
     }
 
     if (allowComments && 0x23/* # */ === ch) {
       do {
-        if (++state.position === state.length) { ch = 0; break; }
-        ch = state.input.charCodeAt(state.position);
-      } while (!is_EOL(ch));
+        ch = state.input.charCodeAt(++state.position);
+      } while (ch !== 0x0A/* LF */ && ch !== 0x0D/* CR */ && 0 !== ch);
     }
 
     if (is_EOL(ch)) {
       readLineBreak(state);
 
-      ch = (state.position < state.length) ? state.input.charCodeAt(state.position) : 0;
-      lineBreaks += 1;
+      ch = state.input.charCodeAt(state.position);
+      lineBreaks++;
       state.lineIndent = 0;
 
       while (0x20/* Space */ === ch) {
-        state.lineIndent += 1;
-        if (++state.position === state.length) { ch = 0; break; }
-        ch = state.input.charCodeAt(state.position);
+        state.lineIndent++;
+        ch = state.input.charCodeAt(++state.position);
       }
 
       if (state.lineIndent < checkIndent) {
@@ -969,18 +974,19 @@ function testDocumentSeparator(state) {
   var _position = state.position,
       ch;
 
-  if (_position+3 >= state.length) { return false; }
-
   ch = state.input.charCodeAt(_position);
 
-  if (state.position === state.lineStart &&
-      (0x2D/* - */ === ch || 0x2E/* . */ === ch) &&
+  // Condition state.position === state.lineStart is tested
+  // in parent on each call, for efficiency. No needs to test here again.
+  if ((0x2D/* - */ === ch || 0x2E/* . */ === ch) &&
       state.input.charCodeAt(_position + 1) === ch &&
       state.input.charCodeAt(_position+ 2) === ch) {
 
     _position += 3;
 
-    if (_position >= state.length || is_WS_OR_EOL(state.input.charCodeAt(_position))) {
+    ch = state.input.charCodeAt(_position);
+
+    if (ch === 0 || is_WS_OR_EOL(ch)) {
       return true;
     }
   }
@@ -1015,10 +1021,6 @@ function readPlainScalar(state, nodeIndent, withinFlowCollection) {
   if (is_WS_OR_EOL(ch)             ||
       is_FLOW_INDICATOR(ch)        ||
       0x23/* # */           === ch ||
-      0x23/* # */           === ch ||
-      0x23/* # */           === ch ||
-      0x23/* # */           === ch ||
-      0x23/* # */           === ch ||
       0x26/* & */           === ch ||
       0x2A/* * */           === ch ||
       0x21/* ! */           === ch ||
@@ -1033,7 +1035,7 @@ function readPlainScalar(state, nodeIndent, withinFlowCollection) {
   }
 
   if (0x3F/* ? */ === ch || 0x2D/* - */ === ch) {
-    following = (state.position < state.length) ? state.input.charCodeAt(state.position+1) : 0;
+    following = state.input.charCodeAt(state.position + 1);
 
     if (is_WS_OR_EOL(following) ||
         withinFlowCollection && is_FLOW_INDICATOR(following)) {
@@ -1046,9 +1048,9 @@ function readPlainScalar(state, nodeIndent, withinFlowCollection) {
   captureStart = captureEnd = state.position;
   hasPendingContent = false;
 
-  while (state.position < state.length) {
+  while (0 !== ch) {
     if (0x3A/* : */ === ch) {
-      following = (state.position < state.length) ? state.input.charCodeAt(state.position+1) : 0;
+      following = state.input.charCodeAt(state.position+1);
 
       if (is_WS_OR_EOL(following) ||
           withinFlowCollection && is_FLOW_INDICATOR(following)) {
@@ -1122,17 +1124,17 @@ function readSingleQuotedScalar(state, nodeIndent) {
 
   state.kind = 'scalar';
   state.result = '';
-  ch = state.input.charCodeAt(++state.position);
+  state.position++;
   captureStart = captureEnd = state.position;
 
-  while (state.position < state.length) {
+  while (0 !== (ch = state.input.charCodeAt(state.position))) {
     if (0x27/* ' */ === ch) {
       captureSegment(state, captureStart, state.position, true);
       ch = state.input.charCodeAt(++state.position);
 
       if (0x27/* ' */ === ch) {
         captureStart = captureEnd = state.position;
-        ch = state.input.charCodeAt(++state.position);
+        state.position++;
       } else {
         return true;
       }
@@ -1141,13 +1143,12 @@ function readSingleQuotedScalar(state, nodeIndent) {
       captureSegment(state, captureStart, captureEnd, true);
       writeFoldedLines(state, skipSeparationSpace(state, false, nodeIndent));
       captureStart = captureEnd = state.position;
-      ch = state.input.charCodeAt(state.position);
 
     } else if (state.position === state.lineStart && testDocumentSeparator(state)) {
       throwError(state, 'unexpected end of the document within a single quoted scalar');
 
     } else {
-      ch = state.input.charCodeAt(++state.position);
+      state.position++;
       captureEnd = state.position;
     }
   }
@@ -1159,8 +1160,6 @@ function readDoubleQuotedScalar(state, nodeIndent) {
   var captureStart,
       captureEnd,
       hexLength,
-      hexIndex,
-      hexOffset,
       hexResult,
       tmp, tmpEsc,
       ch;
@@ -1173,10 +1172,10 @@ function readDoubleQuotedScalar(state, nodeIndent) {
 
   state.kind = 'scalar';
   state.result = '';
-  ch = state.input.charCodeAt(++state.position);
+  state.position++;
   captureStart = captureEnd = state.position;
 
-  while (state.position < state.length) {
+  while (0 !== (ch = state.input.charCodeAt(state.position))) {
     if (0x22/* " */ === ch) {
       captureSegment(state, captureStart, state.position, true);
       state.position++;
@@ -1190,20 +1189,19 @@ function readDoubleQuotedScalar(state, nodeIndent) {
         skipSeparationSpace(state, false, nodeIndent);
 
         //TODO: rework to inline fn with no type cast?
-      } else if ((tmpEsc = simpleEscapeSequence(ch)) !== '') {
-        state.result += tmpEsc;
-        ch = state.input.charCodeAt(++state.position);
+      } else if (ch < 256 && simpleEscapeCheck[ch]) {
+        state.result += simpleEscapeMap[ch];
+        state.position++;
 
-      } else if ((tmp = escapedHexBase(ch)) > 0) {
-        hexLength = escapedHexBase(ch);
+      } else if ((tmp = escapedHexLen(ch)) > 0) {
+        hexLength = tmp;
         hexResult = 0;
 
-        for (hexIndex = 1; hexIndex <= hexLength; hexIndex += 1) {
-          hexOffset = (hexLength - hexIndex) * 4;
+        for (; hexLength > 0; hexLength--) {
           ch = state.input.charCodeAt(++state.position);
 
           if ((tmp = fromHexCode(ch)) >= 0) {
-            hexResult |= tmp << hexOffset;
+            hexResult = (hexResult << 4) + tmp;
 
           } else {
             throwError(state, 'expected hexadecimal character');
@@ -1211,7 +1209,7 @@ function readDoubleQuotedScalar(state, nodeIndent) {
         }
 
         state.result += String.fromCharCode(hexResult);
-        ch = state.input.charCodeAt(++state.position);
+        state.position++;
 
       } else {
         throwError(state, 'unknown escape sequence');
@@ -1223,13 +1221,12 @@ function readDoubleQuotedScalar(state, nodeIndent) {
       captureSegment(state, captureStart, captureEnd, true);
       writeFoldedLines(state, skipSeparationSpace(state, false, nodeIndent));
       captureStart = captureEnd = state.position;
-      ch = state.input.charCodeAt(state.position);
 
     } else if (state.position === state.lineStart && testDocumentSeparator(state)) {
       throwError(state, 'unexpected end of the document within a double quoted scalar');
 
     } else {
-      ch = state.input.charCodeAt(++state.position);
+      state.position++;
       captureEnd = state.position;
     }
   }
@@ -1272,13 +1269,13 @@ function readFlowCollection(state, nodeIndent) {
 
   ch = state.input.charCodeAt(++state.position);
 
-  while (state.position < state.length) {
+  while (0 !== ch) {
     skipSeparationSpace(state, true, nodeIndent);
 
     ch = state.input.charCodeAt(state.position);
 
     if (ch === terminator) {
-      ch = state.input.charCodeAt(++state.position);
+      state.position++;
       state.tag = _tag;
       state.kind = isMapping ? 'mapping' : 'sequence';
       state.result = _result;
@@ -1291,12 +1288,11 @@ function readFlowCollection(state, nodeIndent) {
     isPair = isExplicitPair = false;
 
     if (0x3F/* ? */ === ch) {
-      following = (state.position < state.length) ? state.input.charCodeAt(state.position+1) : 0;
+      following = state.input.charCodeAt(state.position + 1);
 
       if (is_WS_OR_EOL(following)) {
         isPair = isExplicitPair = true;
-        state.position += 1;
-        ch = following;
+        state.position++;
         skipSeparationSpace(state, true, nodeIndent);
       }
     }
@@ -1364,7 +1360,7 @@ function readBlockScalar(state, nodeIndent) {
   state.kind = 'scalar';
   state.result = '';
 
-  while (state.position < state.length) {
+  while (0 !== ch) {
     ch = state.input.charCodeAt(++state.position);
 
     if (0x2B/* + */ === ch || 0x2D/* - */ === ch) {
@@ -1395,20 +1391,19 @@ function readBlockScalar(state, nodeIndent) {
 
     if (0x23/* # */ === ch) {
       do { ch = state.input.charCodeAt(++state.position); }
-      while (state.position < state.length && !is_EOL(ch));
+      while (!is_EOL(ch) && (0 !== ch));
     }
   }
 
-  while (state.position < state.length) {
+  while (0 !== ch) {
     readLineBreak(state);
     state.lineIndent = 0;
 
-    // !!!!
     ch = state.input.charCodeAt(state.position);
 
     while ((!detectedIndent || state.lineIndent < textIndent) &&
            (0x20/* Space */ === ch)) {
-      state.lineIndent += 1;
+      state.lineIndent++;
       ch = state.input.charCodeAt(++state.position);
     }
 
@@ -1417,7 +1412,7 @@ function readBlockScalar(state, nodeIndent) {
     }
 
     if (is_EOL(ch)) {
-      emptyLines += 1;
+      emptyLines++;
       continue;
     }
 
@@ -1479,9 +1474,11 @@ function readBlockScalar(state, nodeIndent) {
     captureStart = state.position;
 
     do { ch = state.input.charCodeAt(++state.position); }
-    while (state.position < state.length && !is_EOL(ch));
+    while (!is_EOL(ch) && (0 !== ch));
 
     captureSegment(state, captureStart, state.position, false);
+
+    ch = state.input.charCodeAt(state.position);
   }
 
   return true;
@@ -1499,26 +1496,27 @@ function readBlockSequence(state, nodeIndent) {
     state.anchorMap[state.anchor] = _result;
   }
 
-  while (state.position < state.length) {
-    ch = state.input.charCodeAt(state.position);
+  ch = state.input.charCodeAt(state.position);
+
+  while (0 !== ch) {
 
     if (0x2D/* - */ !== ch) {
       break;
     }
 
-    following = (state.position < state.length) ? state.input.charCodeAt(state.position+1) : 0;
+    following = state.input.charCodeAt(state.position + 1);
 
     if (!is_WS_OR_EOL(following)) {
       break;
     }
 
     detected = true;
-    state.position += 1;
-    ch = following;
+    state.position++;
 
     if (skipSeparationSpace(state, true, -1)) {
       if (state.lineIndent <= nodeIndent) {
         _result.push(null);
+        ch = state.input.charCodeAt(state.position);
         continue;
       }
     }
@@ -1528,7 +1526,9 @@ function readBlockSequence(state, nodeIndent) {
     _result.push(state.result);
     skipSeparationSpace(state, true, -1);
 
-    if ((state.line === _line || state.lineIndent > nodeIndent) && state.position < state.length) {
+    ch = state.input.charCodeAt(state.position);
+
+    if ((state.line === _line || state.lineIndent > nodeIndent) && (0 !== ch)) {
       throwError(state, 'bad indentation of a sequence entry');
     } else if (state.lineIndent < nodeIndent) {
       break;
@@ -1545,7 +1545,7 @@ function readBlockSequence(state, nodeIndent) {
   }
 }
 
-function readBlockMapping(state, nodeIndent) {
+function readBlockMapping(state, nodeIndent, flowIndent) {
   var following,
       allowCompact,
       _line,
@@ -1562,19 +1562,17 @@ function readBlockMapping(state, nodeIndent) {
     state.anchorMap[state.anchor] = _result;
   }
 
-  while (state.position < state.length) {
-    ch = state.input.charCodeAt(state.position);
+  ch = state.input.charCodeAt(state.position);
 
-    following = (state.position < state.length) ? state.input.charCodeAt(state.position+1) : 0;
+  while (0 !== ch) {
+    following = state.input.charCodeAt(state.position + 1);
     _line = state.line; // Save the current line.
 
     //
     // Explicit notation case. There are two separate blocks:
     // first for the key (denoted by "?") and second for the value (denoted by ":")
     //
-    if ((0x3F/* ? */        === ch ||
-         0x3A/* : */           === ch) &&
-         is_WS_OR_EOL(following)) {
+    if ((0x3F/* ? */ === ch || 0x3A/* : */  === ch) && is_WS_OR_EOL(following)) {
 
       if (0x3F/* ? */ === ch) {
         if (atExplicitKey) {
@@ -1601,13 +1599,9 @@ function readBlockMapping(state, nodeIndent) {
     //
     // Implicit notation case. Flow-style node as the key first, then ":", and the value.
     //
-    } else if (composeNode(state, nodeIndent, CONTEXT_FLOW_OUT, false, true)) {
-
-      // !!!! ????
-      ch = state.input.charCodeAt(state.position);
+    } else if (composeNode(state, flowIndent, CONTEXT_FLOW_OUT, false, true)) {
 
       if (state.line === _line) {
-        // !!!!
         ch = state.input.charCodeAt(state.position);
 
         while (is_WHITE_SPACE(ch)) {
@@ -1670,9 +1664,10 @@ function readBlockMapping(state, nodeIndent) {
       }
 
       skipSeparationSpace(state, true, -1);
+      ch = state.input.charCodeAt(state.position);
     }
 
-    if (state.lineIndent > nodeIndent && state.position < state.length) {
+    if (state.lineIndent > nodeIndent && (0 !== ch)) {
       throwError(state, 'bad indentation of a mapping entry');
     } else if (state.lineIndent < nodeIndent) {
       break;
@@ -1735,7 +1730,7 @@ function readTagProperty(state) {
 
   if (isVerbatim) {
     do { ch = state.input.charCodeAt(++state.position); }
-    while (state.position < state.length && 0x3E/* > */ !== ch);
+    while (0 !== ch && 0x3E/* > */ !== ch);
 
     if (state.position < state.length) {
       tagName = state.input.slice(_position, state.position);
@@ -1744,7 +1739,7 @@ function readTagProperty(state) {
       throwError(state, 'unexpected end of the stream within a verbatim tag');
     }
   } else {
-    while (state.position < state.length && !is_WS_OR_EOL(ch)) {
+    while (0 !== ch && !is_WS_OR_EOL(ch)) {
 
       if (0x21/* ! */ === ch) {
         if (!isNamed) {
@@ -1811,9 +1806,7 @@ function readAnchorProperty(state) {
   ch = state.input.charCodeAt(++state.position);
   _position = state.position;
 
-  while (state.position < state.length &&
-         !is_WS_OR_EOL(ch) &&
-         !is_FLOW_INDICATOR(ch)) {
+  while (0 !== ch && !is_WS_OR_EOL(ch) && !is_FLOW_INDICATOR(ch)) {
     ch = state.input.charCodeAt(++state.position);
   }
 
@@ -1840,9 +1833,7 @@ function readAlias(state) {
   ch = state.input.charCodeAt(++state.position);
   _position = state.position;
 
-  while (state.position < state.length &&
-         !is_WS_OR_EOL(ch) &&
-         !is_FLOW_INDICATOR(ch)) {
+  while (0 !== ch && !is_WS_OR_EOL(ch) && !is_FLOW_INDICATOR(ch)) {
     ch = state.input.charCodeAt(++state.position);
   }
 
@@ -1938,7 +1929,7 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
     if (isIndented) {
       if (allowBlockCollections &&
           (readBlockSequence(state, blockIndent) ||
-           readBlockMapping(state, blockIndent)) ||
+           readBlockMapping(state, blockIndent, flowIndent)) ||
           readFlowCollection(state, flowIndent)) {
         hasContent = true;
       } else {
@@ -2008,7 +1999,7 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
   return null !== state.tag || null !== state.anchor || hasContent;
 }
 
-function readDocument(state, iterator) {
+function readDocument(state) {
   var documentStart = state.position,
       _position,
       directiveName,
@@ -2021,7 +2012,7 @@ function readDocument(state, iterator) {
   state.tagMap = {};
   state.anchorMap = {};
 
-  while (state.position < state.length) {
+  while (0 !== (ch = state.input.charCodeAt(state.position))) {
     skipSeparationSpace(state, true, -1);
 
     ch = state.input.charCodeAt(state.position);
@@ -2034,7 +2025,7 @@ function readDocument(state, iterator) {
     ch = state.input.charCodeAt(++state.position);
     _position = state.position;
 
-    while (state.position < state.length && !is_WS_OR_EOL(ch)) {
+    while (0 !== ch && !is_WS_OR_EOL(ch)) {
       ch = state.input.charCodeAt(++state.position);
     }
 
@@ -2045,14 +2036,14 @@ function readDocument(state, iterator) {
       throwError(state, 'directive name must not be less than one character in length');
     }
 
-    while (state.position < state.length) {
+    while (0 !== ch) {
       while (is_WHITE_SPACE(ch)) {
         ch = state.input.charCodeAt(++state.position);
       }
 
       if (0x23/* # */ === ch) {
         do { ch = state.input.charCodeAt(++state.position); }
-        while (state.position < state.length && !is_EOL(ch));
+        while (0 !== ch && !is_EOL(ch));
         break;
       }
 
@@ -2062,18 +2053,15 @@ function readDocument(state, iterator) {
 
       _position = state.position;
 
-      while (state.position < state.length && !is_WS_OR_EOL(ch)) {
+      while (0 !== ch && !is_WS_OR_EOL(ch)) {
         ch = state.input.charCodeAt(++state.position);
       }
 
       directiveArgs.push(state.input.slice(_position, state.position));
     }
 
-    if (state.position < state.length) {
+    if (0 !== ch) {
       readLineBreak(state);
-
-      // !!!!
-      ch = state.input.charCodeAt(state.position);
     }
 
     if (_hasOwnProperty.call(directiveHandlers, directiveName)) {
@@ -2085,14 +2073,11 @@ function readDocument(state, iterator) {
 
   skipSeparationSpace(state, true, -1);
 
-  ch = state.input.charCodeAt(state.position);
-
   if (0 === state.lineIndent &&
-      0x2D/* - */ === ch &&
+      0x2D/* - */ === state.input.charCodeAt(state.position) &&
       0x2D/* - */ === state.input.charCodeAt(state.position + 1) &&
       0x2D/* - */ === state.input.charCodeAt(state.position + 2)) {
     state.position += 3;
-    ch = state.input.charCodeAt(state.position);
     skipSeparationSpace(state, true, -1);
 
   } else if (hasDirectives) {
@@ -2107,22 +2092,18 @@ function readDocument(state, iterator) {
     throwWarning(state, 'non-ASCII line breaks are interpreted as content');
   }
 
-  iterator(state.result);
+  state.documents.push(state.result);
 
   if (state.position === state.lineStart && testDocumentSeparator(state)) {
 
-    // !!!!
-    ch = state.input.charCodeAt(state.position);
-
-    if (0x2E/* . */ === ch) {
+    if (0x2E/* . */ === state.input.charCodeAt(state.position)) {
       state.position += 3;
-      ch = state.input.charCodeAt(state.position);
       skipSeparationSpace(state, true, -1);
     }
     return;
   }
 
-  if (state.position < state.length) {
+  if (state.position < (state.length - 1)) {
     throwError(state, 'end of the stream or a document separator is expected');
   } else {
     return;
@@ -2130,51 +2111,58 @@ function readDocument(state, iterator) {
 }
 
 
-
-function loadAll(input, iterator, options) {
+function loadDocuments(input, options) {
+  input = String(input);
   options = options || {};
 
-  var state = new State(input, options),
-      ch = state.input.charCodeAt(state.position);
+  if (0 !== input.length &&
+      0x0A/* LF */ !== input.charCodeAt(input.length - 1) &&
+      0x0D/* CR */ !== input.charCodeAt(input.length - 1)) {
+    input += '\n';
+  }
+
+  var state = new State(input, options);
 
   if (PATTERN_NON_PRINTABLE.test(state.input)) {
     throwError(state, 'the stream contains non-printable characters');
   }
 
-  while (0x20/* Space */ === ch) {
+  // Use 0 as string terminator. That significantly simplifies bounds check.
+  state.input += '\0';
+
+  while (0x20/* Space */ === state.input.charCodeAt(state.position)) {
     state.lineIndent += 1;
-    ch = state.input.charCodeAt(++state.position);
   }
 
-  while (state.position < state.length) {
-    readDocument(state, iterator);
+  while (state.position < (state.length - 1)) {
+    readDocument(state);
+  }
+
+  return state.documents;
+}
+
+
+function loadAll(input, iterator, options) {
+  var documents = loadDocuments(input, options), index, length;
+
+  for (index = 0, length = documents.length; index < length; index += 1) {
+    iterator(documents[index]);
   }
 }
 
 
-function makeLoad() {
-  var result, received;
+function load(input, options) {
+  var documents = loadDocuments(input, options), index, length;
 
-  function iterator(data) {
-    if (!received) {
-      result = data;
-      received = true;
-    } else {
-      throw new YAMLException('expected a single document in the stream, but found more');
-    }
+  if (0 === documents.length) {
+    return undefined;
+  } else if (1 === documents.length) {
+    return documents[0];
+  } else {
+    throw new YAMLException('expected a single document in the stream, but found more');
   }
-
-  return function _load(input, options) {
-    result = null;
-    received = false;
-
-    loadAll(input, iterator, options);
-
-    return result;
-  };
 }
 
-var load = makeLoad();
 
 function safeLoadAll(input, output, options) {
   loadAll(input, output, common.extend({ schema: DEFAULT_SAFE_SCHEMA }, options));
@@ -2191,11 +2179,11 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":3,"./exception":5,"./mark":7,"./schema/default_full":10,"./schema/default_safe":11}],7:[function(require,module,exports){
+},{"./common":3,"./exception":5,"./mark":7,"./schema/default_full":10,"./schema/default_safe":11}],7:[function(_dereq_,module,exports){
 'use strict';
 
 
-var common = require('./common');
+var common = _dereq_('./common');
 
 
 function Mark(name, buffer, position, line, column) {
@@ -2271,13 +2259,13 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":3}],8:[function(require,module,exports){
+},{"./common":3}],8:[function(_dereq_,module,exports){
 'use strict';
 
 
-var common        = require('./common');
-var YAMLException = require('./exception');
-var Type          = require('./type');
+var common        = _dereq_('./common');
+var YAMLException = _dereq_('./exception');
+var Type          = _dereq_('./type');
 
 
 function compileList(schema, name, result) {
@@ -2376,7 +2364,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":3,"./exception":5,"./type":14}],9:[function(require,module,exports){
+},{"./common":3,"./exception":5,"./type":14}],9:[function(_dereq_,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -2387,16 +2375,16 @@ module.exports = Schema;
 'use strict';
 
 
-var Schema = require('../schema');
+var Schema = _dereq_('../schema');
 
 
 module.exports = new Schema({
   include: [
-    require('./json')
+    _dereq_('./json')
   ]
 });
 
-},{"../schema":8,"./json":13}],10:[function(require,module,exports){
+},{"../schema":8,"./json":13}],10:[function(_dereq_,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -2409,21 +2397,21 @@ module.exports = new Schema({
 'use strict';
 
 
-var Schema = require('../schema');
+var Schema = _dereq_('../schema');
 
 
 module.exports = Schema.DEFAULT = new Schema({
   include: [
-    require('./default_safe')
+    _dereq_('./default_safe')
   ],
   explicit: [
-    require('../type/js/undefined'),
-    require('../type/js/regexp'),
-    require('../type/js/function')
+    _dereq_('../type/js/undefined'),
+    _dereq_('../type/js/regexp'),
+    _dereq_('../type/js/function')
   ]
 });
 
-},{"../schema":8,"../type/js/function":19,"../type/js/regexp":20,"../type/js/undefined":21,"./default_safe":11}],11:[function(require,module,exports){
+},{"../schema":8,"../type/js/function":19,"../type/js/regexp":20,"../type/js/undefined":21,"./default_safe":11}],11:[function(_dereq_,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -2434,26 +2422,26 @@ module.exports = Schema.DEFAULT = new Schema({
 'use strict';
 
 
-var Schema = require('../schema');
+var Schema = _dereq_('../schema');
 
 
 module.exports = new Schema({
   include: [
-    require('./core')
+    _dereq_('./core')
   ],
   implicit: [
-    require('../type/timestamp'),
-    require('../type/merge')
+    _dereq_('../type/timestamp'),
+    _dereq_('../type/merge')
   ],
   explicit: [
-    require('../type/binary'),
-    require('../type/omap'),
-    require('../type/pairs'),
-    require('../type/set')
+    _dereq_('../type/binary'),
+    _dereq_('../type/omap'),
+    _dereq_('../type/pairs'),
+    _dereq_('../type/set')
   ]
 });
 
-},{"../schema":8,"../type/binary":15,"../type/merge":23,"../type/omap":25,"../type/pairs":26,"../type/set":28,"../type/timestamp":30,"./core":9}],12:[function(require,module,exports){
+},{"../schema":8,"../type/binary":15,"../type/merge":23,"../type/omap":25,"../type/pairs":26,"../type/set":28,"../type/timestamp":30,"./core":9}],12:[function(_dereq_,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -2461,18 +2449,18 @@ module.exports = new Schema({
 'use strict';
 
 
-var Schema = require('../schema');
+var Schema = _dereq_('../schema');
 
 
 module.exports = new Schema({
   explicit: [
-    require('../type/str'),
-    require('../type/seq'),
-    require('../type/map')
+    _dereq_('../type/str'),
+    _dereq_('../type/seq'),
+    _dereq_('../type/map')
   ]
 });
 
-},{"../schema":8,"../type/map":22,"../type/seq":27,"../type/str":29}],13:[function(require,module,exports){
+},{"../schema":8,"../type/map":22,"../type/seq":27,"../type/str":29}],13:[function(_dereq_,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -2484,25 +2472,25 @@ module.exports = new Schema({
 'use strict';
 
 
-var Schema = require('../schema');
+var Schema = _dereq_('../schema');
 
 
 module.exports = new Schema({
   include: [
-    require('./failsafe')
+    _dereq_('./failsafe')
   ],
   implicit: [
-    require('../type/null'),
-    require('../type/bool'),
-    require('../type/int'),
-    require('../type/float')
+    _dereq_('../type/null'),
+    _dereq_('../type/bool'),
+    _dereq_('../type/int'),
+    _dereq_('../type/float')
   ]
 });
 
-},{"../schema":8,"../type/bool":16,"../type/float":17,"../type/int":18,"../type/null":24,"./failsafe":12}],14:[function(require,module,exports){
+},{"../schema":8,"../type/bool":16,"../type/float":17,"../type/int":18,"../type/null":24,"./failsafe":12}],14:[function(_dereq_,module,exports){
 'use strict';
 
-var YAMLException = require('./exception');
+var YAMLException = _dereq_('./exception');
 
 var TYPE_CONSTRUCTOR_OPTIONS = [
   'kind',
@@ -2562,7 +2550,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":5}],15:[function(require,module,exports){
+},{"./exception":5}],15:[function(_dereq_,module,exports){
 // Modified from:
 // https://raw.github.com/kanaka/noVNC/d890e8640f20fba3215ba7be8e0ff145aeb8c17c/include/base64.js
 
@@ -2570,8 +2558,8 @@ module.exports = Type;
 
 // A trick for browserified version.
 // Since we make browserifier to ignore `buffer` module, NodeBuffer will be undefined
-var NodeBuffer = require('buffer').Buffer;
-var Type       = require('../type');
+var NodeBuffer = _dereq_('buffer').Buffer;
+var Type       = _dereq_('../type');
 
 var BASE64_PADDING = '=';
 
@@ -2705,10 +2693,10 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":14,"buffer":31}],16:[function(require,module,exports){
+},{"../type":14,"buffer":31}],16:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var Type = _dereq_('../type');
 
 function resolveYamlBoolean(data) {
   var max = data.length;
@@ -2740,10 +2728,11 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":14}],17:[function(require,module,exports){
+},{"../type":14}],17:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var common = _dereq_('../common');
+var Type   = _dereq_('../type');
 
 var YAML_FLOAT_PATTERN = new RegExp(
   '^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?' +
@@ -2826,6 +2815,8 @@ function representYamlFloat(object, style) {
     case 'camelcase':
       return '-.Inf';
     }
+  } else if (common.isNegativeZero(object)) {
+    return '-0.0';
   } else {
     return object.toString(10);
   }
@@ -2833,7 +2824,7 @@ function representYamlFloat(object, style) {
 
 function isFloat(object) {
   return ('[object Number]' === Object.prototype.toString.call(object)) &&
-         (0 !== object % 1);
+         (0 !== object % 1 || common.isNegativeZero(object));
 }
 
 module.exports = new Type('tag:yaml.org,2002:float', {
@@ -2845,10 +2836,11 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":14}],18:[function(require,module,exports){
+},{"../common":3,"../type":14}],18:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var common = _dereq_('../common');
+var Type   = _dereq_('../type');
 
 function isHexCode(c) {
   return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) ||
@@ -3002,7 +2994,7 @@ function constructYamlInteger(data) {
 
 function isInteger(object) {
   return ('[object Number]' === Object.prototype.toString.call(object)) &&
-         (0 === object % 1);
+         (0 === object % 1 && !common.isNegativeZero(object));
 }
 
 module.exports = new Type('tag:yaml.org,2002:int', {
@@ -3025,7 +3017,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../type":14}],19:[function(require,module,exports){
+},{"../common":3,"../type":14}],19:[function(_dereq_,module,exports){
 'use strict';
 
 var esprima;
@@ -3038,13 +3030,13 @@ var esprima;
 //    found too - then fail to parse.
 //
 try {
-  esprima = require('esprima');
+  esprima = _dereq_('esprima');
 } catch (_) {
   /*global window */
   if (typeof window !== 'undefined') { esprima = window.esprima; }
 }
 
-var Type = require('../../type');
+var Type = _dereq_('../../type');
 
 function resolveJavascriptFunction(data) {
   try {
@@ -3108,20 +3100,28 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":14,"esprima":"UYGR5l"}],20:[function(require,module,exports){
+},{"../../type":14,"esprima":"Lkr711"}],20:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../../type');
+var Type = _dereq_('../../type');
 
 function resolveJavascriptRegExp(data) {
   var regexp = data,
       tail   = /\/([gim]*)$/.exec(data),
-      modifiers;
+      modifiers = '';
 
-  // `/foo/gim` - tail can be maximum 4 chars
-  if ('/' === regexp[0] && tail && 4 >= tail[0].length) {
-    regexp = regexp.slice(1, regexp.length - tail[0].length);
-    modifiers = tail[1];
+  // if regexp starts with '/' it can have modifiers and must be properly closed
+  // `/foo/gim` - modifiers tail can be maximum 3 chars
+  if ('/' === regexp[0]) {
+    if (tail) {
+      modifiers = tail[1];
+    }
+
+    if (modifiers.length > 3) { return false; }
+    // if expression starts with /, is should be properly terminated
+    if (regexp[regexp.length - modifiers.length - 1] !== '/') { return false; }
+
+    regexp = regexp.slice(1, regexp.length - modifiers.length - 1);
   }
 
   try {
@@ -3135,12 +3135,14 @@ function resolveJavascriptRegExp(data) {
 function constructJavascriptRegExp(data) {
   var regexp = data,
       tail   = /\/([gim]*)$/.exec(data),
-      modifiers;
+      modifiers = '';
 
   // `/foo/gim` - tail can be maximum 4 chars
-  if ('/' === regexp[0] && tail && 4 >= tail[0].length) {
-    regexp = regexp.slice(1, regexp.length - tail[0].length);
-    modifiers = tail[1];
+  if ('/' === regexp[0]) {
+    if (tail) {
+      modifiers = tail[1];
+    }
+    regexp = regexp.slice(1, regexp.length - modifiers.length - 1);
   }
 
   return new RegExp(regexp, modifiers);
@@ -3176,10 +3178,10 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":14}],21:[function(require,module,exports){
+},{"../../type":14}],21:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../../type');
+var Type = _dereq_('../../type');
 
 function resolveJavascriptUndefined() {
   return true;
@@ -3205,19 +3207,19 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":14}],22:[function(require,module,exports){
+},{"../../type":14}],22:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var Type = _dereq_('../type');
 
 module.exports = new Type('tag:yaml.org,2002:map', {
   kind: 'mapping'
 });
 
-},{"../type":14}],23:[function(require,module,exports){
+},{"../type":14}],23:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var Type = _dereq_('../type');
 
 function resolveYamlMerge(data) {
   return '<<' === data;
@@ -3228,10 +3230,10 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge,
 });
 
-},{"../type":14}],24:[function(require,module,exports){
+},{"../type":14}],24:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var Type = _dereq_('../type');
 
 function resolveYamlNull(data) {
   var max = data.length;
@@ -3262,10 +3264,10 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":14}],25:[function(require,module,exports){
+},{"../type":14}],25:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var Type = _dereq_('../type');
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 var _toString       = Object.prototype.toString;
@@ -3311,10 +3313,10 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   resolve: resolveYamlOmap
 });
 
-},{"../type":14}],26:[function(require,module,exports){
+},{"../type":14}],26:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var Type = _dereq_('../type');
 
 var _toString = Object.prototype.toString;
 
@@ -3366,19 +3368,19 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":14}],27:[function(require,module,exports){
+},{"../type":14}],27:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var Type = _dereq_('../type');
 
 module.exports = new Type('tag:yaml.org,2002:seq', {
   kind: 'sequence'
 });
 
-},{"../type":14}],28:[function(require,module,exports){
+},{"../type":14}],28:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var Type = _dereq_('../type');
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -3401,19 +3403,19 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   resolve: resolveYamlSet
 });
 
-},{"../type":14}],29:[function(require,module,exports){
+},{"../type":14}],29:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var Type = _dereq_('../type');
 
 module.exports = new Type('tag:yaml.org,2002:str', {
   kind: 'scalar'
 });
 
-},{"../type":14}],30:[function(require,module,exports){
+},{"../type":14}],30:[function(_dereq_,module,exports){
 'use strict';
 
-var Type = require('../type');
+var Type = _dereq_('../type');
 
 var YAML_TIMESTAMP_REGEXP = new RegExp(
   '^([0-9][0-9][0-9][0-9])'          + // [1] year
@@ -3506,7 +3508,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":14}],31:[function(require,module,exports){
+},{"../type":14}],31:[function(_dereq_,module,exports){
 
 },{}]},{},[1])
 (1)

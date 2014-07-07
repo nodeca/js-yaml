@@ -89,16 +89,18 @@ publish:
 browserify:
 	if test ! `which browserify` ; then npm install browserify ; fi
 	if test ! `which uglifyjs` ; then npm install uglify-js ; fi
+	rm -rf ./dist
+	mkdir dist
 	# Browserify
 	( echo -n "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" ; \
 		browserify -r ./ -s jsyaml -x esprima \
-		) > js-yaml.js
+		) > dist/js-yaml.js
 	# Minify
-	uglifyjs js-yaml.js -c -m \
+	uglifyjs dist/js-yaml.js -c -m \
 		--preamble "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" \
-		> js-yaml.min.js
+		> dist/js-yaml.min.js
 	# Update browser demo
-	cp js-yaml.js demo/js/
+	cp dist/js-yaml.js demo/js/
 
 
 todo:
