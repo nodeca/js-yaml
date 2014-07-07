@@ -1,4 +1,4 @@
-3.1.0 / WIP
+3.1.0 / 2014-07-07
 ------------------
 
 - 1.5x-2x speed boost.
@@ -9,6 +9,8 @@
 - Even if the input string has no trailing line break character,
   it will be parsed as if it has one.
 - Added benchmark scripts.
+- Moved bower files to /dist folder
+- Bugfixes.
 
 
 3.0.2 / 2014-02-27
