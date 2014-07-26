@@ -77,7 +77,7 @@ function readFile(filename, encoding, callback) {
   } else {
     fs.readFile(filename, encoding, callback);
   }
-};
+}
 
 readFile(options.file, 'utf8', function (error, input) {
   var output, isYaml;
