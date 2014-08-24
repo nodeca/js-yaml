@@ -1,18 +1,18 @@
-/* js-yaml 3.2.0 https://github.com/nodeca/js-yaml */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jsyaml=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+/* js-yaml 3.2.0 https://github.com/nodeca/js-yaml */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jsyaml=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./":[function(require,module,exports){
 'use strict';
 
 
-var yaml = _dereq_('./lib/js-yaml.js');
+var yaml = require('./lib/js-yaml.js');
 
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":2}],2:[function(_dereq_,module,exports){
+},{"./lib/js-yaml.js":1}],1:[function(require,module,exports){
 'use strict';
 
 
-var loader = _dereq_('./js-yaml/loader');
-var dumper = _dereq_('./js-yaml/dumper');
+var loader = require('./js-yaml/loader');
+var dumper = require('./js-yaml/dumper');
 
 
 function deprecated(name) {
@@ -22,25 +22,25 @@ function deprecated(name) {
 }
 
 
-module.exports.Type                = _dereq_('./js-yaml/type');
-module.exports.Schema              = _dereq_('./js-yaml/schema');
-module.exports.FAILSAFE_SCHEMA     = _dereq_('./js-yaml/schema/failsafe');
-module.exports.JSON_SCHEMA         = _dereq_('./js-yaml/schema/json');
-module.exports.CORE_SCHEMA         = _dereq_('./js-yaml/schema/core');
-module.exports.DEFAULT_SAFE_SCHEMA = _dereq_('./js-yaml/schema/default_safe');
-module.exports.DEFAULT_FULL_SCHEMA = _dereq_('./js-yaml/schema/default_full');
+module.exports.Type                = require('./js-yaml/type');
+module.exports.Schema              = require('./js-yaml/schema');
+module.exports.FAILSAFE_SCHEMA     = require('./js-yaml/schema/failsafe');
+module.exports.JSON_SCHEMA         = require('./js-yaml/schema/json');
+module.exports.CORE_SCHEMA         = require('./js-yaml/schema/core');
+module.exports.DEFAULT_SAFE_SCHEMA = require('./js-yaml/schema/default_safe');
+module.exports.DEFAULT_FULL_SCHEMA = require('./js-yaml/schema/default_full');
 module.exports.load                = loader.load;
 module.exports.loadAll             = loader.loadAll;
 module.exports.safeLoad            = loader.safeLoad;
 module.exports.safeLoadAll         = loader.safeLoadAll;
 module.exports.dump                = dumper.dump;
 module.exports.safeDump            = dumper.safeDump;
-module.exports.YAMLException       = _dereq_('./js-yaml/exception');
+module.exports.YAMLException       = require('./js-yaml/exception');
 
 // Deprecared schema names from JS-YAML 2.0.x
-module.exports.MINIMAL_SCHEMA = _dereq_('./js-yaml/schema/failsafe');
-module.exports.SAFE_SCHEMA    = _dereq_('./js-yaml/schema/default_safe');
-module.exports.DEFAULT_SCHEMA = _dereq_('./js-yaml/schema/default_full');
+module.exports.MINIMAL_SCHEMA = require('./js-yaml/schema/failsafe');
+module.exports.SAFE_SCHEMA    = require('./js-yaml/schema/default_safe');
+module.exports.DEFAULT_SCHEMA = require('./js-yaml/schema/default_full');
 
 // Deprecated functions from JS-YAML 1.x.x
 module.exports.scan           = deprecated('scan');
@@ -48,7 +48,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":4,"./js-yaml/exception":5,"./js-yaml/loader":6,"./js-yaml/schema":8,"./js-yaml/schema/core":9,"./js-yaml/schema/default_full":10,"./js-yaml/schema/default_safe":11,"./js-yaml/schema/failsafe":12,"./js-yaml/schema/json":13,"./js-yaml/type":14}],3:[function(_dereq_,module,exports){
+},{"./js-yaml/dumper":3,"./js-yaml/exception":4,"./js-yaml/loader":5,"./js-yaml/schema":7,"./js-yaml/schema/core":8,"./js-yaml/schema/default_full":9,"./js-yaml/schema/default_safe":10,"./js-yaml/schema/failsafe":11,"./js-yaml/schema/json":12,"./js-yaml/type":13}],2:[function(require,module,exports){
 'use strict';
 
 
@@ -112,14 +112,14 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],4:[function(_dereq_,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 
 
-var common              = _dereq_('./common');
-var YAMLException       = _dereq_('./exception');
-var DEFAULT_FULL_SCHEMA = _dereq_('./schema/default_full');
-var DEFAULT_SAFE_SCHEMA = _dereq_('./schema/default_safe');
+var common              = require('./common');
+var YAMLException       = require('./exception');
+var DEFAULT_FULL_SCHEMA = require('./schema/default_full');
+var DEFAULT_SAFE_SCHEMA = require('./schema/default_safe');
 
 
 var _toString       = Object.prototype.toString;
@@ -591,7 +591,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":3,"./exception":5,"./schema/default_full":10,"./schema/default_safe":11}],5:[function(_dereq_,module,exports){
+},{"./common":2,"./exception":4,"./schema/default_full":9,"./schema/default_safe":10}],4:[function(require,module,exports){
 'use strict';
 
 
@@ -618,15 +618,15 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],6:[function(_dereq_,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 
-var common              = _dereq_('./common');
-var YAMLException       = _dereq_('./exception');
-var Mark                = _dereq_('./mark');
-var DEFAULT_SAFE_SCHEMA = _dereq_('./schema/default_safe');
-var DEFAULT_FULL_SCHEMA = _dereq_('./schema/default_full');
+var common              = require('./common');
+var YAMLException       = require('./exception');
+var Mark                = require('./mark');
+var DEFAULT_SAFE_SCHEMA = require('./schema/default_safe');
+var DEFAULT_FULL_SCHEMA = require('./schema/default_full');
 
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -2132,6 +2132,7 @@ function loadDocuments(input, options) {
 
   while (0x20/* Space */ === state.input.charCodeAt(state.position)) {
     state.lineIndent += 1;
+    state.position += 1;
   }
 
   while (state.position < (state.length - 1)) {
@@ -2179,11 +2180,11 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":3,"./exception":5,"./mark":7,"./schema/default_full":10,"./schema/default_safe":11}],7:[function(_dereq_,module,exports){
+},{"./common":2,"./exception":4,"./mark":6,"./schema/default_full":9,"./schema/default_safe":10}],6:[function(require,module,exports){
 'use strict';
 
 
-var common = _dereq_('./common');
+var common = require('./common');
 
 
 function Mark(name, buffer, position, line, column) {
@@ -2259,13 +2260,13 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":3}],8:[function(_dereq_,module,exports){
+},{"./common":2}],7:[function(require,module,exports){
 'use strict';
 
 
-var common        = _dereq_('./common');
-var YAMLException = _dereq_('./exception');
-var Type          = _dereq_('./type');
+var common        = require('./common');
+var YAMLException = require('./exception');
+var Type          = require('./type');
 
 
 function compileList(schema, name, result) {
@@ -2364,7 +2365,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":3,"./exception":5,"./type":14}],9:[function(_dereq_,module,exports){
+},{"./common":2,"./exception":4,"./type":13}],8:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -2375,16 +2376,16 @@ module.exports = Schema;
 'use strict';
 
 
-var Schema = _dereq_('../schema');
+var Schema = require('../schema');
 
 
 module.exports = new Schema({
   include: [
-    _dereq_('./json')
+    require('./json')
   ]
 });
 
-},{"../schema":8,"./json":13}],10:[function(_dereq_,module,exports){
+},{"../schema":7,"./json":12}],9:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -2397,21 +2398,21 @@ module.exports = new Schema({
 'use strict';
 
 
-var Schema = _dereq_('../schema');
+var Schema = require('../schema');
 
 
 module.exports = Schema.DEFAULT = new Schema({
   include: [
-    _dereq_('./default_safe')
+    require('./default_safe')
   ],
   explicit: [
-    _dereq_('../type/js/undefined'),
-    _dereq_('../type/js/regexp'),
-    _dereq_('../type/js/function')
+    require('../type/js/undefined'),
+    require('../type/js/regexp'),
+    require('../type/js/function')
   ]
 });
 
-},{"../schema":8,"../type/js/function":19,"../type/js/regexp":20,"../type/js/undefined":21,"./default_safe":11}],11:[function(_dereq_,module,exports){
+},{"../schema":7,"../type/js/function":18,"../type/js/regexp":19,"../type/js/undefined":20,"./default_safe":10}],10:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -2422,26 +2423,26 @@ module.exports = Schema.DEFAULT = new Schema({
 'use strict';
 
 
-var Schema = _dereq_('../schema');
+var Schema = require('../schema');
 
 
 module.exports = new Schema({
   include: [
-    _dereq_('./core')
+    require('./core')
   ],
   implicit: [
-    _dereq_('../type/timestamp'),
-    _dereq_('../type/merge')
+    require('../type/timestamp'),
+    require('../type/merge')
   ],
   explicit: [
-    _dereq_('../type/binary'),
-    _dereq_('../type/omap'),
-    _dereq_('../type/pairs'),
-    _dereq_('../type/set')
+    require('../type/binary'),
+    require('../type/omap'),
+    require('../type/pairs'),
+    require('../type/set')
   ]
 });
 
-},{"../schema":8,"../type/binary":15,"../type/merge":23,"../type/omap":25,"../type/pairs":26,"../type/set":28,"../type/timestamp":30,"./core":9}],12:[function(_dereq_,module,exports){
+},{"../schema":7,"../type/binary":14,"../type/merge":22,"../type/omap":24,"../type/pairs":25,"../type/set":27,"../type/timestamp":29,"./core":8}],11:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -2449,18 +2450,18 @@ module.exports = new Schema({
 'use strict';
 
 
-var Schema = _dereq_('../schema');
+var Schema = require('../schema');
 
 
 module.exports = new Schema({
   explicit: [
-    _dereq_('../type/str'),
-    _dereq_('../type/seq'),
-    _dereq_('../type/map')
+    require('../type/str'),
+    require('../type/seq'),
+    require('../type/map')
   ]
 });
 
-},{"../schema":8,"../type/map":22,"../type/seq":27,"../type/str":29}],13:[function(_dereq_,module,exports){
+},{"../schema":7,"../type/map":21,"../type/seq":26,"../type/str":28}],12:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -2472,25 +2473,25 @@ module.exports = new Schema({
 'use strict';
 
 
-var Schema = _dereq_('../schema');
+var Schema = require('../schema');
 
 
 module.exports = new Schema({
   include: [
-    _dereq_('./failsafe')
+    require('./failsafe')
   ],
   implicit: [
-    _dereq_('../type/null'),
-    _dereq_('../type/bool'),
-    _dereq_('../type/int'),
-    _dereq_('../type/float')
+    require('../type/null'),
+    require('../type/bool'),
+    require('../type/int'),
+    require('../type/float')
   ]
 });
 
-},{"../schema":8,"../type/bool":16,"../type/float":17,"../type/int":18,"../type/null":24,"./failsafe":12}],14:[function(_dereq_,module,exports){
+},{"../schema":7,"../type/bool":15,"../type/float":16,"../type/int":17,"../type/null":23,"./failsafe":11}],13:[function(require,module,exports){
 'use strict';
 
-var YAMLException = _dereq_('./exception');
+var YAMLException = require('./exception');
 
 var TYPE_CONSTRUCTOR_OPTIONS = [
   'kind',
@@ -2550,7 +2551,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":5}],15:[function(_dereq_,module,exports){
+},{"./exception":4}],14:[function(require,module,exports){
 // Modified from:
 // https://raw.github.com/kanaka/noVNC/d890e8640f20fba3215ba7be8e0ff145aeb8c17c/include/base64.js
 
@@ -2558,8 +2559,8 @@ module.exports = Type;
 
 // A trick for browserified version.
 // Since we make browserifier to ignore `buffer` module, NodeBuffer will be undefined
-var NodeBuffer = _dereq_('buffer').Buffer;
-var Type       = _dereq_('../type');
+var NodeBuffer = require('buffer').Buffer;
+var Type       = require('../type');
 
 var BASE64_PADDING = '=';
 
@@ -2693,10 +2694,10 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":14,"buffer":31}],16:[function(_dereq_,module,exports){
+},{"../type":13,"buffer":30}],15:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../type');
+var Type = require('../type');
 
 function resolveYamlBoolean(data) {
   var max = data.length;
@@ -2728,11 +2729,11 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":14}],17:[function(_dereq_,module,exports){
+},{"../type":13}],16:[function(require,module,exports){
 'use strict';
 
-var common = _dereq_('../common');
-var Type   = _dereq_('../type');
+var common = require('../common');
+var Type   = require('../type');
 
 var YAML_FLOAT_PATTERN = new RegExp(
   '^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?' +
@@ -2836,11 +2837,11 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":3,"../type":14}],18:[function(_dereq_,module,exports){
+},{"../common":2,"../type":13}],17:[function(require,module,exports){
 'use strict';
 
-var common = _dereq_('../common');
-var Type   = _dereq_('../type');
+var common = require('../common');
+var Type   = require('../type');
 
 function isHexCode(c) {
   return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) ||
@@ -3017,7 +3018,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":3,"../type":14}],19:[function(_dereq_,module,exports){
+},{"../common":2,"../type":13}],18:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -3030,13 +3031,13 @@ var esprima;
 //    found too - then fail to parse.
 //
 try {
-  esprima = _dereq_('esprima');
+  esprima = require('esprima');
 } catch (_) {
   /*global window */
   if (typeof window !== 'undefined') { esprima = window.esprima; }
 }
 
-var Type = _dereq_('../../type');
+var Type = require('../../type');
 
 function resolveJavascriptFunction(data) {
   try {
@@ -3100,10 +3101,10 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":14,"esprima":"Lkr711"}],20:[function(_dereq_,module,exports){
+},{"../../type":13,"esprima":"esprima"}],19:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../../type');
+var Type = require('../../type');
 
 function resolveJavascriptRegExp(data) {
   var regexp = data,
@@ -3178,10 +3179,10 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":14}],21:[function(_dereq_,module,exports){
+},{"../../type":13}],20:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../../type');
+var Type = require('../../type');
 
 function resolveJavascriptUndefined() {
   return true;
@@ -3207,19 +3208,19 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":14}],22:[function(_dereq_,module,exports){
+},{"../../type":13}],21:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../type');
+var Type = require('../type');
 
 module.exports = new Type('tag:yaml.org,2002:map', {
   kind: 'mapping'
 });
 
-},{"../type":14}],23:[function(_dereq_,module,exports){
+},{"../type":13}],22:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../type');
+var Type = require('../type');
 
 function resolveYamlMerge(data) {
   return '<<' === data;
@@ -3230,10 +3231,10 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge,
 });
 
-},{"../type":14}],24:[function(_dereq_,module,exports){
+},{"../type":13}],23:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../type');
+var Type = require('../type');
 
 function resolveYamlNull(data) {
   var max = data.length;
@@ -3264,10 +3265,10 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":14}],25:[function(_dereq_,module,exports){
+},{"../type":13}],24:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../type');
+var Type = require('../type');
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 var _toString       = Object.prototype.toString;
@@ -3313,10 +3314,10 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   resolve: resolveYamlOmap
 });
 
-},{"../type":14}],26:[function(_dereq_,module,exports){
+},{"../type":13}],25:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../type');
+var Type = require('../type');
 
 var _toString = Object.prototype.toString;
 
@@ -3368,19 +3369,19 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":14}],27:[function(_dereq_,module,exports){
+},{"../type":13}],26:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../type');
+var Type = require('../type');
 
 module.exports = new Type('tag:yaml.org,2002:seq', {
   kind: 'sequence'
 });
 
-},{"../type":14}],28:[function(_dereq_,module,exports){
+},{"../type":13}],27:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../type');
+var Type = require('../type');
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -3403,19 +3404,19 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   resolve: resolveYamlSet
 });
 
-},{"../type":14}],29:[function(_dereq_,module,exports){
+},{"../type":13}],28:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../type');
+var Type = require('../type');
 
 module.exports = new Type('tag:yaml.org,2002:str', {
   kind: 'scalar'
 });
 
-},{"../type":14}],30:[function(_dereq_,module,exports){
+},{"../type":13}],29:[function(require,module,exports){
 'use strict';
 
-var Type = _dereq_('../type');
+var Type = require('../type');
 
 var YAML_TIMESTAMP_REGEXP = new RegExp(
   '^([0-9][0-9][0-9][0-9])'          + // [1] year
@@ -3508,8 +3509,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":14}],31:[function(_dereq_,module,exports){
+},{"../type":13}],30:[function(require,module,exports){
 
-},{}]},{},[1])
-(1)
+},{}]},{},[])("./")
 });
