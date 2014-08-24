@@ -1,3 +1,10 @@
+3.2.0 / 2014-08-24
+------------------
+
+- Added input piping support to CLI.
+- Fixed typo, that could cause hand on initial indent (#139).
+
+
 3.1.0 / 2014-07-07
 ------------------
 
