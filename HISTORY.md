@@ -1,3 +1,9 @@
+3.2.2 / --
+------------------
+
+- Fixed infinite loop on unindented block scalars.
+
+
 3.2.1 / 2014-08-24
 ------------------
 
