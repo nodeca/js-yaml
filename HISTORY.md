@@ -1,7 +1,8 @@
-3.2.2 / --
+3.2.2 / 2014-09-07
 ------------------
 
 - Fixed infinite loop on unindented block scalars.
+- Rewritten base64 encode/decode in binary type, to keep code licence clear.
 
 
 3.2.1 / 2014-08-24
