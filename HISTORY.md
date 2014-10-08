@@ -1,3 +1,9 @@
+3.2.3 / --
+------------------
+
+- Implemented dumping of objects with circular and cross references.
+
+
 3.2.2 / 2014-09-07
 ------------------
 
