@@ -2,6 +2,7 @@
 ------------------
 
 - Implemented dumping of objects with circular and cross references.
+- Partially fixed aliasing of constructed objects. (see issue #141 for details)
 
 
 3.2.2 / 2014-09-07
