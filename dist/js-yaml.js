@@ -1,13 +1,4 @@
-/* js-yaml 3.2.2 https://github.com/nodeca/js-yaml */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jsyaml=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./":[function(require,module,exports){
-'use strict';
-
-
-var yaml = require('./lib/js-yaml.js');
-
-
-module.exports = yaml;
-
-},{"./lib/js-yaml.js":1}],1:[function(require,module,exports){
+/* js-yaml 3.2.3 https://github.com/nodeca/js-yaml */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jsyaml=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
 
@@ -241,6 +232,9 @@ function State(options) {
 
   this.tag = null;
   this.result = '';
+
+  this.duplicates = [];
+  this.usedDuplicates = null;
 }
 
 
@@ -541,39 +535,113 @@ function writeNode(state, level, object, block, compact) {
     compact = false;
   }
 
-  if ('[object Object]' === type) {
-    if (block && (0 !== Object.keys(state.dump).length)) {
-      writeBlockMapping(state, level, state.dump, compact);
-    } else {
-      writeFlowMapping(state, level, state.dump);
-    }
-  } else if ('[object Array]' === type) {
-    if (block && (0 !== state.dump.length)) {
-      writeBlockSequence(state, level, state.dump, compact);
-    } else {
-      writeFlowSequence(state, level, state.dump);
-    }
-  } else if ('[object String]' === type) {
-    if ('?' !== state.tag) {
-      writeScalar(state, state.dump);
-    }
-  } else if (state.skipInvalid) {
-    return false;
-  } else {
-    throw new YAMLException('unacceptable kind of an object to dump ' + type);
+  var objectOrArray = '[object Object]' === type || '[object Array]' === type,
+      duplicateIndex,
+      duplicate;
+
+  if (objectOrArray) {
+    duplicateIndex = state.duplicates.indexOf(object);
+    duplicate = duplicateIndex !== -1;
   }
 
-  if (null !== state.tag && '?' !== state.tag) {
-    state.dump = '!<' + state.tag + '> ' + state.dump;
+  if (duplicate && state.usedDuplicates[duplicateIndex]) {
+    state.dump = '*ref_' + duplicateIndex;
+  } else {
+    if (objectOrArray && duplicate && !state.usedDuplicates[duplicateIndex]) {
+      state.usedDuplicates[duplicateIndex] = true;
+    }
+    if ('[object Object]' === type) {
+      if (block && (0 !== Object.keys(state.dump).length)) {
+        writeBlockMapping(state, level, state.dump, compact);
+        if (duplicate) {
+          state.dump = '&ref_' + duplicateIndex + (0 === level ? '\n' : '') + state.dump;
+        }
+      } else {
+        writeFlowMapping(state, level, state.dump);
+        if (duplicate) {
+          state.dump = '&ref_' + duplicateIndex + ' ' + state.dump;
+        }
+      }
+    } else if ('[object Array]' === type) {
+      if (block && (0 !== state.dump.length)) {
+        writeBlockSequence(state, level, state.dump, compact);
+        if (duplicate) {
+          state.dump = '&ref_' + duplicateIndex + (0 === level ? '\n' : '') + state.dump;
+        }
+      } else {
+        writeFlowSequence(state, level, state.dump);
+        if (duplicate) {
+          state.dump = '&ref_' + duplicateIndex + ' ' + state.dump;
+        }
+      }
+    } else if ('[object String]' === type) {
+      if ('?' !== state.tag) {
+        writeScalar(state, state.dump);
+      }
+    } else if (state.skipInvalid) {
+      return false;
+    } else {
+      throw new YAMLException('unacceptable kind of an object to dump ' + type);
+    }
+
+    if (null !== state.tag && '?' !== state.tag) {
+      state.dump = '!<' + state.tag + '> ' + state.dump;
+    }
   }
+
   return true;
 }
 
+function getDuplicateReferences(object, state) {
+  var objects = [],
+      duplicatesIndexes = [],
+      index,
+      length;
+
+  inspectNode(object, objects, duplicatesIndexes);
+
+  for (index = 0, length = duplicatesIndexes.length; index < length; index += 1) {
+    state.duplicates.push(objects[duplicatesIndexes[index]]);
+  }
+  state.usedDuplicates = new Array(length);
+}
+
+function inspectNode(object, objects, duplicatesIndexes) {
+  var type = _toString.call(object),
+      objectKeyList,
+      index,
+      length;
+
+  if (null !== object && 'object' === typeof object) {
+    index = objects.indexOf(object);
+    if (-1 !== index) {
+      if (-1 === duplicatesIndexes.indexOf(index)) {
+        duplicatesIndexes.push(index);
+      }
+    } else {
+      objects.push(object);
+    
+      if(Array.isArray(object)) {
+        for (index = 0, length = object.length; index < length; index += 1) {
+          inspectNode(object[index], objects, duplicatesIndexes);
+        }
+      } else {
+        objectKeyList = Object.keys(object);
+
+        for (index = 0, length = objectKeyList.length; index < length; index += 1) {
+          inspectNode(object[objectKeyList[index]], objects, duplicatesIndexes);
+        }
+      }
+    }
+  }
+}
 
 function dump(input, options) {
   options = options || {};
 
   var state = new State(options);
+
+  getDuplicateReferences(input, state);
 
   if (writeNode(state, 0, input, true, true)) {
     return state.dump + '\n';
@@ -1239,6 +1307,7 @@ function readFlowCollection(state, nodeIndent) {
       _line,
       _tag     = state.tag,
       _result,
+      _anchor  = state.anchor,
       following,
       terminator,
       isPair,
@@ -1277,6 +1346,7 @@ function readFlowCollection(state, nodeIndent) {
     if (ch === terminator) {
       state.position++;
       state.tag = _tag;
+      state.anchor = _anchor;
       state.kind = isMapping ? 'mapping' : 'sequence';
       state.result = _result;
       return true;
@@ -1485,6 +1555,7 @@ function readBlockScalar(state, nodeIndent) {
 function readBlockSequence(state, nodeIndent) {
   var _line,
       _tag      = state.tag,
+      _anchor   = state.anchor,
       _result   = [],
       following,
       detected  = false,
@@ -1535,6 +1606,7 @@ function readBlockSequence(state, nodeIndent) {
 
   if (detected) {
     state.tag = _tag;
+    state.anchor = _anchor;
     state.kind = 'sequence';
     state.result = _result;
     return true;
@@ -1548,6 +1620,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
       allowCompact,
       _line,
       _tag          = state.tag,
+      _anchor       = state.anchor,
       _result       = {},
       keyTag        = null,
       keyNode       = null,
@@ -1629,6 +1702,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
 
         } else {
           state.tag = _tag;
+          state.anchor = _anchor;
           return true; // Keep the result of `composeNode`.
         }
 
@@ -1637,6 +1711,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
 
       } else {
         state.tag = _tag;
+        state.anchor = _anchor;
         return true; // Keep the result of `composeNode`.
       }
 
@@ -1684,6 +1759,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
   // Expose the resulting mapping.
   if (detected) {
     state.tag = _tag;
+    state.anchor = _anchor;
     state.kind = 'mapping';
     state.result = _result;
   }
@@ -1974,6 +2050,9 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
         if (type.resolve(state.result)) { // `state.result` updated in resolver if matched
           state.result = type.construct(state.result);
           state.tag = type.tag;
+          if (null !== state.anchor) {
+            state.anchorMap[state.anchor] = state.result;
+          }
           break;
         }
       }
@@ -1988,6 +2067,9 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
         throwError(state, 'cannot resolve a node with !<' + state.tag + '> explicit tag');
       } else {
         state.result = type.construct(state.result);
+        if (null !== state.anchor) {
+          state.anchorMap[state.anchor] = state.result;
+        }
       }
     } else {
       throwWarning(state, 'unknown tag !<' + state.tag + '>');
@@ -3497,5 +3579,14 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 },{"../type":13}],30:[function(require,module,exports){
 
-},{}]},{},[])("./")
+},{}],"/":[function(require,module,exports){
+'use strict';
+
+
+var yaml = require('./lib/js-yaml.js');
+
+
+module.exports = yaml;
+
+},{"./lib/js-yaml.js":1}]},{},[])("/")
 });
