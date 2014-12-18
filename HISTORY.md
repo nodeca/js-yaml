@@ -1,3 +1,9 @@
+3.2.4 / --
+------------------
+
+- Fixed resolving of !!null tag on an empty node.
+
+
 3.2.3 / 2014-11-08
 ------------------
 
