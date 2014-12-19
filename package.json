@@ -1,6 +1,6 @@
 {
   "name"            : "js-yaml",
-  "version"         : "3.2.3",
+  "version"         : "3.2.4",
   "description"     : "YAML 1.2 parser and serializer",
   "keywords"        : ["yaml", "parser", "serializer", "pyyaml"],
   "homepage"        : "https://github.com/nodeca/js-yaml",
