@@ -1,4 +1,4 @@
-/* js-yaml 3.2.3 https://github.com/nodeca/js-yaml */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jsyaml=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/* js-yaml 3.2.5 https://github.com/nodeca/js-yaml */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jsyaml=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
 
@@ -1026,13 +1026,13 @@ function skipSeparationSpace(state, allowComments, checkIndent) {
         state.lineIndent++;
         ch = state.input.charCodeAt(++state.position);
       }
-
-      if (state.lineIndent < checkIndent) {
-        throwWarning(state, 'deficient indentation');
-      }
     } else {
       break;
     }
+  }
+
+  if (-1 !== checkIndent && 0 !== lineBreaks && state.lineIndent < checkIndent) {
+    throwWarning(state, 'deficient indentation');
   }
 
   return lineBreaks;
@@ -1930,8 +1930,8 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
   var allowBlockStyles,
       allowBlockScalars,
       allowBlockCollections,
+      indentStatus = 1, // 1: this>parent, 0: this=parent, -1: this<parent
       atNewLine  = false,
-      isIndented = true,
       hasContent = false,
       typeIndex,
       typeQuantity,
@@ -1953,33 +1953,28 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
     if (skipSeparationSpace(state, true, -1)) {
       atNewLine = true;
 
-      if (state.lineIndent === parentIndent) {
-        isIndented = false;
-
-      } else if (state.lineIndent > parentIndent) {
-        isIndented = true;
-
-      } else {
-        return false;
+      if (state.lineIndent > parentIndent) {
+        indentStatus = 1;
+      } else if (state.lineIndent === parentIndent) {
+        indentStatus = 0;
+      } else if (state.lineIndent < parentIndent) {
+        indentStatus = -1;
       }
     }
   }
 
-  if (isIndented) {
+  if (1 === indentStatus) {
     while (readTagProperty(state) || readAnchorProperty(state)) {
       if (skipSeparationSpace(state, true, -1)) {
         atNewLine = true;
+        allowBlockCollections = allowBlockStyles;
 
         if (state.lineIndent > parentIndent) {
-          isIndented = true;
-          allowBlockCollections = allowBlockStyles;
-
+          indentStatus = 1;
         } else if (state.lineIndent === parentIndent) {
-          isIndented = false;
-          allowBlockCollections = allowBlockStyles;
-
-        } else {
-          return true;
+          indentStatus = 0;
+        } else if (state.lineIndent < parentIndent) {
+          indentStatus = -1;
         }
       } else {
         allowBlockCollections = false;
@@ -1991,7 +1986,7 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
     allowBlockCollections = atNewLine || allowCompact;
   }
 
-  if (isIndented || CONTEXT_BLOCK_OUT === nodeContext) {
+  if (1 === indentStatus || CONTEXT_BLOCK_OUT === nodeContext) {
     if (CONTEXT_FLOW_IN === nodeContext || CONTEXT_FLOW_OUT === nodeContext) {
       flowIndent = parentIndent;
     } else {
@@ -2000,7 +1995,7 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
 
     blockIndent = state.position - state.lineStart;
 
-    if (isIndented) {
+    if (1 === indentStatus) {
       if (allowBlockCollections &&
           (readBlockSequence(state, blockIndent) ||
            readBlockMapping(state, blockIndent, flowIndent)) ||
@@ -2031,7 +2026,9 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
           state.anchorMap[state.anchor] = state.result;
         }
       }
-    } else {
+    } else if (0 === indentStatus) {
+      // Special case: block sequences are allowed to have same indentation level as the parent.
+      // http://www.yaml.org/spec/1.2/spec.html#id2799784
       hasContent = allowBlockCollections && readBlockSequence(state, blockIndent);
     }
   }
@@ -2646,6 +2643,10 @@ var BASE64_MAP = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
 
 
 function resolveYamlBinary(data) {
+  if (null === data) {
+    return false;
+  }
+
   var code, idx, bitlen = 0, len = 0, max = data.length, map = BASE64_MAP;
 
   // Convert one by one.
@@ -2768,6 +2769,10 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
 var Type = require('../type');
 
 function resolveYamlBoolean(data) {
+  if (null === data) {
+    return false;
+  }
+
   var max = data.length;
 
   return (max === 4 && (data === 'true' || data === 'True' || data === 'TRUE')) ||
@@ -2811,6 +2816,10 @@ var YAML_FLOAT_PATTERN = new RegExp(
   '|\\.(?:nan|NaN|NAN))$');
 
 function resolveYamlFloat(data) {
+  if (null === data) {
+    return false;
+  }
+
   var value, sign, base, digits;
 
   if (!YAML_FLOAT_PATTERN.test(data)) {
@@ -2926,6 +2935,10 @@ function isDecCode(c) {
 }
 
 function resolveYamlInteger(data) {
+  if (null === data) {
+    return false;
+  }
+
   var max = data.length,
       index = 0,
       hasDigits = false,
@@ -3108,6 +3121,10 @@ try {
 var Type = require('../../type');
 
 function resolveJavascriptFunction(data) {
+  if (null === data) {
+    return false;
+  }
+
   try {
     var source = '(' + data + ')',
         ast    = esprima.parse(source, { range: true }),
@@ -3175,6 +3192,14 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
 var Type = require('../../type');
 
 function resolveJavascriptRegExp(data) {
+  if (null === data) {
+    return false;
+  }
+
+  if (0 === data.length) {
+    return false;
+  }
+
   var regexp = data,
       tail   = /\/([gim]*)$/.exec(data),
       modifiers = '';
@@ -3282,7 +3307,8 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
 var Type = require('../type');
 
 module.exports = new Type('tag:yaml.org,2002:map', {
-  kind: 'mapping'
+  kind: 'mapping',
+  construct: function (data) { return null !== data ? data : {}; }
 });
 
 },{"../type":13}],22:[function(require,module,exports){
@@ -3291,12 +3317,12 @@ module.exports = new Type('tag:yaml.org,2002:map', {
 var Type = require('../type');
 
 function resolveYamlMerge(data) {
-  return '<<' === data;
+  return '<<' === data || null === data;
 }
 
 module.exports = new Type('tag:yaml.org,2002:merge', {
   kind: 'scalar',
-  resolve: resolveYamlMerge,
+  resolve: resolveYamlMerge
 });
 
 },{"../type":13}],23:[function(require,module,exports){
@@ -3305,6 +3331,10 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
 var Type = require('../type');
 
 function resolveYamlNull(data) {
+  if (null === data) {
+    return true;
+  }
+
   var max = data.length;
 
   return (max === 1 && data === '~') ||
@@ -3342,6 +3372,10 @@ var _hasOwnProperty = Object.prototype.hasOwnProperty;
 var _toString       = Object.prototype.toString;
 
 function resolveYamlOmap(data) {
+  if (null === data) {
+    return true;
+  }
+
   var objectKeys = [], index, length, pair, pairKey, pairHasKey,
       object = data;
 
@@ -3377,9 +3411,14 @@ function resolveYamlOmap(data) {
   return true;
 }
 
+function constructYamlOmap(data) {
+  return null !== data ? data : [];
+}
+
 module.exports = new Type('tag:yaml.org,2002:omap', {
   kind: 'sequence',
-  resolve: resolveYamlOmap
+  resolve: resolveYamlOmap,
+  construct: constructYamlOmap
 });
 
 },{"../type":13}],25:[function(require,module,exports){
@@ -3390,6 +3429,10 @@ var Type = require('../type');
 var _toString = Object.prototype.toString;
 
 function resolveYamlPairs(data) {
+  if (null === data) {
+    return true;
+  }
+
   var index, length, pair, keys, result,
       object = data;
 
@@ -3415,6 +3458,10 @@ function resolveYamlPairs(data) {
 }
 
 function constructYamlPairs(data) {
+  if (null === data) {
+    return [];
+  }
+
   var index, length, pair, keys, result,
       object = data;
 
@@ -3443,7 +3490,8 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
 var Type = require('../type');
 
 module.exports = new Type('tag:yaml.org,2002:seq', {
-  kind: 'sequence'
+  kind: 'sequence',
+  construct: function (data) { return null !== data ? data : []; }
 });
 
 },{"../type":13}],27:[function(require,module,exports){
@@ -3454,6 +3502,10 @@ var Type = require('../type');
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
 function resolveYamlSet(data) {
+  if (null === data) {
+    return true;
+  }
+
   var key, object = data;
 
   for (key in object) {
@@ -3467,9 +3519,14 @@ function resolveYamlSet(data) {
   return true;
 }
 
+function constructYamlSet(data) {
+  return null !== data ? data : {};
+}
+
 module.exports = new Type('tag:yaml.org,2002:set', {
   kind: 'mapping',
-  resolve: resolveYamlSet
+  resolve: resolveYamlSet,
+  construct: constructYamlSet
 });
 
 },{"../type":13}],28:[function(require,module,exports){
@@ -3478,7 +3535,8 @@ module.exports = new Type('tag:yaml.org,2002:set', {
 var Type = require('../type');
 
 module.exports = new Type('tag:yaml.org,2002:str', {
-  kind: 'scalar'
+  kind: 'scalar',
+  construct: function (data) { return null !== data ? data : ''; }
 });
 
 },{"../type":13}],29:[function(require,module,exports){
@@ -3499,6 +3557,10 @@ var YAML_TIMESTAMP_REGEXP = new RegExp(
   '(?::([0-9][0-9]))?))?)?$');         // [11] tz_minute
 
 function resolveYamlTimestamp(data) {
+  if (null === data) {
+    return false;
+  }
+
   var match, year, month, day, hour, minute, second, fraction = 0,
       delta = null, tz_hour, tz_minute, date;
 
