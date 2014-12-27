@@ -3,6 +3,7 @@
 
 - Fixed resolving of all built-in types on empty nodes.
 - Fixed invalid warning on empty lines within quoted scalars and flow collections.
+- Fixed bug: Tag on an empty node didn't resolve in some cases.
 
 
 3.2.4 / 2014-12-19
