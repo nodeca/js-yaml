@@ -1,3 +1,9 @@
+3.2.5 / --
+------------------
+
+- Fixed resolving of all built-in types on empty nodes.
+
+
 3.2.4 / 2014-12-19
 ------------------
 
