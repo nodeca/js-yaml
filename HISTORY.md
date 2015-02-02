@@ -1,3 +1,9 @@
+3.2.6 / --
+------------------
+
+- Fixed encoding of UTF-16 surrogate pairs. (e.g. "\U0001F431" CAT FACE)
+
+
 3.2.5 / 2014-12-28
 ------------------
 
