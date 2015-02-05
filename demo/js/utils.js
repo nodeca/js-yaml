@@ -44,6 +44,10 @@
     if (ctx.showHidden) {
       keys = Object.getOwnPropertyNames(value);
     }
+    
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
 
     // Some type of object without properties can be shortcutted.
     if (keys.length === 0) {
@@ -53,9 +57,6 @@
       }
       if (isRegExp(value)) {
         return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-      }
-      if (isDate(value)) {
-        return ctx.stylize(Date.prototype.toString.call(value), 'date');
       }
       if (isError(value)) {
         return formatError(value);
