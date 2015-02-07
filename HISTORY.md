@@ -1,7 +1,8 @@
-3.2.6 / --
+3.2.6 / 2015-02-07
 ------------------
 
 - Fixed encoding of UTF-16 surrogate pairs. (e.g. "\U0001F431" CAT FACE)
+- Fixed demo dates dump (#113, thanks to @Hypercubed).
 
 
 3.2.5 / 2014-12-28
