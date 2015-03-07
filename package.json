@@ -30,5 +30,9 @@
                       },
   "browser"         : {
                         "buffer": false
+                      },
+
+  "scripts"         : {
+                        "test": "make test"
                       }
 }
