@@ -15,7 +15,7 @@ var TestClassYaml = new yaml.Type('!test', {
   construct: function (data) { return new TestClass(data); }
 });
 
-var TEST_SCHEMA = yaml.Schema.create([TestClassYaml]);
+var TEST_SCHEMA = yaml.Schema.create([ TestClassYaml ]);
 
 
 suite('Alias nodes', function () {
@@ -28,8 +28,8 @@ suite('Alias nodes', function () {
     });
 
     test('Simple built-in objects', function () {
-      assert.deepEqual(yaml.load('[&1 [a, b, c, d], *1]')[1], ['a', 'b', 'c', 'd']);
-      assert.deepEqual(yaml.load('[&1 {a: b, c: d}, *1]')[1], {'a': 'b', 'c': 'd'});
+      assert.deepEqual(yaml.load('[&1 [a, b, c, d], *1]')[1], [ 'a', 'b', 'c', 'd' ]);
+      assert.deepEqual(yaml.load('[&1 {a: b, c: d}, *1]')[1], { a: 'b', c: 'd' });
     });
 
     test('Recursive built-in objects', function () {
@@ -46,7 +46,7 @@ suite('Alias nodes', function () {
     });
 
     test('Simple custom objects', function () {
-      var expected = new TestClass({'a': 'b', 'c': 'd'}),
+      var expected = new TestClass({ a: 'b', c: 'd' }),
           actual = yaml.load('[&1 !test {a: b, c: d}, *1]', { schema: TEST_SCHEMA })[1];
 
       assert(actual instanceof TestClass);

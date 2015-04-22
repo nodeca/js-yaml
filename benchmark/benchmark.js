@@ -2,6 +2,7 @@
 
 'use strict';
 
+/*eslint-disable no-console*/
 
 var path      = require('path');
 var fs        = require('fs');

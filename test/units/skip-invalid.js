@@ -11,14 +11,14 @@ var sample = {
   string: 'hello',
   func:   function (a, b) { return a + b; },
   regexp: /^hel+o/,
-  array:  [1, 2, 3]
+  array:  [ 1, 2, 3 ]
 };
 
 
 var expected = {
   number: 42,
   string: 'hello',
-  array:  [1, 2, 3]
+  array:  [ 1, 2, 3 ]
 };
 
 

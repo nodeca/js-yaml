@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = {
-  'string': 'abcd'
+  string: 'abcd'
 };

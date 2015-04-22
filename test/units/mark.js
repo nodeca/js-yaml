@@ -15,7 +15,7 @@ test('Mark', function () {
     var index = 0, line = 0, column = 0,
         mark, snippet, data, pointer, temp;
 
-    assert(0 <= input.indexOf('*'));
+    assert(input.indexOf('*') >= 0);
 
     while (input[index] !== '*') {
       if (input[index] === '\n') {

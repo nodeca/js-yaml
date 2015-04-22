@@ -24,12 +24,7 @@ help:
 
 
 lint:
-	if test ! `which jshint` ; then \
-		echo "You need 'jshint' installed in order to run lint." >&2 ; \
-		echo "  $ make dev-deps" >&2 ; \
-		exit 128 ; \
-		fi
-	jshint . --show-non-errors
+	eslint --reset .
 
 
 test: lint
@@ -39,16 +34,6 @@ test: lint
 		exit 128 ; \
 		fi
 	NODE_ENV=test mocha -R spec
-
-
-dev-deps:
-	@if test ! `which npm` ; then \
-		echo "You need 'npm' installed." >&2 ; \
-		echo "  See: http://npmjs.org/" >&2 ; \
-		exit 128 ; \
-		fi
-	npm install -g jshint
-	npm install
 
 
 gh-pages:

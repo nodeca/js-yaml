@@ -1,3 +1,10 @@
+3.3.0 / 2015-04-22
+------------------
+
+- Significantly improved long strings formatting in dumper, thanks to @isaacs.
+- Strip BOM if exists.
+
+
 3.2.7 / 2015-02-19
 ------------------
 

@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = { 'foo': 'baz' };
+module.exports = { foo: 'baz' };

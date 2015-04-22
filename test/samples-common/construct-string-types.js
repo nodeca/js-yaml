@@ -54,33 +54,45 @@ module.exports = {
 };
 
 // now indent the long multi really far
-var obj = module.exports;
-for (var i = 0; i < 5; i++) {
+var obj = module.exports,
+    i;
+
+for (i = 0; i < 5; i++) {
   obj.indent = {};
   obj = obj.indent;
 }
+
 obj.ind = module.exports.longMulti;
-for (var i = 0; i < 5; i++) {
+
+for (i = 0; i < 5; i++) {
   obj.indent = {};
   obj = obj.indent;
 }
+
 obj.ind = module.exports.longMulti;
-for (var i = 0; i < 5; i++) {
+
+for (i = 0; i < 5; i++) {
   obj.indent = {};
   obj = obj.indent;
 }
+
 obj.ind = module.exports.longMulti;
-for (var i = 0; i < 5; i++) {
+
+for (i = 0; i < 5; i++) {
   obj.indent = {};
   obj = obj.indent;
 }
+
 obj.ind = module.exports.longMulti;
-for (var i = 0; i < 5; i++) {
+
+for (i = 0; i < 5; i++) {
   obj.indent = {};
   obj = obj.indent;
 }
+
 obj.ind = module.exports.longMulti;
-for (var i = 0; i < 5; i++) {
+
+for (i = 0; i < 5; i++) {
   obj.indent = {};
   obj = obj.indent;
 }

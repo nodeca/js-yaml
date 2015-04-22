@@ -10,7 +10,7 @@ var expected = [
   new schema.Tag3({ x: 1 }),
   new schema.Tag3({ x: 1, y: 2, z: 3 }),
   new schema.Tag3({ x: 1, y: 2, z: 3 }),
-  new schema.Foo({ myParameter: 'foo', myAnotherParameter: [1, 2, 3] })
+  new schema.Foo({ myParameter: 'foo', myAnotherParameter: [ 1, 2, 3 ] })
 ];
 
 function testHandler(actual) {

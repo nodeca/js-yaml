@@ -3,13 +3,13 @@
 module.exports = [
   null,
   {
-    'empty': null,
-    'canonical': null,
-    'english': null,
-    'null': 'null key'
+    empty: null,
+    canonical: null,
+    english: null,
+    null: 'null key'
   },
   {
-    'sparse': [
+    sparse: [
       null,
       '2nd entry',
       null,

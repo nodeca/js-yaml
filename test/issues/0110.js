@@ -7,8 +7,8 @@ var yaml   = require('../../');
 
 test('Circular and cross references', function () {
   var source = {
-    a: {a: 1},
-    b: [1, 2],
+    a: { a: 1 },
+    b: [ 1, 2 ],
     c: {},
     d: []
   };
@@ -19,7 +19,7 @@ test('Circular and cross references', function () {
   source.d.push(source);
 
   var obtained = yaml.load(yaml.dump(source));
-  
+
   assert.equal(obtained.crossObject, obtained.a);
   assert.equal(obtained.crossArray, obtained.b);
   assert.equal(obtained.c.circularObject, obtained);
