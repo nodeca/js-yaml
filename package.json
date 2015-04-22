@@ -24,14 +24,15 @@
     "js-yaml": "bin/js-yaml.js"
   },
   "dependencies": {
-    "argparse": "~ 1.0.0",
-    "esprima": "~ 2.0.0"
+    "argparse": "~1.0.2",
+    "esprima": "~2.2.0"
   },
   "devDependencies": {
     "ansi": "*",
     "benchmark": "*",
     "eslint": "0.18.0",
-    "eslint-plugin-nodeca": "~ 1.0.3",
+    "eslint-plugin-nodeca": "^1.0.3",
+    "istanbul": "*",
     "mocha": "*"
   },
   "browser": {

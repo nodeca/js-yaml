@@ -1,5 +1,6 @@
-/tmp/
-/node_modules/
-/doc/
-/benchmark/implementations/*
+coverage
+tmp
+node_modules
+doc
+benchmark/implementations/*
 !/benchmark/implementations/current/

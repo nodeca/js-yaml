@@ -36,6 +36,11 @@ test: lint
 	NODE_ENV=test mocha -R spec
 
 
+coverage:
+	rm -rf coverage
+	istanbul cover node_modules/.bin/_mocha
+
+
 gh-pages:
 	@if test -z ${REMOTE_REPO} ; then \
 		echo 'Remote repo URL not found' >&2 ; \
@@ -92,5 +97,5 @@ todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true
 
 
-.PHONY: publish lint test dev-deps gh-pages todo
-.SILENT: help lint test todo
+.PHONY: publish lint test dev-deps gh-pages todo coverage
+.SILENT: help lint test todo coverage
