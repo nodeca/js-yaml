@@ -1,0 +1,236 @@
+simpleString: hello world
+simpleStringComma: 'hello, world'
+stackTrace: |-
+  Error: foo
+      at repl:1:5
+      at REPLServer.defaultEval (repl.js:116:27)
+      at bound (domain.js:254:14)
+trailingSpace: 'hello space    '
+trailingTab: "hello tab  \t"
+trailingCR: |
+  hello newline
+simpleQuotes: |-
+  won't you be my neighbor
+unprintable: "number 1 is \x01 and the biggest byte is \uFFFF ok"
+multiline: |
+  hello
+  world
+multilineChomp: |-
+  hello
+  world
+multilineTrailingCR: |+
+  hello
+  world
+
+
+
+
+
+multilineTrailingSpace: "hello\nworld    \nspace\n"
+multilineTrailingSpaceChomp: "hello\nworld    \nspace"
+longMultiBigSpace: >
+  x                                                                                                   y
+
+  world
+longMultiBigSpaceChomp: >-
+  x                                                                                                   y
+
+  world
+essayNoTrailing: >-
+  a
+
+  b
+
+  1sdf 2ar 3sdf 4sdf 5sdf 6sdf 7sdf 8sdf 9sdf 10asdf 11asdf 12asdf 13asdf 14asdf
+  15df 16df long  17df 1890 1900 2000 2001 2002 baz
+
+  2003 2004 4sdf 4sdf 7sdf 8sdf 9sdf 0sdf 1sdf 2sdf 3sdf 4sdf 5sdf 6sdf
+  long  7sdf 8sdf 9sdf 0sdf 2002 asdfasdf 2003 2006 2020 2021 2022 2023 2024 2025
+  long  2026 2027 2028 2029 2030 2031 2032 2033 2034 2035 asdfasdf 02036 2040
+  2041 long  2042 2043 2044 2045 2046 2027 2048 2050 4444 5555 6666 7777 8888
+  9999 long  asdfasdf aaaa bbbb cccc dddd eeeee fff ggggggg hhhi iiii jjjj
+  long  asdfasdfasdfasdfslong                                                                       xlong  asdfasdfasdfasdfasdfasdfasdfasd
+  asdf xasdf the  end
+essayManyTrailing: >+
+  a
+
+  b
+
+  1sdf 2ar 3sdf 4sdf 5sdf 6sdf 7sdf 8sdf 9sdf 10asdf 11asdf 12asdf 13asdf 14asdf
+  15df 16df long  17df 1890 1900 2000 2001 2002 baz
+
+  2003 2004 4sdf 4sdf 7sdf 8sdf 9sdf 0sdf 1sdf 2sdf 3sdf 4sdf 5sdf 6sdf
+  long  7sdf 8sdf 9sdf 0sdf 2002 asdfasdf 2003 2006 2020 2021 2022 2023 2024 2025
+  long  2026 2027 2028 2029 2030 2031 2032 2033 2034 2035 asdfasdf 02036 2040
+  2041 long  2042 2043 2044 2045 2046 2027 2048 2050 4444 5555 6666 7777 8888
+  9999 long  asdfasdf aaaa bbbb cccc dddd eeeee fff ggggggg hhhi iiii jjjj
+  long  asdfasdfasdfasdfslong                                                                       xlong  asdfasdfasdfasdfasdfasdfasdfasd
+  asdf xasdf the  end
+
+
+
+
+
+
+essayOneTrailing: >
+  a
+
+  b
+
+  1sdf 2ar 3sdf 4sdf 5sdf 6sdf 7sdf 8sdf 9sdf 10asdf 11asdf 12asdf 13asdf 14asdf
+  15df 16df long  17df 1890 1900 2000 2001 2002 baz
+
+  2003 2004 4sdf 4sdf 7sdf 8sdf 9sdf 0sdf 1sdf 2sdf 3sdf 4sdf 5sdf 6sdf
+  long  7sdf 8sdf 9sdf 0sdf 2002 asdfasdf 2003 2006 2020 2021 2022 2023 2024 2025
+  long  2026 2027 2028 2029 2030 2031 2032 2033 2034 2035 asdfasdf 02036 2040
+  2041 long  2042 2043 2044 2045 2046 2027 2048 2050 4444 5555 6666 7777 8888
+  9999 long  asdfasdf aaaa bbbb cccc dddd eeeee fff ggggggg hhhi iiii jjjj
+  long  asdfasdfasdfasdfslong                                                                       xlong  asdfasdfasdfasdfasdfasdfasdfasd
+  asdf xasdf the  end
+neggy: '-1'
+questy: '?asdf'
+longMultiChomp: >-
+  lo hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hel
+
+  world
+longMultiTrailingCR: >+
+  lo hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hel
+
+  world
+
+
+
+
+
+longMulti: >
+  lo hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hello hello hello hello hello hello hello hello hello hello hello hello
+  hello hel
+
+  world
+indent:
+  indent:
+    indent:
+      indent:
+        indent:
+          ind: >
+            lo hello hello hello hello hello hello hello hello hello hello hello
+            hello hello hello hello hello hello hello hello hello hello hello
+            hello hello hello hello hello hello hello hello hello hello hello
+            hello hello hello hello hello hello hello hello hello hello hello
+            hello hello hello hello hello hello hello hello hello hello hello
+            hello hello hello hello hello hello hello hello hello hello hello
+            hello hello hello hello hello hello hello hello hello hello hello
+            hello hel
+
+            world
+          indent:
+            indent:
+              indent:
+                indent:
+                  indent:
+                    ind: >
+                      lo hello hello hello hello hello hello hello hello hello
+                      hello hello hello hello hello hello hello hello hello hello
+                      hello hello hello hello hello hello hello hello hello hello
+                      hello hello hello hello hello hello hello hello hello hello
+                      hello hello hello hello hello hello hello hello hello hello
+                      hello hello hello hello hello hello hello hello hello hello
+                      hello hello hello hello hello hello hello hello hello hello
+                      hello hello hello hello hello hello hello hello hello hel
+
+                      world
+                    indent:
+                      indent:
+                        indent:
+                          indent:
+                            indent:
+                              ind: >
+                                lo hello hello hello hello hello hello hello
+                                hello hello hello hello hello hello hello hello
+                                hello hello hello hello hello hello hello hello
+                                hello hello hello hello hello hello hello hello
+                                hello hello hello hello hello hello hello hello
+                                hello hello hello hello hello hello hello hello
+                                hello hello hello hello hello hello hello hello
+                                hello hello hello hello hello hello hello hello
+                                hello hello hello hello hello hello hello hello
+                                hello hello hello hello hello hello hello hel
+
+                                world
+                              indent:
+                                indent:
+                                  indent:
+                                    indent:
+                                      indent:
+                                        ind: >
+                                          lo hello hello hello hello hello hello
+                                          hello hello hello hello hello hello hello
+                                          hello hello hello hello hello hello hello
+                                          hello hello hello hello hello hello hello
+                                          hello hello hello hello hello hello hello
+                                          hello hello hello hello hello hello hello
+                                          hello hello hello hello hello hello hello
+                                          hello hello hello hello hello hello hello
+                                          hello hello hello hello hello hello hello
+                                          hello hello hello hello hello hello hello
+                                          hello hello hello hello hello hello hello
+                                          hello hello hel
+
+                                          world
+                                        indent:
+                                          indent:
+                                            indent:
+                                              indent:
+                                                indent:
+                                                  ind: >
+                                                    lo hello hello hello hello hello hello
+                                                    hello hello hello hello hello hello hello
+                                                    hello hello hello hello hello hello hello
+                                                    hello hello hello hello hello hello hello
+                                                    hello hello hello hello hello hello hello
+                                                    hello hello hello hello hello hello hello
+                                                    hello hello hello hello hello hello hello
+                                                    hello hello hello hello hello hello hello
+                                                    hello hello hello hello hello hello hello
+                                                    hello hello hello hello hello hello hello
+                                                    hello hello hello hello hello hello hello
+                                                    hello hello hel
+
+                                                    world
+                                                  indent:
+                                                    indent:
+                                                      indent:
+                                                        indent:
+                                                          indent:
+                                                            ind: >
+                                                              lo hello hello hello hello hello hello
+                                                              hello hello hello hello hello hello hello
+                                                              hello hello hello hello hello hello hello
+                                                              hello hello hello hello hello hello hello
+                                                              hello hello hello hello hello hello hello
+                                                              hello hello hello hello hello hello hello
+                                                              hello hello hello hello hello hello hello
+                                                              hello hello hello hello hello hello hello
+                                                              hello hello hello hello hello hello hello
+                                                              hello hello hello hello hello hello hello
+                                                              hello hello hello hello hello hello hello
+                                                              hello hello hel
+
+                                                              world
