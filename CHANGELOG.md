@@ -1,4 +1,4 @@
-3.3.0 / 2015-04-22
+3.3.0 / 2015-04-26
 ------------------
 
 - Significantly improved long strings formatting in dumper, thanks to @isaacs.
