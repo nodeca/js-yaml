@@ -1,3 +1,9 @@
+Unreleased
+----------
+
+- Allow options.sortKeys to specify that keys should be sorted when dumping, to
+enable deterministic output.
+
 3.3.0 / 2015-04-26
 ------------------
 
