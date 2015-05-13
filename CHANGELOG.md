@@ -1,8 +1,9 @@
-Unreleased
-----------
+3.3.1 / 2015-05-13
+------------------
 
-- Allow options.sortKeys to specify that keys should be sorted when dumping, to
-enable deterministic output.
+- Added `.sortKeys` dumper option, thanks to @rjmunro.
+- Fixed astral characters support, #191.
+
 
 3.3.0 / 2015-04-26
 ------------------
