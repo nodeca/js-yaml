@@ -69,3 +69,13 @@ test('fold', function () {
   assert.equal(yaml.safeDump(essay + '\n\n'), '>+\n' + folded + '\n\n');
   assert.equal(yaml.safeDump(essay + '\n\n\n'), '>+\n' + folded + '\n\n\n');
 });
+
+test('literal key', function () {
+  // Multiline literal key should be escaped, not rendered
+  // as multiline.
+  assert.equal(yaml.safeDump({
+    'push\nand': {
+      you: 'pull'
+    }
+  }), '"push\\nand":\n  you: pull\n');
+});
