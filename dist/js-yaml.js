@@ -1,4 +1,5 @@
-/* js-yaml 3.3.1 https://github.com/nodeca/js-yaml */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.jsyaml = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+-n /* js-yaml 3.3.1 https://github.com/nodeca/js-yaml */
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.jsyaml = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
 
@@ -313,7 +314,7 @@ StringBuilder.prototype.finish = function () {
   }
 };
 
-function writeScalar(state, object, level) {
+function writeScalar(state, object, level, iskey) {
   var simple, first, spaceWrap, folded, literal, single, double,
       sawLineFeed, linePosition, longestLine, indent, max, character,
       position, escapeSeq, hexEsc, previous, lineLength, modifier,
@@ -343,14 +344,14 @@ function writeScalar(state, object, level) {
     simple = false;
   }
 
-  // can only use > and | if not wrapped in spaces.
+  // can only use > and | if not wrapped in spaces or is not a key.
   if (spaceWrap) {
     simple = false;
     folded = false;
     literal = false;
   } else {
-    folded = true;
-    literal = true;
+    folded = !iskey;
+    literal = !iskey;
   }
 
   single = true;
@@ -727,7 +728,7 @@ function writeBlockMapping(state, level, object, compact) {
     objectKey = objectKeyList[index];
     objectValue = object[objectKey];
 
-    if (!writeNode(state, level + 1, objectKey, true, true)) {
+    if (!writeNode(state, level + 1, objectKey, true, true, true)) {
       continue; // Skip this pair because of invalid key.
     }
 
@@ -806,7 +807,7 @@ function detectType(state, object, explicit) {
 // Serializes `object` and writes it to global `result`.
 // Returns true on success, or false on invalid object.
 //
-function writeNode(state, level, object, block, compact) {
+function writeNode(state, level, object, block, compact, iskey) {
   state.tag = null;
   state.dump = object;
 
@@ -865,7 +866,7 @@ function writeNode(state, level, object, block, compact) {
       }
     } else if ('[object String]' === type) {
       if ('?' !== state.tag) {
-        writeScalar(state, state.dump, level);
+        writeScalar(state, state.dump, level, iskey);
       }
     } else {
       if (state.skipInvalid) {
@@ -897,8 +898,7 @@ function getDuplicateReferences(object, state) {
 }
 
 function inspectNode(object, objects, duplicatesIndexes) {
-  var type = _toString.call(object),
-      objectKeyList,
+  var objectKeyList,
       index,
       length;
 
@@ -1529,7 +1529,7 @@ function readDoubleQuotedScalar(state, nodeIndent) {
       captureEnd,
       hexLength,
       hexResult,
-      tmp, tmpEsc,
+      tmp,
       ch;
 
   ch = state.input.charCodeAt(state.position);
@@ -2189,9 +2189,8 @@ function readAnchorProperty(state) {
 }
 
 function readAlias(state) {
-  var _position, alias,
-      len = state.length,
-      input = state.input,
+  var _position,
+      alias,
       ch;
 
   ch = state.input.charCodeAt(state.position);
@@ -2233,8 +2232,7 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
       typeQuantity,
       type,
       flowIndent,
-      blockIndent,
-      _result;
+      blockIndent;
 
   state.tag    = null;
   state.anchor = null;
@@ -2534,7 +2532,7 @@ function loadAll(input, iterator, options) {
 
 
 function load(input, options) {
-  var documents = loadDocuments(input, options), index, length;
+  var documents = loadDocuments(input, options);
 
   if (0 === documents.length) {
     /*eslint-disable no-undefined*/
@@ -2953,7 +2951,7 @@ function resolveYamlBinary(data) {
     return false;
   }
 
-  var code, idx, bitlen = 0, len = 0, max = data.length, map = BASE64_MAP;
+  var code, idx, bitlen = 0, max = data.length, map = BASE64_MAP;
 
   // Convert one by one.
   for (idx = 0; idx < max; idx++) {
@@ -2973,7 +2971,7 @@ function resolveYamlBinary(data) {
 }
 
 function constructYamlBinary(data) {
-  var code, idx, tailbits,
+  var idx, tailbits,
       input = data.replace(/[\r\n=]/g, ''), // remove CR/LF & padding to simplify scan
       max = input.length,
       map = BASE64_MAP,
@@ -3125,8 +3123,6 @@ function resolveYamlFloat(data) {
   if (null === data) {
     return false;
   }
-
-  var value, sign, base, digits;
 
   if (!YAML_FLOAT_PATTERN.test(data)) {
     return false;
@@ -3431,9 +3427,7 @@ function resolveJavascriptFunction(data) {
 
   try {
     var source = '(' + data + ')',
-        ast    = esprima.parse(source, { range: true }),
-        params = [],
-        body;
+        ast    = esprima.parse(source, { range: true });
 
     if ('Program'             !== ast.type         ||
         1                     !== ast.body.length  ||
@@ -3525,6 +3519,11 @@ function resolveJavascriptRegExp(data) {
 
   try {
     var dummy = new RegExp(regexp, modifiers);
+
+    // Very hacky way to ensure that dummy is not simply
+    // removed by uglify, thus rendering this try pointless.
+    dummy.isDummy = true;
+
     return true;
   } catch (error) {
     return false;
@@ -3867,10 +3866,7 @@ function resolveYamlTimestamp(data) {
     return false;
   }
 
-  var match, year, month, day, hour, minute, second, fraction = 0,
-      delta = null, tz_hour, tz_minute, date;
-
-  match = YAML_TIMESTAMP_REGEXP.exec(data);
+  var match = YAML_TIMESTAMP_REGEXP.exec(data);
 
   if (null === match) {
     return false;
