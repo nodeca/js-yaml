@@ -17,8 +17,6 @@ suite('Dumper', function () {
       return; // continue
     }
 
-    var yamlFile = path.resolve(samplesDir, path.basename(jsFile, '.js') + '.yml');
-
     test(path.basename(jsFile, '.js'), function () {
       var sample       = require(path.resolve(samplesDir, jsFile)),
           data         = 'function' === typeof sample ? sample.expected : sample,
