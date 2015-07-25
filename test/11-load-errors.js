@@ -19,7 +19,15 @@ suite('Load errors', function () {
       var yamlSource = fs.readFileSync(yamlFile, { encoding: 'utf8' });
 
       assert.throws(function () {
-        yaml.loadAll(yamlSource, function () {}, { filename: yamlFile, schema: TEST_SCHEMA });
+        yaml.loadAll(
+          yamlSource,
+          function () {},
+          {
+            filename: yamlFile,
+            schema: TEST_SCHEMA,
+            onWarning: function (e) { throw e; }
+          }
+        );
       }, yaml.YAMLException, yamlFile);
     });
   });
