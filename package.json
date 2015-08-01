@@ -20,6 +20,11 @@
     "type": "git",
     "url": "git://github.com/nodeca/js-yaml.git"
   },
+  "files": [
+    "index.js",
+    "lib/",
+    "bin/"
+  ],
   "bin": {
     "js-yaml": "bin/js-yaml.js"
   },
