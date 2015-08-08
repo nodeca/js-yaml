@@ -23,7 +23,8 @@
   "files": [
     "index.js",
     "lib/",
-    "bin/"
+    "bin/",
+    "dist/"
   ],
   "bin": {
     "js-yaml": "bin/js-yaml.js"
