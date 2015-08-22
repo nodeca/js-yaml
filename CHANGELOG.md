@@ -1,3 +1,13 @@
+3.4.0 / 2015-08-23
+------------------
+
+- Fixed multiline keys dump, #197. Thanks to @tcr.
+- Don't throw on warnongs anymore. Use `onWarning` option to catch.
+- Throw error on unknown tags (was warning before).
+- Fixed heading line breaks in some scalars (regression).
+- Reworked internals of error class.
+
+
 3.3.1 / 2015-05-13
 ------------------
 
