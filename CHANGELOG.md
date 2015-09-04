@@ -1,3 +1,9 @@
+3.4.1 / 2015-09-05
+------------------
+
+- Fixed stacktrace handling in generated errors, for browsers (FF/IE).
+
+
 3.4.0 / 2015-08-23
 ------------------
 
