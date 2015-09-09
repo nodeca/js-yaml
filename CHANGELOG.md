@@ -1,3 +1,10 @@
+3.4.2 / 2015-09-09
+------------------
+
+- Fixed serialization of duplicated entries in sequences, #205.
+  Thanks to @vogelsgesang.
+
+
 3.4.1 / 2015-09-05
 ------------------
 
