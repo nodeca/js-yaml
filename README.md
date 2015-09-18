@@ -63,7 +63,7 @@ needs [es5-shims](https://github.com/kriskowal/es5-shim) to operate.
 
 Notes:
 
-1. We have no resourses to support browserified version. Don't expect it to be
+1. We have no resources to support browserified version. Don't expect it to be
    well tested. Don't expect fast fixes if something goes wrong there.
 2. `!!js/function` in browser bundle will not work by default. If you really need
    it - load `esprima` parser first (via amd or directly).
