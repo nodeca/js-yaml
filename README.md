@@ -122,7 +122,7 @@ exception on those.
 
 NOTE: JS-YAML **does not** support schema-specific tag resolution restrictions.
 So, JSON schema is not as strict as defined in the YAML specification.
-It allows numbers in any notaion, use `Null` and `NULL` as `null`, etc.
+It allows numbers in any notation, use `Null` and `NULL` as `null`, etc.
 Core schema also has no such restrictions. It allows binary notation for integers.
 
 
