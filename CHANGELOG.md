@@ -1,3 +1,9 @@
+3.4.3 / 2015-10-10
+------------------
+
+- Maintenance release - deps bump (esprima, argparse).
+
+
 3.4.2 / 2015-09-09
 ------------------
 
