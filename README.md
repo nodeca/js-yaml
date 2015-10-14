@@ -238,7 +238,7 @@ The list of standard YAML tags and corresponding JavaScipt types. See also
 Caveats
 -------
 
-Note, that you use arrays or objects as key in JS-YAML. JS do not allows objects
+Note, that you use arrays or objects as key in JS-YAML. JS does not allow objects
 or array as keys, and stringifies (by calling .toString method) them at the
 moment of adding them.
 
@@ -270,10 +270,10 @@ So, the following YAML document cannot be loaded.
 Breaking changes in 2.x.x -> 3.x.x
 ----------------------------------
 
-If your have not used __custom__ tags or loader classes and not loaded yaml
+If you have not used __custom__ tags or loader classes and not loaded yaml
 files via `require()` - no changes needed. Just upgrade library.
 
-In other case, you should:
+Otherwise, you should:
 
 1. Replace all occurences of `require('xxxx.yml')` by `fs.readFileSync()` +
   `yaml.safeLoad()`.
