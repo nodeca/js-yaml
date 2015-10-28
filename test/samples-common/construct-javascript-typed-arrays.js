@@ -1,5 +1,6 @@
+'use strict';
 
-const types = [
+var types = [
   'Int8Array',
   'Unit8Array',
   'Uint8ClampedArray',
@@ -11,12 +12,15 @@ const types = [
   'Float64Array'
 ];
 
-const values = [ 1, 2, 3 ]
+var values = [ 1, 2, 3 ];
 
-types.forEach( function ( type ) {
-  var ctor = global[type]
-  if ( 'function' == typeof ctor )
-    exports[type] = new ctor( values )
-  else
-    exports[type] = values.slice()
-})
+/*eslint-disable new-cap */
+
+types.forEach(function (type) {
+  var ctor = global[type];
+  if (typeof ctor === 'function') {
+    exports[type] = new ctor(values);
+  } else {
+    exports[type] = values.slice();
+  }
+});
