@@ -1,0 +1,36 @@
+Int8Array:
+  - 1
+  - 2
+  - 3
+Unit8Array:
+  - 1
+  - 2
+  - 3
+Uint8ClampedArray:
+  - 1
+  - 2
+  - 3
+Int16Array:
+  - 1
+  - 2
+  - 3
+Uint16Array:
+  - 1
+  - 2
+  - 3
+Int32Array:
+  - 1
+  - 2
+  - 3
+Uint32Array:
+  - 1
+  - 2
+  - 3
+Float32Array:
+  - 1
+  - 2
+  - 3
+Float64Array:
+  - 1
+  - 2
+  - 3
