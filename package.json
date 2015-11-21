@@ -1,6 +1,6 @@
 {
   "name": "js-yaml",
-  "version": "3.4.3",
+  "version": "3.4.4",
   "description": "YAML 1.2 parser and serializer",
   "keywords": [
     "yaml",
@@ -16,10 +16,7 @@
     "Martin Grenfell <martin.grenfell@gmail.com> (http://got-ravings.blogspot.com)"
   ],
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/nodeca/js-yaml.git"
-  },
+  "repository": "nodeca/js-yaml",
   "files": [
     "index.js",
     "lib/",

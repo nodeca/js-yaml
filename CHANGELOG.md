@@ -1,8 +1,8 @@
-3.4.4 / WIP
+3.4.4 / 2015-11-21
 ------------------
 
 - Fixed floats dump (missed dot for scientific format), #220.
-
+- Allow non-printable characters inside quoted scalars, #192.
 
 
 3.4.3 / 2015-10-10
