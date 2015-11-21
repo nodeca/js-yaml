@@ -9,7 +9,7 @@
     "pyyaml"
   ],
   "homepage": "https://github.com/nodeca/js-yaml",
-  "author": "Dervus Grim <dervus.grim@gmail.com>",
+  "author": "Vladimir Zapparov <dervus.grim@gmail.com>",
   "contributors": [
     "Aleksey V Zapparov <ixti@member.fsf.org> (http://www.ixti.net/)",
     "Vitaly Puzrin <vitaly@rcdesign.ru> (https://github.com/puzrin)",
