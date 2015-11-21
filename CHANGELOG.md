@@ -1,3 +1,10 @@
+3.4.4 / WIP
+------------------
+
+- Fixed floats dump (missed dot for scientific format), #220.
+
+
+
 3.4.3 / 2015-10-10
 ------------------
 
