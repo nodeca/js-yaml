@@ -19,7 +19,10 @@ test('Forbid lone surrogates', function () {
   assert.throws(function () { yaml.load('\udc00\ud800'); }, yaml.YAMLException);
 });
 
-test.skip('Allow non-printable characters inside quoted scalars', function () {
+test('Allow non-printable characters inside quoted scalars', function () {
   assert.strictEqual(yaml.load('"\x7f\x9f\udc00\ud800"'), '\x7f\x9f\udc00\ud800');
 });
 
+test('Forbid control sequences inside quoted scalars', function () {
+  assert.throws(function () { yaml.load('"\x03"'); }, yaml.YAMLException);
+});
