@@ -1,3 +1,9 @@
+3.4.6 / 2015-11-26
+------------------
+
+- Use standalone `inherit` to keep browserified files clear.
+
+
 3.4.5 / 2015-11-23
 ------------------
 
