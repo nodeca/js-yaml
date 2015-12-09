@@ -105,6 +105,8 @@ options:
   error/warning messages.
 - `onWarning` _(default: null)_ - function to call on warning messages.
   Loader will throw on warnings if this function is not provided.
+- `json` _(default: false)_ - set true for 100% JSON compatibility (don't throw error on duplicated
+   object key names).
 - `schema` _(default: `DEFAULT_SAFE_SCHEMA`)_ - specifies a schema to use.
   - `FAILSAFE_SCHEMA` - only strings, arrays and plain objects:
     http://www.yaml.org/spec/1.2/spec.html#id2802346
