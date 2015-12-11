@@ -178,6 +178,7 @@ options:
 - `sortKeys` _(default: `false`)_ - if `true`, sort keys when dumping YAML. If a
   function, use the function to sort the keys.
 - `lineWidth` _(default: `80`)_ - set max line width.
+- `noRefs` _(default: `false`)_ - if `true`, don't convert duplicate objects into references
 
 styles:
 
