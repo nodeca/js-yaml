@@ -40,7 +40,8 @@
     "mocha": "*"
   },
   "browser": {
-    "buffer": false
+    "buffer": false,
+    "esprima": false
   },
   "scripts": {
     "test": "make test"
