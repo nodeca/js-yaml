@@ -14,7 +14,13 @@
     "**/.*",
     "node_modules",
     "benchmark",
+    "bin",
     "bower_components",
+    "coverage"
+    "demo",
+    "examples",
+    "lib",
+    "support",
     "test",
     "Makefile",
     "index*",
