@@ -1,4 +1,4 @@
-/* js-yaml 3.4.6 https://github.com/nodeca/js-yaml */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.jsyaml = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/* js-yaml 3.5.0 https://github.com/nodeca/js-yaml */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.jsyaml = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
 
@@ -220,7 +220,8 @@ function State(options) {
   this.flowLevel   = (common.isNothing(options['flowLevel']) ? -1 : options['flowLevel']);
   this.styleMap    = compileStyleMap(this.schema, options['styles'] || null);
   this.sortKeys    = options['sortKeys'] || false;
-  this.lineWidth    = options['lineWidth'] || 80;
+  this.lineWidth   = options['lineWidth'] || 80;
+  this.noRefs      = options['noRefs'] || false;
 
   this.implicitTypes = this.schema.compiledImplicit;
   this.explicitTypes = this.schema.compiledExplicit;
@@ -344,9 +345,12 @@ function writeScalar(state, object, level, iskey) {
     simple = false;
   }
 
-  // can only use > and | if not wrapped in spaces or is not a key.
-  if (spaceWrap) {
-    simple = false;
+  // Can only use > and | if not wrapped in spaces or is not a key.
+  // Also, don't use if in flow mode.
+  if (spaceWrap || (state.flowLevel > -1 && state.flowLevel <= level)) {
+    if (spaceWrap) {
+      simple = false;
+    }
     folded = false;
     literal = false;
   } else {
@@ -452,7 +456,7 @@ function writeScalar(state, object, level, iskey) {
     }
   }
 
-  if (literal && longestLine < max) {
+  if (literal && longestLine < max || state.tag !== null) {
     folded = false;
   }
 
@@ -937,7 +941,9 @@ function dump(input, options) {
 
   var state = new State(options);
 
-  getDuplicateReferences(input, state);
+  if (!state.noRefs) {
+    getDuplicateReferences(input, state);
+  }
 
   if (writeNode(state, 0, input, true, true)) {
     return state.dump + '\n';
@@ -1134,6 +1140,7 @@ function State(input, options) {
   this.schema    = options['schema']    || DEFAULT_FULL_SCHEMA;
   this.onWarning = options['onWarning'] || null;
   this.legacy    = options['legacy']    || false;
+  this.json      = options['json']      || false;
 
   this.implicitTypes = this.schema.compiledImplicit;
   this.typeMap       = this.schema.compiledTypeMap;
@@ -1263,7 +1270,7 @@ function captureSegment(state, start, end, checkJson) {
   }
 }
 
-function mergeMappings(state, destination, source) {
+function mergeMappings(state, destination, source, overridableKeys) {
   var sourceKeys, key, index, quantity;
 
   if (!common.isObject(source)) {
@@ -1277,11 +1284,12 @@ function mergeMappings(state, destination, source) {
 
     if (!_hasOwnProperty.call(destination, key)) {
       destination[key] = source[key];
+      overridableKeys[key] = true;
     }
   }
 }
 
-function storeMappingPair(state, _result, keyTag, keyNode, valueNode) {
+function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode) {
   var index, quantity;
 
   keyNode = String(keyNode);
@@ -1293,13 +1301,19 @@ function storeMappingPair(state, _result, keyTag, keyNode, valueNode) {
   if ('tag:yaml.org,2002:merge' === keyTag) {
     if (Array.isArray(valueNode)) {
       for (index = 0, quantity = valueNode.length; index < quantity; index += 1) {
-        mergeMappings(state, _result, valueNode[index]);
+        mergeMappings(state, _result, valueNode[index], overridableKeys);
       }
     } else {
-      mergeMappings(state, _result, valueNode);
+      mergeMappings(state, _result, valueNode, overridableKeys);
     }
   } else {
+    if (!state.json &&
+        !_hasOwnProperty.call(overridableKeys, keyNode) &&
+        _hasOwnProperty.call(_result, keyNode)) {
+      throwError(state, 'duplicated mapping key');
+    }
     _result[keyNode] = valueNode;
+    delete overridableKeys[keyNode];
   }
 
   return _result;
@@ -1639,6 +1653,7 @@ function readFlowCollection(state, nodeIndent) {
       isPair,
       isExplicitPair,
       isMapping,
+      overridableKeys = {},
       keyNode,
       keyTag,
       valueNode,
@@ -1710,9 +1725,9 @@ function readFlowCollection(state, nodeIndent) {
     }
 
     if (isMapping) {
-      storeMappingPair(state, _result, keyTag, keyNode, valueNode);
+      storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode);
     } else if (isPair) {
-      _result.push(storeMappingPair(state, null, keyTag, keyNode, valueNode));
+      _result.push(storeMappingPair(state, null, overridableKeys, keyTag, keyNode, valueNode));
     } else {
       _result.push(keyNode);
     }
@@ -1944,6 +1959,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
       _tag          = state.tag,
       _anchor       = state.anchor,
       _result       = {},
+      overridableKeys = {},
       keyTag        = null,
       keyNode       = null,
       valueNode     = null,
@@ -1969,7 +1985,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
 
       if (0x3F/* ? */ === ch) {
         if (atExplicitKey) {
-          storeMappingPair(state, _result, keyTag, keyNode, null);
+          storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
           keyTag = keyNode = valueNode = null;
         }
 
@@ -2009,7 +2025,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
           }
 
           if (atExplicitKey) {
-            storeMappingPair(state, _result, keyTag, keyNode, null);
+            storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
             keyTag = keyNode = valueNode = null;
           }
 
@@ -2054,7 +2070,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
       }
 
       if (!atExplicitKey) {
-        storeMappingPair(state, _result, keyTag, keyNode, valueNode);
+        storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode);
         keyTag = keyNode = valueNode = null;
       }
 
@@ -2075,7 +2091,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
 
   // Special case: last mapping's node contains only the key in explicit notation.
   if (atExplicitKey) {
-    storeMappingPair(state, _result, keyTag, keyNode, null);
+    storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
   }
 
   // Expose the resulting mapping.
@@ -3517,7 +3533,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":13,"esprima":"esprima"}],19:[function(require,module,exports){
+},{"../../type":13,"esprima":30}],19:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
