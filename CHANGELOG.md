@@ -1,3 +1,12 @@
+3.5.0 / 2016-01-10
+------------------
+
+- Dumper. Fold strings only, #217.
+- Dumper. `norefs` option, to clone linked objects, #229.
+- Loader. Throw a warning for duplicate keys, #166.
+- Improved browserify support (mark `esprima` & `Buffer` excluded).
+
+
 3.4.6 / 2015-11-26
 ------------------
 
