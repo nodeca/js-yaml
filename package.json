@@ -34,10 +34,12 @@
   "devDependencies": {
     "ansi": "*",
     "benchmark": "*",
+    "browserify": "^13.0.0",
     "eslint": "0.24.1",
     "eslint-plugin-nodeca": "^1.0.3",
     "istanbul": "*",
-    "mocha": "*"
+    "mocha": "*",
+    "uglify-js": "^2.6.1"
   },
   "browser": {
     "buffer": false,
