@@ -1,29 +1,41 @@
+html, body {
+  height: 100%;
+}
+
 body {
-  margin: 30px;
-  padding: 0;
-  font-family: verdana, sans-serif;
+  margin: 0 30px;
+  padding-bottom: 125px;
+  overflow-x: hidden;
 }
-h1 {
-  font-size: 50px;
-  margin: 40px 0 30px;
-  color: #aaa;
+
+.header {
+  padding: 1px 0 30px;
+  white-space: nowrap;
+  overflow: hidden;
 }
+
+.subheader {
+  position: absolute;
+  top: -35px;
+  width: 100%;
+}
+
+.content {
+  height: 100%;
+}
+
 #permalink {
   float: right;
 }
-h5 {
-  font-size: 16px;
-  font-weight: normal;
-  line-height: 30px;
-  margin: 0;
-  font-style: italic;
-}
-.src {
+
+.src, .dst {
   width: 49%;
+  position: relative;
   float: left;
+  height: 100%;
 }
+
 .dst {
-  width: 49%;
   float: right;
 }
 
@@ -40,21 +52,18 @@ h5 {
   border-radius: 3px;
 }
 
-.CodeMirror-scroll {
+/*.CodeMirror-scroll {
   height: 500px;
   line-height: 1.2;
+}*/
+
+.CodeMirror {
+  height: 100%;
+  font-size: 13px;
 }
 
-.cm-s-default span.cm-comment {color: #baa;}
-
-.addthis_toolbox {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  opacity: .6;
-}
-.addthis_toolbox:hover {
-  opacity: 1;
+.CodeMirror .cm-comment {
+  color: #baa;
 }
 
 .gh-ribbon {

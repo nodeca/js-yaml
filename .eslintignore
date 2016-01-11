@@ -4,5 +4,4 @@ dist
 doc
 node_modules
 tmp
-support
 benchmark/implementations

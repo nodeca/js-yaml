@@ -28,12 +28,21 @@ test: lint
 	./node_modules/.bin/mocha -R spec
 
 
+demo: lint
+	rm -rf ./demo
+	mkdir ./demo
+	cp ./node_modules/codemirror/lib/codemirror.css ./demo/
+	cp ./support/demo_template/index.html ./demo/
+	cp ./support/demo_template/demo.css ./demo/
+	browserify ./support/demo_template/demo.js -r esprima > ./demo/demo.js
+
+
 coverage:
 	rm -rf coverage
 	./node_modules/.bin/istanbul cover node_modules/.bin/_mocha
 
 
-gh-pages:
+gh-pages: demo
 	@if test -z ${REMOTE_REPO} ; then \
 		echo 'Remote repo URL not found' >&2 ; \
 		exit 128 ; \
@@ -89,5 +98,5 @@ todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true
 
 
-.PHONY: publish lint test dev-deps gh-pages todo coverage
+.PHONY: publish lint test dev-deps gh-pages todo coverage demo
 .SILENT: help lint test todo coverage

@@ -35,6 +35,7 @@
     "ansi": "*",
     "benchmark": "*",
     "browserify": "^13.0.0",
+    "codemirror": "^5.10.0",
     "eslint": "0.24.1",
     "eslint-plugin-nodeca": "^1.0.3",
     "istanbul": "*",
