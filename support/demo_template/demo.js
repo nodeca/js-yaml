@@ -26,11 +26,11 @@ var SEXY_SCHEMA = jsyaml.Schema.create([ SexyYamlType ]);
 function parse() {
   var str, obj;
 
-  try {
-    str = source.getValue();
-    obj = jsyaml.load(str, { schema: SEXY_SCHEMA });
+  str = source.getValue();
+  permalink.href = '#yaml=' + base64.encode(str);
 
-    permalink.href = '#yaml=' + base64.encode(str);
+  try {
+    obj = jsyaml.load(str, { schema: SEXY_SCHEMA });
 
     result.setOption('mode', 'javascript');
     result.setValue(inspect(obj, false, 10));
