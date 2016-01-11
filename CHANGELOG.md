@@ -1,3 +1,11 @@
+3.5.1 / 2016-01-11
+------------------
+
+- Removed `inherit` dependency, #239.
+- Better browserify workaround for esprima load.
+- Demo rewrite.
+
+
 3.5.0 / 2016-01-10
 ------------------
 
