@@ -90,8 +90,6 @@ browserify:
 	./node_modules/.bin/uglifyjs dist/js-yaml.js -c -m \
 		--preamble "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" \
 		> dist/js-yaml.min.js
-	# Update browser demo
-	cp dist/js-yaml.js demo/js/
 
 
 todo:
