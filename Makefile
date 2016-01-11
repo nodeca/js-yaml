@@ -25,6 +25,8 @@ lint:
 
 
 test: lint
+	@node -e "require('./bower.json')"
+	@node -e "require('./package.json')"
 	./node_modules/.bin/mocha -R spec
 
 
