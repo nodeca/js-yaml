@@ -1,70 +1,38 @@
 #!/usr/bin/env node
 
-
-'use strict';
-
-/*eslint-disable no-console*/
-
-
 // stdlib
 var fs    = require('fs');
 
 
 // 3rd-party
-var argparse = require('argparse');
+var program = require('commander');
 
 
 // internal
 var yaml = require('..');
 
 
-////////////////////////////////////////////////////////////////////////////////
+var options = program
+  .version(require('../package.json').version)
+  .usage('[-v|-h] [-t] [-c] [file]')
+  .option('-t, --trace', 'Show stack trace on error')
+  .option('-c, --compact', 'Display errors in compact mode')
+  .option('-v, --version', 'Show program version and exit')
+  .on('--help', function() {
+    console.log('')
+    console.log('  Positional arguments:')
+    console.log('')
+    console.log('    file           File to read, utf-8 encoded without BOM')
+    console.log('')
+  })
+  .parse(process.argv)
 
-
-var cli = new argparse.ArgumentParser({
-  prog:     'js-yaml',
-  version:  require('../package.json').version,
-  addHelp:  true
-});
-
-
-cli.addArgument([ '-c', '--compact' ], {
-  help:   'Display errors in compact mode',
-  action: 'storeTrue'
-});
-
-
-// deprecated (not needed after we removed output colors)
-// option suppressed, but not completely removed for compatibility
-cli.addArgument([ '-j', '--to-json' ], {
-  help:   argparse.Const.SUPPRESS,
-  dest:   'json',
-  action: 'storeTrue'
-});
-
-
-cli.addArgument([ '-t', '--trace' ], {
-  help:   'Show stack trace on error',
-  action: 'storeTrue'
-});
-
-cli.addArgument([ 'file' ], {
-  help:   'File to read, utf-8 encoded without BOM',
-  nargs:  '?',
-  defaultValue: '-'
-});
-
-
-////////////////////////////////////////////////////////////////////////////////
-
-
-var options = cli.parseArgs();
-
+var filename = options.args.shift()
 
 ////////////////////////////////////////////////////////////////////////////////
 
 function readFile(filename, encoding, callback) {
-  if (options.file === '-') {
+  if (!options.file) {
     // read from stdin
 
     var chunks = [];
@@ -81,7 +49,7 @@ function readFile(filename, encoding, callback) {
   }
 }
 
-readFile(options.file, 'utf8', function (error, input) {
+readFile(filename, 'utf8', function (error, input) {
   var output, isYaml;
 
   if (error) {
