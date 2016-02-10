@@ -35,8 +35,7 @@
     "benchmark": "*",
     "browserify": "^13.0.0",
     "codemirror": "^5.10.0",
-    "eslint": "0.24.1",
-    "eslint-plugin-nodeca": "^1.0.3",
+    "eslint": "^2.0.0-rc.1",
     "istanbul": "*",
     "mocha": "*",
     "uglify-js": "^2.6.1"

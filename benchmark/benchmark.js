@@ -18,8 +18,8 @@ var IMPLS = [];
 
 
 fs.readdirSync(IMPLS_DIRECTORY).sort().forEach(function (name) {
-  var file = path.join(IMPLS_DIRECTORY, name),
-      code = require(file);
+  var file = path.join(IMPLS_DIRECTORY, name);
+  var code = require(file);
 
   IMPLS_PATHS[name] = file;
   IMPLS.push({
@@ -83,9 +83,7 @@ fs.readdirSync(SAMPLES_DIRECTORY).sort().forEach(function (sample) {
 function select(patterns) {
   var result = [];
 
-  if (!(patterns instanceof Array)) {
-    patterns = [ patterns ];
-  }
+  if (!(patterns instanceof Array)) patterns = [ patterns ];
 
   function checkName(name) {
     return patterns.length === 0 || patterns.some(function (regexp) {
@@ -94,9 +92,7 @@ function select(patterns) {
   }
 
   SAMPLES.forEach(function (sample) {
-    if (checkName(sample.name)) {
-      result.push(sample);
-    }
+    if (checkName(sample.name)) result.push(sample);
   });
 
   return result;

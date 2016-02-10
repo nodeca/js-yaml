@@ -38,9 +38,7 @@ var TEST_SCHEMA = yaml.Schema.create([
   new yaml.Type('!tag3', {
     kind: 'mapping',
     resolve: function (data) {
-      if (null === data) {
-        return false;
-      }
+      if (null === data) return false;
       if (!Object.prototype.hasOwnProperty.call(data, '=') &&
           !Object.prototype.hasOwnProperty.call(data, 'x')) {
         return false;
@@ -71,12 +69,8 @@ var TEST_SCHEMA = yaml.Schema.create([
   new yaml.Type('!tag1', {
     kind: 'mapping',
     resolve: function (data) {
-      if (null === data) {
-        return false;
-      }
-      if (!Object.prototype.hasOwnProperty.call(data, 'x')) {
-        return false;
-      }
+      if (null === data) return false;
+      if (!Object.prototype.hasOwnProperty.call(data, 'x')) return false;
       if (!Object.keys(data).every(function (k) { return 'x' === k || 'y' === k || 'z' === k; })) {
         return false;
       }
@@ -90,9 +84,7 @@ var TEST_SCHEMA = yaml.Schema.create([
   new yaml.Type('!foo', {
     kind: 'mapping',
     resolve: function (data) {
-      if (null === data) {
-        return false;
-      }
+      if (null === data) return false;
       if (!Object.keys(data).every(function (k) { return 'my-parameter' === k || 'my-another-parameter' === k; })) {
         return false;
       }

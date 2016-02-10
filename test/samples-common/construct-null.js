@@ -6,7 +6,7 @@ module.exports = [
     empty: null,
     canonical: null,
     english: null,
-    null: 'null key'
+    'null': 'null key'
   },
   {
     sparse: [

@@ -13,13 +13,11 @@ suite('Dumper', function () {
   var samplesDir = path.resolve(__dirname, 'samples-common');
 
   fs.readdirSync(samplesDir).forEach(function (jsFile) {
-    if ('.js' !== path.extname(jsFile)) {
-      return; // continue
-    }
+    if ('.js' !== path.extname(jsFile)) return; // continue
 
     test(path.basename(jsFile, '.js'), function () {
-      var sample       = require(path.resolve(samplesDir, jsFile)),
-          data         = 'function' === typeof sample ? sample.expected : sample,
+      var sample       = require(path.resolve(samplesDir, jsFile));
+      var data         = 'function' === typeof sample ? sample.expected : sample,
           serialized   = yaml.dump(data,       { schema: TEST_SCHEMA }),
           deserialized = yaml.load(serialized, { schema: TEST_SCHEMA });
 
