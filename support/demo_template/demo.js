@@ -43,7 +43,7 @@ function parse() {
 function updateSource() {
   var yaml;
 
-  if (location.hash && '#yaml=' === location.hash.toString().slice(0, 6)) {
+  if (location.hash && location.hash.toString().slice(0, 6) === '#yaml=') {
     yaml = base64.decode(location.hash.slice(6));
   }
 

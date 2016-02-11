@@ -38,12 +38,12 @@ var TEST_SCHEMA = yaml.Schema.create([
   new yaml.Type('!tag3', {
     kind: 'mapping',
     resolve: function (data) {
-      if (null === data) return false;
+      if (data === null) return false;
       if (!Object.prototype.hasOwnProperty.call(data, '=') &&
           !Object.prototype.hasOwnProperty.call(data, 'x')) {
         return false;
       }
-      if (!Object.keys(data).every(function (k) { return '=' === k || 'x' === k || 'y' === k || 'z' === k; })) {
+      if (!Object.keys(data).every(function (k) { return k === '=' || k === 'x' || k === 'y' || k === 'z'; })) {
         return false;
       }
       return true;
@@ -59,7 +59,7 @@ var TEST_SCHEMA = yaml.Schema.create([
   new yaml.Type('!tag2', {
     kind: 'scalar',
     construct: function (data) {
-      return new Tag2({ x: ('number' === typeof data) ? data : parseInt(data, 10) });
+      return new Tag2({ x: (typeof data === 'number') ? data : parseInt(data, 10) });
     },
     instanceOf: Tag2,
     represent: function (object) {
@@ -69,9 +69,9 @@ var TEST_SCHEMA = yaml.Schema.create([
   new yaml.Type('!tag1', {
     kind: 'mapping',
     resolve: function (data) {
-      if (null === data) return false;
+      if (data === null) return false;
       if (!Object.prototype.hasOwnProperty.call(data, 'x')) return false;
-      if (!Object.keys(data).every(function (k) { return 'x' === k || 'y' === k || 'z' === k; })) {
+      if (!Object.keys(data).every(function (k) { return k === 'x' || k === 'y' || k === 'z'; })) {
         return false;
       }
       return true;
@@ -84,8 +84,8 @@ var TEST_SCHEMA = yaml.Schema.create([
   new yaml.Type('!foo', {
     kind: 'mapping',
     resolve: function (data) {
-      if (null === data) return false;
-      if (!Object.keys(data).every(function (k) { return 'my-parameter' === k || 'my-another-parameter' === k; })) {
+      if (data === null) return false;
+      if (!Object.keys(data).every(function (k) { return k === 'my-parameter' || k === 'my-another-parameter'; })) {
         return false;
       }
       return true;

@@ -9,7 +9,7 @@ suite('Issues', function () {
   var issues = path.resolve(__dirname, 'issues');
 
   fs.readdirSync(issues).forEach(function (file) {
-    if ('.js' === path.extname(file)) {
+    if (path.extname(file) === '.js') {
       require(path.resolve(issues, file));
     }
   });

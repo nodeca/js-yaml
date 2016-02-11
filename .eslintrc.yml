@@ -123,4 +123,4 @@ rules:
   radix:                  2
   use-isnan:              2
   valid-typeof:           2
-  #yoda:                   [ 2, never, { "exceptRange": true } ]
+  yoda:                   [ 2, never, { "exceptRange": true } ]

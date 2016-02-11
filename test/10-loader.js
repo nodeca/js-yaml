@@ -13,7 +13,7 @@ suite('Loader', function () {
   var samplesDir = path.resolve(__dirname, 'samples-common');
 
   fs.readdirSync(samplesDir).forEach(function (jsFile) {
-    if ('.js' !== path.extname(jsFile)) return; // continue
+    if (path.extname(jsFile) !== '.js') return; // continue
 
     var yamlFile = path.resolve(samplesDir, path.basename(jsFile, '.js') + '.yml');
 
@@ -28,7 +28,7 @@ suite('Loader', function () {
 
       if (actual.length === 1) actual = actual[0];
 
-      if ('function' === typeof expected) {
+      if (typeof expected === 'function') {
         expected.call(this, actual);
       } else {
         assert.deepEqual(actual, expected);

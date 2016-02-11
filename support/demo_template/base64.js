@@ -68,7 +68,7 @@ function utf8Encode(str) {
     char = str.charAt(offset);
     offset += 1;
 
-    if ('%' !== char) {
+    if (char !== '%') {
       bytes.push(char.charCodeAt(0));
     } else {
       char = str.charAt(offset) + str.charAt(offset + 1);
@@ -88,7 +88,7 @@ function utf8Decode(bytes) {
     c2 = bytes[offset + 1];
     c3 = bytes[offset + 2];
 
-    if (128 > c1) {
+    if (c1 < 128) {
       chars.push(String.fromCharCode(c1));
       offset += 1;
     } else if (191 < c1 && c1 < 224) {
@@ -147,7 +147,7 @@ function decode(data) {
     code = data.charCodeAt(idx);
     value = binTable[code & 0x7F];
 
-    if (-1 === value) {
+    if (value === -1) {
       // Skip illegal characters and whitespace
       logger.warn('Illegal characters (code=' + code + ') in position ' + idx);
     } else {

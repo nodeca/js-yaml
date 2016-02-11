@@ -108,8 +108,8 @@ readFile(options.file, 'utf8', function (error, input) {
         yaml.loadAll(input, function (doc) { output.push(doc); }, {});
         isYaml = true;
 
-        if (0 === output.length) output = null;
-        else if (1 === output.length) output = output[0];
+        if (output.length === 0) output = null;
+        else if (output.length === 1) output = output[0];
 
       } catch (e) {
         if (options.trace && err.stack) console.error(e.stack);
