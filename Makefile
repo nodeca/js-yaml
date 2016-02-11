@@ -80,8 +80,6 @@ publish:
 
 
 browserify:
-	if test ! `which browserify` ; then npm install browserify ; fi
-	if test ! `which uglifyjs` ; then npm install uglify-js ; fi
 	rm -rf ./dist
 	mkdir dist
 	# Browserify
