@@ -1,3 +1,9 @@
+3.5.4 / 2016-03-09
+------------------
+
+- `noCompatMode` for dumper, to disable quoting YAML 1.1 values.
+
+
 3.5.3 / 2016-02-11
 ------------------
 
