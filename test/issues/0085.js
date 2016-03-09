@@ -19,3 +19,4 @@ test('Dumper should take into account booleans syntax from YAML 1.0/1.1', functi
            ('"' + string + '" string is dumped without quoting; actual dump: ' + dump));
   });
 });
+
