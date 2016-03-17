@@ -1,3 +1,9 @@
+3.5.5 / 2016-03-17
+------------------
+
+- Date parse fix: don't allow dates with on digit in month and day, #268.
+
+
 3.5.4 / 2016-03-09
 ------------------
 
