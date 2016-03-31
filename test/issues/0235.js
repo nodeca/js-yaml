@@ -8,5 +8,6 @@ test('Flow style does not dump with block literals.', function () {
 });
 
 test('Ok to dump block-style literals when not yet flowing.', function () {
-  assert.strictEqual(yaml.dump({ a: '\n' }, { flowLevel: 2 }), 'a: |\n\n');
+  // cf. example 8.6 from the YAML 1.2 spec
+  assert.strictEqual(yaml.dump({ a: '\n' }, { flowLevel: 2 }), 'a: |+\n\n');
 });
