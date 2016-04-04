@@ -40,9 +40,6 @@
     "mocha": "*",
     "uglify-js": "^2.6.1"
   },
-  "browser": {
-    "buffer": false
-  },
   "scripts": {
     "test": "make test"
   }
