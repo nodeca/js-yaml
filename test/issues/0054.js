@@ -23,6 +23,6 @@ test("Incorrect utf-8 handling on require('file.yaml')", function () {
   // make sure none of the strings were corrupted.
   //
   for (index = 0; index < 40; index += 1) {
-    assert.equal(data[index], expected, ('Line ' + index + ' is corrupted'));
+    assert.strictEqual(data[index], expected, ('Line ' + index + ' is corrupted'));
   }
 });

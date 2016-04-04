@@ -33,40 +33,40 @@ suite('Scalar style dump:', function () {
         '100% safe non-first characters? Of course!',
         'Jack & Jill <well@example.com>'
       ].forEach(function (string) {
-        assert.equal(yaml.safeDump(string), string + '\n');
+        assert.strictEqual(yaml.safeDump(string), string + '\n');
       });
     });
 
     test('disallows flow indicators inside flow collections', function () {
-      assert.equal(yaml.safeDump({ quote: 'mispell [sic]' }, { flowLevel: 0 }),
+      assert.strictEqual(yaml.safeDump({ quote: 'mispell [sic]' }, { flowLevel: 0 }),
         "{quote: 'mispell [sic]'}\n");
-      assert.equal(yaml.safeDump({ key: 'no commas, either' }, { flowLevel: 0 }),
+      assert.strictEqual(yaml.safeDump({ key: 'no commas, either' }, { flowLevel: 0 }),
         "{key: 'no commas, either'}\n");
     });
   });
 
   suite('Single- and double-quoted styles', function () {
     test('quote strings of ambiguous type', function () {
-      assert.equal(yaml.safeDump('Yes'), '\'Yes\'\n');
-      assert.equal(yaml.safeDump('true'), '\'true\'\n');
-      assert.equal(yaml.safeDump('42'), '\'42\'\n');
-      assert.equal(yaml.safeDump('99.9'), '\'99.9\'\n');
-      assert.equal(yaml.safeDump('127.0001'), '\'127.0001\'\n');
-      assert.equal(yaml.safeDump('1.23015e+3'), '\'1.23015e+3\'\n');
+      assert.strictEqual(yaml.safeDump('Yes'), '\'Yes\'\n');
+      assert.strictEqual(yaml.safeDump('true'), '\'true\'\n');
+      assert.strictEqual(yaml.safeDump('42'), '\'42\'\n');
+      assert.strictEqual(yaml.safeDump('99.9'), '\'99.9\'\n');
+      assert.strictEqual(yaml.safeDump('127.0001'), '\'127.0001\'\n');
+      assert.strictEqual(yaml.safeDump('1.23015e+3'), '\'1.23015e+3\'\n');
     });
 
     test('quote leading/trailing whitespace', function () {
-      assert.equal(yaml.safeDump(' leading space'), '\' leading space\'\n');
-      assert.equal(yaml.safeDump('trailing space '), '\'trailing space \'\n');
+      assert.strictEqual(yaml.safeDump(' leading space'), '\' leading space\'\n');
+      assert.strictEqual(yaml.safeDump('trailing space '), '\'trailing space \'\n');
     });
 
     test('quote leading quotes', function () {
-      assert.equal(yaml.safeDump("'singles double'"), "'''singles double'''\n");
-      assert.equal(yaml.safeDump('"single double'), '\'"single double\'\n');
+      assert.strictEqual(yaml.safeDump("'singles double'"), "'''singles double'''\n");
+      assert.strictEqual(yaml.safeDump('"single double'), '\'"single double\'\n');
     });
 
     test('escape non-printables', function () {
-      assert.equal(yaml.safeDump('a\nb\u0001c'), '"a\\nb\\x01c"\n');
+      assert.strictEqual(yaml.safeDump('a\nb\u0001c'), '"a\\nb\\x01c"\n');
     });
   });
 
@@ -74,28 +74,28 @@ suite('Scalar style dump:', function () {
     var content = 'a\nb \n\n c\n  d', indented = indent(content);
 
     test('preserves trailing newlines using chomping', function () {
-      assert.equal(yaml.safeDump({ a: '\n', b: '\n\n', c: 'c\n', d: 'd\nd' }),
+      assert.strictEqual(yaml.safeDump({ a: '\n', b: '\n\n', c: 'c\n', d: 'd\nd' }),
         'a: |+\n\nb: |+\n\n\nc: |\n  c\nd: |-\n  d\n  d\n');
-      assert.equal(yaml.safeDump('\n'),               '|+\n' + '\n');
-      assert.equal(yaml.safeDump('\n\n'),             '|+\n' + '\n\n');
+      assert.strictEqual(yaml.safeDump('\n'),               '|+\n' + '\n');
+      assert.strictEqual(yaml.safeDump('\n\n'),             '|+\n' + '\n\n');
 
-      assert.equal(yaml.safeDump(content),            '|-\n' + indented + '\n');
-      assert.equal(yaml.safeDump(content + '\n'),     '|\n'  + indented + '\n');
-      assert.equal(yaml.safeDump(content + '\n\n'),   '|+\n' + indented + '\n\n');
-      assert.equal(yaml.safeDump(content + '\n\n\n'), '|+\n' + indented + '\n\n\n');
+      assert.strictEqual(yaml.safeDump(content),            '|-\n' + indented + '\n');
+      assert.strictEqual(yaml.safeDump(content + '\n'),     '|\n'  + indented + '\n');
+      assert.strictEqual(yaml.safeDump(content + '\n\n'),   '|+\n' + indented + '\n\n');
+      assert.strictEqual(yaml.safeDump(content + '\n\n\n'), '|+\n' + indented + '\n\n\n');
     });
 
     test('accepts leading whitespace', function () {
-      assert.equal(yaml.safeDump('   ' + content), '|2-\n   ' + indented + '\n');
+      assert.strictEqual(yaml.safeDump('   ' + content), '|2-\n   ' + indented + '\n');
     });
 
     test('falls back to quoting when required indent indicator is too large', function () {
-      assert.equal(yaml.safeDump(' these go\nup to\neleven', { indent: 11 }),
+      assert.strictEqual(yaml.safeDump(' these go\nup to\neleven', { indent: 11 }),
         '" these go\\nup to\\neleven"\n');
     });
 
     test('does not use block style for multiline key', function () {
-      assert.equal(yaml.safeDump({
+      assert.strictEqual(yaml.safeDump({
         'push\nand': {
           you: 'pull'
         }
@@ -150,25 +150,25 @@ suite('Scalar style dump:', function () {
       }
 
       test('wraps lines and ignores more-indented lines ', function () {
-        assert.equal(dumpNarrow(content),            '>-\n' + indented + '\n');
+        assert.strictEqual(dumpNarrow(content),            '>-\n' + indented + '\n');
       });
 
       test('preserves trailing newlines using chomping', function () {
-        assert.equal(dumpNarrow(content + '\n'),     '>\n'  + indented + '\n');
-        assert.equal(dumpNarrow(content + '\n\n'),   '>+\n' + indented + '\n\n');
-        assert.equal(dumpNarrow(content + '\n\n\n'), '>+\n' + indented + '\n\n\n');
+        assert.strictEqual(dumpNarrow(content + '\n'),     '>\n'  + indented + '\n');
+        assert.strictEqual(dumpNarrow(content + '\n\n'),   '>+\n' + indented + '\n\n');
+        assert.strictEqual(dumpNarrow(content + '\n\n\n'), '>+\n' + indented + '\n\n\n');
       });
     }());
 
     // Dump and check that dump-then-load preserves content (is the identity function).
     function dump(input, opts) {
       var output = yaml.safeDump(input, opts);
-      assert.equal(yaml.safeLoad(output), input, 'Dump then load should preserve content');
+      assert.strictEqual(yaml.safeLoad(output), input, 'Dump then load should preserve content');
       return output;
     }
 
     test('should not cut off a long word at the start of a line', function () {
-      assert.equal(dump('123\n' + repeat('1234567890', 9) + ' hello\ngoodbye'),
+      assert.strictEqual(dump('123\n' + repeat('1234567890', 9) + ' hello\ngoodbye'),
         '>-\n' + indent(
           '123\n' +
           '\n' +
@@ -181,7 +181,7 @@ suite('Scalar style dump:', function () {
     test('preserves consecutive spaces', function () {
       var alphabet = 'a bc  def  ghi' + repeat(' ', 70) + 'jk  lmn o\n'
         + ' p  qrstu     v' + repeat(' ', 80) + '\nw x\n' + 'yz  ';
-      assert.equal(dump(alphabet),
+      assert.strictEqual(dump(alphabet),
         '>-\n' + indent(
           'a bc  def \n' +
           'ghi' + repeat(' ', 70) + 'jk \n' +
@@ -195,7 +195,7 @@ suite('Scalar style dump:', function () {
         [ 2, 3, 5, 7, 11, 13, 17 ]
         .map(function (n) { return repeat(' ', n); })
         .join('\n');
-      assert.equal(dump(indeed),
+      assert.strictEqual(dump(indeed),
       '>-\n' + indent(
         'word. word. word. word. word. word. word. word. word. word. word. word. word.\n' +
         'word. word. word. word. word. word. word. word. word. word. word. word. word.\n' +
@@ -229,13 +229,13 @@ suite('Scalar style dump:', function () {
     test('should not fold when lineWidth === -1', function () {
       var content = [ prefix, line, line + line, line ].join('\n');
 
-      assert.equal(dump(content, { lineWidth: -1 }), '|-\n' + indent(content) + '\n');
+      assert.strictEqual(dump(content, { lineWidth: -1 }), '|-\n' + indent(content) + '\n');
     });
 
     test('falls back to literal style when no lines are foldable', function () {
       var content = [ prefix, '    ' + line, '    ' + line ].join('\n');
 
-      assert.equal(dump(content), '|-\n' + indent(content) + '\n');
+      assert.strictEqual(dump(content), '|-\n' + indent(content) + '\n');
     });
   });
 });

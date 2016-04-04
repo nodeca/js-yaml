@@ -10,5 +10,5 @@ test('Timestamp parsing is one month off', function () {
   var data = yaml.safeLoad(readFileSync(require('path').join(__dirname, '/0019.yml'), 'utf8'));
 
   // JS month starts with 0 (0 => Jan, 1 => Feb, ...)
-  assert.equal(data.xmas.getTime(), Date.UTC(2011, 11, 24));
+  assert.strictEqual(data.xmas.getTime(), Date.UTC(2011, 11, 24));
 });

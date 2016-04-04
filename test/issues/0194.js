@@ -17,5 +17,5 @@ test('Don\'t throw on warning', function () {
 
   yaml.safeLoad(src, { onWarning: function (e) { warnings.push(e); } });
 
-  assert.equal(warnings.length, 1);
+  assert.strictEqual(warnings.length, 1);
 });

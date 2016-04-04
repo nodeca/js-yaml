@@ -25,7 +25,7 @@ test('Folding Javascript functions preserves content', function () {
   // Tests loading a function, then tests dumping and loading.
   function assertFunctionPreserved(functionString, inputs, expectedOutputs, name) {
     var f = yaml.load('!<tag:yaml.org,2002:js/function> "' + functionString + '"');
-    assert.equal(typeof f, 'function', name + ' should be loaded as a function');
+    assert.strictEqual(typeof f, 'function', name + ' should be loaded as a function');
 
     assert.deepEqual(inputs.map(f), expectedOutputs,
       name + ' should be loaded correctly');

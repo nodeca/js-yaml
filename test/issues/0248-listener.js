@@ -12,13 +12,13 @@ test('Listener informed on a very simple scalar.', function () {
   yaml.load('a_simple_scalar', { listener: l });
 
   // 2 open events then 2 close events
-  assert.equal(history.length, 4);
-  assert.equal(history[0][0], 'open');
-  assert.equal(history[1][0], 'open');
-  assert.equal(history[2][0], 'close');
-  assert.equal(history[3][0], 'close');
-  assert.equal(history[0][1], 0);
-  assert.equal(history[3][1], 16);
+  assert.strictEqual(history.length, 4);
+  assert.strictEqual(history[0][0], 'open');
+  assert.strictEqual(history[1][0], 'open');
+  assert.strictEqual(history[2][0], 'close');
+  assert.strictEqual(history[3][0], 'close');
+  assert.strictEqual(history[0][1], 0);
+  assert.strictEqual(history[3][1], 16);
 });
 
 test('Listener informed on a map with a list.', function () {
@@ -30,33 +30,33 @@ test('Listener informed on a map with a list.', function () {
   yaml.load('{ a: 1, b: [ 0, xyz ] }', { listener: l });
 
   var i = -1;
-  assert.equal(history[++i][0], 'open'); // doc
-  assert.equal(history[++i][0], 'open'); // map
+  assert.strictEqual(history[++i][0], 'open'); // doc
+  assert.strictEqual(history[++i][0], 'open'); // map
 
-  assert.equal(history[++i][0], 'open'); // key
-  assert.equal(history[++i][0], 'close');
-  assert.equal(history[i][2], 'a');
+  assert.strictEqual(history[++i][0], 'open'); // key
+  assert.strictEqual(history[++i][0], 'close');
+  assert.strictEqual(history[i][2], 'a');
 
-  assert.equal(history[++i][0], 'open'); // a value
-  assert.equal(history[++i][0], 'close');
-  assert.equal(history[i][2], 1);
+  assert.strictEqual(history[++i][0], 'open'); // a value
+  assert.strictEqual(history[++i][0], 'close');
+  assert.strictEqual(history[i][2], 1);
 
-  assert.equal(history[++i][0], 'open'); // key
-  assert.equal(history[++i][0], 'close');
-  assert.equal(history[i][2], 'b');
+  assert.strictEqual(history[++i][0], 'open'); // key
+  assert.strictEqual(history[++i][0], 'close');
+  assert.strictEqual(history[i][2], 'b');
 
-  assert.equal(history[++i][0], 'open'); // b value (list)
-  assert.equal(history[++i][0], 'open'); // item in list
-  assert.equal(history[++i][0], 'close');
-  assert.equal(history[i][2], 0);
-  assert.equal(history[++i][0], 'open'); // item in list
-  assert.equal(history[++i][0], 'close');
+  assert.strictEqual(history[++i][0], 'open'); // b value (list)
+  assert.strictEqual(history[++i][0], 'open'); // item in list
+  assert.strictEqual(history[++i][0], 'close');
+  assert.strictEqual(history[i][2], 0);
+  assert.strictEqual(history[++i][0], 'open'); // item in list
+  assert.strictEqual(history[++i][0], 'close');
 
-  assert.equal(history[++i][0], 'close'); // b value (list) end
+  assert.strictEqual(history[++i][0], 'close'); // b value (list) end
   assert.deepEqual(history[i][2], [ 0, 'xyz' ]);
 
-  assert.equal(history[++i][0], 'close'); // map end
-  assert.equal(history[++i][0], 'close'); // doc end
+  assert.strictEqual(history[++i][0], 'close'); // map end
+  assert.strictEqual(history[++i][0], 'close'); // doc end
 
-  assert.equal(history.length, ++i);
+  assert.strictEqual(history.length, ++i);
 });

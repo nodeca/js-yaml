@@ -17,8 +17,8 @@ test('RegExps should be properly closed', function () {
   // Accept the old (slightly incorrect) V8, as well as the new V8 result
   // TODO: Remove when/if Node 0.12 and below is no longer supported.
   if (regexpStr === '/fo/g/g') {
-    assert.equal(regexpStr, '/fo/g/g');
+    assert.strictEqual(regexpStr, '/fo/g/g');
   } else {
-    assert.equal(regexpStr, '/fo\\/g/g');
+    assert.strictEqual(regexpStr, '/fo\\/g/g');
   }
 });

@@ -20,9 +20,9 @@ test('Circular and cross references', function () {
 
   var obtained = yaml.load(yaml.dump(source));
 
-  assert.equal(obtained.crossObject, obtained.a);
-  assert.equal(obtained.crossArray, obtained.b);
-  assert.equal(obtained.c.circularObject, obtained);
-  assert.equal(obtained.d[0], obtained.d);
-  assert.equal(obtained.d[1], obtained);
+  assert.strictEqual(obtained.crossObject, obtained.a);
+  assert.strictEqual(obtained.crossArray, obtained.b);
+  assert.strictEqual(obtained.c.circularObject, obtained);
+  assert.strictEqual(obtained.d[0], obtained.d);
+  assert.strictEqual(obtained.d[1], obtained);
 });
