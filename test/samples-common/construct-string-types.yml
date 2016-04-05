@@ -25,7 +25,6 @@ multilineTrailingCR: |+
 
 
 
-
 multilineTrailingSpace: "hello\nworld    \nspace\n"
 multilineTrailingSpaceChomp: "hello\nworld    \nspace"
 longMultiBigSpace: >
@@ -71,7 +70,6 @@ essayManyTrailing: >+
 
 
 
-
 essayOneTrailing: >
   a
 
@@ -89,6 +87,50 @@ essayOneTrailing: >
   asdf xasdf the  end
 neggy: '-1'
 questy: '?asdf'
+blockScalarHeader:
+- | # Empty header
+ literal
+- >1 # Indentation indicator
+  folded
+- |+ # Chomping indicator
+ keep
+
+- >1- # Both indicators
+  strip
+blockIndentationIndicator:
+- |
+ detected
+- >
+ 
+  
+  # detected
+- |1
+  explicit
+- >
+ 	
+ detected
+strip: >-
+
+clip: >
+
+keep: |+
+
+foldedStyle: >
+
+ folded
+ line
+
+ next
+ line
+   * bullet
+
+   * list
+   * lines
+
+ last
+ line
+
+# Comment
 longMultiChomp: >-
   lo hello hello hello hello hello hello hello hello hello hello hello hello
   hello hello hello hello hello hello hello hello hello hello hello hello hello
@@ -109,7 +151,6 @@ longMultiTrailingCR: >+
   hello hel
 
   world
-
 
 
 

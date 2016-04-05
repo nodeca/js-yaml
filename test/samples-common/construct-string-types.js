@@ -47,6 +47,21 @@ module.exports = {
   neggy: '-1',
   questy: '?asdf',
 
+  // Example 8.1.
+  blockScalarHeader: [ 'literal\n', ' folded\n', 'keep\n\n', ' strip' ],
+  // Example 8.2.
+  // The ' \t' is a more-indented line as per [177] s-nb-spaced-text.
+  blockIndentationIndicator: [
+    'detected\n', '\n\n# detected\n', ' explicit\n', '\t\ndetected\n'
+  ],
+  // Example 8.6. Empty Scalar Chomping
+  strip: '',
+  clip: '',
+  keep: '\n',
+  // Example 8.10.
+  foldedStyle: '\nfolded line\nnext line\n' +
+    '  * bullet\n\n  * list\n  * lines\n\nlast line\n',
+
   longMultiChomp: new Array(80).join('lo hel') + '\nworld',
   longMultiTrailingCR: new Array(80).join('lo hel') + '\nworld\n\n\n\n\n',
   longMulti: new Array(80).join('lo hel') + '\nworld\n'
