@@ -27,15 +27,15 @@
     "js-yaml": "bin/js-yaml.js"
   },
   "dependencies": {
-    "argparse": "^1.0.2",
+    "argparse": "^1.0.7",
     "esprima": "^2.6.0"
   },
   "devDependencies": {
     "ansi": "*",
     "benchmark": "*",
     "browserify": "^13.0.0",
-    "codemirror": "^5.10.0",
-    "eslint": "^2.0.0-rc.1",
+    "codemirror": "^5.13.4",
+    "eslint": "^2.8.0",
     "istanbul": "*",
     "mocha": "*",
     "uglify-js": "^2.6.1"
