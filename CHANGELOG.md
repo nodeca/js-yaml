@@ -1,3 +1,11 @@
+3.6.0 / 2016-04-16
+------------------
+
+- Dumper rewrite, fix multiple bugs with trailing `\n`.
+  Big thanks to @aepsilon!
+- Loader: fix leading/trailing newlines in block scalars, @aepsilon.
+
+
 3.5.5 / 2016-03-17
 ------------------
 
