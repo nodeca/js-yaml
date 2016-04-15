@@ -65,6 +65,10 @@ suite('Scalar style dump:', function () {
       assert.strictEqual(yaml.safeDump('"single double'), '\'"single double\'\n');
     });
 
+    test('escape \\ and " in double-quoted', function () {
+      assert.strictEqual(yaml.safeDump('\u0007 escape\\ escaper"'), '"\\a escape\\\\ escaper\\""\n');
+    });
+
     test('escape non-printables', function () {
       assert.strictEqual(yaml.safeDump('a\nb\u0001c'), '"a\\nb\\x01c"\n');
     });
