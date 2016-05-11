@@ -42,7 +42,7 @@ rules:
   no-cond-assign:         2
   no-console:             1
   no-constant-condition:  2
-  no-control-regex:       2
+  # no-control-regex:       2
   no-debugger:            1
   no-delete-var:          2
   no-div-regex:           2
