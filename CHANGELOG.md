@@ -1,3 +1,10 @@
+3.7.0 / 2016-11-12
+------------------
+
+- Fix parsing of quotes followed by newlines (#304, thanks to @dplepage).
+- Support polymorphism for tags (#300, thanks to @monken).
+
+
 3.6.1 / 2016-05-11
 ------------------
 
