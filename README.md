@@ -213,12 +213,14 @@ ouput is shown on the right side after `=>` (default setting) or `->`:
 
 Example:
 
- safeDump (object, {
-   'styles': {
-     '!!null': 'canonical' // dump null as ~
-   },
-   'sortKeys': true        // sort 
- }
+``` javascript
+safeDump (object, {
+  'styles': {
+    '!!null': 'canonical' // dump null as ~
+  },
+  'sortKeys': true        // sort object keys
+}
+```
 
 ### dump (object [ , options ])
 
