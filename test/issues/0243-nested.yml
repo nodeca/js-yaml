@@ -1,0 +1,15 @@
+a:
+  b: 1
+  c: 2
+d:
+  e: 3
+  f: 4
+  duplicate: # 1
+    id: 1234
+    note: "this is the first one, so it won't raise an error"
+  duplicate: # 2
+    id: 5678
+    note: "this is the second one, so it will raise an error, hopefully at the start of the key"
+g:
+  h: 5
+  i: 6
