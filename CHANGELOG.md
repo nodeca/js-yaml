@@ -1,3 +1,8 @@
+3.8.0 / 2017-02-03
+------------------
+
+- Made dependencies optional rather than required
+
 3.7.0 / 2016-11-12
 ------------------
 
