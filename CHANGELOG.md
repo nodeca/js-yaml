@@ -1,3 +1,11 @@
+3.8.0 / 2017-02-07
+------------------
+
+- Fix reported position for `duplicated mapping key` errors.
+  Now points to block start instead of block end.
+  (#243, thanks to @shockey).
+
+
 3.7.0 / 2016-11-12
 ------------------
 
