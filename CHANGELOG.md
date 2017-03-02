@@ -1,3 +1,11 @@
+3.8.2 / 2017-03-02
+------------------
+
+- Fix `!!float 123` (integers) parse, #333.
+- Don't allow leading zeros in floats (except 0, 0.xxx).
+- Allow positive exponent without sign in floats.
+
+
 3.8.1 / 2017-02-07
 ------------------
 
