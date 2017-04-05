@@ -1,3 +1,9 @@
+3.8.3 / 2017-04-05
+------------------
+
+- Should not allow numbers to begin and end with underscore, #335.
+
+
 3.8.2 / 2017-03-02
 ------------------
 
