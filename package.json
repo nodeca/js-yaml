@@ -31,14 +31,14 @@
     "esprima": "^3.1.1"
   },
   "devDependencies": {
-    "ansi": "*",
-    "benchmark": "*",
-    "browserify": "^13.0.0",
+    "ansi": "^0.3.1",
+    "benchmark": "^2.1.4",
+    "browserify": "^14.3.0",
     "codemirror": "^5.13.4",
     "eslint": "^3.10.0",
-    "istanbul": "*",
-    "mocha": "*",
-    "uglify-js": "^2.6.1"
+    "istanbul": "^0.4.5",
+    "mocha": "^3.3.0",
+    "uglify-js": "^3.0.1"
   },
   "scripts": {
     "test": "make test"
