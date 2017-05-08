@@ -1,3 +1,9 @@
+3.8.4 / 2017-05-08
+------------------
+
+- Dumper: prevent space after dash for arrays that wrap, #343.
+
+
 3.8.3 / 2017-04-05
 ------------------
 
