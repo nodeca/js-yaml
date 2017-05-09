@@ -27,5 +27,20 @@ suite('Dumper', function () {
         assert.deepEqual(deserialized, sample);
       }
     });
+
+    test(path.basename(jsFile, '.js'), function () {
+      var sample       = require(path.resolve(samplesDir, jsFile));
+      for (var scalarTypeValue = 1; scalarTypeValue < 6; scalarTypeValue++) {
+        var data         = typeof sample === 'function' ? sample.expected : sample,
+            serialized   = yaml.dump(data,       { schema: TEST_SCHEMA, scalarType: scalarTypeValue }),
+            deserialized = yaml.load(serialized, { schema: TEST_SCHEMA });
+
+        if (typeof sample === 'function') {
+          sample.call(this, deserialized);
+        } else {
+          assert.deepEqual(deserialized, sample);
+        }
+      }
+    });
   });
 });
