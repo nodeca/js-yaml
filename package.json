@@ -42,5 +42,8 @@
   },
   "scripts": {
     "test": "make test"
+  },
+  "engines": {
+    "node": ">=4.0.0"
   }
 }
