@@ -169,10 +169,11 @@ disable exceptions by setting the `skipInvalid` option to `true`.
 
 options:
 
-- `indent` _(default: 2)_ - indentation width to use (in spaces).
-- `skipInvalid` _(default: false)_ - do not throw on invalid types (like function
+- `indent` _(default: `2`)_ - indentation width to use (in spaces).
+- `newline` _(default: `\n`)_ - character to use for a new line.
+- `skipInvalid` _(default: `false`)_ - do not throw on invalid types (like function
   in the safe schema) and skip pairs and single values with such types.
-- `flowLevel` (default: -1) - specifies level of nesting, when to switch from
+- `flowLevel` (default: `-1`) - specifies level of nesting, when to switch from
   block to flow style for collections. -1 means block style everwhere
 - `styles` - "tag" => "style" map. Each tag may have own set of styles.
 - `schema` _(default: `DEFAULT_SAFE_SCHEMA`)_ specifies a schema to use.
