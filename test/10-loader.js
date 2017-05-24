@@ -21,17 +21,21 @@ suite('Loader', function () {
       var expected = require(path.resolve(samplesDir, jsFile));
       var actual   = [];
 
-      yaml.loadAll(fs.readFileSync(yamlFile, { encoding: 'utf8' }), function (doc) { actual.push(doc); }, {
+      var returned = yaml.loadAll(fs.readFileSync(yamlFile, { encoding: 'utf8' }), function (doc) {
+        actual.push(doc);
+      }, {
         filename: yamlFile,
         schema: TEST_SCHEMA
       });
 
       if (actual.length === 1) actual = actual[0];
+      if (returned.length === 1) returned = returned[0];
 
       if (typeof expected === 'function') {
         expected.call(this, actual);
       } else {
         assert.deepEqual(actual, expected);
+        assert.deepEqual(returned, expected);
       }
     });
   });
