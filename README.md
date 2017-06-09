@@ -3,6 +3,7 @@ JS-YAML - YAML 1.2 parser / writer for JavaScript
 
 [![Build Status](https://travis-ci.org/nodeca/js-yaml.svg?branch=master)](https://travis-ci.org/nodeca/js-yaml)
 [![NPM version](https://img.shields.io/npm/v/js-yaml.svg)](https://www.npmjs.org/package/js-yaml)
+[![CDNJS](https://img.shields.io/cdnjs/v/js-yaml.svg)](https://cdnjs.com/libraries/js-yaml)
 
 __[Online Demo](http://nodeca.github.com/js-yaml/)__
 
