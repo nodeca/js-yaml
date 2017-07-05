@@ -182,6 +182,7 @@ options:
 - `noRefs` _(default: `false`)_ - if `true`, don't convert duplicate objects into references
 - `noCompatMode` _(default: `false`)_ - if `true` don't try to be compatible with older
   yaml versions. Currently: don't quote "yes", "no" and so on, as required for YAML 1.1
+- `condense` _(default: `false`)_ - if `true` flow mode sequences will be condensed, omitting the space between `key: value` or `a, b`. Eg. `'[a,b]'` or `{a:{b:c}}`.
 
 The following table show availlable styles (e.g. "canonical",
 "binary"...) available for each tag (.e.g. !!null, !!int ...). Yaml
