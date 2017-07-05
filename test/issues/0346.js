@@ -4,16 +4,16 @@ var assert = require('assert');
 var yaml = require('../../');
 
 
-test('no spaces should be added in arrays in flow mode between entries when using condense: true', function () {
+test('should not emit spaces in arrays in flow mode between entries using condenseFlow: true', function () {
   assert.equal(
-    yaml.dump([ 'a', 'b' ], { flowLevel: 0, indent: 0, condense: true }),
+    yaml.dump([ 'a', 'b' ], { flowLevel: 0, indent: 0, condenseFlow: true }),
     '[a,b]\n'
   );
 });
 
-test('no spaces should be added between key: value in objects in flow sequence when using condense: true', function () {
+test('should not emit spaces between key: value in objects in flow sequence using condenseFlow: true', function () {
   assert.equal(
-    yaml.dump({ a: { b: 'c' } }, { flowLevel: 0, indent: 0, condense: true }),
+    yaml.dump({ a: { b: 'c' } }, { flowLevel: 0, indent: 0, condenseFlow: true }),
     '{a:{b:c}}\n'
   );
 });
