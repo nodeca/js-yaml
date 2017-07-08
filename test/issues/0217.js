@@ -79,8 +79,8 @@ test('Folding Javascript functions preserves content', function () {
 
   assertFunctionPreserved(fnRot13,
     [ 'nggnpxngqnja', 'orjnergurvqrfbsznepu' ],
-    [ 'attackatdawn', 'bewaretheidesofmarch' ]
-  , 'ROT13');
+    [ 'attackatdawn', 'bewaretheidesofmarch' ],
+    'ROT13');
 });
 
 test('Folding long regular expressions preserves content', function () {

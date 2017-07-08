@@ -197,16 +197,16 @@ suite('Scalar style dump:', function () {
 
       var indeed = repeat('word. ', 31) + '\n' +
         [ 2, 3, 5, 7, 11, 13, 17 ]
-        .map(function (n) { return repeat(' ', n); })
-        .join('\n');
+          .map(function (n) { return repeat(' ', n); })
+          .join('\n');
       assert.strictEqual(dump(indeed),
-      '>-\n' + indent(
-        'word. word. word. word. word. word. word. word. word. word. word. word. word.\n' +
-        'word. word. word. word. word. word. word. word. word. word. word. word. word.\n' +
-        'word. word. word. word. word. \n' +
-        [ 2, 3, 5, 7, 11, 13, 17 ]
-        .map(function (n) { return repeat(' ', n); })
-        .join('\n') + '\n'));
+        '>-\n' + indent(
+          'word. word. word. word. word. word. word. word. word. word. word. word. word.\n' +
+          'word. word. word. word. word. word. word. word. word. word. word. word. word.\n' +
+          'word. word. word. word. word. \n' +
+          [ 2, 3, 5, 7, 11, 13, 17 ]
+            .map(function (n) { return repeat(' ', n); })
+            .join('\n') + '\n'));
     });
 
     var story = 'Call me Ishmael. Some years ago—never mind how long precisely—'
