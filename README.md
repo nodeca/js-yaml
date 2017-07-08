@@ -142,10 +142,10 @@ require('js-yaml').load(untrusted_code) + ''
 ```
 
 
-### safeLoadAll (string, iterator [ , options ])
+### safeLoadAll (string [, iterator] [, options ])
 
-Same as `safeLoad()`, but understands multi-document sources and applies
-`iterator` to each document.
+Same as `safeLoad()`, but understands multi-document sources. Applies
+`iterator` to each document if specified, or returns aray of documents.
 
 ``` javascript
 var yaml = require('js-yaml');
@@ -156,7 +156,7 @@ yaml.safeLoadAll(data, function (doc) {
 ```
 
 
-### loadAll (string, iterator [ , options ])
+### loadAll (string [, iterator] [ , options ])
 
 Same as `safeLoadAll()` but uses `DEFAULT_FULL_SCHEMA` by default.
 
