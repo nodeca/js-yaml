@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "argparse": "^1.0.7",
-    "esprima": "^3.1.1"
+    "esprima": "^4.0.0"
   },
   "devDependencies": {
     "ansi": "^0.3.1",
