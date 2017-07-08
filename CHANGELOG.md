@@ -1,3 +1,10 @@
+3.9.0 / 2017-07-08
+------------------
+
+- Add `condenseFlow` option (to create pretty URL query params), #346.
+- Support array return from safeLoadAll/loadAll, #350.
+
+
 3.8.4 / 2017-05-08
 ------------------
 
