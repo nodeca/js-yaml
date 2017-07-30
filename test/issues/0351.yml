@@ -1,0 +1,4 @@
+# intentionally invalid yaml
+
+  foo: bar
+baz: qux
