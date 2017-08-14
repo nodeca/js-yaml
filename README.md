@@ -117,6 +117,7 @@ options:
     http://yaml.org/type/
   - `DEFAULT_FULL_SCHEMA` - all supported YAML types.
 - `json` _(default: false)_ - compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
+- `metaKey` _(default: null)_ - if set, then saves start line and start position of each field under this key into the resulting object.
 
 NOTE: This function **does not** understand multi-document sources, it throws
 exception on those.
