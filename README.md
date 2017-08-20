@@ -145,7 +145,7 @@ require('js-yaml').load(untrusted_code) + ''
 ### safeLoadAll (string [, iterator] [, options ])
 
 Same as `safeLoad()`, but understands multi-document sources. Applies
-`iterator` to each document if specified, or returns aray of documents.
+`iterator` to each document if specified, or returns array of documents.
 
 ``` javascript
 var yaml = require('js-yaml');
@@ -262,7 +262,7 @@ Caveats
 -------
 
 Note, that you use arrays or objects as key in JS-YAML. JS does not allow objects
-or arrays as keys, and stringifies (by calling .toString method) them at the
+or arrays as keys, and stringifies (by calling `toString()` method) them at the
 moment of adding them.
 
 ``` yaml
