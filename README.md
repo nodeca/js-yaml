@@ -298,7 +298,7 @@ files via `require()`, no changes are needed. Just upgrade the library.
 
 Otherwise, you should:
 
-1. Replace all occurences of `require('xxxx.yml')` by `fs.readFileSync()` +
+1. Replace all occurrences of `require('xxxx.yml')` by `fs.readFileSync()` +
   `yaml.safeLoad()`.
 2. rewrite your custom tags constructors and custom loader
   classes, to conform the new API. See
