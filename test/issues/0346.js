@@ -14,12 +14,12 @@ test('should not emit spaces in arrays in flow mode between entries using conden
   assert.deepEqual(yaml.load(dumpedArray), array);
 });
 
-test('should emit spaces between key: value in objects in flow sequence using condenseFlow: true', function () {
+test('should not emit spaces between key: value and quote keys using condenseFlow: true', function () {
   var object = { a: { b: 'c' } };
   var objectDump = yaml.dump(object, { flowLevel: 0, indent: 0, condenseFlow: true });
   assert.equal(
     objectDump,
-    '{a: {b: c}}\n'
+    '{"a":{"b":c}}\n'
   );
   assert.deepEqual(yaml.load(objectDump), object);
 });
