@@ -183,7 +183,7 @@ options:
 - `noCompatMode` _(default: `false`)_ - if `true` don't try to be compatible with older
   yaml versions. Currently: don't quote "yes", "no" and so on, as required for YAML 1.1
 - `condenseFlow` _(default: `false`)_ - if `true` flow sequences will be condensed, omitting the space between `a, b`. Eg. `'[a,b]'`. Can be useful when using yaml for pretty URL query params as spaces are %-encoded. See also `quoteKeys`.
-- `quoteKeys` _(default: `false`)_ - if `true`, all keys will be quoted in doublequotes (`"`). Eg. `'{"a": b}'`. In combination with `condenseFlow`, this generates `'{"a":b}'`. Useful if no spaces are wanted in the dump (eg. URL).
+- `quoteKeys` _(default: `false`)_ - if `true`, all keys will be quoted in doublequotes (`"`). Eg. `'{"a": b}'`. Other valid options are `'` and `"` to specify the type of quotes. In combination with `condenseFlow`, this generates `'{"a":b}'`. Useful if no spaces are wanted in the dump (eg. URL).
 
 The following table show availlable styles (e.g. "canonical",
 "binary"...) available for each tag (.e.g. !!null, !!int ...). Yaml
