@@ -1,3 +1,10 @@
+3.10.0 / 2017-09-10
+-------------------
+
+- Fix `condenseFlow` output (quote keys for sure, instead of spaces), #371, #370.
+- Dump astrals as codepoints instead of surrogate pair, #368.
+
+
 3.9.1 / 2017-07-08
 ------------------
 
