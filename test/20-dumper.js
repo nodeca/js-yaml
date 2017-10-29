@@ -18,7 +18,7 @@ suite('Dumper', function () {
     test(path.basename(jsFile, '.js'), function () {
       var sample       = require(path.resolve(samplesDir, jsFile));
       var data         = typeof sample === 'function' ? sample.expected : sample,
-          serialized   = yaml.dump(data,       { schema: TEST_SCHEMA }),
+          serialized   = yaml.dump(data,       { schema: TEST_SCHEMA, noRefs: true }),
           deserialized = yaml.load(serialized, { schema: TEST_SCHEMA });
 
       if (typeof sample === 'function') {
