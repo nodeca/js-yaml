@@ -1,3 +1,9 @@
+3.10.1 / 2018-02-04
+-------------------
+
+- Improve workaround for esprima to also work for webpack.
+
+
 3.10.0 / 2017-09-10
 -------------------
 
