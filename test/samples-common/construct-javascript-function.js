@@ -9,6 +9,8 @@ function testHandler(actual) {
 
   assert.strictEqual(actual.length, expected.length);
 
+  assert.strictEqual(actual.length, expected.length);
+
   assert.strictEqual(
     actual[0](),
     expected[0]());
@@ -25,6 +27,9 @@ function testHandler(actual) {
 testHandler.expected = [
   function () {
     return 42;
+  },
+  function () {
+    return 72;
   },
   function (x, y) {
     return x + y;
