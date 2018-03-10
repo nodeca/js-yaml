@@ -36,6 +36,7 @@
     "browserify": "^14.3.0",
     "codemirror": "^5.13.4",
     "eslint": "^4.1.1",
+    "fast-check": "0.0.13",
     "istanbul": "^0.4.5",
     "mocha": "^3.3.0",
     "uglify-js": "^3.0.1"
