@@ -31,6 +31,9 @@ testHandler.expected = [
   function () {
     return 72;
   },
+  function () {
+    return 23;
+  },
   function (x, y) {
     return x + y;
   },
