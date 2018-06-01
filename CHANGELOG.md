@@ -1,3 +1,9 @@
+3.12.0 / 2018-06-02
+-------------------
+
+- Support arrow functions without a block statement, #421.
+
+
 3.11.0 / 2018-03-05
 -------------------
 
