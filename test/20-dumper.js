@@ -28,4 +28,15 @@ suite('Dumper', function () {
       }
     });
   });
+
+  test('single quote scalars', function () {
+    var serialized = yaml.dump({ k: 'v', empty: '' }, { schema: TEST_SCHEMA, scalarQuoteStyle: 'single' });
+    assert.equal(serialized, "k: 'v'\nempty: ''\n");
+  });
+
+  test('double quote scalars', function () {
+    var serialized = yaml.dump({ k: 'v', empty: '' }, { schema: TEST_SCHEMA, scalarQuoteStyle: 'double' });
+    assert.equal(serialized, 'k: "v"\nempty: ""\n');
+  });
+
 });
