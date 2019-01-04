@@ -170,6 +170,7 @@ disable exceptions by setting the `skipInvalid` option to `true`.
 options:
 
 - `indent` _(default: 2)_ - indentation width to use (in spaces).
+- `noArrayIndent` _(default: false)_ - when true, will not add an indentation level to array elements
 - `skipInvalid` _(default: false)_ - do not throw on invalid types (like function
   in the safe schema) and skip pairs and single values with such types.
 - `flowLevel` (default: -1) - specifies level of nesting, when to switch from
