@@ -23,6 +23,7 @@
     "bin/",
     "dist/"
   ],
+  "browser": "dist/js-yaml.js",
   "bin": {
     "js-yaml": "bin/js-yaml.js"
   },
