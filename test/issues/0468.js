@@ -5,7 +5,8 @@ var assert = require('assert');
 var yaml = require('../..');
 
 test('should not indent arrays an extra level when disabled', function () {
-  var output = yaml.dump([{"a":"a_value","b":"b_value"},{"a":"a2_value","expanded":true,"items":[{"a":"a_a_value","b":"a_b_value"}]}], { noArrayIndent: true });
-  var expected = '- a: a_value\n  b: b_value\n- a: a2_value\n  expanded: true\n  items:\n  - a: a_a_value\n    b: a_b_value\n';
+  /* eslint-disable max-len */
+  var output = yaml.dump([ { a:'a_val', b:'b_val' }, { a:'a2_val', expanded:true, items: [ { a:'a_a_val', b:'a_b_val' } ] } ], { noArrayIndent: true });
+  var expected = '- a: a_val\n  b: b_val\n- a: a2_val\n  expanded: true\n  items:\n  - a: a_a_val\n    b: a_b_val\n';
   assert.strictEqual(output, expected);
 });
