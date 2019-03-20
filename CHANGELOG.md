@@ -1,3 +1,10 @@
+3.13.0 / 2019-03-20
+-------------------
+
+- Security fix: `safeLoad()` can hang when arrays with nested refs
+  used as key. Now throws exception for nested arrays. #475.
+
+
 3.12.2 / 2019-02-26
 -------------------
 
