@@ -39,9 +39,9 @@ suite('Scalar style dump:', function () {
 
     test('disallows flow indicators inside flow collections', function () {
       assert.strictEqual(yaml.safeDump({ quote: 'mispell [sic]' }, { flowLevel: 0 }),
-        "{quote: 'mispell [sic]'}\n");
+        '{quote: mispell [sic]}\n');
       assert.strictEqual(yaml.safeDump({ key: 'no commas, either' }, { flowLevel: 0 }),
-        "{key: 'no commas, either'}\n");
+        '{key: no commas, either}\n');
     });
   });
 
