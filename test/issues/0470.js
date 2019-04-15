@@ -3,7 +3,7 @@
 var assert = require('assert');
 var yaml = require('../..');
 
-test('should not unnecessaryly apply quotes', function () {
+test('should not unnecessarily apply quotes', function () {
 
   var expected = 'url: https://github.com/nodeca/js-yaml\n';
   var input = {
@@ -17,7 +17,7 @@ test('should not unnecessaryly apply quotes', function () {
   assert.deepStrictEqual(roundTrip, input);
 });
 
-test('should not unnecessaryly apply quotes - space then /\n at end of value', function () {
+test('should not unnecessarily apply quotes - space then /\n at end of value', function () {
 
   var expected = 'url: \'https://github.com/nodeca/js-yaml \'\n';
   var input = {
@@ -31,7 +31,7 @@ test('should not unnecessaryly apply quotes - space then /\n at end of value', f
   assert.deepStrictEqual(roundTrip, input);
 });
 
-test('should not unnecessaryly apply quotes - space after colon', function () {
+test('should not unnecessarily apply quotes - space after colon', function () {
 
   var expected = 'url: \'https: //github.com/nodeca/js-yaml\'\n';
   var input = {
