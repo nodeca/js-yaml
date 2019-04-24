@@ -1114,7 +1114,7 @@ function State(input, options) {
   this.legacy    = options['legacy']    || false;
   this.json      = options['json']      || false;
   this.listener  = options['listener']  || null;
-  this.add_line_number  = options['add_line_number'] !== null ? options['add_line_number'] : true;
+  this.add_line_number  = options.hasOwnProperty('add_line_number') ? options['add_line_number'] : true;
 
   this.implicitTypes = this.schema.compiledImplicit;
   this.typeMap       = this.schema.compiledTypeMap;
