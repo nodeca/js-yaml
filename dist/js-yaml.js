@@ -1114,6 +1114,7 @@ function State(input, options) {
   this.legacy    = options['legacy']    || false;
   this.json      = options['json']      || false;
   this.listener  = options['listener']  || null;
+  this.add_line_number  = options['add_line_number']  || true;
 
   this.implicitTypes = this.schema.compiledImplicit;
   this.typeMap       = this.schema.compiledTypeMap;
@@ -1286,10 +1287,12 @@ function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valu
       throwError(state, 'duplicated mapping key');
     }
     _result[keyNode] = valueNode;
-    if (typeof _result[keyNode] === "object" && _result[keyNode] !== null) {
-      _result[keyNode][LINE_NUMBER_TAG] = startLine || state.line;
-    } else {
-      _result[keyNode + LINE_NUMBER_TAG] = startLine || state.line;
+    if (state.add_line_number) {
+      if (typeof _result[keyNode] === "object" && _result[keyNode] !== null) {
+        _result[keyNode][LINE_NUMBER_TAG] = startLine || state.line;
+      } else {
+        _result[keyNode + LINE_NUMBER_TAG] = startLine || state.line;
+      }
     }
     delete overridableKeys[keyNode];
   }
