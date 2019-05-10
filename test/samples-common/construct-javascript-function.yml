@@ -12,13 +12,3 @@
       third: result
     };
   }
-- !!js/function |
-  async (r) => { 
-    await r;
-    return r + 1
-  }
-- !!js/function |
-  async function (q) { 
-    await q;
-    return q + 1
-  }
