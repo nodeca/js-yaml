@@ -1,10 +1,10 @@
 - !!js/function |
   async (r) => { 
     await r;
-    return r + 1
+    return r + 1;
   }
 - !!js/function |
   async function (q) { 
     await q;
-    return q + 1
+    return q + 1;
   }
