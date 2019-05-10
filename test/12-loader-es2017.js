@@ -12,9 +12,6 @@ var TEST_SCHEMA = require('./support/schema').TEST_SCHEMA;
 
 suite('Loader ES2017', function () {
 
-  // skip test if we don't support ES2017
-  if (semver.lt(process.version, '8.0.0')) return;
-
   var samplesDir = path.resolve(__dirname, 'samples-es2017');
 
   fs.readdirSync(samplesDir).forEach(function (jsFile) {
@@ -23,6 +20,9 @@ suite('Loader ES2017', function () {
     var yamlFile = path.resolve(samplesDir, path.basename(jsFile, '.js') + '.yml');
 
     test(path.basename(jsFile, '.js'), function () {
+
+      // skip test if we don't support ES2017
+      if (semver.lt(process.version, '8.0.0')) return this.skip();
 
       var expected = require(path.resolve(samplesDir, jsFile));
       var actual   = [];
