@@ -45,6 +45,14 @@ testHandler.expected = [
       second: 'sum',
       third: result
     };
+  },
+  async function (r) {
+    await r;
+    return r + 1;
+  },
+  async function (q) {
+    await q;
+    return q + 1;
   }
 ];
 
