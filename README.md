@@ -45,6 +45,13 @@ Optional arguments:
   -t, --trace    Show stack trace on error
 ```
 
+### Docker Image
+
+Mount your yaml files in the container, and run js-yaml against them.
+
+```
+docker run -v /path/to/file.yaml:/yaml/file.yaml flanagan89/js-yaml:latest file.yaml
+```
 
 ### Bundled YAML library for browsers
 
