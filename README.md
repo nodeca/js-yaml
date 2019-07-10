@@ -95,9 +95,9 @@ try {
 
 ### safeLoad (string [ , options ])
 
-**Recommended loading way.** Parses `string` as single YAML document. Returns a JavaScript
-object or throws `YAMLException` on error. By default, does not support regexps,
-functions and undefined. This method is safe for untrusted data.
+**Recommended loading way.** Parses `string` as single YAML document. Returns either a
+plain object, a string or `undefined`, or throws `YAMLException` on error. By default, does
+not support regexps, functions and undefined. This method is safe for untrusted data.
 
 options:
 
