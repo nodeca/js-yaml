@@ -289,26 +289,3 @@ So, the following YAML document cannot be loaded.
   baz: bat
   *anchor: duplicate key
 ```
-
-
-Breaking changes in 2.x.x -> 3.x.x
-----------------------------------
-
-If you have not used __custom__ tags or loader classes and not loaded yaml
-files via `require()`, no changes are needed. Just upgrade the library.
-
-Otherwise, you should:
-
-1. Replace all occurrences of `require('xxxx.yml')` by `fs.readFileSync()` +
-  `yaml.safeLoad()`.
-2. rewrite your custom tags constructors and custom loader
-  classes, to conform the new API. See
-  [examples](https://github.com/nodeca/js-yaml/tree/master/examples) and
-  [wiki](https://github.com/nodeca/js-yaml/wiki) for details.
-
-
-License
--------
-
-View the [LICENSE](https://github.com/nodeca/js-yaml/blob/master/LICENSE) file
-(MIT).
