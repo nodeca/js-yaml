@@ -289,3 +289,10 @@ So, the following YAML document cannot be loaded.
   baz: bat
   *anchor: duplicate key
 ```
+
+
+Support js-yaml
+---------------
+
+You can support this project via [Tidelift subscription](https://tidelift.com/subscription/pkg/npm-js-yaml?utm_source=npm-js-yaml&utm_medium=referral&utm_campaign=readme).
+
