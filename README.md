@@ -80,12 +80,12 @@ your own tags), see [wiki](https://github.com/nodeca/js-yaml/wiki) and
 info.
 
 ``` javascript
-yaml = require('js-yaml');
-fs   = require('fs');
+const yaml = require('js-yaml');
+const fs   = require('fs');
 
 // Get document, or throw exception on error
 try {
-  var doc = yaml.safeLoad(fs.readFileSync('/home/ixti/example.yml', 'utf8'));
+  const doc = yaml.safeLoad(fs.readFileSync('/home/ixti/example.yml', 'utf8'));
   console.log(doc);
 } catch (e) {
   console.log(e);
@@ -135,7 +135,7 @@ The core schema also has no such restrictions. It allows binary notation for int
 must additionally validate object structure to avoid injections:
 
 ``` javascript
-var untrusted_code = '"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"';
+const untrusted_code = '"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"';
 
 // I'm just converting that string, what could possibly go wrong?
 require('js-yaml').load(untrusted_code) + ''
@@ -148,7 +148,7 @@ Same as `safeLoad()`, but understands multi-document sources. Applies
 `iterator` to each document if specified, or returns array of documents.
 
 ``` javascript
-var yaml = require('js-yaml');
+const yaml = require('js-yaml');
 
 yaml.safeLoadAll(data, function (doc) {
   console.log(doc);
