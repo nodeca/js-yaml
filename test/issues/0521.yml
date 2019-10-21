@@ -1,0 +1,3 @@
+http://example.com/page#anchor: no#quotes#required
+parameter#fallback: 'quotes #required'
+'foo #bar': key is quoted
