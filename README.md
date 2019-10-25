@@ -127,7 +127,7 @@ So, the JSON schema is not as strictly defined in the YAML specification.
 It allows numbers in any notation, use `Null` and `NULL` as `null`, etc.
 The core schema also has no such restrictions. It allows binary notation for integers.
 
-Use the option `onBlockRead` to get called back on read of a block in a sequence. At this point `state.result` holds the object being currently built:
+Use the option `linener` to get called back on events:
 
 ``` javascript
 const yaml = '"a": "b"';
