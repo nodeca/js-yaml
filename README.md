@@ -117,6 +117,7 @@ options:
     http://yaml.org/type/
   - `DEFAULT_FULL_SCHEMA` - all supported YAML types.
 - `json` _(default: false)_ - compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
+- `listener` _(default: null)_ - function to call on parser events.
 
 NOTE: This function **does not** understand multi-document sources, it throws
 exception on those.
@@ -125,6 +126,23 @@ NOTE: JS-YAML **does not** support schema-specific tag resolution restrictions.
 So, the JSON schema is not as strictly defined in the YAML specification.
 It allows numbers in any notation, use `Null` and `NULL` as `null`, etc.
 The core schema also has no such restrictions. It allows binary notation for integers.
+
+Use the option `onBlockRead` to get called back on read of a block in a sequence. At this point `state.result` holds the object being currently built:
+
+``` javascript
+const yaml = '"a": "b"';
+
+// poor man's AST:
+// add an artificial _LINE property with the location information for each block
+require('js-yaml').load(yaml, {
+	// ATT: the startLine parameter is only set on close events.
+	listener: (event, state, startLine) => {
+		if (event != 'close') return;
+		if (state.kind != 'mapping') return;
+		state.result._LINE = startLine;
+	}
+});
+```
 
 
 ### load (string [ , options ])
