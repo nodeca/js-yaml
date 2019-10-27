@@ -34,9 +34,9 @@ it('Should allow int override', function () {
   const SCHEMA = yaml.DEFAULT_SCHEMA.extend({ implicit: [ BigIntType ] });
 
   const data = `
-int: -123_456_789
-bigint: -12_345_678_901_234_567_890
-float: -12_345_678_901_234_567_890.1234
+int: -123456789
+bigint: -12345678901234567890
+float: -12345678901234567890.1234
 `;
 
   assert.deepStrictEqual(yaml.load(data, { schema: SCHEMA }), {
