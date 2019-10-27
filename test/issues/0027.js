@@ -28,6 +28,13 @@ describe('Should load numbers in YAML 1.2 format', function () {
     // not valid octal
     assert.strictEqual(yaml.load('0o1289'), '0o1289');
   });
+
+  it('should not allow underscore', function () {
+    // previously parsed as int
+    assert.strictEqual(yaml.load('1_23'), '1_23');
+    // previously parsed as float
+    assert.strictEqual(yaml.load('1_23.45'), '1_23.45');
+  });
 });
 
 
