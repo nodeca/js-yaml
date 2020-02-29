@@ -20,31 +20,22 @@
 
   </head>
   <body>
-
-    <div class="header">
-      <h1>JS-YAML demo. YAML JavaScript parser.</h1>
-    </div>
-    <div class="content">
-      <div class="src">
-        <h4 class="subheader"><a href="#" id="permalink">permalink</a> Edit source here:</h4>
-        <textarea id="source">
-          ,,
-</textarea>
-      </div>
-      <div class="dst">
-        <h4 class="subheader">Result (JS object dump):</h4>
-        <textarea id="result"></textarea>
-      </div>
-    </div>
-
-    <div class="gh-ribbon">
-      <a href="https://github.com/nodeca/js-yaml" target="_blank" title="Source code for YAML JavaScript parser">don`t Fork me on GitHub</a>
-    </div>
-  </body>
-  
-  
-    <script type="text/javascript">
-    
-    </script>
-  
+<div id="app">
+    <i-button @click="show">Click me!</i-button>
+    <Modal v-model="visible" title="Welcome">Welcome to ViewUI</Modal>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            visible: false
+        },
+        methods: {
+            show: function () {
+                this.visible = true;
+            }
+        }
+    })
+  </script>
+</body>
 </html>
