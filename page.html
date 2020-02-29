@@ -16,24 +16,139 @@
 <!-- import iView -->
 <script src="//unpkg.com/view-design/dist/iview.min.js"></script>
     <script src="https://cdn.jsdelivr.net/es5.shim/4.4.1/es5-shim.min.js"></script>
-    <script src="js-yaml.min.js.js"></script>
+    <script src="js-yaml.min.js"></script>
 
   </head>
   <body>
 <div id="app">
     <i-button @click="show">Click me!</i-button>
     <Modal v-model="visible" title="Welcome">Welcome to ViewUI</Modal>
+  
+  <i-button @click="to_json">to json</i-button>
+  <Input v-model="yml_value" type="textarea" placeholder="Enter something..." />
+  <i-button @click="to_yaml">to yaml</i-button>
+    <Input v-model="js_value" type="textarea"   placeholder="Enter something..." />
 </div>
 <script>
     new Vue({
         el: '#app',
         data: {
-            visible: false
+            yml_value: ```
+kind: pipeline
+type: docker
+name: docker-runner
+steps:
+  - name: docker  
+    image: plugins/docker
+    settings:
+      insecure: true
+      registry: 192.168.1.87:5003
+      debug: true
+      launch_debug: true
+      repo: 192.168.1.87:5003/${DRONE_REPO_NAME}
+      auto_tag: false
+      tags: ${DRONE_TAG:=latest}-${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}-${DRONE_COMMIT_SHA:0:8}
+      purge: false
+  - name: gitea-release
+    image: plugins/gitea-release
+    settings:
+      api_key:
+        from_secret: gitea_api_token
+      base_url: http://120.78.209.28:10081
+      files: dist/*
+      insecure: true
+      note: CHANGELOG.md
+    when:
+      event:
+      - tag
+      
+trigger:
+  event: ['tag','push']
+
+---
+kind: pipeline
+type: ssh
+name: ssh-runner
+
+server:
+  host:
+    from_secret: sshhost
+  user:
+    from_secret: sshuser
+  password:
+    from_secret: sshpwd
+
+steps:
+- name: greeting
+  commands:
+  - echo hello world
+  - pwd
+  - ls -al
+  - ifconfig
+  - env
+  
+---
+kind: secret
+name: gitea_api_token
+get:
+  path: kv/data/gitea_api
+  name: token
+
+
+---
+kind: secret
+name: pwd
+get:
+  path: docker/data/registry
+  name: pwd
+  
+---
+kind: secret
+name: name
+get:
+  path: docker/data/registry
+  name: username
+
+
+---
+kind: secret
+name: sshpwd
+get:
+  path: kv/data/sshserver
+  name: password
+  
+---
+kind: secret
+name: sshuser
+get:
+  path: kv/data/sshserver
+  name: user
+  
+---
+kind: secret
+name: sshport
+get:
+  path: kv/data/sshserver
+  name: port
+  
+---
+kind: secret
+name: sshhost
+get:
+  path: kv/data/sshserver
+  name: host
+  
+```,
+          js_value: ''
         },
         methods: {
             show: function () {
                 this.visible = true;
-            }
+            },
+          to_json() {
+          },
+          to_yaml() {
+          }
         }
     })
   </script>
