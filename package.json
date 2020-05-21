@@ -1,5 +1,5 @@
 {
-  "name": "js-yaml",
+  "name": "@dcube-engineering/js-yaml",
   "version": "3.13.1",
   "description": "YAML 1.2 parser and serializer",
   "keywords": [
