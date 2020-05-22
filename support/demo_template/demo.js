@@ -1,6 +1,6 @@
-/*global window, document, location*/
 'use strict';
 
+/* eslint-env browser */
 
 var jsyaml     = require('../../');
 var codemirror = require('codemirror');
