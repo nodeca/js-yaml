@@ -7,7 +7,7 @@ var readFileSync = require('fs').readFileSync;
 
 
 test('Don\'t quote strings with # without need', function () {
-  var required = readFileSync(require('path').join(__dirname, '/0521.yml'), 'utf8');
+  var required = readFileSync(require('path').join(__dirname, '/0521,557.yml'), 'utf8');
   var data = {
     'http://example.com/page#anchor': 'no:quotes#required',
     'parameter#fallback': 'quotes #required',
