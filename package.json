@@ -19,6 +19,7 @@
   "repository": "nodeca/js-yaml",
   "files": [
     "index.js",
+    "index.mjs",
     "lib/",
     "bin/",
     "dist/"
@@ -28,6 +29,13 @@
   },
   "unpkg": "dist/js-yaml.min.js",
   "jsdelivr": "dist/js-yaml.min.js",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js",
+      "default": "./index.js"
+    }
+  },
   "dependencies": {
     "argparse": "^1.0.7",
     "esprima": "^4.0.0"
