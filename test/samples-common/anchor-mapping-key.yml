@@ -1,0 +1,2 @@
+&anchor foo:
+  *anchor : bar
