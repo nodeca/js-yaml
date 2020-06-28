@@ -227,17 +227,6 @@ moment of adding them.
 { "foo,bar": ["baz"], "[object Object]": ["baz", "baz"] }
 ```
 
-Also, reading of properties on implicit block mapping keys is not supported yet.
-So, the following YAML document cannot be loaded.
-
-``` yaml
-&anchor foo:
-  foo: bar
-  *anchor: duplicate key
-  baz: bat
-  *anchor: duplicate key
-```
-
 
 js-yaml for enterprise
 ----------------------
