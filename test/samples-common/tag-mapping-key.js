@@ -1,5 +1,5 @@
-'use strict'
+'use strict';
 
 module.exports = {
-    TRUE: 1
-}
+  TRUE: 1
+};

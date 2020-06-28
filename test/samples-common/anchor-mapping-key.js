@@ -1,7 +1,7 @@
-'use strict'
+'use strict';
 
 module.exports = {
-    foo:{
-        foo:'bar'
-    }
-}
+  foo:{
+    foo:'bar'
+  }
+};
