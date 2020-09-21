@@ -26,6 +26,9 @@
   "bin": {
     "js-yaml": "bin/js-yaml.js"
   },
+  "exports": {
+    "./": "./lib/js-yaml/"
+  },
   "unpkg": "dist/js-yaml.min.js",
   "jsdelivr": "dist/js-yaml.min.js",
   "dependencies": {
