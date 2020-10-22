@@ -232,7 +232,7 @@ Same as `safeDump()` but without limits (uses `DEFAULT_FULL_SCHEMA` by default).
 Supported YAML types
 --------------------
 
-The list of standard YAML tags and corresponding JavaScipt types. See also
+The list of standard YAML tags and corresponding JavaScript types. See also
 [YAML tag discussion](http://pyyaml.org/wiki/YAMLTagDiscussion) and
 [YAML types repository](http://yaml.org/type/).
 
