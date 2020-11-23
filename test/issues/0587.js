@@ -17,8 +17,4 @@ suite('Should not escape emojis', function () {
   test('escape non-printables', function () {
     assert.strictEqual(yaml.safeDump('a😀\nb\u0001c'), '"a😀\\nb\\x01c"\n');
   });
-
-  test('load', function () {
-    assert.strictEqual(yaml.safeLoad('"\\U0001F600"'), '😀');
-  });
 });
