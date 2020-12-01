@@ -3,6 +3,13 @@ env:
   browser:  true
   es6:      false
 
+ignorePatterns:
+  - coverage/
+  - demo/
+  - dist/
+  - node_modules
+  - benchmark/implementations
+
 rules:
   accessor-pairs:         2
   array-bracket-spacing:  [ 2, "always", { "singleValue": true, "objectsInArrays": true, "arraysInArrays": true } ]
