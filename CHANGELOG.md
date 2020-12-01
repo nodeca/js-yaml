@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.0] - WIP
 ### Fixed
- - Astral characters are no longer encoded by dump/safeDump, #587.
+- Astral characters are no longer encoded by dump/safeDump, #587.
+- Removed `bower.json`.
 
 
 ## [3.14.0] - 2020-05-22
