@@ -26,6 +26,11 @@
   "bin": {
     "js-yaml": "bin/js-yaml.js"
   },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint && mocha",
+    "coverage": "npm run lint && nyc mocha && nyc report --reporter html"
+  },
   "unpkg": "dist/js-yaml.min.js",
   "jsdelivr": "dist/js-yaml.min.js",
   "dependencies": {
@@ -39,11 +44,8 @@
     "codemirror": "^5.13.4",
     "eslint": "^7.0.0",
     "fast-check": "^1.24.2",
-    "istanbul": "^0.4.5",
     "mocha": "^7.1.2",
+    "nyc": "^15.1.0",
     "uglify-js": "^3.0.1"
-  },
-  "scripts": {
-    "test": "make test"
   }
 }

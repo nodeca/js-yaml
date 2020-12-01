@@ -21,13 +21,11 @@ help:
 
 
 lint:
-	./node_modules/.bin/eslint .
+	npm run lint
 
 
 test: lint
-	@node -e "require('./package.json')"
-	./node_modules/.bin/mocha -R spec
-
+	npm run test
 
 demo: lint
 	rm -rf ./demo
@@ -39,9 +37,7 @@ demo: lint
 
 
 coverage:
-	rm -rf coverage
-	./node_modules/.bin/istanbul cover node_modules/.bin/_mocha
-
+	npm run coverage
 
 gh-pages: demo
 	@if test -z ${REMOTE_REPO} ; then \

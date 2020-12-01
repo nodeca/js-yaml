@@ -1,7 +1,7 @@
+.nyc_output
 coverage
 demo
 node_modules
 doc
 benchmark/implementations/*
 !/benchmark/implementations/current/
-.idea
