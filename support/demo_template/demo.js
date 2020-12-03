@@ -21,7 +21,7 @@ var SexyYamlType = new jsyaml.Type('!sexy', {
   }
 });
 
-var SEXY_SCHEMA = jsyaml.Schema.create([ SexyYamlType ]);
+var SEXY_SCHEMA = jsyaml.DEFAULT_SCHEMA.extend([ SexyYamlType ]);
 
 function parse() {
   var str, obj;

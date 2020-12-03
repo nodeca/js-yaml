@@ -24,37 +24,18 @@ lint:
 	npm run lint
 
 
-test: lint
+test:
 	npm run test
 
-demo: lint
-	rm -rf ./demo
-	mkdir ./demo
-	cp ./node_modules/codemirror/lib/codemirror.css ./demo/
-	cp ./support/demo_template/index.html ./demo/
-	cp ./support/demo_template/demo.css ./demo/
-	./node_modules/.bin/browserify ./support/demo_template/demo.js -r esprima > ./demo/demo.js
+demo:
+	npm run demo
 
 
 coverage:
 	npm run coverage
 
-gh-pages: demo
-	@if test -z ${REMOTE_REPO} ; then \
-		echo 'Remote repo URL not found' >&2 ; \
-		exit 128 ; \
-		fi
-	mkdir ${TMP_PATH}
-	cp -r demo/* ${TMP_PATH}
-	touch ${TMP_PATH}/.nojekyll
-	cd ${TMP_PATH} && \
-		git init && \
-		git add . && \
-		git commit -q -m 'Updated browserified demo'
-	cd ${TMP_PATH} && \
-		git remote add remote ${REMOTE_REPO} && \
-		git push --force remote +master:gh-pages
-	rm -rf ${TMP_PATH}
+gh-pages:
+	npm run gh-demo
 
 
 publish:
@@ -75,16 +56,7 @@ publish:
 
 
 browserify:
-	rm -rf ./dist
-	mkdir dist
-	# Browserify
-	( echo -n "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" ; \
-		./node_modules/.bin/browserify -r ./ -s jsyaml \
-		) > dist/js-yaml.js
-	# Minify
-	./node_modules/.bin/uglifyjs dist/js-yaml.js -c -m \
-		--preamble "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" \
-		> dist/js-yaml.min.js
+	npm run browserify
 
 
 todo:

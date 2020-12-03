@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.0] - WIP
 ### Changed
-- Removed functions `safeLoad`, `safeLoadAll`, `safeDump`, `safeDumpAll`.
-  Use `load`, `loadAll`, `dump`, `dumpAll` instead which are all now safe by default.
+- Breaking: "unsafe" tags `!!js/function`, `!!js/regexp`, `!!js/undefined` are
+  moved to [js-yaml-js-types](https://github.com/nodeca/js-yaml-js-types) package.
+- Breaking: removed `safe*` functions. Use `load`, `loadAll`, `dump`, `dumpAll`
+  instead which are all now safe by default.
 - `yaml.DEFAULT_SAFE_SCHEMA` and `yaml.DEFAULT_FULL_SCHEMA` are removed, use
   `yaml.DEFAULT_SCHEMA` instead.
 - `yaml.Schema.create(schema, tags)` is removed, use `schema.extend(tags)` instead.
-- `!!js/function`, `!!js/regexp`, `!!js/undefined` are moved to a separate package
-  [js-yaml-js-types](https://github.com/nodeca/js-yaml-js-types).
+
+### Added
+- Added `.mjs` (es modules) support.
+
 
 ### Fixed
 - Astral characters are no longer encoded by dump/safeDump, #587.

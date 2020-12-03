@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="codemirror.css">
     <link rel="stylesheet" href="demo.css">
 
-    <script src="https://cdn.jsdelivr.net/es5.shim/4.4.1/es5-shim.min.js"></script>
     <script src="demo.js"></script>
 
     <script type="text/javascript">
@@ -140,24 +139,24 @@ merge:
   - &LEFT { x: 0, y: 2 }
   - &BIG { r: 10 }
   - &SMALL { r: 1 }
-  
+
   # All the following maps are equal:
-  
+
   - # Explicit keys
     x: 1
     y: 2
     r: 10
     label: nothing
-  
+
   - # Merge one map
     << : *CENTER
     r: 10
     label: center
-  
+
   - # Merge multiple maps
     << : [ *CENTER, *BIG ]
     label: center/big
-  
+
   - # Override
     << : [ *BIG, *LEFT, *SMALL ]
     x: 1
@@ -193,27 +192,6 @@ timestamp:
   space separated:  2001-12-14 21:59:43.10 -5
   no time zone (Z): 2001-12-15 2:59:43.10
   date (00:00:00Z): 2002-12-14
-
-
-# JavaScript Specific Types ####################################################
-################################################################################
-
-# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp
-
-regexp:
-  simple: !!js/regexp      foobar
-  modifiers: !!js/regexp   /foobar/mi
-
-# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/undefined
-
-undefined: !!js/undefined ~
-
-# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function
-
-function: !!js/function >
-  function foobar() {
-    return 'Wow! JS-YAML Rocks!';
-  }
 
 
 # Custom types #################################################################

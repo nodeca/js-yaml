@@ -9,6 +9,7 @@ ignorePatterns:
   - dist/
   - node_modules
   - benchmark/implementations
+  - rollup.config.js
 
 rules:
   accessor-pairs:         2
