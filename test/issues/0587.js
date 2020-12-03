@@ -6,5 +6,5 @@ var yaml   = require('../../');
 
 
 test('Should not encode astral characters', function () {
-  assert.strictEqual(yaml.safeDump('😃😊'), '😃😊\n');
+  assert.strictEqual(yaml.dump('😃😊'), '😃😊\n');
 });

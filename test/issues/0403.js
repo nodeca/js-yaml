@@ -10,13 +10,13 @@ test('should properly dump leading newlines and spaces', function () {
 
   src = { str: '\n  a\nb' };
   dump = yaml.dump(src);
-  assert.deepEqual(yaml.safeLoad(dump), src);
+  assert.deepEqual(yaml.load(dump), src);
 
   src = { str: '\n\n  a\nb' };
   dump = yaml.dump(src);
-  assert.deepEqual(yaml.safeLoad(dump), src);
+  assert.deepEqual(yaml.load(dump), src);
 
   src = { str: '\n  a\nb' };
   dump = yaml.dump(src, { indent: 10 });
-  assert.deepEqual(yaml.safeLoad(dump), src);
+  assert.deepEqual(yaml.load(dump), src);
 });

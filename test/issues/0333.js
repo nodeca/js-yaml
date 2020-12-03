@@ -7,7 +7,7 @@ var readFileSync = require('fs').readFileSync;
 
 
 test('should allow cast integers as !!float', function () {
-  var data = yaml.safeLoad(readFileSync(require('path').join(__dirname, '/0333.yml'), 'utf8'));
+  var data = yaml.load(readFileSync(require('path').join(__dirname, '/0333.yml'), 'utf8'));
 
   assert.deepEqual(data, {
     negative: -1,

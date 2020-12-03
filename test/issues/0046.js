@@ -7,7 +7,7 @@ var readFileSync = require('fs').readFileSync;
 
 
 test('Timestamps are incorrectly parsed in local time', function () {
-  var data = yaml.safeLoad(readFileSync(require('path').join(__dirname, '/0046.yml'), 'utf8')),
+  var data = yaml.load(readFileSync(require('path').join(__dirname, '/0046.yml'), 'utf8')),
       date1, date2;
 
   date1 = data.date1; // date1: 2010-10-20T20:45:00Z

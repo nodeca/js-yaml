@@ -39,9 +39,9 @@ suite('Properties', function () {
       yamlArbitrary,
       dumpOptionsArbitrary,
       function (obj, dumpOptions) {
-        var yamlContent = yaml.safeDump(obj, dumpOptions);
+        var yamlContent = yaml.dump(obj, dumpOptions);
         assert.ok(typeof yamlContent === 'string');
-        assert.deepStrictEqual(yaml.safeLoad(yamlContent), obj);
+        assert.deepStrictEqual(yaml.load(yamlContent), obj);
       }));
   });
 });

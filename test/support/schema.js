@@ -30,7 +30,7 @@ function Foo(parameters) {
 }
 
 
-var TEST_SCHEMA = yaml.Schema.create([
+var TEST_SCHEMA = yaml.DEFAULT_SCHEMA.extend([
   // NOTE: Type order matters!
   // Inherited classes must precede their parents because the dumper
   // doesn't inspect class inheritance and just picks first suitable

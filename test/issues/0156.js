@@ -12,7 +12,7 @@ var TestClassYaml = new yaml.Type('!test', {
   resolve: function () { throw new SuccessSignal(); }
 });
 
-var TEST_SCHEMA = yaml.Schema.create([ TestClassYaml ]);
+var TEST_SCHEMA = yaml.DEFAULT_SCHEMA.extend([ TestClassYaml ]);
 
 
 test('Resolving of empty nodes are skipped in some cases', function () {

@@ -58,17 +58,4 @@ suite('Resolving explicit tags on empty nodes', function () {
   test('!!timestamp', function () {
     assert.throws(function () { yaml.load('!!timestamp'); }, yaml.YAMLException);
   });
-
-  test('!!js/function', function () {
-    assert.throws(function () { yaml.load('!!js/function'); }, yaml.YAMLException);
-  });
-
-  test('!!js/regexp', function () {
-    assert.throws(function () { yaml.load('!!js/regexp'); }, yaml.YAMLException);
-  });
-
-  test('!!js/undefined', function () {
-    // Fetch undefined from an array to reduce chance that undefined is returned because of another bug
-    assert.strictEqual(yaml.load('- !!js/undefined')[0], undefined);
-  });
 });

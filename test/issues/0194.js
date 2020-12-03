@@ -11,11 +11,11 @@ test('Don\'t throw on warning', function () {
       warnings = [],
       data;
 
-  data = yaml.safeLoad(src);
+  data = yaml.load(src);
 
   assert.deepEqual(data, { foo: { bar: true } });
 
-  yaml.safeLoad(src, { onWarning: function (e) { warnings.push(e); } });
+  yaml.load(src, { onWarning: function (e) { warnings.push(e); } });
 
   assert.strictEqual(warnings.length, 1);
 });

@@ -11,7 +11,7 @@ test('Duplicated mapping key errors on top level throw at beginning of key', fun
   var lines = src.split('\n');
 
   try {
-    yaml.safeLoad(src);
+    yaml.load(src);
   } catch (e) {
     assert.equal(lines[e.mark.line], 'duplicate: # 2');
   }
@@ -22,7 +22,7 @@ test('Duplicated mapping key errors inside of mapping values throw at beginning 
   var lines = src.split('\n');
 
   try {
-    yaml.safeLoad(src);
+    yaml.load(src);
   } catch (e) {
     assert.equal(lines[e.mark.line], '  duplicate: # 2');
   }

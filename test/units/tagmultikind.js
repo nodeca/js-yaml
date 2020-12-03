@@ -22,18 +22,18 @@ var tags = [ {
   });
 });
 
-var schema = yaml.Schema.create(tags);
+var schema = yaml.DEFAULT_SCHEMA.extend(tags);
 
 
 test('Process tag with kind: scalar', function () {
-  assert.deepEqual(yaml.safeLoad('!Include foobar', {
+  assert.deepEqual(yaml.load('!Include foobar', {
     schema: schema
   }), 'foobar');
 });
 
 
 test('Process tag with kind: mapping', function () {
-  assert.deepEqual(yaml.safeLoad('!Include\n  location: foobar', {
+  assert.deepEqual(yaml.load('!Include\n  location: foobar', {
     schema: schema
   }), { location: 'foobar' });
 });

@@ -85,7 +85,7 @@ const fs   = require('fs');
 
 // Get document, or throw exception on error
 try {
-  const doc = yaml.safeLoad(fs.readFileSync('/home/ixti/example.yml', 'utf8'));
+  const doc = yaml.load(fs.readFileSync('/home/ixti/example.yml', 'utf8'));
   console.log(doc);
 } catch (e) {
   console.log(e);
@@ -93,11 +93,11 @@ try {
 ```
 
 
-### safeLoad (string [ , options ])
+### load (string [ , options ])
 
-**Recommended loading way.** Parses `string` as single YAML document. Returns either a
+Parses `string` as single YAML document. Returns either a
 plain object, a string, a number, `null` or `undefined`, or throws `YAMLException` on error. By default, does
-not support regexps, functions and undefined. This method is safe for untrusted data.
+not support regexps, functions and undefined.
 
 options:
 
@@ -105,17 +105,15 @@ options:
   error/warning messages.
 - `onWarning` _(default: null)_ - function to call on warning messages.
   Loader will call this function with an instance of `YAMLException` for each warning.
-- `schema` _(default: `DEFAULT_SAFE_SCHEMA`)_ - specifies a schema to use.
+- `schema` _(default: `DEFAULT_SCHEMA`)_ - specifies a schema to use.
   - `FAILSAFE_SCHEMA` - only strings, arrays and plain objects:
     http://www.yaml.org/spec/1.2/spec.html#id2802346
   - `JSON_SCHEMA` - all JSON-supported types:
     http://www.yaml.org/spec/1.2/spec.html#id2803231
   - `CORE_SCHEMA` - same as `JSON_SCHEMA`:
     http://www.yaml.org/spec/1.2/spec.html#id2804923
-  - `DEFAULT_SAFE_SCHEMA` - all supported YAML types, without unsafe ones
-    (`!!js/undefined`, `!!js/regexp` and `!!js/function`):
-    http://yaml.org/type/
-  - `DEFAULT_FULL_SCHEMA` - all supported YAML types.
+  - `DEFAULT_SCHEMA` - all supported YAML types, without unsafe ones
+    (`!!js/undefined`, `!!js/regexp` and `!!js/function` are moved to [separate package](https://github.com/nodeca/js-yaml-js-types)).
 - `json` _(default: false)_ - compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
 
 NOTE: This function **does not** understand multi-document sources, it throws
@@ -127,43 +125,23 @@ It allows numbers in any notation, use `Null` and `NULL` as `null`, etc.
 The core schema also has no such restrictions. It allows binary notation for integers.
 
 
-### load (string [ , options ])
+### loadAll (string [, iterator] [, options ])
 
-**Use with care with untrusted sources**. The same as `safeLoad()` but uses
-`DEFAULT_FULL_SCHEMA` by default - adds some JavaScript-specific types:
-`!!js/function`, `!!js/regexp` and `!!js/undefined`. For untrusted sources, you
-must additionally validate object structure to avoid injections:
-
-``` javascript
-const untrusted_code = '"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"';
-
-// I'm just converting that string, what could possibly go wrong?
-require('js-yaml').load(untrusted_code) + ''
-```
-
-
-### safeLoadAll (string [, iterator] [, options ])
-
-Same as `safeLoad()`, but understands multi-document sources. Applies
+Same as `load()`, but understands multi-document sources. Applies
 `iterator` to each document if specified, or returns array of documents.
 
 ``` javascript
 const yaml = require('js-yaml');
 
-yaml.safeLoadAll(data, function (doc) {
+yaml.loadAll(data, function (doc) {
   console.log(doc);
 });
 ```
 
 
-### loadAll (string [, iterator] [ , options ])
+### dump (object [ , options ])
 
-Same as `safeLoadAll()` but uses `DEFAULT_FULL_SCHEMA` by default.
-
-
-### safeDump (object [ , options ])
-
-Serializes `object` as a YAML document. Uses `DEFAULT_SAFE_SCHEMA`, so it will
+Serializes `object` as a YAML document. Uses `DEFAULT_SCHEMA`, so it will
 throw an exception if you try to dump regexps or functions. However, you can
 disable exceptions by setting the `skipInvalid` option to `true`.
 
@@ -176,7 +154,7 @@ options:
 - `flowLevel` (default: -1) - specifies level of nesting, when to switch from
   block to flow style for collections. -1 means block style everwhere
 - `styles` - "tag" => "style" map. Each tag may have own set of styles.
-- `schema` _(default: `DEFAULT_SAFE_SCHEMA`)_ specifies a schema to use.
+- `schema` _(default: `DEFAULT_SCHEMA`)_ specifies a schema to use.
 - `sortKeys` _(default: `false`)_ - if `true`, sort keys when dumping YAML. If a
   function, use the function to sort the keys.
 - `lineWidth` _(default: `80`)_ - set max line width.
@@ -216,18 +194,13 @@ output is shown on the right side after `=>` (default setting) or `->`:
 Example:
 
 ``` javascript
-safeDump (object, {
+dump(object, {
   'styles': {
     '!!null': 'canonical' // dump null as ~
   },
   'sortKeys': true        // sort object keys
 });
 ```
-
-### dump (object [ , options ])
-
-Same as `safeDump()` but without limits (uses `DEFAULT_FULL_SCHEMA` by default).
-
 
 Supported YAML types
 --------------------

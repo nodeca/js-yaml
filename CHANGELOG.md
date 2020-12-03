@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [4.0.0] - WIP
+### Changed
+- Removed functions `safeLoad`, `safeLoadAll`, `safeDump`, `safeDumpAll`.
+  Use `load`, `loadAll`, `dump`, `dumpAll` instead which are all now safe by default.
+- `yaml.DEFAULT_SAFE_SCHEMA` and `yaml.DEFAULT_FULL_SCHEMA` are removed, use
+  `yaml.DEFAULT_SCHEMA` instead.
+- `yaml.Schema.create(schema, tags)` is removed, use `schema.extend(tags)` instead.
+- `!!js/function`, `!!js/regexp`, `!!js/undefined` are moved to a separate package
+  [js-yaml-js-types](https://github.com/nodeca/js-yaml-js-types).
+
 ### Fixed
 - Astral characters are no longer encoded by dump/safeDump, #587.
 - Removed `bower.json`.

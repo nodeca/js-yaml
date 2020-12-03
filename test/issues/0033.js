@@ -10,6 +10,6 @@ test('refactor compact variant of MarkedYAMLError.toString', function () {
   var source = readFileSync(require('path').join(__dirname, '/0033.yml'), 'utf8');
 
   assert.throws(function () {
-    yaml.safeLoad(source);
+    yaml.load(source);
   }, "require('issue-33.yml') should throw, but it does not");
 });

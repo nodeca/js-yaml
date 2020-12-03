@@ -15,7 +15,7 @@ var TestClassYaml = new yaml.Type('!test', {
   construct: function (data) { return new TestClass(data); }
 });
 
-var TEST_SCHEMA = yaml.Schema.create([ TestClassYaml ]);
+var TEST_SCHEMA = yaml.DEFAULT_SCHEMA.extend([ TestClassYaml ]);
 
 
 suite('Alias nodes', function () {
@@ -36,13 +36,6 @@ suite('Alias nodes', function () {
       var actual = yaml.load('[&1 {self: *1}, *1]')[1];
 
       assert(actual === actual.self);
-    });
-
-    test("JavaScript-specific objects (JS-YAML's own extension)", function () {
-      var actual = yaml.load('[&1 !!js/function "function sum(a, b) { return a + b }", *1]')[1];
-
-      assert.strictEqual(Object.prototype.toString.call(actual), '[object Function]');
-      assert.strictEqual(actual(10, 5), 15);
     });
 
     test('Simple custom objects', function () {
