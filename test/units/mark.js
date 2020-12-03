@@ -4,7 +4,7 @@
 var assert = require('assert');
 var path   = require('path');
 var fs     = require('fs');
-var Mark   = require('../../lib/js-yaml/mark');
+var Mark   = require('../../lib/mark');
 
 
 test('Mark', function () {

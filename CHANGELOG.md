@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `yaml.DEFAULT_SCHEMA` instead.
 - `yaml.Schema.create(schema, tags)` is removed, use `schema.extend(tags)` instead.
 - `!!binary` now always mapped to `Uint8Array` on load.
+- Reduced nesting of `/lib` folder.
 
 ### Added
 - Added `.mjs` (es modules) support.

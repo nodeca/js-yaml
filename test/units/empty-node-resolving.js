@@ -2,7 +2,7 @@
 
 
 var assert = require('assert');
-var yaml   = require('../../lib/js-yaml');
+var yaml   = require('../../');
 
 
 suite('Resolving explicit tags on empty nodes', function () {

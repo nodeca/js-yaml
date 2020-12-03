@@ -2,7 +2,7 @@
 
 
 var util = require('util');
-var yaml = require('../../lib/js-yaml');
+var yaml = require('../../');
 
 
 function Tag1(parameters) {
