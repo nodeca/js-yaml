@@ -30,5 +30,5 @@ test('Dumper must throw an exception on invalid type when option `skipInvalid` i
 
 
 test('Dumper must skip pairs and values with invalid types when option `skipInvalid` is true.', function () {
-  assert.deepEqual(yaml.load(yaml.dump(sample, { skipInvalid: true })), expected);
+  assert.deepStrictEqual(yaml.load(yaml.dump(sample, { skipInvalid: true })), expected);
 });

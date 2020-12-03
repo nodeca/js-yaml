@@ -17,25 +17,25 @@ function testHandler(actual) {
   assert.strictEqual(Object.prototype.toString.call(actual), '[object Array]');
   assert.strictEqual(actual.length, 7);
 
-  assert.deepEqual(actual[0], expected[0]);
+  assert.deepStrictEqual(actual[0], expected[0]);
   assert.strictEqual(Object.getPrototypeOf(actual[0]), Object.getPrototypeOf(expected[0]));
 
-  assert.deepEqual(actual[1], expected[1]);
+  assert.deepStrictEqual(actual[1], expected[1]);
   assert.strictEqual(Object.getPrototypeOf(actual[1]), Object.getPrototypeOf(expected[1]));
 
-  assert.deepEqual(actual[2], expected[2]);
+  assert.deepStrictEqual(actual[2], expected[2]);
   assert.strictEqual(Object.getPrototypeOf(actual[2]), Object.getPrototypeOf(expected[2]));
 
-  assert.deepEqual(actual[3], expected[3]);
+  assert.deepStrictEqual(actual[3], expected[3]);
   assert.strictEqual(Object.getPrototypeOf(actual[3]), Object.getPrototypeOf(expected[3]));
 
-  assert.deepEqual(actual[4], expected[4]);
+  assert.deepStrictEqual(actual[4], expected[4]);
   assert.strictEqual(Object.getPrototypeOf(actual[4]), Object.getPrototypeOf(expected[4]));
 
-  assert.deepEqual(actual[5], expected[5]);
+  assert.deepStrictEqual(actual[5], expected[5]);
   assert.strictEqual(Object.getPrototypeOf(actual[5]), Object.getPrototypeOf(expected[5]));
 
-  assert.deepEqual(actual[6], expected[6]);
+  assert.deepStrictEqual(actual[6], expected[6]);
   assert.strictEqual(Object.getPrototypeOf(actual[6]), Object.getPrototypeOf(expected[6]));
 }
 

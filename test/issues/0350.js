@@ -9,5 +9,5 @@ var readFileSync = require('fs').readFileSync;
 test('should return parse docs from loadAll', function () {
   var data = yaml.loadAll(readFileSync(require('path').join(__dirname, '/0350.yml'), 'utf8'));
 
-  assert.deepEqual(data, [ { a: 1 }, { b: 2 } ]);
+  assert.deepStrictEqual(data, [ { a: 1 }, { b: 2 } ]);
 });

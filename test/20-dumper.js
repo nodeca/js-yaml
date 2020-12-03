@@ -24,7 +24,7 @@ suite('Dumper', function () {
       if (typeof sample === 'function') {
         sample.call(this, deserialized);
       } else {
-        assert.deepEqual(deserialized, sample);
+        assert.deepStrictEqual(deserialized, sample);
       }
     });
   });

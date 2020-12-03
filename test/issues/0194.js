@@ -13,7 +13,7 @@ test('Don\'t throw on warning', function () {
 
   data = yaml.load(src);
 
-  assert.deepEqual(data, { foo: { bar: true } });
+  assert.deepStrictEqual(data, { foo: { bar: true } });
 
   yaml.load(src, { onWarning: function (e) { warnings.push(e); } });
 

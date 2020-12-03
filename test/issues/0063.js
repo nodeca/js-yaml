@@ -17,7 +17,7 @@ test('Invalid errors/warnings of invalid indentation on flow scalars', function 
   assert.doesNotThrow(function () { yaml.load(sources[1]); }, 'Throws on single-quoted style');
   assert.doesNotThrow(function () { yaml.load(sources[2]); }, 'Throws on double-quoted style');
 
-  assert.deepEqual(yaml.load(sources[0]), expected);
-  assert.deepEqual(yaml.load(sources[1]), expected);
-  assert.deepEqual(yaml.load(sources[2]), expected);
+  assert.deepStrictEqual(yaml.load(sources[0]), expected);
+  assert.deepStrictEqual(yaml.load(sources[1]), expected);
+  assert.deepStrictEqual(yaml.load(sources[2]), expected);
 });

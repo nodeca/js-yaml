@@ -15,7 +15,7 @@ test('Don\'t quote strings with # without need', function () {
     'foo #bar': 'key is quoted'
   };
 
-  assert.deepEqual(
+  assert.deepStrictEqual(
     yaml.dump(sample),
     yaml.dump(data)
   );

@@ -26,14 +26,14 @@ var schema = yaml.DEFAULT_SCHEMA.extend(tags);
 
 
 test('Process tag with kind: scalar', function () {
-  assert.deepEqual(yaml.load('!Include foobar', {
+  assert.deepStrictEqual(yaml.load('!Include foobar', {
     schema: schema
   }), 'foobar');
 });
 
 
 test('Process tag with kind: mapping', function () {
-  assert.deepEqual(yaml.load('!Include\n  location: foobar', {
+  assert.deepStrictEqual(yaml.load('!Include\n  location: foobar', {
     schema: schema
   }), { location: 'foobar' });
 });

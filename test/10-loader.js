@@ -31,7 +31,7 @@ suite('Loader', function () {
       if (typeof expected === 'function') {
         expected.call(this, actual);
       } else {
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       }
     });
   });

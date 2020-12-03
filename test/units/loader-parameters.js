@@ -10,45 +10,45 @@ suite('loader parameters', function () {
 
   test('loadAll(input, options)', function () {
     result = yaml.loadAll(testStr, { json: true });
-    assert.deepEqual(result, expected);
+    assert.deepStrictEqual(result, expected);
 
     result = [];
     yaml.loadAll(testStr, function (doc) {
       result.push(doc);
     }, { json: true });
-    assert.deepEqual(result, expected);
+    assert.deepStrictEqual(result, expected);
   });
 
   test('loadAll(input, null, options)', function () {
     result = yaml.loadAll(testStr, null, { json: true });
-    assert.deepEqual(result, expected);
+    assert.deepStrictEqual(result, expected);
 
     result = [];
     yaml.loadAll(testStr, function (doc) {
       result.push(doc);
     }, { json: true });
-    assert.deepEqual(result, expected);
+    assert.deepStrictEqual(result, expected);
   });
 
   test('loadAll(input, options)', function () {
     result = yaml.loadAll(testStr, { json: true });
-    assert.deepEqual(result, expected);
+    assert.deepStrictEqual(result, expected);
 
     result = [];
     yaml.loadAll(testStr, function (doc) {
       result.push(doc);
     }, { json: true });
-    assert.deepEqual(result, expected);
+    assert.deepStrictEqual(result, expected);
   });
 
   test('loadAll(input, null, options)', function () {
     result = yaml.loadAll(testStr, null, { json: true });
-    assert.deepEqual(result, expected);
+    assert.deepStrictEqual(result, expected);
 
     result = [];
     yaml.loadAll(testStr, function (doc) {
       result.push(doc);
     }, { json: true });
-    assert.deepEqual(result, expected);
+    assert.deepStrictEqual(result, expected);
   });
 });

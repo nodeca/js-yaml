@@ -6,5 +6,5 @@ var yaml   = require('../../');
 
 
 test('Named null', function () {
-  assert.deepEqual(yaml.load('---\ntest: !!null \nfoo: bar'), { test: null, foo: 'bar' });
+  assert.deepStrictEqual(yaml.load('---\ntest: !!null \nfoo: bar'), { test: null, foo: 'bar' });
 });

@@ -53,7 +53,7 @@ test('Listener informed on a map with a list.', function () {
   assert.strictEqual(history[++i][0], 'close');
 
   assert.strictEqual(history[++i][0], 'close'); // b value (list) end
-  assert.deepEqual(history[i][2], [ 0, 'xyz' ]);
+  assert.deepStrictEqual(history[i][2], [ 0, 'xyz' ]);
 
   assert.strictEqual(history[++i][0], 'close'); // map end
   assert.strictEqual(history[++i][0], 'close'); // doc end

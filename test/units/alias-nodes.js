@@ -28,8 +28,8 @@ suite('Alias nodes', function () {
     });
 
     test('Simple built-in objects', function () {
-      assert.deepEqual(yaml.load('[&1 [a, b, c, d], *1]')[1], [ 'a', 'b', 'c', 'd' ]);
-      assert.deepEqual(yaml.load('[&1 {a: b, c: d}, *1]')[1], { a: 'b', c: 'd' });
+      assert.deepStrictEqual(yaml.load('[&1 [a, b, c, d], *1]')[1], [ 'a', 'b', 'c', 'd' ]);
+      assert.deepStrictEqual(yaml.load('[&1 {a: b, c: d}, *1]')[1], { a: 'b', c: 'd' });
     });
 
     test('Recursive built-in objects', function () {
@@ -43,7 +43,7 @@ suite('Alias nodes', function () {
           actual = yaml.load('[&1 !test {a: b, c: d}, *1]', { schema: TEST_SCHEMA })[1];
 
       assert(actual instanceof TestClass);
-      assert.deepEqual(actual, expected);
+      assert.deepStrictEqual(actual, expected);
     });
 
     // TODO: Not implemented yet (see issue #141)

@@ -23,7 +23,7 @@ suite('Resolving explicit tags on empty nodes', function () {
   });
 
   test('!!map', function () {
-    assert.deepEqual(yaml.load('!!map'), {});
+    assert.deepStrictEqual(yaml.load('!!map'), {});
   });
 
   test('!!merge', function () {
@@ -36,19 +36,19 @@ suite('Resolving explicit tags on empty nodes', function () {
   });
 
   test('!!omap', function () {
-    assert.deepEqual(yaml.load('!!omap'), []);
+    assert.deepStrictEqual(yaml.load('!!omap'), []);
   });
 
   test('!!pairs', function () {
-    assert.deepEqual(yaml.load('!!pairs'), []);
+    assert.deepStrictEqual(yaml.load('!!pairs'), []);
   });
 
   test('!!seq', function () {
-    assert.deepEqual(yaml.load('!!seq'), []);
+    assert.deepStrictEqual(yaml.load('!!seq'), []);
   });
 
   test('!!set', function () {
-    assert.deepEqual(yaml.load('!!set'), {});
+    assert.deepStrictEqual(yaml.load('!!set'), {});
   });
 
   test('!!str', function () {

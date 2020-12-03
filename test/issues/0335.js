@@ -9,7 +9,7 @@ var readFileSync = require('fs').readFileSync;
 test('Don\'t throw on warning', function () {
   var src = readFileSync(require('path').join(__dirname, '/0335.yml'), 'utf8');
 
-  assert.deepEqual(yaml.load(src), {
+  assert.deepStrictEqual(yaml.load(src), {
     not_num_1: '-_123',
     not_num_2: '_123',
     not_num_3: '123_',

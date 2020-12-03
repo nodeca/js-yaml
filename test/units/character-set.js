@@ -6,7 +6,7 @@ var yaml = require('../../');
 
 
 test('Allow astral characters', function () {
-  assert.deepEqual(yaml.load('𝑘𝑒𝑦: 𝑣𝑎𝑙𝑢𝑒'), { '𝑘𝑒𝑦': '𝑣𝑎𝑙𝑢𝑒' });
+  assert.deepStrictEqual(yaml.load('𝑘𝑒𝑦: 𝑣𝑎𝑙𝑢𝑒'), { '𝑘𝑒𝑦': '𝑣𝑎𝑙𝑢𝑒' });
 });
 
 test('Forbid non-printable characters', function () {

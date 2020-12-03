@@ -220,14 +220,14 @@ suite('Scalar style dump:', function () {
       var content = [ prefix, line ].join('\n');
 
       var lengths = dump(content).split('\n').map(getLength);
-      assert.deepEqual(lengths, [ 2, 23, 0, 69, 76, 80, 24, 0 ]);
+      assert.deepStrictEqual(lengths, [ 2, 23, 0, 69, 76, 80, 24, 0 ]);
     });
 
     test('should not fold a more-indented last line', function functionName() {
       var content = [ prefix, line, '    ' + line ].join('\n');
 
       var lengths = dump(content).split('\n').map(getLength);
-      assert.deepEqual(lengths, [ 2, 23, 0, 69, 76, 80, 24, 250, 0 ]);
+      assert.deepStrictEqual(lengths, [ 2, 23, 0, 69, 76, 80, 24, 250, 0 ]);
     });
 
     test('should not fold when lineWidth === -1', function () {

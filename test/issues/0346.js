@@ -7,19 +7,19 @@ var yaml = require('../../');
 test('should not emit spaces in arrays in flow mode between entries using condenseFlow: true', function () {
   var array = [ 'a', 'b' ];
   var dumpedArray = yaml.dump(array, { flowLevel: 0, indent: 0, condenseFlow: true });
-  assert.equal(
+  assert.strictEqual(
     dumpedArray,
     '[a,b]\n'
   );
-  assert.deepEqual(yaml.load(dumpedArray), array);
+  assert.deepStrictEqual(yaml.load(dumpedArray), array);
 });
 
 test('should not emit spaces between key: value and quote keys using condenseFlow: true', function () {
   var object = { a: { b: 'c', d: 'e' } };
   var objectDump = yaml.dump(object, { flowLevel: 0, indent: 0, condenseFlow: true });
-  assert.equal(
+  assert.strictEqual(
     objectDump,
     '{"a":{"b":c, "d":e}}\n'
   );
-  assert.deepEqual(yaml.load(objectDump), object);
+  assert.deepStrictEqual(yaml.load(objectDump), object);
 });
