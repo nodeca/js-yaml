@@ -5,7 +5,7 @@
 var fs   = require('fs');
 var path = require('path');
 var util = require('util');
-var yaml = require('../lib/js-yaml');
+var yaml = require('../');
 
 
 try {

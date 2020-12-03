@@ -46,38 +46,12 @@ Optional arguments:
 ```
 
 
-### Bundled YAML library for browsers
-
-``` html
-<!-- esprima required only for !!js/function -->
-<script src="esprima.js"></script>
-<script src="js-yaml.min.js"></script>
-<script type="text/javascript">
-var doc = jsyaml.load('greeting: hello\nname: world');
-</script>
-```
-
-Browser support was done mostly for the online demo. If you find any errors - feel
-free to send pull requests with fixes. Also note, that IE and other old browsers
-needs [es5-shims](https://github.com/kriskowal/es5-shim) to operate.
-
-Notes:
-
-1. We have no resources to support browserified version. Don't expect it to be
-   well tested. Don't expect fast fixes if something goes wrong there.
-2. `!!js/function` in browser bundle will not work by default. If you really need
-   it - load `esprima` parser first (via amd or directly).
-3. `!!bin` in browser will return `Array`, because browsers do not support
-   node.js `Buffer` and adding Buffer shims is completely useless on practice.
-
-
 API
 ---
 
 Here we cover the most 'useful' methods. If you need advanced details (creating
-your own tags), see [wiki](https://github.com/nodeca/js-yaml/wiki) and
-[examples](https://github.com/nodeca/js-yaml/tree/master/examples) for more
-info.
+your own tags), see [examples](https://github.com/nodeca/js-yaml/tree/master/examples)
+for more info.
 
 ``` javascript
 const yaml = require('js-yaml');
@@ -112,8 +86,7 @@ options:
     http://www.yaml.org/spec/1.2/spec.html#id2803231
   - `CORE_SCHEMA` - same as `JSON_SCHEMA`:
     http://www.yaml.org/spec/1.2/spec.html#id2804923
-  - `DEFAULT_SCHEMA` - all supported YAML types, without unsafe ones
-    (`!!js/undefined`, `!!js/regexp` and `!!js/function` are moved to [separate package](https://github.com/nodeca/js-yaml-js-types)).
+  - `DEFAULT_SCHEMA` - all supported YAML types.
 - `json` _(default: false)_ - compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
 
 NOTE: This function **does not** understand multi-document sources, it throws
@@ -226,11 +199,9 @@ The list of standard YAML tags and corresponding JavaScript types. See also
 
 **JavaScript-specific tags**
 
-```
-!!js/regexp /pattern/gim            # RegExp
-!!js/undefined ''                   # Undefined
-!!js/function 'function () {...}'   # Function
-```
+See [js-yaml-js-types](https://github.com/nodeca/js-yaml-js-types) for
+extra types.
+
 
 Caveats
 -------

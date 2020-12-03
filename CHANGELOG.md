@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Breaking: "unsafe" tags `!!js/function`, `!!js/regexp`, `!!js/undefined` are
   moved to [js-yaml-js-types](https://github.com/nodeca/js-yaml-js-types) package.
-- Breaking: removed `safe*` functions. Use `load`, `loadAll`, `dump`, `dumpAll`
+- Breaking: removed `safe*` functions. Use `load`, `loadAll`, `dump`
   instead which are all now safe by default.
 - `yaml.DEFAULT_SAFE_SCHEMA` and `yaml.DEFAULT_FULL_SCHEMA` are removed, use
   `yaml.DEFAULT_SCHEMA` instead.
