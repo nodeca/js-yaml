@@ -15,6 +15,6 @@ var TestClassYaml = new yaml.Type('!test', {
 var TEST_SCHEMA = yaml.DEFAULT_SCHEMA.extend([ TestClassYaml ]);
 
 
-test('Resolving of empty nodes are skipped in some cases', function () {
+it('Resolving of empty nodes are skipped in some cases', function () {
   assert.throws(function () { yaml.load('- foo: !test\n- bar: baz', { schema: TEST_SCHEMA }); }, SuccessSignal);
 });

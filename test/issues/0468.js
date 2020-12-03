@@ -4,7 +4,7 @@
 var assert = require('assert');
 var yaml = require('../..');
 
-test('should not indent arrays an extra level when disabled', function () {
+it('should not indent arrays an extra level when disabled', function () {
   /* eslint-disable max-len */
   var output = yaml.dump(
     [

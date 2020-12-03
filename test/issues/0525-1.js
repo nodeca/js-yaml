@@ -5,7 +5,7 @@ var assert = require('assert');
 var yaml   = require('../../');
 
 
-test('Should throw if there is a null-byte in input', function () {
+it('Should throw if there is a null-byte in input', function () {
   try {
     yaml.load('foo\0bar');
   } catch (err) {

@@ -6,7 +6,7 @@ var yaml   = require('../../');
 var readFileSync = require('fs').readFileSync;
 
 
-test('Should not allow nested arrays in map keys (explicit syntax)', function () {
+it('Should not allow nested arrays in map keys (explicit syntax)', function () {
   try {
     yaml.load(readFileSync(require('path').join(__dirname, '/0475-case1.yml'), 'utf8'));
   } catch (err) {
@@ -16,7 +16,7 @@ test('Should not allow nested arrays in map keys (explicit syntax)', function ()
   assert.fail(null, null, 'Expected an error to be thrown');
 });
 
-test('Should not allow nested arrays in map keys (implicit syntax)', function () {
+it('Should not allow nested arrays in map keys (implicit syntax)', function () {
   try {
     yaml.load(readFileSync(require('path').join(__dirname, '/0475-case2.yml'), 'utf8'));
   } catch (err) {

@@ -3,7 +3,7 @@
 var assert = require('assert');
 var yaml = require('../../');
 
-test('Listener informed on a very simple scalar.', function () {
+it('Listener informed on a very simple scalar.', function () {
   var history = [];
   function l(eventType, state) {
     history.push([ eventType, state.position ]);
@@ -21,7 +21,7 @@ test('Listener informed on a very simple scalar.', function () {
   assert.strictEqual(history[3][1], 16);
 });
 
-test('Listener informed on a map with a list.', function () {
+it('Listener informed on a map with a list.', function () {
   var history = [];
   function l(eventType, state) {
     history.push([ eventType, state.position, state.result ]);

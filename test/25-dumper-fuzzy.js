@@ -33,8 +33,8 @@ var dumpOptionsArbitrary = fc.record({
     return instance;
   });
 
-suite('Properties', function () {
-  test('Load from dumped should be the original object', function () {
+describe('Properties', function () {
+  it('Load from dumped should be the original object', function () {
     fc.assert(fc.property(
       yamlArbitrary,
       dumpOptionsArbitrary,

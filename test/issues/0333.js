@@ -6,7 +6,7 @@ var yaml = require('../../');
 var readFileSync = require('fs').readFileSync;
 
 
-test('should allow cast integers as !!float', function () {
+it('should allow cast integers as !!float', function () {
   var data = yaml.load(readFileSync(require('path').join(__dirname, '/0333.yml'), 'utf8'));
 
   assert.deepStrictEqual(data, {

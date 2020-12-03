@@ -6,7 +6,7 @@ var yaml = require('../../');
 var readFileSync = require('fs').readFileSync;
 
 
-test('Parse failed when no document start present', function () {
+it('Parse failed when no document start present', function () {
   assert.doesNotThrow(function () {
     yaml.load(readFileSync(require('path').join(__dirname, '/0008.yml'), 'utf8'));
   }, TypeError);

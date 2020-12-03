@@ -5,7 +5,7 @@ var assert = require('assert');
 var yaml = require('../../');
 
 
-test('should properly dump leading newlines and spaces', function () {
+it('should properly dump leading newlines and spaces', function () {
   var dump, src;
 
   src = { str: '\n  a\nb' };

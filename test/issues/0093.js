@@ -6,7 +6,7 @@ var yaml = require('../../');
 var readFileSync = require('fs').readFileSync;
 
 
-test('Unwanted line breaks in folded scalars', function () {
+it('Unwanted line breaks in folded scalars', function () {
   var data = yaml.load(readFileSync(require('path').join(__dirname, '/0093.yml'), 'utf8'));
 
   assert.strictEqual(data.first,  'a b\n  c\n  d\ne f\n');

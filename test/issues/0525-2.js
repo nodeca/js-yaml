@@ -5,7 +5,7 @@ var assert = require('assert');
 var yaml   = require('../../');
 
 
-test('Should check kind type when resolving !<?> tag', function () {
+it('Should check kind type when resolving !<?> tag', function () {
   try {
     yaml.load('!<?> [0]');
   } catch (err) {

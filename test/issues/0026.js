@@ -6,7 +6,7 @@ var yaml = require('../../');
 var readFileSync = require('fs').readFileSync;
 
 
-test('should convert new line into white space', function () {
+it('should convert new line into white space', function () {
   var data = yaml.load(readFileSync(require('path').join(__dirname, '/0026.yml'), 'utf8'));
 
   assert.strictEqual(data.test, 'a b c\n');

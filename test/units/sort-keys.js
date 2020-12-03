@@ -9,15 +9,15 @@ var unsortedExpected = 'b: 1\na: 2\nc: 3\n';
 var simpleExpected = 'a: 2\nb: 1\nc: 3\n';
 var reverseExpected = 'c: 3\nb: 1\na: 2\n';
 
-test('Dumper should sort preserve key insertion order', function () {
+it('Dumper should sort preserve key insertion order', function () {
   assert.deepStrictEqual(yaml.dump(sample, { sortKeys: false }), unsortedExpected);
 });
 
-test('Dumper should sort keys when sortKeys is true', function () {
+it('Dumper should sort keys when sortKeys is true', function () {
   assert.deepStrictEqual(yaml.dump(sample, { sortKeys: true }), simpleExpected);
 });
 
-test('Dumper should sort keys by sortKeys function when specified', function () {
+it('Dumper should sort keys by sortKeys function when specified', function () {
   assert.deepStrictEqual(yaml.dump(sample, {
     sortKeys: function (a, b) {
       return a < b ? 1 : a > b ? -1 : 0;

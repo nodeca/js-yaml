@@ -7,7 +7,7 @@ var fs     = require('fs');
 var Mark   = require('../../lib/mark');
 
 
-test('Mark', function () {
+it('Mark', function () {
   var filepath = path.join(__dirname, 'mark.txt'),
       filedata = fs.readFileSync(filepath, 'utf8');
 

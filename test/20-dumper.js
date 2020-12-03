@@ -9,13 +9,13 @@ var yaml   = require('../');
 var TEST_SCHEMA = require('./support/schema').TEST_SCHEMA;
 
 
-suite('Dumper', function () {
+describe('Dumper', function () {
   var samplesDir = path.resolve(__dirname, 'samples-common');
 
   fs.readdirSync(samplesDir).forEach(function (jsFile) {
     if (path.extname(jsFile) !== '.js') return; // continue
 
-    test(path.basename(jsFile, '.js'), function () {
+    it(path.basename(jsFile, '.js'), function () {
       var sample       = require(path.resolve(samplesDir, jsFile));
       var data         = typeof sample === 'function' ? sample.expected : sample,
           serialized   = yaml.dump(data,       { schema: TEST_SCHEMA }),

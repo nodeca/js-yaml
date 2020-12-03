@@ -6,7 +6,7 @@ var yaml = require('../../');
 var readFileSync = require('fs').readFileSync;
 
 
-test("Incorrect utf-8 handling on require('file.yaml')", function () {
+it("Incorrect utf-8 handling on require('file.yaml')", function () {
   var data = yaml.load(readFileSync(require('path').join(__dirname, '/0054.yml'), 'utf8')),
       expected = '',
       index;

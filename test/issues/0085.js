@@ -11,7 +11,7 @@ var DEPRECATED_BOOLEANS_SYNTAX = [
 ];
 
 
-test('Dumper should take into account booleans syntax from YAML 1.0/1.1', function () {
+it('Dumper should take into account booleans syntax from YAML 1.0/1.1', function () {
   DEPRECATED_BOOLEANS_SYNTAX.forEach(function (string) {
     var dump = yaml.dump(string).trim();
 

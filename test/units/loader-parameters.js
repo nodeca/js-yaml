@@ -3,12 +3,12 @@
 var assert = require('assert');
 var yaml = require('../..');
 
-suite('loader parameters', function () {
+describe('loader parameters', function () {
   var testStr = 'test: 1 \ntest: 2';
   var expected =  [ { test: 2 } ];
   var result;
 
-  test('loadAll(input, options)', function () {
+  it('loadAll(input, options)', function () {
     result = yaml.loadAll(testStr, { json: true });
     assert.deepStrictEqual(result, expected);
 
@@ -19,7 +19,7 @@ suite('loader parameters', function () {
     assert.deepStrictEqual(result, expected);
   });
 
-  test('loadAll(input, null, options)', function () {
+  it('loadAll(input, null, options)', function () {
     result = yaml.loadAll(testStr, null, { json: true });
     assert.deepStrictEqual(result, expected);
 
@@ -30,7 +30,7 @@ suite('loader parameters', function () {
     assert.deepStrictEqual(result, expected);
   });
 
-  test('loadAll(input, options)', function () {
+  it('loadAll(input, options)', function () {
     result = yaml.loadAll(testStr, { json: true });
     assert.deepStrictEqual(result, expected);
 
@@ -41,7 +41,7 @@ suite('loader parameters', function () {
     assert.deepStrictEqual(result, expected);
   });
 
-  test('loadAll(input, null, options)', function () {
+  it('loadAll(input, null, options)', function () {
     result = yaml.loadAll(testStr, null, { json: true });
     assert.deepStrictEqual(result, expected);
 

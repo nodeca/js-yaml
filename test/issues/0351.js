@@ -6,7 +6,7 @@ var yaml = require('../..');
 var readFileSync = require('fs').readFileSync;
 
 
-test('should include the error message in the error stack', function () {
+it('should include the error message in the error stack', function () {
   try {
     yaml.load(readFileSync(require('path').join(__dirname, '/0351.yml'), 'utf8'));
   } catch (err) {

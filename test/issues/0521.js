@@ -6,7 +6,7 @@ var yaml = require('../../');
 var readFileSync = require('fs').readFileSync;
 
 
-test('Don\'t quote strings with # without need', function () {
+it('Don\'t quote strings with # without need', function () {
   var data = yaml.load(readFileSync(require('path').join(__dirname, '/0521.yml'), 'utf8'));
 
   var sample = {
