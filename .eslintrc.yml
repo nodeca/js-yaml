@@ -3,6 +3,9 @@ env:
   browser:  true
   es6:      false
 
+globals:
+  Uint8Array: false
+
 ignorePatterns:
   - coverage/
   - demo/

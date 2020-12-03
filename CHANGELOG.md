@@ -14,10 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `yaml.DEFAULT_SAFE_SCHEMA` and `yaml.DEFAULT_FULL_SCHEMA` are removed, use
   `yaml.DEFAULT_SCHEMA` instead.
 - `yaml.Schema.create(schema, tags)` is removed, use `schema.extend(tags)` instead.
+- `!!binary` now always mapped to `Uint8Array` on load.
 
 ### Added
 - Added `.mjs` (es modules) support.
-
 
 ### Fixed
 - Astral characters are no longer encoded by dump/safeDump, #587.
