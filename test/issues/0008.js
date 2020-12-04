@@ -3,11 +3,12 @@
 
 var assert = require('assert');
 var yaml = require('../../');
-var readFileSync = require('fs').readFileSync;
 
 
 it('Parse failed when no document start present', function () {
   assert.doesNotThrow(function () {
-    yaml.load(readFileSync(require('path').join(__dirname, '/0008.yml'), 'utf8'));
+    yaml.load(`
+foo: !!str bar
+`);
   }, TypeError);
 });

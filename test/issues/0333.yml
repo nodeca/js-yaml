@@ -1,3 +1,0 @@
-negative: !!float -1
-zero: !!float 0
-positive: !!float 2.3e4

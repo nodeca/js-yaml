@@ -3,12 +3,15 @@
 
 var assert = require('assert');
 var yaml = require('../../');
-var readFileSync = require('fs').readFileSync;
 
 
 it('Don\'t throw on warning', function () {
-  var src = readFileSync(require('path').join(__dirname, '/0194.yml'), 'utf8'),
-      warnings = [],
+  var src = `
+foo: {
+    bar: true
+}
+`;
+  var warnings = [],
       data;
 
   data = yaml.load(src);

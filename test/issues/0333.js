@@ -3,11 +3,14 @@
 
 var assert = require('assert');
 var yaml = require('../../');
-var readFileSync = require('fs').readFileSync;
 
 
 it('should allow cast integers as !!float', function () {
-  var data = yaml.load(readFileSync(require('path').join(__dirname, '/0333.yml'), 'utf8'));
+  var data = yaml.load(`
+negative: !!float -1
+zero: !!float 0
+positive: !!float 2.3e4
+`);
 
   assert.deepStrictEqual(data, {
     negative: -1,

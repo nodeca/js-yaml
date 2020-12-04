@@ -3,11 +3,12 @@
 
 var assert = require('assert');
 var yaml = require('../../');
-var readFileSync = require('fs').readFileSync;
 
 
 it('refactor compact variant of MarkedYAMLError.toString', function () {
-  var source = readFileSync(require('path').join(__dirname, '/0033.yml'), 'utf8');
+  var source = `
+foo: {bar} baz
+`;
 
   assert.throws(function () {
     yaml.load(source);
