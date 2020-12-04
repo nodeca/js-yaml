@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.0] - WIP
 ### Changed
+- Check [migration guide](migrate_v3_to_v4.md) to see details for all breaking changes.
 - Breaking: "unsafe" tags `!!js/function`, `!!js/regexp`, `!!js/undefined` are
   moved to [js-yaml-js-types](https://github.com/nodeca/js-yaml-js-types) package.
 - Breaking: removed `safe*` functions. Use `load`, `loadAll`, `dump`
