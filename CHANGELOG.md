@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `yaml.Schema.create(schema, tags)` is removed, use `schema.extend(tags)` instead.
 - `!!binary` now always mapped to `Uint8Array` on load.
 - Reduced nesting of `/lib` folder.
+- Parse numbers according to YAML 1.2 instead of YAML 1.1 (`01234` is now decimal,
+  `0o1234` is octal, `1:23` is parsed as string instead of base60).
 
 ### Added
 - Added `.mjs` (es modules) support.
