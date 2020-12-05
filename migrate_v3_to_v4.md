@@ -99,6 +99,9 @@ grep '\(^\|:\s\s*\)0[0-9][.0-9]*\s*$' *.yml
 
 If you have these in your yaml files anywhere, you should quote them (e.g. `0123456789` => `"0123456789"`).
 
+### Deep requiring no longer impossible
+
+When using Node.js 12.7 or newer, it's no longer possible to require anything but `js-yaml` or `js-yaml/package.json` due to the adoption of [`exports`](https://nodejs.org/dist/latest-v14.x/docs/api/packages.html#packages_exports).
 
 ### Reduced nesting in `/lib` folder
 
