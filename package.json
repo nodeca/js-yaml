@@ -25,11 +25,12 @@
   "bin": {
     "js-yaml": "bin/js-yaml.js"
   },
+  "main": "./lib/index.js",
   "module": "./dist/js-yaml.mjs",
   "exports": {
     ".": {
       "import": "./dist/js-yaml.mjs",
-      "require": "./index.js"
+      "require": "./lib/index.js"
     },
     "./package.json": "./package.json"
   },
