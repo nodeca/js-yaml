@@ -496,17 +496,22 @@
         return hasDigits && ch !== '_';
       }
 
-      // base 8
-      for (; index < max; index++) {
-        ch = data[index];
-        if (ch === '_') continue;
-        if (!isOctCode(data.charCodeAt(index))) return false;
-        hasDigits = true;
+
+      if (ch === 'o') {
+        // base 8
+        index++;
+
+        for (; index < max; index++) {
+          ch = data[index];
+          if (ch === '_') continue;
+          if (!isOctCode(data.charCodeAt(index))) return false;
+          hasDigits = true;
+        }
+        return hasDigits && ch !== '_';
       }
-      return hasDigits && ch !== '_';
     }
 
-    // base 10 (except 0) or base 60
+    // base 10 (except 0)
 
     // value should not start with `_`;
     if (ch === '_') return false;
@@ -514,7 +519,6 @@
     for (; index < max; index++) {
       ch = data[index];
       if (ch === '_') continue;
-      if (ch === ':') break;
       if (!isDecCode(data.charCodeAt(index))) {
         return false;
       }
@@ -524,15 +528,11 @@
     // Should have digits and should not end with `_`
     if (!hasDigits || ch === '_') return false;
 
-    // if !base60 - done;
-    if (ch !== ':') return true;
-
-    // base60 almost not used, no needs to optimize
-    return /^(:[0-5]?[0-9])+$/.test(data.slice(index));
+    return true;
   }
 
   function constructYamlInteger(data) {
-    var value = data, sign = 1, ch, base, digits = [];
+    var value = data, sign = 1, ch;
 
     if (value.indexOf('_') !== -1) {
       value = value.replace(/_/g, '');
@@ -550,25 +550,8 @@
 
     if (ch === '0') {
       if (value[1] === 'b') return sign * parseInt(value.slice(2), 2);
-      if (value[1] === 'x') return sign * parseInt(value, 16);
-      return sign * parseInt(value, 8);
-    }
-
-    if (value.indexOf(':') !== -1) {
-      value.split(':').forEach(function (v) {
-        digits.unshift(parseInt(v, 10));
-      });
-
-      value = 0;
-      base = 1;
-
-      digits.forEach(function (d) {
-        value += (d * base);
-        base *= 60;
-      });
-
-      return sign * value;
-
+      if (value[1] === 'x') return sign * parseInt(value.slice(2), 16);
+      if (value[1] === 'o') return sign * parseInt(value.slice(2), 8);
     }
 
     return sign * parseInt(value, 10);
@@ -586,7 +569,7 @@
     predicate: isInteger,
     represent: {
       binary:      function (obj) { return obj >= 0 ? '0b' + obj.toString(2) : '-0b' + obj.toString(2).slice(1); },
-      octal:       function (obj) { return obj >= 0 ? '0'  + obj.toString(8) : '-0'  + obj.toString(8).slice(1); },
+      octal:       function (obj) { return obj >= 0 ? '0o'  + obj.toString(8) : '-0o'  + obj.toString(8).slice(1); },
       decimal:     function (obj) { return obj.toString(10); },
       /* eslint-disable max-len */
       hexadecimal: function (obj) { return obj >= 0 ? '0x' + obj.toString(16).toUpperCase() :  '-0x' + obj.toString(16).toUpperCase().slice(1); }
@@ -602,12 +585,10 @@
 
   var YAML_FLOAT_PATTERN = new RegExp(
     // 2.5e4, 2.5 and integers
-    '^(?:[-+]?(?:0|[1-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' +
+    '^(?:[-+]?(?:[0-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' +
     // .2e4, .2
     // special case, seems not from spec
     '|\\.[0-9_]+(?:[eE][-+]?[0-9]+)?' +
-    // 20:59
-    '|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*' +
     // .inf
     '|[-+]?\\.(?:inf|Inf|INF)' +
     // .nan
@@ -627,11 +608,10 @@
   }
 
   function constructYamlFloat(data) {
-    var value, sign, base, digits;
+    var value, sign;
 
     value  = data.replace(/_/g, '').toLowerCase();
     sign   = value[0] === '-' ? -1 : 1;
-    digits = [];
 
     if ('+-'.indexOf(value[0]) >= 0) {
       value = value.slice(1);
@@ -642,22 +622,6 @@
 
     } else if (value === '.nan') {
       return NaN;
-
-    } else if (value.indexOf(':') >= 0) {
-      value.split(':').forEach(function (v) {
-        digits.unshift(parseFloat(v, 10));
-      });
-
-      value = 0.0;
-      base = 1;
-
-      digits.forEach(function (d) {
-        value += d * base;
-        base *= 60;
-      });
-
-      return sign * value;
-
     }
     return sign * parseFloat(value, 10);
   }
@@ -817,19 +781,8 @@
     resolve: resolveYamlMerge
   });
 
-  function commonjsRequire (target) {
-  	throw new Error('Could not dynamically require "' + target + '". Please configure the dynamicRequireTargets option of @rollup/plugin-commonjs appropriately for this require call to behave properly.');
-  }
-
   /*eslint-disable no-bitwise*/
 
-  var NodeBuffer;
-
-  try {
-    // A trick for browserified version, to not include `Buffer` shim
-    var _require = commonjsRequire;
-    NodeBuffer = _require('buffer').Buffer;
-  } catch (__) {}
 
 
 
@@ -895,13 +848,7 @@
       result.push((bits >> 4) & 0xFF);
     }
 
-    // Wrap into Buffer for NodeJS and leave Array for browser
-    if (NodeBuffer) {
-      // Support node 6.+ Buffer API when available
-      return NodeBuffer.from ? NodeBuffer.from(result) : new NodeBuffer(result);
-    }
-
-    return result;
+    return new Uint8Array(result);
   }
 
   function representYamlBinary(object /*, style*/) {
@@ -946,8 +893,8 @@
     return result;
   }
 
-  function isBinary(object) {
-    return NodeBuffer && NodeBuffer.isBuffer(object);
+  function isBinary(obj) {
+    return Object.prototype.toString.call(obj) ===  '[object Uint8Array]';
   }
 
   var binary = new type('tag:yaml.org,2002:binary', {
@@ -1222,7 +1169,10 @@
     this.filename  = options['filename']  || null;
     this.schema    = options['schema']    || _default;
     this.onWarning = options['onWarning'] || null;
+    // (Hidden) Remove? makes the loader to expect YAML 1.1 documents
+    // if such documents have no explicit %YAML directive
     this.legacy    = options['legacy']    || false;
+
     this.json      = options['json']      || false;
     this.listener  = options['listener']  || null;
 
@@ -3600,7 +3550,7 @@
   var safeLoadAll         = renamed('safeLoadAll', 'loadAll');
   var safeDump            = renamed('safeDump', 'dump');
 
-  var jsYaml = {
+  var lib = {
   	Type: Type$1,
   	Schema: Schema$1,
   	FAILSAFE_SCHEMA: FAILSAFE_SCHEMA,
@@ -3623,7 +3573,7 @@
   exports.Schema = Schema$1;
   exports.Type = Type$1;
   exports.YAMLException = YAMLException$1;
-  exports.default = jsYaml;
+  exports.default = lib;
   exports.dump = dump$1;
   exports.load = load$1;
   exports.loadAll = loadAll$1;
