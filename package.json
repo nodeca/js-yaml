@@ -27,8 +27,11 @@
   },
   "module": "./dist/js-yaml.mjs",
   "exports": {
-    "import": "./dist/js-yaml.mjs",
-    "require": "./index.js"
+    ".": {
+      "import": "./dist/js-yaml.mjs",
+      "require": "./index.js"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "lint": "eslint .",
