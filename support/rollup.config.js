@@ -16,7 +16,7 @@ const umd_out_base = { format: 'umd', name: 'jsyaml', exports: 'named' };
 export default [
   // es5
   {
-    input: 'lib/js-yaml.js',
+    input: 'index.js',
     output: [
       { ...umd_out_base, file: 'dist/js-yaml.js' },
       { ...umd_out_base, file: 'dist/js-yaml.min.js', plugins: [ terser() ] }
@@ -25,7 +25,7 @@ export default [
   },
   // esm
   {
-    input: 'lib/js-yaml.js',
+    input: 'index.js',
     output: [
       { format: 'esm', file: 'dist/js-yaml.mjs' },
     ],
