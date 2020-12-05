@@ -1,27 +1,23 @@
-'use strict';
-
 /* eslint-env browser */
 
-var jsyaml     = require('../../');
-var codemirror = require('codemirror');
-var base64     = require('./base64');
-var inspect    = require('util').inspect;
+import { Type, DEFAULT_SCHEMA, load } from '../../dist/js-yaml.mjs';
+import codemirror                     from 'codemirror';
+import * as base64                    from './base64.js';
+import { inspect }                    from 'util';
 
-
-require('codemirror/mode/yaml/yaml.js');
-require('codemirror/mode/javascript/javascript.js');
-
+import 'codemirror/mode/yaml/yaml.js';
+import 'codemirror/mode/javascript/javascript.js';
 
 var source, result, permalink, default_text;
 
-var SexyYamlType = new jsyaml.Type('!sexy', {
+var SexyYamlType = new Type('!sexy', {
   kind: 'sequence', // See node kinds in YAML spec: http://www.yaml.org/spec/1.2/spec.html#kind//
   construct: function (data) {
     return data.map(function (string) { return 'sexy ' + string; });
   }
 });
 
-var SEXY_SCHEMA = jsyaml.DEFAULT_SCHEMA.extend([ SexyYamlType ]);
+var SEXY_SCHEMA = DEFAULT_SCHEMA.extend([ SexyYamlType ]);
 
 function parse() {
   var str, obj;
@@ -30,7 +26,7 @@ function parse() {
   permalink.href = '#yaml=' + base64.encode(str);
 
   try {
-    obj = jsyaml.load(str, { schema: SEXY_SCHEMA });
+    obj = load(str, { schema: SEXY_SCHEMA });
 
     result.setOption('mode', 'javascript');
     result.setValue(inspect(obj, false, 10));

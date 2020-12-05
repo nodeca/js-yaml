@@ -28,8 +28,6 @@
 // [1]: http://lxr.mozilla.org/mozilla/source/extensions/xml-rpc/src/nsXmlRpcClient.js
 
 
-'use strict';
-
 /* eslint-env browser */
 /* eslint-disable no-bitwise */
 
@@ -176,5 +174,4 @@ function decode(data) {
   return utf8Decode(bytes);
 }
 
-exports.encode = encode;
-exports.decode = decode;
+export { encode, decode };
