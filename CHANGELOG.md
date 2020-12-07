@@ -28,6 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `bower.json`.
 
 
+## [3.14.1] - 2020-12-07
+### Security
+- Fix possible code execution in (already unsafe) `.load()` (in &anchor).
+
+
 ## [3.14.0] - 2020-05-22
 ### Changed
 - Support `safe/loadAll(input, options)` variant of call.
