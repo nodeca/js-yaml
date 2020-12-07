@@ -83,12 +83,12 @@ browserify:
 	rm -rf ./dist
 	mkdir dist
 	# Browserify
-	( echo -n "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" ; \
+	( echo -n "/*! ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" ; \
 		./node_modules/.bin/browserify -r ./ -s jsyaml \
 		) > dist/js-yaml.js
 	# Minify
 	./node_modules/.bin/uglifyjs dist/js-yaml.js -c -m \
-		--preamble "/* ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} */" \
+		--comments /^!/  \
 		> dist/js-yaml.min.js
 
 
