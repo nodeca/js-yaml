@@ -124,7 +124,7 @@ options:
 - `noArrayIndent` _(default: false)_ - when true, will not add an indentation level to array elements
 - `skipInvalid` _(default: false)_ - do not throw on invalid types (like function
   in the safe schema) and skip pairs and single values with such types.
-- `flowLevel` (default: -1) - specifies level of nesting, when to switch from
+- `flowLevel` _(default: -1)_ - specifies level of nesting, when to switch from
   block to flow style for collections. -1 means block style everwhere
 - `styles` - "tag" => "style" map. Each tag may have own set of styles.
 - `schema` _(default: `DEFAULT_SCHEMA`)_ specifies a schema to use.
@@ -135,6 +135,8 @@ options:
 - `noCompatMode` _(default: `false`)_ - if `true` don't try to be compatible with older
   yaml versions. Currently: don't quote "yes", "no" and so on, as required for YAML 1.1
 - `condenseFlow` _(default: `false`)_ - if `true` flow sequences will be condensed, omitting the space between `a, b`. Eg. `'[a,b]'`, and omitting the space between `key: value` and quoting the key. Eg. `'{"a":b}'` Can be useful when using yaml for pretty URL query params as spaces are %-encoded.
+- `quotingType` _(`'` or `"`, default: `'`)_ - strings will be quoted using this quoting style. If you specify single quotes, double quotes will still be used for non-printable characters.
+- `forceQuotes` _(default: `false`)_ - if `true`, all non-key strings will be quoted even if they normally don't need to.
 
 The following table show availlable styles (e.g. "canonical",
 "binary"...) available for each tag (.e.g. !!null, !!int ...). Yaml
@@ -149,7 +151,7 @@ output is shown on the right side after `=>` (default setting) or `->`:
 
 !!int
   "binary"      -> "0b1", "0b101010", "0b1110001111010"
-  "octal"       -> "01", "052", "016172"
+  "octal"       -> "0o1", "0o52", "0o16172"
   "decimal"     => "1", "42", "7290"
   "hexadecimal" -> "0x1", "0x2A", "0x1C7A"
 
