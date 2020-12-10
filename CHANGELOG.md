@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Astral characters are no longer encoded by dump/safeDump, #587.
+- "duplicate mapping key" exception now points at the correct column, #452.
 - Removed `bower.json`.
 
 
