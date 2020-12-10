@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `.mjs` (es modules) support.
 - Added `quotingType` and `forceQuotes` options for dumper to configure
   string literal style, #290, #529.
+- Added `styles: { '!!null': 'empty' }` option for dumper
+  (serializes `{ foo: null }` as "`foo: `"), #570.
 
 ### Fixed
 - Astral characters are no longer encoded by dump/safeDump, #587.
