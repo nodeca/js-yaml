@@ -45,4 +45,12 @@ describe('Should dump numbers in YAML 1.2 format', function () {
       assert.strictEqual(yaml.dump(sample, { noCompatMode: false }), "'" + sample + "'\n");
     });
   });
+
+  it('should not quote base60 in noCompatMode', function () {
+    var tests = '1:23 1:23.45';
+
+    tests.split(' ').forEach(function (sample) {
+      assert.strictEqual(yaml.dump(sample, { noCompatMode: true }), sample + '\n');
+    });
+  });
 });
