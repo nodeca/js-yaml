@@ -15,7 +15,8 @@ describe('Duplicated mapping key errors throw at beginning of key', function () 
       yaml.load(src);
     } catch (e) {
       assert.strictEqual(lines[e.mark.line], 'duplicate: # 2');
-      assert(e.message.match(/line 10, column 1/), e.message);
+      assert.strictEqual(e.mark.line, 9);
+      assert.strictEqual(e.mark.column, 0);
     }
   });
 
@@ -27,7 +28,8 @@ describe('Duplicated mapping key errors throw at beginning of key', function () 
       yaml.load(src);
     } catch (e) {
       assert.strictEqual(lines[e.mark.line], '  duplicate: # 2');
-      assert(e.message.match(/line 10, column 3/), e.message);
+      assert.strictEqual(e.mark.line, 9);
+      assert.strictEqual(e.mark.column, 2);
     }
   });
 
@@ -35,7 +37,8 @@ describe('Duplicated mapping key errors throw at beginning of key', function () 
     try {
       yaml.load('{ foo: 123, foo: 456 }');
     } catch (e) {
-      assert(e.message.match(/line 1, column 13/), e.message);
+      assert.strictEqual(e.mark.line, 0);
+      assert.strictEqual(e.mark.column, 12);
     }
   });
 
@@ -43,7 +46,8 @@ describe('Duplicated mapping key errors throw at beginning of key', function () 
     try {
       yaml.load('   ? foo\n   ? foo\n   ? bar');
     } catch (e) {
-      assert(e.message.match(/line 2, column 5/), e.message);
+      assert.strictEqual(e.mark.line, 1);
+      assert.strictEqual(e.mark.column, 4);
     }
   });
 });

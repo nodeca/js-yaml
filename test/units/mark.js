@@ -8,12 +8,15 @@ var Mark   = require('../../lib/mark');
 
 
 it('Mark', function () {
-  var filepath = path.join(__dirname, 'mark.txt'),
+  let filepath = path.join(__dirname, 'mark.txt'),
       filedata = fs.readFileSync(filepath, 'utf8');
 
-  filedata.split('---\n').slice(1).forEach(function (input) {
-    var index = 0, line = 0, column = 0,
-        mark, snippet, data, pointer, temp;
+  let data = filedata.split(/(---[ \d]*\n)/).slice(1);
+
+  for (let i = 0; i < data.length; i += 4) {
+    let index = 0, line = 0, column = 0, input = data[i + 1],
+        expected = data[i + 3].replace(/\n$/, ''),
+        mark, snippet;
 
     assert(input.indexOf('*') >= 0);
 
@@ -28,17 +31,8 @@ it('Mark', function () {
     }
 
     mark = new Mark(filepath, input, index, line, column);
-    snippet = mark.getSnippet(2, 79);
+    snippet = mark.getSnippet(1, 78, 3, 2);
 
-    assert(typeof snippet, 'string');
-
-    temp = snippet.split('\n');
-    assert.strictEqual(temp.length, 2);
-
-    data = temp[0];
-    pointer = temp[1];
-
-    assert(data.length < 82);
-    assert.strictEqual(data[pointer.length - 1], '*');
-  });
+    assert.strictEqual(snippet, expected);
+  }
 });

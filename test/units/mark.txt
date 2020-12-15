@@ -2,37 +2,149 @@
 *The first line.
 The last line.
 ---
+ 1 | *The first line.
+-----^
+ 2 | The last line.
+---
 The first*line.
 The last line.
+---
+ 1 | The first*line.
+--------------^
+ 2 | The last line.
 ---
 The first line.*
 The last line.
 ---
+ 1 | The first line.*
+--------------------^
+ 2 | The last line.
+---
 The first line.
 *The last line.
+---
+ 1 | The first line.
+ 2 | *The last line.
+-----^
 ---
 The first line.
 The last*line.
 ---
+ 1 | The first line.
+ 2 | The last*line.
+-------------^
+---
 The first line.
 The last line.*
+---
+ 1 | The first line.
+ 2 | The last line.*
+-------------------^
 ---
 The first line.
 *The selected line.
 The last line.
 ---
+ 1 | The first line.
+ 2 | *The selected line.
+-----^
+ 3 | The last line.
+---
 The first line.
 The selected*line.
 The last line.
+---
+ 1 | The first line.
+ 2 | The selected*line.
+-----------------^
+ 3 | The last line.
 ---
 The first line.
 The selected line.*
 The last line.
 ---
+ 1 | The first line.
+ 2 | The selected line.*
+-----------------------^
+ 3 | The last line.
+---
 *The only line.
+---
+ 1 | *The only line.
+-----^
 ---
 The only*line.
 ---
+ 1 | The only*line.
+-------------^
+---
 The only line.*
 ---
+ 1 | The only line.*
+-------------------^
+---
 Loooooooooooooooooooooooooooooooooooooooooooooong*Liiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiine
+---
+ 1 |  ... oooooooooooooooooooooooooooong*Liiiiiiiiiiiiiiiiiiiiiiiiiiiii ...
+----------------------------------------^
+---
+1111111111111111111111111111111111111111111111122 22333333333333333333333333333333333333333333333333
+Loooooooooooooooooooooooooooooooooooooooooooooong*Liiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiine
+3333333333333333333333333333333333333333333333344 44555555555555555555555555555555555555555555555555
+---
+ 1 |  ... 111111111111111111111111111122 223333333333333333333333333333 ...
+ 2 |  ... oooooooooooooooooooooooooooong*Liiiiiiiiiiiiiiiiiiiiiiiiiiiii ...
+----------------------------------------^
+ 3 |  ... 333333333333333333333333333344 445555555555555555555555555555 ...
+---
+11111111
+Looooooooooooooooooooooooooooooooong*Liiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiine
+33333333
+---
+ 1 |  ... 11
+ 2 |  ... oooooooooooooooooooooooooooong*Liiiiiiiiiiiiiiiiiiiiiiiiiiiii ...
+----------------------------------------^
+ 3 |  ... 33
+---
+Looooooooooooooooooooooooooooooooong Liiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiine
+*11111111
+Looooooooooooooooooooooooooooooooong Liiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiine
+---
+ 1 | Loooooooooooooooooooooooooooooo ...
+ 2 | *11111111
+-----^
+ 3 | Loooooooooooooooooooooooooooooo ...
+---
+1
+2
+3
+4
+5
+6
+7
+8
+*9
+---
+ 6 | 6
+ 7 | 7
+ 8 | 8
+ 9 | *9
+-----^
+---
+1
+2
+3
+4
+5
+6
+7
+8
+*9
+10
+---
+  6 | 6
+  7 | 7
+  8 | 8
+  9 | *9
+------^
+ 10 | 10

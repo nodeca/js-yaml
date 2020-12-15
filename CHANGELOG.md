@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Parse numbers according to YAML 1.2 instead of YAML 1.1 (`01234` is now decimal,
   `0o1234` is octal, `1:23` is parsed as string instead of base60).
 - `dump()` no longer quotes `:`, `[`, `]`, `(`, `)` except when necessary, #470, #557.
+- Line and column in exceptions are now formatted as `(X:Y)` instead of
+  `at line X, column Y` (also present in compact format), #332.
+- Code snippet created in exceptions now contains multiple lines with line numbers.
 
 ### Added
 - Added `.mjs` (es modules) support.
