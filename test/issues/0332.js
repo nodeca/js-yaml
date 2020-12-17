@@ -13,7 +13,6 @@ it('Should format errors', function () {
     assert.strictEqual(err.toString(false), `YAMLException: expected valid JSON character (1:9)
 
  1 | "foo\u0001bar"
--------------^
- 2 | `);
+-------------^`);
   }
 });
