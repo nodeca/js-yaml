@@ -25,3 +25,37 @@ parameter#fallback: 'quotes #required'
     required
   );
 });
+
+
+it('Quote []{} in block-level scalars, but not in flow', function () {
+  var required = `
+key1: a[]b
+key2: a{}b
+nested:
+  key1: a[]b
+  key2: a{}b
+  nested: {key1: 'a[]b', key2: 'a{}b', nested: {key1: 'a[]b', key2: 'a{}b'}}
+`.replace(/^\n/, '');
+
+  var sample = {
+    key1: 'a[]b',
+    key2: 'a{}b',
+    nested: {
+      key1: 'a[]b',
+      key2: 'a{}b',
+      nested: {
+        key1: 'a[]b',
+        key2: 'a{}b',
+        nested: {
+          key1: 'a[]b',
+          key2: 'a{}b'
+        }
+      }
+    }
+  };
+
+  assert.strictEqual(
+    yaml.dump(sample, { flowLevel: 2 }),
+    required
+  );
+});
