@@ -2,7 +2,7 @@
 
 /* eslint-env browser */
 
-var jsyaml     = require('../../');
+var jsyaml     = require('../../index.js');
 var codemirror = require('codemirror');
 var base64     = require('./base64');
 var inspect    = require('util').inspect;
