@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Line and column in exceptions are now formatted as `(X:Y)` instead of
   `at line X, column Y` (also present in compact format), #332.
 - Code snippet created in exceptions now contains multiple lines with line numbers.
+- `dump()` now serializes `undefined` as `null` in collections and removes keys with
+  `undefined` in mappings, #571.
+- `dump()` with `skipInvalid=true` now serializes invalid items in collections as null.
 
 ### Added
 - Added `.mjs` (es modules) support.

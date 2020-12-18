@@ -7,7 +7,6 @@ var yaml   = require('../../');
 
 var sample = {
   number: 42,
-  undef:  undefined,
   string: 'hello',
   func:   function (a, b) { return a + b; },
   regexp: /^hel+o/,
