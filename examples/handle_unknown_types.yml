@@ -1,0 +1,4 @@
+subject: Handling unknown types in JS-YAML
+scalar: !unknown_scalar_tag 123
+sequence: !unknown_sequence_tag [ 1, 2, 3 ]
+mapping: !unknown_mapping_tag { foo: 1, bar: 2 }

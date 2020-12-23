@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `styles: { '!!null': 'empty' }` option for dumper
   (serializes `{ foo: null }` as "`foo: `"), #570.
 - Added `replacer` option (similar to option in JSON.stringify), #339.
+- Custom `Tag` can now handle all tags or multiple tags with the same prefix, #385.
 
 ### Fixed
 - Astral characters are no longer encoded by dump/safeDump, #587.
