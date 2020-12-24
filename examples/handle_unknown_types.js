@@ -2,13 +2,11 @@
 
 /*eslint-disable no-console*/
 
-var fs   = require('fs');
-var path = require('path');
-var util = require('util');
-var yaml = require('../');
+const util = require('util');
+const yaml = require('../');
 
 
-var tags = [ 'scalar', 'sequence', 'mapping' ].map(function (kind) {
+const tags = [ 'scalar', 'sequence', 'mapping' ].map(function (kind) {
   // first argument here is a prefix, so this type will handle anything starting with !
   return new yaml.Type('!', {
     kind: kind,
@@ -19,24 +17,14 @@ var tags = [ 'scalar', 'sequence', 'mapping' ].map(function (kind) {
   });
 });
 
-var SCHEMA = yaml.DEFAULT_SCHEMA.extend(tags);
+const SCHEMA = yaml.DEFAULT_SCHEMA.extend(tags);
 
-// do not execute the following if file is required (http://stackoverflow.com/a/6398335)
-if (require.main === module) {
+const data = `
+subject: Handling unknown types in JS-YAML
+scalar: !unknown_scalar_tag 123
+sequence: !unknown_sequence_tag [ 1, 2, 3 ]
+mapping: !unknown_mapping_tag { foo: 1, bar: 2 }
+`;
 
-  // And read a document using that schema.
-  fs.readFile(path.join(__dirname, 'handle_unknown_types.yml'), 'utf8', function (error, data) {
-    var loaded;
-
-    if (!error) {
-      loaded = yaml.load(data, { schema: SCHEMA });
-      console.log(util.inspect(loaded, false, 20, true));
-    } else {
-      console.error(error.stack || error.message || String(error));
-    }
-  });
-}
-
-// There are some exports to play with this example interactively.
-module.exports.tags    = tags;
-module.exports.SCHEMA  = SCHEMA;
+const loaded = yaml.load(data, { schema: SCHEMA });
+console.log(util.inspect(loaded, false, 20, true));
