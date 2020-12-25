@@ -96,4 +96,29 @@ describe('Multi tag', function () {
       schema: schema
     }), expected);
   });
+
+
+  it('should dump multi types with custom tag', function () {
+    let tags = [
+      new yaml.Type('!', {
+        kind: 'scalar',
+        multi: true,
+        predicate: function (obj) {
+          return !!obj.tag;
+        },
+        representName: function (obj) {
+          return obj.tag;
+        },
+        represent: function (obj) {
+          return obj.value;
+        }
+      })
+    ];
+
+    let schema = yaml.DEFAULT_SCHEMA.extend(tags);
+
+    assert.strictEqual(yaml.dump({ test: { tag: 'foo', value: 'bar' } }, {
+      schema: schema
+    }), 'test: !<foo> bar\n');
+  });
 });

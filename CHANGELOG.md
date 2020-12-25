@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `dump()` now serializes `undefined` as `null` in collections and removes keys with
   `undefined` in mappings, #571.
 - `dump()` with `skipInvalid=true` now serializes invalid items in collections as null.
+- Custom tags starting with `!` are now dumped as `!tag` instead of `!<!tag>`, #576.
 
 ### Added
 - Added `.mjs` (es modules) support.
@@ -37,12 +38,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom `Tag` can now handle all tags or multiple tags with the same prefix, #385.
 
 ### Fixed
-- Astral characters are no longer encoded by dump/safeDump, #587.
+- Astral characters are no longer encoded by `dump()`, #587.
 - "duplicate mapping key" exception now points at the correct column, #452.
 - Extra commas in flow collections (e.g. `[foo,,bar]`) now throw an exception
   instead of producing null, #321.
 - `__proto__` key no longer overrides object prototype, #164.
 - Removed `bower.json`.
+- Tags are now url-decoded in `load()` and url-encoded in `dump()`
+  (previously usage of custom non-ascii tags may have led to invalid YAML that can't be parsed).
 
 
 ## [3.14.1] - 2020-12-07
