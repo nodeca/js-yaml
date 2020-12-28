@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `undefined` in mappings, #571.
 - `dump()` with `skipInvalid=true` now serializes invalid items in collections as null.
 - Custom tags starting with `!` are now dumped as `!tag` instead of `!<!tag>`, #576.
+- Custom tags starting with `tag:yaml.org,2002:` are now shorthanded using `!!`, #258.
 
 ### Added
 - Added `.mjs` (es modules) support.
