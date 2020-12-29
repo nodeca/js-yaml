@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `bower.json`.
 - Tags are now url-decoded in `load()` and url-encoded in `dump()`
   (previously usage of custom non-ascii tags may have led to invalid YAML that can't be parsed).
+- Anchors now work correctly with empty nodes, #301.
 
 
 ## [3.14.1] - 2020-12-07
