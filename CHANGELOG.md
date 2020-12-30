@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (previously usage of custom non-ascii tags may have led to invalid YAML that can't be parsed).
 - Anchors now work correctly with empty nodes, #301.
 - Fix incorrect parsing of invalid block mapping syntax, #418.
+- Throw an error if block sequence/mapping indent contains a tab, #80.
 
 
 ## [3.14.1] - 2020-12-07
