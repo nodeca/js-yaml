@@ -22,6 +22,10 @@ while True:
   response = requests.get(f'{base_url}users/{user_id}/analyses/{analysis_id}', headers=headers)
   data = response.json()
   if data['total_crashes'] > 0:
+    response = requests.get(f'{base_url}analyses/{analysis_id}/crashes', headers=headers)
+    for crash in response.json():
+      print(crash['stackTrace'])
+    print('Found crashes visit redtest.ca to download crashes.')
     exit(1)
   if data['status'] == 'T':
     exit(0)
