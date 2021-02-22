@@ -1,0 +1,26 @@
+name: Cyderian
+
+on: [push]
+
+jobs:
+  fuzztest:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+    - name: sending requests
+      env:
+        CYDERIAN_USERNAME: ${{ secrets.CYDERIAN_USERNAME }}
+        CYDERIAN_PASSWORD: ${{ secrets.CYDERIAN_PASSWORD }}
+        REPO: https://github.com/sudomakeinstall2/js-yaml.git
+      run: |
+        python .github/cyd.py
