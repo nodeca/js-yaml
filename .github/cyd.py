@@ -24,8 +24,8 @@ while True:
   if data['total_crashes'] > 0:
     response = requests.get(f'{base_url}analyses/{analysis_id}/crashes', headers=headers)
     for crash in response.json():
-      print(crash['stackTrace'])
-    print('Found crashes visit redtest.ca to download crashes.')
+      print(f"Crash Stack Trace: {crash['stackTrace']}")
+    print(f'Analysis Page: https://redtest.ca/{os.getenv('GITHUB_REPOSITROY').split('/')[-1]}/{analysis_id}/report')
     exit(1)
   if data['status'] == 'T':
     exit(0)
