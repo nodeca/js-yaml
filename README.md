@@ -130,7 +130,7 @@ options:
 - `schema` _(default: `DEFAULT_SCHEMA`)_ specifies a schema to use.
 - `sortKeys` _(default: `false`)_ - if `true`, sort keys when dumping YAML. If a
   function, use the function to sort the keys.
-- `lineWidth` _(default: `80`)_ - set max line width.
+- `lineWidth` _(default: `80`)_ - set max line width. Set `-1` for unlimited width.
 - `noRefs` _(default: `false`)_ - if `true`, don't convert duplicate objects into references
 - `noCompatMode` _(default: `false`)_ - if `true` don't try to be compatible with older
   yaml versions. Currently: don't quote "yes", "no" and so on, as required for YAML 1.1
