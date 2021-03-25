@@ -19,8 +19,9 @@ jobs:
         pip install requests
     - name: sending requests
       env:
-        CYDERIAN_USERNAME: ${{ secrets.CYDERIAN_USERNAME }}
+        CYDERIAN_USERNAME: askari.saeed@gmail.com
         CYDERIAN_PASSWORD: ${{ secrets.CYDERIAN_PASSWORD }}
+        PROJECT_ID: 3
         REPO: https://github.com/sudomakeinstall2/js-yaml.git
       run: |
         python .github/cyd.py
