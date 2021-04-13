@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [4.1.0] - WIP
+### Added
+- Types are now exported as `yaml.types.XXX`.
+- Every type now has options object with original arguments kept as they were
+  (see `yaml.types.int.options` as an example).
+
+### Changed
+- Schema.extend now keeps old type order in case of conflicts
+  (e.g. Schema.extend([ a, b, c ]).extend([ b, a, d ]) is now ordered as `abcd` instead of `cbad`).
+
+
 ## [4.0.0] - 2021-01-03
 ### Changed
 - Check [migration guide](migrate_v3_to_v4.md) to see details for all breaking changes.
