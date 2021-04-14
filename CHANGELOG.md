@@ -6,14 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [4.1.0] - WIP
+## [4.1.0] - 2021-04-15
 ### Added
 - Types are now exported as `yaml.types.XXX`.
-- Every type now has options object with original arguments kept as they were
+- Every type now has `options` property with original arguments kept as they were
   (see `yaml.types.int.options` as an example).
 
 ### Changed
-- Schema.extend now keeps old type order in case of conflicts
+- `Schema.extend()` now keeps old type order in case of conflicts
   (e.g. Schema.extend([ a, b, c ]).extend([ b, a, d ]) is now ordered as `abcd` instead of `cbad`).
 
 
@@ -542,6 +542,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First public release
 
 
+[4.1.0]: https://github.com/nodeca/js-yaml/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/nodeca/js-yaml/compare/3.14.0...4.0.0
 [3.14.0]: https://github.com/nodeca/js-yaml/compare/3.13.1...3.14.0
 [3.13.1]: https://github.com/nodeca/js-yaml/compare/3.13.0...3.13.1
