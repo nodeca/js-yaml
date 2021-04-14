@@ -1,5 +1,5 @@
 
-/*! js-yaml 4.0.0 https://github.com/nodeca/js-yaml @license MIT */
+/*! js-yaml 4.1.0 https://github.com/nodeca/js-yaml @license MIT */
 function isNothing(subject) {
   return (typeof subject === 'undefined') || (subject === null);
 }
@@ -88,7 +88,7 @@ function formatError(exception, compact) {
 }
 
 
-function YAMLException(reason, mark) {
+function YAMLException$1(reason, mark) {
   // Super constructor
   Error.call(this);
 
@@ -109,16 +109,16 @@ function YAMLException(reason, mark) {
 
 
 // Inherit from Error
-YAMLException.prototype = Object.create(Error.prototype);
-YAMLException.prototype.constructor = YAMLException;
+YAMLException$1.prototype = Object.create(Error.prototype);
+YAMLException$1.prototype.constructor = YAMLException$1;
 
 
-YAMLException.prototype.toString = function toString(compact) {
+YAMLException$1.prototype.toString = function toString(compact) {
   return this.name + ': ' + formatError(this, compact);
 };
 
 
-var exception = YAMLException;
+var exception = YAMLException$1;
 
 // get snippet for a single line, respecting maxLength
 function getLine(buffer, lineStart, lineEnd, position, maxLineLength) {
@@ -249,7 +249,7 @@ function compileStyleAliases(map) {
   return result;
 }
 
-function Type(tag, options) {
+function Type$1(tag, options) {
   options = options || {};
 
   Object.keys(options).forEach(function (name) {
@@ -259,6 +259,7 @@ function Type(tag, options) {
   });
 
   // TODO: Add tag format check.
+  this.options       = options; // keep original options in case user wants to extend this type later
   this.tag           = tag;
   this.kind          = options['kind']          || null;
   this.resolve       = options['resolve']       || function () { return true; };
@@ -276,7 +277,7 @@ function Type(tag, options) {
   }
 }
 
-var type = Type;
+var type = Type$1;
 
 /*eslint-disable max-len*/
 
@@ -284,25 +285,25 @@ var type = Type;
 
 
 
-function compileList(schema, name, result) {
-  var exclude = [];
+function compileList(schema, name) {
+  var result = [];
 
   schema[name].forEach(function (currentType) {
+    var newIndex = result.length;
+
     result.forEach(function (previousType, previousIndex) {
       if (previousType.tag === currentType.tag &&
           previousType.kind === currentType.kind &&
           previousType.multi === currentType.multi) {
 
-        exclude.push(previousIndex);
+        newIndex = previousIndex;
       }
     });
 
-    result.push(currentType);
+    result[newIndex] = currentType;
   });
 
-  return result.filter(function (type, index) {
-    return exclude.indexOf(index) === -1;
-  });
+  return result;
 }
 
 
@@ -336,12 +337,12 @@ function compileMap(/* lists... */) {
 }
 
 
-function Schema(definition) {
+function Schema$1(definition) {
   return this.extend(definition);
 }
 
 
-Schema.prototype.extend = function extend(definition) {
+Schema$1.prototype.extend = function extend(definition) {
   var implicit = [];
   var explicit = [];
 
@@ -383,20 +384,20 @@ Schema.prototype.extend = function extend(definition) {
     }
   });
 
-  var result = Object.create(Schema.prototype);
+  var result = Object.create(Schema$1.prototype);
 
   result.implicit = (this.implicit || []).concat(implicit);
   result.explicit = (this.explicit || []).concat(explicit);
 
-  result.compiledImplicit = compileList(result, 'implicit', []);
-  result.compiledExplicit = compileList(result, 'explicit', []);
+  result.compiledImplicit = compileList(result, 'implicit');
+  result.compiledExplicit = compileList(result, 'explicit');
   result.compiledTypeMap  = compileMap(result.compiledImplicit, result.compiledExplicit);
 
   return result;
 };
 
 
-var schema = Schema;
+var schema = Schema$1;
 
 var str = new type('tag:yaml.org,2002:str', {
   kind: 'scalar',
@@ -959,8 +960,8 @@ var binary = new type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-var _hasOwnProperty = Object.prototype.hasOwnProperty;
-var _toString       = Object.prototype.toString;
+var _hasOwnProperty$3 = Object.prototype.hasOwnProperty;
+var _toString$2       = Object.prototype.toString;
 
 function resolveYamlOmap(data) {
   if (data === null) return true;
@@ -972,10 +973,10 @@ function resolveYamlOmap(data) {
     pair = object[index];
     pairHasKey = false;
 
-    if (_toString.call(pair) !== '[object Object]') return false;
+    if (_toString$2.call(pair) !== '[object Object]') return false;
 
     for (pairKey in pair) {
-      if (_hasOwnProperty.call(pair, pairKey)) {
+      if (_hasOwnProperty$3.call(pair, pairKey)) {
         if (!pairHasKey) pairHasKey = true;
         else return false;
       }
@@ -1050,7 +1051,7 @@ var pairs = new type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-var _hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+var _hasOwnProperty$2 = Object.prototype.hasOwnProperty;
 
 function resolveYamlSet(data) {
   if (data === null) return true;
@@ -1058,7 +1059,7 @@ function resolveYamlSet(data) {
   var key, object = data;
 
   for (key in object) {
-    if (_hasOwnProperty$1.call(object, key)) {
+    if (_hasOwnProperty$2.call(object, key)) {
       if (object[key] !== null) return false;
     }
   }
@@ -1097,7 +1098,7 @@ var _default = core.extend({
 
 
 
-var _hasOwnProperty$2 = Object.prototype.hasOwnProperty;
+var _hasOwnProperty$1 = Object.prototype.hasOwnProperty;
 
 
 var CONTEXT_FLOW_IN   = 1;
@@ -1217,7 +1218,7 @@ for (var i = 0; i < 256; i++) {
 }
 
 
-function State(input, options) {
+function State$1(input, options) {
   this.input = input;
 
   this.filename  = options['filename']  || null;
@@ -1333,7 +1334,7 @@ var directiveHandlers = {
       throwError(state, 'ill-formed tag handle (first argument) of the TAG directive');
     }
 
-    if (_hasOwnProperty$2.call(state.tagMap, handle)) {
+    if (_hasOwnProperty$1.call(state.tagMap, handle)) {
       throwError(state, 'there is a previously declared suffix for "' + handle + '" tag handle');
     }
 
@@ -1386,7 +1387,7 @@ function mergeMappings(state, destination, source, overridableKeys) {
   for (index = 0, quantity = sourceKeys.length; index < quantity; index += 1) {
     key = sourceKeys[index];
 
-    if (!_hasOwnProperty$2.call(destination, key)) {
+    if (!_hasOwnProperty$1.call(destination, key)) {
       destination[key] = source[key];
       overridableKeys[key] = true;
     }
@@ -1439,8 +1440,8 @@ function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valu
     }
   } else {
     if (!state.json &&
-        !_hasOwnProperty$2.call(overridableKeys, keyNode) &&
-        _hasOwnProperty$2.call(_result, keyNode)) {
+        !_hasOwnProperty$1.call(overridableKeys, keyNode) &&
+        _hasOwnProperty$1.call(_result, keyNode)) {
       state.line = startLine || state.line;
       state.lineStart = startLineStart || state.lineStart;
       state.position = startPos || state.position;
@@ -2378,7 +2379,7 @@ function readTagProperty(state) {
   if (isVerbatim) {
     state.tag = tagName;
 
-  } else if (_hasOwnProperty$2.call(state.tagMap, tagHandle)) {
+  } else if (_hasOwnProperty$1.call(state.tagMap, tagHandle)) {
     state.tag = state.tagMap[tagHandle] + tagName;
 
   } else if (tagHandle === '!') {
@@ -2442,7 +2443,7 @@ function readAlias(state) {
 
   alias = state.input.slice(_position, state.position);
 
-  if (!_hasOwnProperty$2.call(state.anchorMap, alias)) {
+  if (!_hasOwnProperty$1.call(state.anchorMap, alias)) {
     throwError(state, 'unidentified alias "' + alias + '"');
   }
 
@@ -2591,7 +2592,7 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
       }
     }
   } else if (state.tag !== '!') {
-    if (_hasOwnProperty$2.call(state.typeMap[state.kind || 'fallback'], state.tag)) {
+    if (_hasOwnProperty$1.call(state.typeMap[state.kind || 'fallback'], state.tag)) {
       type = state.typeMap[state.kind || 'fallback'][state.tag];
     } else {
       // looking for multi type
@@ -2691,7 +2692,7 @@ function readDocument(state) {
 
     if (ch !== 0) readLineBreak(state);
 
-    if (_hasOwnProperty$2.call(directiveHandlers, directiveName)) {
+    if (_hasOwnProperty$1.call(directiveHandlers, directiveName)) {
       directiveHandlers[directiveName](state, directiveName, directiveArgs);
     } else {
       throwWarning(state, 'unknown document directive "' + directiveName + '"');
@@ -2756,7 +2757,7 @@ function loadDocuments(input, options) {
     }
   }
 
-  var state = new State(input, options);
+  var state = new State$1(input, options);
 
   var nullpos = input.indexOf('\0');
 
@@ -2781,7 +2782,7 @@ function loadDocuments(input, options) {
 }
 
 
-function loadAll(input, iterator, options) {
+function loadAll$1(input, iterator, options) {
   if (iterator !== null && typeof iterator === 'object' && typeof options === 'undefined') {
     options = iterator;
     iterator = null;
@@ -2799,7 +2800,7 @@ function loadAll(input, iterator, options) {
 }
 
 
-function load(input, options) {
+function load$1(input, options) {
   var documents = loadDocuments(input, options);
 
   if (documents.length === 0) {
@@ -2812,8 +2813,8 @@ function load(input, options) {
 }
 
 
-var loadAll_1 = loadAll;
-var load_1    = load;
+var loadAll_1 = loadAll$1;
+var load_1    = load$1;
 
 var loader = {
 	loadAll: loadAll_1,
@@ -2826,8 +2827,8 @@ var loader = {
 
 
 
-var _toString$2       = Object.prototype.toString;
-var _hasOwnProperty$3 = Object.prototype.hasOwnProperty;
+var _toString       = Object.prototype.toString;
+var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
 var CHAR_BOM                  = 0xFEFF;
 var CHAR_TAB                  = 0x09; /* Tab */
@@ -2897,7 +2898,7 @@ function compileStyleMap(schema, map) {
     }
     type = schema.compiledTypeMap['fallback'][tag];
 
-    if (type && _hasOwnProperty$3.call(type.styleAliases, style)) {
+    if (type && _hasOwnProperty.call(type.styleAliases, style)) {
       style = type.styleAliases[style];
     }
 
@@ -2932,7 +2933,7 @@ function encodeHex(character) {
 var QUOTING_TYPE_SINGLE = 1,
     QUOTING_TYPE_DOUBLE = 2;
 
-function State$1(options) {
+function State(options) {
   this.schema        = options['schema'] || _default;
   this.indent        = Math.max(1, (options['indent'] || 2));
   this.noArrayIndent = options['noArrayIndent'] || false;
@@ -3593,9 +3594,9 @@ function detectType(state, object, explicit) {
       if (type.represent) {
         style = state.styleMap[type.tag] || type.defaultStyle;
 
-        if (_toString$2.call(type.represent) === '[object Function]') {
+        if (_toString.call(type.represent) === '[object Function]') {
           _result = type.represent(object, style);
-        } else if (_hasOwnProperty$3.call(type.represent, style)) {
+        } else if (_hasOwnProperty.call(type.represent, style)) {
           _result = type.represent[style](object, style);
         } else {
           throw new exception('!<' + type.tag + '> tag resolver accepts not "' + style + '" style');
@@ -3622,7 +3623,7 @@ function writeNode(state, level, object, block, compact, iskey, isblockseq) {
     detectType(state, object, true);
   }
 
-  var type = _toString$2.call(state.dump);
+  var type = _toString.call(state.dump);
   var inblock = block;
   var tagStr;
 
@@ -3764,10 +3765,10 @@ function inspectNode(object, objects, duplicatesIndexes) {
   }
 }
 
-function dump(input, options) {
+function dump$1(input, options) {
   options = options || {};
 
-  var state = new State$1(options);
+  var state = new State(options);
 
   if (!state.noRefs) getDuplicateReferences(input, state);
 
@@ -3782,7 +3783,7 @@ function dump(input, options) {
   return '';
 }
 
-var dump_1 = dump;
+var dump_1 = dump$1;
 
 var dumper = {
 	dump: dump_1
@@ -3796,16 +3797,33 @@ function renamed(from, to) {
 }
 
 
-var Type$1                = type;
-var Schema$1              = schema;
+var Type                = type;
+var Schema              = schema;
 var FAILSAFE_SCHEMA     = failsafe;
 var JSON_SCHEMA         = json;
 var CORE_SCHEMA         = core;
 var DEFAULT_SCHEMA      = _default;
-var load$1                = loader.load;
-var loadAll$1             = loader.loadAll;
-var dump$1                = dumper.dump;
-var YAMLException$1       = exception;
+var load                = loader.load;
+var loadAll             = loader.loadAll;
+var dump                = dumper.dump;
+var YAMLException       = exception;
+
+// Re-export all types in case user wants to create custom schema
+var types = {
+  binary:    binary,
+  float:     float,
+  map:       map,
+  null:      _null,
+  pairs:     pairs,
+  set:       set,
+  timestamp: timestamp,
+  bool:      bool,
+  int:       int,
+  merge:     merge,
+  omap:      omap,
+  seq:       seq,
+  str:       str
+};
 
 // Removed functions from JS-YAML 3.0.x
 var safeLoad            = renamed('safeLoad', 'load');
@@ -3813,20 +3831,21 @@ var safeLoadAll         = renamed('safeLoadAll', 'loadAll');
 var safeDump            = renamed('safeDump', 'dump');
 
 var jsYaml = {
-	Type: Type$1,
-	Schema: Schema$1,
+	Type: Type,
+	Schema: Schema,
 	FAILSAFE_SCHEMA: FAILSAFE_SCHEMA,
 	JSON_SCHEMA: JSON_SCHEMA,
 	CORE_SCHEMA: CORE_SCHEMA,
 	DEFAULT_SCHEMA: DEFAULT_SCHEMA,
-	load: load$1,
-	loadAll: loadAll$1,
-	dump: dump$1,
-	YAMLException: YAMLException$1,
+	load: load,
+	loadAll: loadAll,
+	dump: dump,
+	YAMLException: YAMLException,
+	types: types,
 	safeLoad: safeLoad,
 	safeLoadAll: safeLoadAll,
 	safeDump: safeDump
 };
 
 export default jsYaml;
-export { CORE_SCHEMA, DEFAULT_SCHEMA, FAILSAFE_SCHEMA, JSON_SCHEMA, Schema$1 as Schema, Type$1 as Type, YAMLException$1 as YAMLException, dump$1 as dump, load$1 as load, loadAll$1 as loadAll, safeDump, safeLoad, safeLoadAll };
+export { CORE_SCHEMA, DEFAULT_SCHEMA, FAILSAFE_SCHEMA, JSON_SCHEMA, Schema, Type, YAMLException, dump, load, loadAll, safeDump, safeLoad, safeLoadAll, types };
