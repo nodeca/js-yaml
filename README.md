@@ -4,7 +4,7 @@ JS-YAML - YAML 1.2 parser / writer for JavaScript
 [![CI](https://github.com/nodeca/js-yaml/workflows/CI/badge.svg?branch=master)](https://github.com/nodeca/js-yaml/actions)
 [![NPM version](https://img.shields.io/npm/v/js-yaml.svg)](https://www.npmjs.org/package/js-yaml)
 
-__[Online Demo](http://nodeca.github.com/js-yaml/)__
+__[Online Demo](http://nodeca.github.io/js-yaml/)__
 
 
 This is an implementation of [YAML](http://yaml.org/), a human-friendly data
