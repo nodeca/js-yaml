@@ -149,6 +149,7 @@ output is shown on the right side after `=>` (default setting) or `->`:
   "lowercase"   => "null"
   "uppercase"   -> "NULL"
   "camelcase"   -> "Null"
+  "empty"       -> ""
 
 !!int
   "binary"      -> "0b1", "0b101010", "0b1110001111010"
