@@ -1,4 +1,3 @@
-
 /*! js-yaml 4.1.0 https://github.com/nodeca/js-yaml @license MIT */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -2813,7 +2812,8 @@
       /*eslint-disable no-undefined*/
       return undefined;
     } else if (documents.length === 1) {
-      return documents[0];
+		if (documents[0] == 'undefined') return undefined;
+		return documents[0];
     }
     throw new exception('expected a single document in the stream, but found more');
   }
@@ -3810,6 +3810,7 @@
   var CORE_SCHEMA         = core;
   var DEFAULT_SCHEMA      = _default;
   var load                = loader.load;
+  var parse               = loader.load;
   var loadAll             = loader.loadAll;
   var dump                = dumper.dump;
   var YAMLException       = exception;
