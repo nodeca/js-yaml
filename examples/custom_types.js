@@ -11,7 +11,7 @@ var yaml = require('../');
 // Let's define a couple of classes.
 
 function Point(x, y, z) {
-  this.klass = 'Point';
+  this.class = 'Point';
   this.x     = x;
   this.y     = y;
   this.z     = z;
@@ -25,7 +25,7 @@ function Space(height, width, points) {
     }
   }
 
-  this.klass  = 'Space';
+  this.class  = 'Space';
   this.height = height;
   this.width  = width;
   this.points = points;
