@@ -56,6 +56,7 @@
     "eslint": "^7.0.0",
     "fast-check": "^2.8.0",
     "gh-pages": "^3.1.0",
+    "lodash.truncate": "^4.4.2",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
     "rollup": "^2.34.1",
