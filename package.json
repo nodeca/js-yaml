@@ -45,7 +45,8 @@
   "unpkg": "dist/js-yaml.min.js",
   "jsdelivr": "dist/js-yaml.min.js",
   "dependencies": {
-    "argparse": "^2.0.1"
+    "argparse": "^2.0.1",
+    "buffer": "^6.0.3"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
