@@ -4,11 +4,11 @@ JS-YAML - YAML 1.2 parser / writer for JavaScript
 [![CI](https://github.com/nodeca/js-yaml/workflows/CI/badge.svg?branch=master)](https://github.com/nodeca/js-yaml/actions)
 [![NPM version](https://img.shields.io/npm/v/js-yaml.svg)](https://www.npmjs.org/package/js-yaml)
 
-__[Online Demo](http://nodeca.github.io/js-yaml/)__
+__[Online Demo](https://nodeca.github.io/js-yaml/)__
 
 
-This is an implementation of [YAML](http://yaml.org/), a human-friendly data
-serialization language. Started as [PyYAML](http://pyyaml.org/) port, it was
+This is an implementation of [YAML](https://yaml.org/), a human-friendly data
+serialization language. Started as [PyYAML](https://pyyaml.org/) port, it was
 completely rewritten from scratch. Now it's very fast, and supports 1.2 spec.
 
 
@@ -81,11 +81,11 @@ options:
   Loader will call this function with an instance of `YAMLException` for each warning.
 - `schema` _(default: `DEFAULT_SCHEMA`)_ - specifies a schema to use.
   - `FAILSAFE_SCHEMA` - only strings, arrays and plain objects:
-    http://www.yaml.org/spec/1.2/spec.html#id2802346
+    https://www.yaml.org/spec/1.2/spec.html#id2802346
   - `JSON_SCHEMA` - all JSON-supported types:
-    http://www.yaml.org/spec/1.2/spec.html#id2803231
+    https://www.yaml.org/spec/1.2/spec.html#id2803231
   - `CORE_SCHEMA` - same as `JSON_SCHEMA`:
-    http://www.yaml.org/spec/1.2/spec.html#id2804923
+    https://www.yaml.org/spec/1.2/spec.html#id2804923
   - `DEFAULT_SCHEMA` - all supported YAML types.
 - `json` _(default: false)_ - compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
 
@@ -183,8 +183,8 @@ Supported YAML types
 --------------------
 
 The list of standard YAML tags and corresponding JavaScript types. See also
-[YAML tag discussion](http://pyyaml.org/wiki/YAMLTagDiscussion) and
-[YAML types repository](http://yaml.org/type/).
+[YAML tag discussion](https://pyyaml.org/wiki/YAMLTagDiscussion) and
+[YAML types repository](https://yaml.org/type/).
 
 ```
 !!null ''                   # null
