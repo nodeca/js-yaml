@@ -536,11 +536,10 @@
 
         for (; index < max; index++) {
           ch = data[index];
-          if (ch === '_') continue;
           if (ch !== '0' && ch !== '1') return false;
           hasDigits = true;
         }
-        return hasDigits && ch !== '_';
+        return hasDigits;
       }
 
 
@@ -550,13 +549,11 @@
 
         for (; index < max; index++) {
           ch = data[index];
-          if (ch === '_') continue;
           if (!isHexCode(data.charCodeAt(index))) return false;
           hasDigits = true;
         }
-        return hasDigits && ch !== '_';
+        return hasDigits;
       }
-
 
       if (ch === 'o') {
         // base 8
@@ -564,40 +561,29 @@
 
         for (; index < max; index++) {
           ch = data[index];
-          if (ch === '_') continue;
           if (!isOctCode(data.charCodeAt(index))) return false;
           hasDigits = true;
         }
-        return hasDigits && ch !== '_';
+        return hasDigits;
       }
     }
 
     // base 10 (except 0)
 
-    // value should not start with `_`;
-    if (ch === '_') return false;
-
     for (; index < max; index++) {
       ch = data[index];
-      if (ch === '_') continue;
       if (!isDecCode(data.charCodeAt(index))) {
         return false;
       }
       hasDigits = true;
     }
 
-    // Should have digits and should not end with `_`
-    if (!hasDigits || ch === '_') return false;
-
-    return true;
+    // Should have digits
+    return hasDigits;
   }
 
   function constructYamlInteger(data) {
     var value = data, sign = 1, ch;
-
-    if (value.indexOf('_') !== -1) {
-      value = value.replace(/_/g, '');
-    }
 
     ch = value[0];
 
@@ -646,10 +632,10 @@
 
   var YAML_FLOAT_PATTERN = new RegExp(
     // 2.5e4, 2.5 and integers
-    '^(?:[-+]?(?:[0-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' +
+    '^(?:[-+]?(?:[0-9][0-9]*)(?:\\.[0-9]*)?(?:[eE][-+]?[0-9]+)?' +
     // .2e4, .2
     // special case, seems not from spec
-    '|\\.[0-9_]+(?:[eE][-+]?[0-9]+)?' +
+    '|\\.[0-9]+(?:[eE][-+]?[0-9]+)?' +
     // .inf
     '|[-+]?\\.(?:inf|Inf|INF)' +
     // .nan
@@ -671,7 +657,7 @@
   function constructYamlFloat(data) {
     var value, sign;
 
-    value  = data.replace(/_/g, '').toLowerCase();
+    value  = data.toLowerCase();
     sign   = value[0] === '-' ? -1 : 1;
 
     if ('+-'.indexOf(value[0]) >= 0) {
