@@ -2943,6 +2943,7 @@
     this.schema        = options['schema'] || _default;
     this.indent        = Math.max(1, (options['indent'] || 2));
     this.noArrayIndent = options['noArrayIndent'] || false;
+    this.noArrayBlock = options['noArrayBlock'] || false;
     this.skipInvalid   = options['skipInvalid'] || false;
     this.flowLevel     = (common.isNothing(options['flowLevel']) ? -1 : options['flowLevel']);
     this.styleMap      = compileStyleMap(this.schema, options['styles'] || null);
@@ -3669,7 +3670,7 @@
           }
         }
       } else if (type === '[object Array]') {
-        if (block && (state.dump.length !== 0)) {
+        if (block && (state.dump.length !== 0) && !state.noArrayBlock) {
           if (state.noArrayIndent && !isblockseq && level > 0) {
             writeBlockSequence(state, level - 1, state.dump, compact);
           } else {
