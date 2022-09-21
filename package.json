@@ -1,21 +1,19 @@
 {
-  "name": "js-yaml",
-  "version": "4.1.0",
-  "description": "YAML 1.2 parser and serializer",
+  "name": "js-yaml-tm",
+  "version": "1.0.0",
+  "description": "js-yaml fork",
   "keywords": [
     "yaml",
     "parser",
     "serializer",
     "pyyaml"
   ],
-  "author": "Vladimir Zapparov <dervus.grim@gmail.com>",
+  "author": "Scott <achacttn@gmail.com>",
   "contributors": [
-    "Aleksey V Zapparov <ixti@member.fsf.org> (http://www.ixti.net/)",
-    "Vitaly Puzrin <vitaly@rcdesign.ru> (https://github.com/puzrin)",
-    "Martin Grenfell <martin.grenfell@gmail.com> (http://got-ravings.blogspot.com)"
+    "Scott <achacttn@gmail.com>"
   ],
   "license": "MIT",
-  "repository": "nodeca/js-yaml",
+  "repository": "achacttn/js-yaml-t ",
   "files": [
     "index.js",
     "lib/",
