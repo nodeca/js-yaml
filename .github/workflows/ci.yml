@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: '0 0 * * 3'
 
+permissions:
+  contents: read #  to fetch code (actions/checkout)
+
 jobs:
   build:
 
