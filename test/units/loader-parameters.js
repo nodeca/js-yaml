@@ -51,4 +51,11 @@ describe('loader parameters', function () {
     }, { json: true });
     assert.deepStrictEqual(result, expected);
   });
+
+  it('loadMultiYaml(input, options)', function () {
+    var streamStr = '---\ntest: 1\n---\ntest: 2\n';
+    var expectedStream = [ { test: 1 }, { test: 2 } ];
+    result = yaml.loadMultiYaml(streamStr, { json: true });
+    assert.deepStrictEqual(result, expectedStream);
+  });
 });
