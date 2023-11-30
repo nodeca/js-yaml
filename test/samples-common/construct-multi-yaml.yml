@@ -1,0 +1,23 @@
+---
+name: Example Document 1
+items:
+  - part: A
+    quantity: 10
+  - part: B
+    quantity: 5
+
+---
+name: Example Document 2
+info:
+  description: This is a test document
+  version: 2
+values:
+  - type: alpha
+  - type: beta
+  - type: gamma
+
+---
+name: Example Document 3
+settings:
+  enabled: true
+  threshold: 0.75
