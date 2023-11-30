@@ -21,6 +21,7 @@ module.exports.CORE_SCHEMA         = require('./lib/schema/core');
 module.exports.DEFAULT_SCHEMA      = require('./lib/schema/default');
 module.exports.load                = loader.load;
 module.exports.loadAll             = loader.loadAll;
+module.exports.loadMultiYaml       = loader.loadMultiYaml;
 module.exports.dump                = dumper.dump;
 module.exports.YAMLException       = require('./lib/exception');
 
