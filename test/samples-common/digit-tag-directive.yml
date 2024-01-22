@@ -1,0 +1,5 @@
+%TAG !123digit! tag:yaml.org,2002:
+%TAG !a-23-1! tag:yaml.org,2002:
+---
+k1: !123digit!str some-string
+k2: !a-23-1!str 123
