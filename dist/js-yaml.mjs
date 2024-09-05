@@ -3682,6 +3682,10 @@ function writeNode(state, level, object, block, compact, iskey, isblockseq) {
       if (state.tag !== '?') {
         writeScalar(state, state.dump, level, iskey, inblock);
       }
+    } else if ((type === '[object Number]') || (type === '[object Boolean]')) {
+      if (state.tag !== '?') {
+        state.dump = String(state.dump);
+      }
     } else if (type === '[object Undefined]') {
       return false;
     } else {
@@ -3847,5 +3851,4 @@ var jsYaml = {
 	safeDump: safeDump
 };
 
-export default jsYaml;
-export { CORE_SCHEMA, DEFAULT_SCHEMA, FAILSAFE_SCHEMA, JSON_SCHEMA, Schema, Type, YAMLException, dump, load, loadAll, safeDump, safeLoad, safeLoadAll, types };
+export { CORE_SCHEMA, DEFAULT_SCHEMA, FAILSAFE_SCHEMA, JSON_SCHEMA, Schema, Type, YAMLException, jsYaml as default, dump, load, loadAll, safeDump, safeLoad, safeLoadAll, types };

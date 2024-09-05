@@ -4,7 +4,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.jsyaml = {}));
-}(this, (function (exports) { 'use strict';
+})(this, (function (exports) { 'use strict';
 
   function isNothing(subject) {
     return (typeof subject === 'undefined') || (subject === null);
@@ -3688,6 +3688,10 @@
         if (state.tag !== '?') {
           writeScalar(state, state.dump, level, iskey, inblock);
         }
+      } else if ((type === '[object Number]') || (type === '[object Boolean]')) {
+        if (state.tag !== '?') {
+          state.dump = String(state.dump);
+        }
       } else if (type === '[object Undefined]') {
         return false;
       } else {
@@ -3860,7 +3864,7 @@
   exports.Schema = Schema;
   exports.Type = Type;
   exports.YAMLException = YAMLException;
-  exports.default = jsYaml;
+  exports["default"] = jsYaml;
   exports.dump = dump;
   exports.load = load;
   exports.loadAll = loadAll;
@@ -3871,4 +3875,4 @@
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
+}));
