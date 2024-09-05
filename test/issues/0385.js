@@ -121,4 +121,29 @@ describe('Multi tag', function () {
       schema: schema
     }), 'test: !<foo> bar\n');
   });
+
+  it('should dump multi types with custom tag and number and boolean', function () {
+    let tags = [
+      new yaml.Type('!', {
+        kind: 'scalar',
+        multi: true,
+        predicate: function (obj) {
+          return !!obj.tag;
+        },
+        representName: function (obj) {
+          return obj.tag;
+        },
+        represent: function (obj) {
+          return obj.value;
+        }
+      })
+    ];
+
+    let schema = yaml.DEFAULT_SCHEMA.extend(tags);
+
+    assert.strictEqual(yaml.dump({ number: { tag: 'foo', value: 3 }, boolean: { tag: 'foo', value: true } }, {
+      schema: schema
+    }), 'number: !<foo> 3\nboolean: !<foo> true\n');
+  });
+
 });
