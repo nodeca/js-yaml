@@ -146,4 +146,29 @@ describe('Multi tag', function () {
     }), 'number: !<foo> 3\nboolean: !<foo> true\n');
   });
 
+
+  it('should dump simple tags (enums) with no data', function () {
+    let tags = [
+      new yaml.Type('!', {
+        kind: 'scalar',
+        multi: true,
+        predicate: function (obj) {
+          return !!obj.tag;
+        },
+        representName: function (obj) {
+          return obj.tag;
+        },
+        represent: function (obj) {
+          return obj.value;
+        }
+      })
+    ];
+
+    let schema = yaml.DEFAULT_SCHEMA.extend(tags);
+
+    assert.strictEqual(yaml.dump({ number: { tag: 'foo', value: null } }, {
+      schema: schema
+    }), 'number: !<foo>\n');
+  });
+
 });

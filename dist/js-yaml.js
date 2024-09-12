@@ -3632,6 +3632,7 @@
     var type = _toString.call(state.dump);
     var inblock = block;
     var tagStr;
+    var simpleTag = false;
 
     if (block) {
       block = (state.flowLevel < 0 || state.flowLevel > level);
@@ -3694,6 +3695,8 @@
         }
       } else if (type === '[object Undefined]') {
         return false;
+      } else if (state.tag !== null && state.tag !== '?' && type === '[object Null]') {
+        simpleTag = true;
       } else {
         if (state.skipInvalid) return false;
         throw new exception('unacceptable kind of an object to dump ' + type);
@@ -3725,7 +3728,7 @@
           tagStr = '!<' + tagStr + '>';
         }
 
-        state.dump = tagStr + ' ' + state.dump;
+        return simpleTag ? (state.dump = tagStr) : (state.dump = tagStr + ' ' + state.dump);
       }
     }
 
