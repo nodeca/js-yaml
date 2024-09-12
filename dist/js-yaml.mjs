@@ -3626,6 +3626,7 @@ function writeNode(state, level, object, block, compact, iskey, isblockseq) {
   var type = _toString.call(state.dump);
   var inblock = block;
   var tagStr;
+  var simpleTag = false;
 
   if (block) {
     block = (state.flowLevel < 0 || state.flowLevel > level);
@@ -3682,8 +3683,14 @@ function writeNode(state, level, object, block, compact, iskey, isblockseq) {
       if (state.tag !== '?') {
         writeScalar(state, state.dump, level, iskey, inblock);
       }
+    } else if ((type === '[object Number]') || (type === '[object Boolean]')) {
+      if (state.tag !== '?') {
+        state.dump = String(state.dump);
+      }
     } else if (type === '[object Undefined]') {
       return false;
+    } else if (state.tag !== null && state.tag !== '?' && type === '[object Null]') {
+      simpleTag = true;
     } else {
       if (state.skipInvalid) return false;
       throw new exception('unacceptable kind of an object to dump ' + type);
@@ -3715,7 +3722,7 @@ function writeNode(state, level, object, block, compact, iskey, isblockseq) {
         tagStr = '!<' + tagStr + '>';
       }
 
-      state.dump = tagStr + ' ' + state.dump;
+      return simpleTag ? (state.dump = tagStr) : (state.dump = tagStr + ' ' + state.dump);
     }
   }
 
@@ -3847,5 +3854,4 @@ var jsYaml = {
 	safeDump: safeDump
 };
 
-export default jsYaml;
-export { CORE_SCHEMA, DEFAULT_SCHEMA, FAILSAFE_SCHEMA, JSON_SCHEMA, Schema, Type, YAMLException, dump, load, loadAll, safeDump, safeLoad, safeLoadAll, types };
+export { CORE_SCHEMA, DEFAULT_SCHEMA, FAILSAFE_SCHEMA, JSON_SCHEMA, Schema, Type, YAMLException, jsYaml as default, dump, load, loadAll, safeDump, safeLoad, safeLoadAll, types };
