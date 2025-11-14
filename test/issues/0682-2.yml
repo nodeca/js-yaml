@@ -1,0 +1,7 @@
+value: |2
+      
+  some text
+   less indented text
+other: |2
+      some text
+  less indented text
