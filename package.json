@@ -27,10 +27,8 @@
   },
   "module": "./dist/js-yaml.mjs",
   "exports": {
-    ".": {
-      "import": "./dist/js-yaml.mjs",
-      "require": "./index.js"
-    },
+    ".": "./index.js",
+    "./import": "./dist/js-yaml.mjs",
     "./package.json": "./package.json"
   },
   "scripts": {
