@@ -88,6 +88,7 @@ options:
     https://www.yaml.org/spec/1.2/spec.html#id2804923
   - `DEFAULT_SCHEMA` - all supported YAML types.
 - `json` _(default: false)_ - compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
+- `listener` _(default: null)_ - function to call during parse events. Loader will call this function with two arguments: `open` or `close` (for entering/exiting a parse node) and parser state. Callers may use this to build a parse tree (for example, to help implement bidirectional maintenance of YAML source, comments, etc.).
 
 NOTE: This function **does not** understand multi-document sources, it throws
 exception on those.
