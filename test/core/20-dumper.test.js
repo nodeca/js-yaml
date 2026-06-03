@@ -28,4 +28,19 @@ describe('Dumper', function () {
       }
     })
   })
+
+  it('should quote scalars that look like document markers', function () {
+    // A plain scalar equal to "..." or "---" at the start of a line would be
+    // re-read as a document-end / directives-end marker, breaking round-trip.
+    ;['...', '---'].forEach(function (value) {
+      assert.strictEqual(yaml.load(yaml.dump(value)), value)
+      assert.strictEqual(yaml.load(yaml.dump([value]))[0], value)
+      assert.strictEqual(yaml.load(yaml.dump({ key: value })).key, value)
+    })
+
+    // Strings that merely resemble markers must stay plain (no over-quoting).
+    assert.strictEqual(yaml.dump('...x'), '...x\n')
+    assert.strictEqual(yaml.dump('....'), '....\n')
+    assert.strictEqual(yaml.dump('x...'), 'x...\n')
+  })
 })
