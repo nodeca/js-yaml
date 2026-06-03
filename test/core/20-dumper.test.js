@@ -38,6 +38,12 @@ describe('Dumper', function () {
       assert.strictEqual(yaml.load(yaml.dump({ key: value })).key, value)
     })
 
+    // A marker followed by whitespace is also a separator line, so these must
+    // round-trip too (mirrors testDocumentSeparator() in the loader).
+    ;['... x', '--- x'].forEach(function (value) {
+      assert.strictEqual(yaml.load(yaml.dump(value)), value)
+    })
+
     // Strings that merely resemble markers must stay plain (no over-quoting).
     assert.strictEqual(yaml.dump('...x'), '...x\n')
     assert.strictEqual(yaml.dump('....'), '....\n')
