@@ -129,7 +129,7 @@ options:
 - `skipInvalid` _(default: false)_ - do not throw on invalid types (like function
   in the safe schema) and skip pairs and single values with such types.
 - `flowLevel` _(default: -1)_ - specifies level of nesting, when to switch from
-  block to flow style for collections. -1 means block style everwhere
+  block to flow style for collections. -1 means block style everywhere
 - `styles` - "tag" => "style" map. Each tag may have own set of styles.
 - `schema` _(default: `DEFAULT_SCHEMA`)_ specifies a schema to use.
 - `sortKeys` _(default: `false`)_ - if `true`, sort keys when dumping YAML. If a
@@ -143,7 +143,7 @@ options:
 - `forceQuotes` _(default: `false`)_ - if `true`, all non-key strings will be quoted even if they normally don't need to.
 - `replacer` - callback `function (key, value)` called recursively on each key/value in source object (see `replacer` docs for `JSON.stringify`).
 
-The following table show availlable styles (e.g. "canonical",
+The following table show available styles (e.g. "canonical",
 "binary"...) available for each tag (.e.g. !!null, !!int ...). Yaml
 output is shown on the right side after `=>` (default setting) or `->`:
 
