@@ -82,8 +82,13 @@ describe('Scalar style dump:', function () {
     it('preserves trailing newlines using chomping', function () {
       assert.strictEqual(yaml.dump({ a: '\n', b: '\n\n', c: 'c\n', d: 'd\nd' }),
         'a: |+\n\nb: |+\n\n\nc: |\n  c\nd: |-\n  d\n  d\n')
-      assert.strictEqual(yaml.dump('\n'), '|+\n' + '\n')
-      assert.strictEqual(yaml.dump('\n\n'), '|+\n' + '\n\n')
+      // A whole-document scalar made up only of line breaks needs an explicit
+      // indentation indicator. Without it the emitted `|+` followed by blank
+      // lines cannot be parsed back ("missing indentation for block scalar").
+      assert.strictEqual(yaml.dump('\n'), '|2+\n' + '\n')
+      assert.strictEqual(yaml.dump('\n\n'), '|2+\n' + '\n\n')
+      assert.strictEqual(yaml.load(yaml.dump('\n')), '\n')
+      assert.strictEqual(yaml.load(yaml.dump('\n\n')), '\n\n')
 
       assert.strictEqual(yaml.dump(content), '|-\n' + indented + '\n')
       assert.strictEqual(yaml.dump(content + '\n'), '|\n' + indented + '\n')
