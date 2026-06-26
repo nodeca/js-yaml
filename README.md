@@ -117,6 +117,9 @@ options:
     http://yaml.org/type/
   - `DEFAULT_FULL_SCHEMA` - all supported YAML types.
 - `json` _(default: false)_ - compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
+- `maxTotalMergeKeys` _(default: 10000)_ - limits the total number of keys
+  processed by merge (`<<`) across one `safeLoad()` / `safeLoadAll()` call. Set
+  to `-1` to disable.
 
 NOTE: This function **does not** understand multi-document sources, it throws
 exception on those.

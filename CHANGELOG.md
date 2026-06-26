@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## 3.15.0 - Unreleased
+### Added
+- Added `maxTotalMergeKeys` (10000) loader option to limit the total number of
+  keys processed by YAML merge (`<<`) across one `safeLoad()` / `safeLoadAll()`
+  call.
+
+
 ## [3.14.2] - 2025-11-15
 ### Security
 - Fix prototype pollution in merge (<<).
