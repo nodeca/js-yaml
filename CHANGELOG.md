@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [backport] Added `maxTotalMergeKeys` (10000) loader option to limit the total number of
   keys processed by YAML merge (`<<`) across one `load()` / `loadAll()` call.
 
+### Changed
+- Restore umd builds back to es5.
+
 ### Removed
 - [backport] `maxMergeSeqLength` replaced with `maxTotalMergeKeys` for limiting YAML merge
   processing.

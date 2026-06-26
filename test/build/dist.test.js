@@ -47,6 +47,17 @@ function loadGlobal (filename) {
   return context.jsyaml
 }
 
+function assertEs5Bundle (filename) {
+  const code = fs.readFileSync(path.join(distDir, filename), 'utf8')
+
+  assert.doesNotMatch(code, /\bconst\b/)
+  assert.doesNotMatch(code, /\blet\b/)
+  assert.doesNotMatch(code, /=>/)
+  assert.doesNotMatch(code, /\bclass\b/)
+  assert.doesNotMatch(code, /`/)
+  assert.doesNotMatch(code, /Symbol\.toStringTag/)
+}
+
 describe('dist build', function () {
   it('keeps Vite proxy exports in sync with the CommonJS entry', async function () {
     const yaml = require('../../index.js')
@@ -66,6 +77,11 @@ describe('dist build', function () {
 
   it('exports the expected UMD API from js-yaml.min.js', function () {
     checkExports(require('../../dist/js-yaml.min.js'), { checkEsModule: true })
+  })
+
+  it('builds ES5-compatible UMD bundles', function () {
+    assertEs5Bundle('js-yaml.js')
+    assertEs5Bundle('js-yaml.min.js')
   })
 
   it('exports the expected ESM API from js-yaml.mjs', async function () {

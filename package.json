@@ -62,6 +62,10 @@
     "argparse": "^2.0.1"
   },
   "devDependencies": {
+    "@babel/core": "8.0.1",
+    "@babel/preset-env": "8.0.1",
+    "@rollup/plugin-commonjs": "29.0.3",
+    "@rollup/plugin-terser": "0.4.4",
     "c8": "^11.0.0",
     "codemirror": "^5.65.21",
     "eslint": "^9.39.4",
@@ -69,7 +73,7 @@
     "gh-pages": "^6.3.0",
     "neostandard": "^0.13.0",
     "tinybench": "^6.0.2",
-    "vite": "^8.0.14",
+    "vite": "7.3.6",
     "vite-plugin-node-polyfills": "^0.28.0",
     "vite-plugin-singlefile": "^2.3.3",
     "workerpool": "^10.0.2"
