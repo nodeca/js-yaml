@@ -6,12 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## 4.3.0 - Unreleased
+## 4.3.0 - 2026-06-27
 ### Added
 - [backport] Added `maxTotalMergeKeys` (10000) loader option to limit the total number of
   keys processed by YAML merge (`<<`) across one `load()` / `loadAll()` call.
 
-### Changed
+### Fixed
 - Restore umd builds back to es5.
 
 ### Removed
