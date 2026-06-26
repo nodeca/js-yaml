@@ -23,6 +23,9 @@
     "bin/",
     "dist/"
   ],
+  "publishConfig": {
+    "tag": "v3-legacy"
+  },
   "bin": {
     "js-yaml": "bin/js-yaml.js"
   },
