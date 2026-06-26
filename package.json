@@ -56,8 +56,7 @@
     "build": "node support/build-dist.mjs",
     "build:demo": "npm run lint && node support/build_demo.mjs",
     "gh-demo": "npm run build:demo && gh-pages -d demo -f",
-    "prepack": "npm test && npm run build && npm run build:demo",
-    "postpublish": "npm run gh-demo"
+    "prepack": "npm test && npm run build"
   },
   "unpkg": "dist/js-yaml.min.js",
   "jsdelivr": "dist/js-yaml.min.js",
