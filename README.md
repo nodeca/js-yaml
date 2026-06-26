@@ -90,8 +90,9 @@ options:
 - `json` _(default: false)_ - compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
 - `maxDepth` _(default: 100)_ - limits nesting depth for collections (does not
   take aliasees into account).
-- `maxMergeSeqLength` _(default: 20)_ - limits the number of items in merge
-  (`<<`) sequences.
+- `maxTotalMergeKeys` _(default: 10000)_ - limits the total number of keys
+  processed by merge (`<<`) across one `load()` / `loadAll()` call. Set to `-1`
+  to disable.
 
 NOTE: This function **does not** understand multi-document sources, it throws
 exception on those.
