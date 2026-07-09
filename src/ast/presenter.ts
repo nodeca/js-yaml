@@ -257,7 +257,14 @@ function isPlainSafe (c: number, prev: number, inblock: boolean) {
     !(prev === CHAR_COLON && !cIsNsChar)
   ) || // false on ': '
   (isNsCharOrWhitespace(prev) && !isWhitespace(prev) && c === CHAR_SHARP) || // change to true on '[^ ]#'
-  (prev === CHAR_COLON && cIsNsChar) // change to true on ':[^ ]'
+  (prev === CHAR_COLON && cIsNsChar &&
+    // outside block context a following c-flow-indicator is not ns-plain-safe
+    (inblock ||
+      (c !== CHAR_COMMA &&
+       c !== CHAR_LEFT_SQUARE_BRACKET &&
+       c !== CHAR_RIGHT_SQUARE_BRACKET &&
+       c !== CHAR_LEFT_CURLY_BRACKET &&
+       c !== CHAR_RIGHT_CURLY_BRACKET))) // change to true on ':[^ ]'
 }
 
 // Simplified test for values allowed as the first character in plain style.
