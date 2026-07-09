@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { dump, JSON_SCHEMA, CORE_SCHEMA, defineMappingTag, realMapTag, YAMLException } from 'js-yaml'
+import { dump, load, JSON_SCHEMA, CORE_SCHEMA, defineMappingTag, realMapTag, YAMLException } from 'js-yaml'
 
 describe('dump options', () => {
   it('schema — decides which plain scalars need quoting', () => {
@@ -94,6 +94,16 @@ describe('dump options', () => {
     assert.equal(dump({ a: [1, 2] }), 'a:\n  - 1\n  - 2\n')
     assert.equal(dump({ a: [1, 2] }, { flowLevel: 0 }), '{a: [1, 2]}\n')
     assert.equal(dump({ a: [1, 2] }, { flowLevel: 1 }), 'a: [1, 2]\n')
+  })
+
+  it('flowLevel — quotes a colon followed by a flow indicator', () => {
+    // In flow context a `:` followed by a flow indicator ({ } [ ] ,) is not
+    // plain-safe (ns-plain-safe-in excludes c-flow-indicator), so the value
+    // must be quoted for the output to re-parse.
+    for (const value of [':{', ':[', ':,', ':}', ':]', 'x:{']) {
+      assert.deepStrictEqual(load(dump([value], { flowLevel: 0 })), [value])
+      assert.deepStrictEqual(load(dump({ k: value }, { flowLevel: 0 })), { k: value })
+    }
   })
 
   it('transform — mutates the generated documents before presentation', () => {
