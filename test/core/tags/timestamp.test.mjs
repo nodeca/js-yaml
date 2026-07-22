@@ -44,6 +44,35 @@ describe('tags', () => {
     assert.throws(() => { load('!!timestamp', { schema: YAML11_SCHEMA }) }, YAMLException)
   })
 
+  it('timestamp: years 0-99 are not remapped into the 1900s', () => {
+    // Build expected dates without Date.UTC(), whose two-digit-year legacy
+    // behaviour is exactly what we are guarding against.
+    const utc = (y, mo, d, h = 0, mi = 0, s = 0, ms = 0) => {
+      const date = new Date(0)
+      date.setUTCFullYear(y, mo, d)
+      date.setUTCHours(h, mi, s, ms)
+      return date
+    }
+
+    // Valid four-digit years below 100 must resolve to the real year, not
+    // 1900 + year.
+    assert.deepStrictEqual(load('0001-01-01', { schema: YAML11_SCHEMA }), utc(1, 0, 1))
+    assert.deepStrictEqual(load('0050-06-15T12:30:00Z', { schema: YAML11_SCHEMA }), utc(50, 5, 15, 12, 30, 0))
+    assert.deepStrictEqual(load('0099-12-31', { schema: YAML11_SCHEMA }), utc(99, 11, 31))
+    // Leap day valid in the real year (year 4 is a leap year).
+    assert.deepStrictEqual(load('0004-02-29', { schema: YAML11_SCHEMA }), utc(4, 1, 29))
+
+    // Invalid calendar dates in the low-year range are still rejected (year 1
+    // is not a leap year), i.e. left as a plain string.
+    assert.strictEqual(load('0001-02-29', { schema: YAML11_SCHEMA }), '0001-02-29')
+
+    // And such dates survive a dump -> load round-trip.
+    const dates = [utc(1, 0, 1), utc(50, 5, 15, 12, 30, 0), utc(99, 11, 31)]
+    assert.deepStrictEqual(
+      load(dump(dates, { schema: YAML11_SCHEMA }), { schema: YAML11_SCHEMA }),
+      dates)
+  })
+
   it('timestamp rejects values normalized by Date', () => {
     const invalid = [
       '2023-99-99',

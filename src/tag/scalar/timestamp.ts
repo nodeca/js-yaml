@@ -27,6 +27,10 @@ function resolveYamlTimestamp (source: string) {
   // Date-only form (`YYYY-MM-DD`) has no time captures.
   if (!match[4]) {
     const date = new Date(Date.UTC(year, month, day))
+    // Date.UTC() maps years 0-99 into 1900-1999; restore the intended year so
+    // low four-digit years (e.g. 0001) resolve correctly. Passing month/day
+    // re-checks the leap day against the real year.
+    if (year >= 0 && year <= 99) date.setUTCFullYear(year, month, day)
     // Reject dates that JS would normalize, e.g. 2023-02-29 -> 2023-03-01.
     if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month || date.getUTCDate() !== day) {
       return NOT_RESOLVED
@@ -49,6 +53,11 @@ function resolveYamlTimestamp (source: string) {
   }
 
   const date = new Date(Date.UTC(year, month, day, hour, minute, second, fraction))
+
+  // Date.UTC() maps years 0-99 into 1900-1999; restore the intended year so
+  // low four-digit years (e.g. 0001) resolve correctly. Passing month/day
+  // re-checks the leap day against the real year.
+  if (year >= 0 && year <= 99) date.setUTCFullYear(year, month, day)
 
   // Reject invalid calendar dates before applying timezone offset.
   if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month || date.getUTCDate() !== day) {
