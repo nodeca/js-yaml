@@ -148,6 +148,18 @@ function addMappingEvent (
   })
 }
 
+function insertFlowPairMappingEvent (state: ParserState, snapshot: ParserSnapshot) {
+  state.events.splice(snapshot.eventsLength, 0, {
+    type: EVENT_MAPPING,
+    start: snapshot.position,
+    anchorStart: NO_RANGE,
+    anchorEnd: NO_RANGE,
+    tagStart: NO_RANGE,
+    tagEnd: NO_RANGE,
+    style: COLLECTION_STYLE_FLOW
+  })
+}
+
 function addScalarEvent (
   state: ParserState,
   valueStart: number,
@@ -911,14 +923,8 @@ function readFlowCollection (state: ParserState, nodeIndent: number, props: Node
       state.position++
       skipFlowSeparationSpace(state, nodeIndent)
       if (!isMapping) {
-        restoreState(state, entryStart)
-        addMappingEvent(state, entryStart.position, NO_RANGE, NO_RANGE, NO_RANGE, NO_RANGE, COLLECTION_STYLE_FLOW)
-        if (!parseNode(state, nodeIndent, CONTEXT_FLOW_IN, false, true)) {
-          addEmptyScalarEvent(state)
-        }
-        skipFlowSeparationSpace(state, nodeIndent)
-        state.position++
-        skipFlowSeparationSpace(state, nodeIndent)
+        insertFlowPairMappingEvent(state, entryStart)
+        if (!keyWasRead) addEmptyScalarEvent(state)
       } else if (!keyWasRead) {
         addEmptyScalarEvent(state)
       }
@@ -933,9 +939,8 @@ function readFlowCollection (state: ParserState, nodeIndent: number, props: Node
     } else if (isMapping) {
       addEmptyScalarEvent(state)
     } else if (isPair) {
-      restoreState(state, entryStart)
-      addMappingEvent(state, entryStart.position, NO_RANGE, NO_RANGE, NO_RANGE, NO_RANGE, COLLECTION_STYLE_FLOW)
-      parseNode(state, nodeIndent, CONTEXT_FLOW_IN, false, true)
+      insertFlowPairMappingEvent(state, entryStart)
+      if (!keyWasRead) addEmptyScalarEvent(state)
       addEmptyScalarEvent(state)
       addPopEvent(state)
     }

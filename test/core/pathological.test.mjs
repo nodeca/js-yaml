@@ -41,6 +41,14 @@ describe('Pathological tests', () => {
     })
   })
 
+  describe('Flow collection pairs', () => {
+    it('throws YAMLException on nested flow pairs without reparsing keys exponentially', () => {
+      assertYamlException(() => {
+        load('[ '.repeat(40) + '1' + ' ]: 0'.repeat(40))
+      }, /object-based map does not support complex keys/)
+    })
+  })
+
   describe('Merge aliases', () => {
     it('throws YAMLException when merge chain exceeds maxTotalMergeKeys', () => {
       assertYamlException(() => {
