@@ -264,7 +264,7 @@ function mergeKeys (state: ConstructorState, frame: MappingFrame, source: unknow
 
     const err = frame.tag.addPair(frame.value, sourceKey, sourceTag.get(source, sourceKey))
     if (err) throwError(state, err)
-    ;(frame.overridable ??= new Set()).add(sourceKey)
+    ;(frame.overridable ??= new Set()).add(frame.tag.normalizeKey(sourceKey))
   }
 }
 
@@ -295,13 +295,13 @@ function addMappingValue (state: ConstructorState, frame: MappingFrame, key: unk
     return
   }
 
-  if (!state.json && frame.tag.has(frame.value, key) && !frame.overridable?.has(key)) {
+  if (!state.json && frame.tag.has(frame.value, key) && !frame.overridable?.has(frame.tag.normalizeKey(key))) {
     throwError(state, 'duplicated mapping key')
   }
 
   const err = frame.tag.addPair(frame.value, key, value)
   if (err) throwError(state, err)
-  frame.overridable?.delete(key)
+  frame.overridable?.delete(frame.tag.normalizeKey(key))
 }
 
 function addValue (state: ConstructorState, value: unknown, tag: AnyTag) {

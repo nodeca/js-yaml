@@ -61,7 +61,8 @@ const legacyMapTag = defineMappingTag('tag:yaml.org,2002:map', {
     return normalizedKey !== null && Object.prototype.hasOwnProperty.call(container, normalizedKey)
   },
   keys: (container) => Object.keys(container),
-  get: (container, key) => container[String(key)]
+  get: (container, key) => container[String(key)],
+  normalizeKey
 })
 
 export { legacyMapTag, isPlainObject, type StringMapping }

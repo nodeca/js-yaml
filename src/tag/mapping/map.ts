@@ -35,7 +35,8 @@ const mapTag = defineMappingTag('tag:yaml.org,2002:map', {
     return Object.prototype.hasOwnProperty.call(container, String(key))
   },
   keys: (container) => Object.keys(container),
-  get: (container, key) => container[String(key)]
+  get: (container, key) => container[String(key)],
+  normalizeKey: (key) => (key !== null && typeof key === 'object' ? key : String(key))
 })
 
 export { mapTag, isPlainObject, type StringMapping }

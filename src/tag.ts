@@ -58,6 +58,11 @@ interface MappingTagDefinition<Carrier = unknown, Result = Carrier> {
   has: (carrier: Carrier, key: unknown) => boolean
   keys: (result: Result) => Iterable<unknown>
   get: (result: Result, key: unknown) => unknown
+  // Canonical identity of a key, used when tracking merge-overridable keys.
+  // For object-based maps a resolved key (e.g. the number 10) and the string
+  // form it is stored under ("10") are the same key, so they must normalize
+  // alike; real Map/Set keys are already identity.
+  normalizeKey: (key: unknown) => unknown
   finalize: (carrier: Carrier) => Result
   carrierIsResult: boolean
   identify: IdentifyFn | null
@@ -112,6 +117,7 @@ type MappingTagOptions<Carrier, Result = Carrier> = {
   has: MappingTagDefinition<Carrier, Result>['has']
   keys: MappingTagDefinition<Carrier, Result>['keys']
   get: MappingTagDefinition<Carrier, Result>['get']
+  normalizeKey?: MappingTagDefinition<Carrier, Result>['normalizeKey']
   finalize?: MappingTagDefinition<Carrier, Result>['finalize']
 } & RepresentOptions<Result, Map<unknown, unknown>, MappingRepresent>
 
@@ -160,6 +166,7 @@ function defineMappingTag<Carrier, Result = Carrier> (tagName: string, options: 
     has: options.has,
     keys: options.keys,
     get: options.get,
+    normalizeKey: options.normalizeKey ?? (key => key),
     finalize: options.finalize ?? (carrier => carrier as unknown as Result),
     carrierIsResult,
     identify: options.identify ?? null,
