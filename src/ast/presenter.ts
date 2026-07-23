@@ -433,6 +433,11 @@ function chooseScalarStyle (state: PresenterState, string: string, layout: Retur
   if (blockIndent > 9 && needIndentIndicator(string)) {
     return STYLE_DOUBLE
   }
+  // A string of only newlines dumps poorly as a block scalar (|+ with blank
+  // lines). Prefer a double-quoted escape instead (#534).
+  if (hasLineBreak && !hasFoldableLine && string.replace(/\n/g, '') === '') {
+    return STYLE_DOUBLE
+  }
   // At this point we know block styles are valid.
   // Prefer literal style unless we want to fold.
   return hasFoldableLine ? STYLE_FOLDED : STYLE_LITERAL

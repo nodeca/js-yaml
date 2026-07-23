@@ -118,6 +118,12 @@ describe('ast presenter', () => {
     assert.equal(dump({ a: '' }, { schema }), "a: ''\n")
   })
 
+  it('quotes a newline-only string instead of using a block scalar', () => {
+    assert.equal(dump('\n'), '"\\n"\n')
+    assert.equal(dump({ x: '\n' }), 'x: "\\n"\n')
+    assert.equal(load(dump('\n')), '\n')
+  })
+
   it('applies flow recursively to descendants', () => {
     const documents = jsToAst([{ a: [1, 2], b: 'x\ny' }], CORE_SCHEMA)
     const node = documents[0].contents
