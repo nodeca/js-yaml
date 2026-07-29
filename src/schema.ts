@@ -39,10 +39,13 @@ interface TagDefinitionListMap {
 }
 
 function createTagDefinitionMap (): TagDefinitionMap {
+  // Object.create(null) avoids inheriting Object.prototype members (constructor,
+  // toString, __proto__, ...), which would otherwise shadow the "unknown tag" lookup
+  // miss below for a document-controlled tag name that happens to match one of them.
   return {
-    scalar: {},
-    sequence: {},
-    mapping: {}
+    scalar: Object.create(null),
+    sequence: Object.create(null),
+    mapping: Object.create(null)
   }
 }
 

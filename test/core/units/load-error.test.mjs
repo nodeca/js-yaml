@@ -152,6 +152,18 @@ x
   {
     name: 'tab indentation in a later block sequence entry',
     source: ' - foo\n \t- bar\n'
+  },
+  {
+    // An unregistered tag name that collides with an inherited Object.prototype
+    // member (constructor, toString, __proto__, valueOf, ...) must still be
+    // reported as an "unknown tag" YAMLException, not a raw TypeError from
+    // mistakenly dereferencing the inherited value as a tag definition.
+    name: 'unregistered scalar tag matching an Object.prototype member',
+    source: '!<constructor> x'
+  },
+  {
+    name: 'unregistered mapping tag matching an Object.prototype member',
+    source: '!<toString>\n  a: 1\n'
   }
 ]
 
