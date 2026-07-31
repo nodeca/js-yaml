@@ -1,7 +1,10 @@
-const DEFAULT_TAG_HANDLERS: Readonly<Record<string, string>> = {
-  '!': '!',
-  '!!': 'tag:yaml.org,2002:'
-}
+const DEFAULT_TAG_HANDLERS: Readonly<Record<string, string>> = Object.assign(
+  Object.create(null),
+  {
+    '!': '!',
+    '!!': 'tag:yaml.org,2002:'
+  }
+)
 
 function tagPercentEncode (source: string) {
   return encodeURI(source).replace(/!/g, '%21')

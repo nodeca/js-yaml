@@ -40,9 +40,9 @@ interface TagDefinitionListMap {
 
 function createTagDefinitionMap (): TagDefinitionMap {
   return {
-    scalar: {},
-    sequence: {},
-    mapping: {}
+    scalar: Object.create(null),
+    sequence: Object.create(null),
+    mapping: Object.create(null)
   }
 }
 

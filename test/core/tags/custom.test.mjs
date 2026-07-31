@@ -154,6 +154,20 @@ describe('tags', () => {
     )
   })
 
+  for (const [nodeKind, source] of [
+    ['scalar', '!<constructor> value'],
+    ['sequence', '!<constructor> []'],
+    ['mapping', '!<constructor> {}']
+  ]) {
+    it(`rejects an unknown ${nodeKind} tag named after an Object.prototype property`, () => {
+      assert.throws(() => { load(source) }, error => {
+        assert.ok(error instanceof YAMLException)
+        assert.equal(error.reason, `unknown ${nodeKind} tag !<constructor>`)
+        return true
+      })
+    })
+  }
+
   it('dumps a prefix-matched tag with a dynamic name', () => {
     const dynamicSchema = CORE_SCHEMA.withTags(defineScalarTag('!', {
       matchByTagPrefix: true,
