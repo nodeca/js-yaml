@@ -459,6 +459,11 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
       case EVENT_POP: {
         const frame = state.frames.pop()!
 
+        if (frame.kind === 'mapping' && frame.hasKey) {
+          state.position = frame.keyPosition
+          throwError(state, 'incomplete mapping pair in event stream')
+        }
+
         if (frame.kind === 'document') {
           state.documents.push(frame.value)
         } else {

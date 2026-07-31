@@ -214,6 +214,9 @@ function eventsToAst (events: Event[], options: FromEventsOptions): Document[] {
 
       case EVENT_POP: {
         const frame = state.frames.pop()!
+        if (frame.kind === 'mapping' && frame.key) {
+          throw new Error('incomplete mapping pair in event stream')
+        }
         if (frame.kind === 'document') {
           state.documents.push(frame.doc)
         } else {
