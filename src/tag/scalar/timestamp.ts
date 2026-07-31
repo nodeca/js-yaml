@@ -15,6 +15,24 @@ const YAML_TIMESTAMP_REGEXP = new RegExp(
   '(?:[ \\t]*(Z|([-+])([0-9][0-9]?)' +
   '(?::([0-9][0-9]))?))?$')
 
+function makeUtcDate (
+  year: number,
+  month: number,
+  day: number,
+  hour = 0,
+  minute = 0,
+  second = 0,
+  fraction = 0
+) {
+  const date = new Date(Date.UTC(year, month, day, hour, minute, second, fraction))
+
+  // Date.UTC() treats years 0..99 as 1900..1999. Restore the parsed YAML year
+  // before validating calendar normalization, e.g. reject 0001-02-29.
+  date.setUTCFullYear(year, month, day)
+
+  return date
+}
+
 function resolveYamlTimestamp (source: string) {
   let match = YAML_DATE_REGEXP.exec(source)
   if (match === null) match = YAML_TIMESTAMP_REGEXP.exec(source)
@@ -26,7 +44,7 @@ function resolveYamlTimestamp (source: string) {
 
   // Date-only form (`YYYY-MM-DD`) has no time captures.
   if (!match[4]) {
-    const date = new Date(Date.UTC(year, month, day))
+    const date = makeUtcDate(year, month, day)
     // Reject dates that JS would normalize, e.g. 2023-02-29 -> 2023-03-01.
     if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month || date.getUTCDate() !== day) {
       return NOT_RESOLVED
@@ -48,7 +66,7 @@ function resolveYamlTimestamp (source: string) {
     fraction = +value
   }
 
-  const date = new Date(Date.UTC(year, month, day, hour, minute, second, fraction))
+  const date = makeUtcDate(year, month, day, hour, minute, second, fraction)
 
   // Reject invalid calendar dates before applying timezone offset.
   if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month || date.getUTCDate() !== day) {
