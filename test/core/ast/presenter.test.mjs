@@ -128,6 +128,32 @@ describe('ast presenter', () => {
     assert.equal(present(documents, { schema: CORE_SCHEMA }), '[{a: [1, 2], b: "x\\ny"}]\n')
   })
 
+  it('keeps a tab-indented line in a folded scalar more-indented', () => {
+    const longTab = `\t${'word '.repeat(20).trim()}`
+    const spacedTab = `${'a'.repeat(90)} \tzzz`
+
+    // [source, value] — every source is already the canonical rendering of its
+    // value, so re-presenting it must reproduce it byte for byte.
+    const cases = [
+      // tab-indented line first, last, and between two folded lines
+      ['k: >\n  \t\n  detected\n', '\t\ndetected\n'],
+      ['k: >\n  detected\n  \tdeep\n', 'detected\n\tdeep\n'],
+      ['k: >\n  a\n  \tdeep\n  b\n', 'a\n\tdeep\nb\n'],
+      // over the line width, but a more-indented line is never folded
+      [`k: >\n  ${longTab}\n  tail\n`, `${longTab}\ntail\n`],
+      // folding here would start the next line with a tab, changing the value
+      [`k: >\n  ${spacedTab}\n`, `${spacedTab}\n`],
+      // controls: literal style and space indentation were always correct
+      ['k: |\n  a\n  \tdeep\n  b\n', 'a\n\tdeep\nb\n'],
+      ['k: >\n  a\n   deep\n  b\n', 'a\n deep\nb\n']
+    ]
+
+    for (const [source, value] of cases) {
+      assert.deepEqual(load(source, { schema: CORE_SCHEMA }), { k: value })
+      assert.equal(presentParsed(source), source)
+    }
+  })
+
   it('propagates seqNoIndent to nested sequences', () => {
     const documents = jsToAst([{ items: [{ a: 1 }] }], CORE_SCHEMA)
 
