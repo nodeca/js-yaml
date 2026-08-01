@@ -128,21 +128,15 @@ describe('ast presenter', () => {
     assert.equal(present(documents, { schema: CORE_SCHEMA }), '[{a: [1, 2], b: "x\\ny"}]\n')
   })
 
-  it('keeps a tab-indented line in a folded scalar more-indented', () => {
-    const longTab = `\t${'word '.repeat(20).trim()}`
-    const spacedTab = `${'a'.repeat(90)} \tzzz`
+  // [source, value] — every source is already the canonical rendering of its
+  // value, so re-presenting it must reproduce it byte for byte.
 
-    // [source, value] — every source is already the canonical rendering of its
-    // value, so re-presenting it must reproduce it byte for byte.
+  it('keeps a tab-indented line in a folded scalar more-indented', () => {
     const cases = [
       // tab-indented line first, last, and between two folded lines
       ['k: >\n  \t\n  detected\n', '\t\ndetected\n'],
       ['k: >\n  detected\n  \tdeep\n', 'detected\n\tdeep\n'],
       ['k: >\n  a\n  \tdeep\n  b\n', 'a\n\tdeep\nb\n'],
-      // over the line width, but a more-indented line is never folded
-      [`k: >\n  ${longTab}\n  tail\n`, `${longTab}\ntail\n`],
-      // folding here would start the next line with a tab, changing the value
-      [`k: >\n  ${spacedTab}\n`, `${spacedTab}\n`],
       // controls: literal style and space indentation were always correct
       ['k: |\n  a\n  \tdeep\n  b\n', 'a\n\tdeep\nb\n'],
       ['k: >\n  a\n   deep\n  b\n', 'a\n deep\nb\n']
@@ -152,6 +146,64 @@ describe('ast presenter', () => {
       assert.deepEqual(load(source, { schema: CORE_SCHEMA }), { k: value })
       assert.equal(presentParsed(source), source)
     }
+  })
+
+  it('never folds a tab-indented line over the width limit', () => {
+    const longTab = `\t${'word '.repeat(20).trim()}`
+    const source = `k: >\n  ${longTab}\n  tail\n`
+
+    assert.deepEqual(load(source, { schema: CORE_SCHEMA }), { k: `${longTab}\ntail\n` })
+    assert.equal(presentParsed(source), source)
+  })
+
+  it('does not fold a folded scalar at a space before a tab', () => {
+    // Folding here would start the next line with a tab, changing the value.
+    const spacedTab = `${'a'.repeat(90)} \tzzz`
+    const source = `k: >\n  ${spacedTab}\n`
+
+    assert.deepEqual(load(source, { schema: CORE_SCHEMA }), { k: `${spacedTab}\n` })
+    assert.equal(presentParsed(source), source)
+  })
+
+  // The presenter re-derives the block header and the fold points from the value,
+  // so a slip there silently changes the value instead of the formatting.
+  // Bytes aren't asserted — a source may legitimately use a form the presenter
+  // wouldn't pick (`>2` vs `>`); values have no such exceptions.
+  // Alphabet = one char per branch of getBlockValue(); the stretched copy is what
+  // pushes lines over the width limit, the only place folding happens.
+  it('preserves block scalar values through an AST round-trip', () => {
+    let bodies = ['']
+    let sweep = []
+
+    for (let length = 0; length < 4; length++) {
+      bodies = bodies.flatMap(body => ['a', ' ', '\t', '\n'].map(char => body + char))
+      sweep = sweep.concat(bodies)
+    }
+
+    sweep = sweep.concat(sweep.map(body => body.replaceAll('a', 'a'.repeat(90))))
+
+    let checked = 0
+
+    for (const body of sweep) {
+      for (const header of ['|', '|-', '|+', '>', '>-', '>+']) {
+        const indented = body.split('\n').map(line => line === '' ? '' : `  ${line}`).join('\n')
+        const source = `k: ${header}\n${indented}\n`
+        let value
+
+        // Not every generated body makes a valid scalar.
+        try {
+          value = load(source, { schema: CORE_SCHEMA })
+        } catch {
+          continue
+        }
+
+        checked++
+        assert.deepEqual(load(presentParsed(source), { schema: CORE_SCHEMA }), value, JSON.stringify(source))
+      }
+    }
+
+    // Guards against the sweep quietly emptying out and passing on nothing.
+    assert.ok(checked > 1000, `only ${checked} sources parsed`)
   })
 
   it('propagates seqNoIndent to nested sequences', () => {

@@ -406,7 +406,7 @@ function chooseScalarStyle (state: PresenterState, string: string, layout: Retur
           hasFoldableLine = hasFoldableLine ||
             // Foldable line = too long, and not more-indented.
             (i - previousLineBreak - 1 > lineWidth &&
-             string[previousLineBreak + 1] !== ' ')
+             !isMoreIndented(string[previousLineBreak + 1]))
           previousLineBreak = i
         }
       } else if (!isPrintable(char)) {
@@ -418,7 +418,7 @@ function chooseScalarStyle (state: PresenterState, string: string, layout: Retur
     // in case the end is missing a \n
     hasFoldableLine = hasFoldableLine || (shouldTrackWidth &&
       (i - previousLineBreak - 1 > lineWidth &&
-       string[previousLineBreak + 1] !== ' '))
+       !isMoreIndented(string[previousLineBreak + 1])))
   }
   // Although every style can represent \n without escaping, prefer block styles
   // for multiline, since they're more readable and they don't add empty lines.
@@ -555,7 +555,7 @@ function dropEndingNewline (string: string) {
 // A more-indented line is one starting with white space: YAML 1.2.2 [175]
 // s-nb-spaced-text, whose [33] s-white is a space *or a tab*. Matches the
 // parser's test in getBlockValue().
-function isMoreIndented (char: string | undefined) {
+function isMoreIndented (char: string) {
   return char === ' ' || char === '\t'
 }
 
@@ -583,7 +583,7 @@ function foldBlockScalar (string: string, width: number) {
     const prefix = match[1]
     const line = match[2]
 
-    moreIndented = isMoreIndented(line[0])
+    moreIndented = line !== '' && isMoreIndented(line[0])
     result += prefix +
       ((!prevMoreIndented && !moreIndented && line !== '') ? '\n' : '') +
       foldLine(line, width)
