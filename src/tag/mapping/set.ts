@@ -1,5 +1,6 @@
 import { defineMappingTag } from '../../tag.ts'
 
+/** @category Tags */
 const setTag = defineMappingTag('tag:yaml.org,2002:set', {
   create: () => new Set<unknown>(),
   identify: (data) => data instanceof Set,

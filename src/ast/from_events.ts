@@ -54,6 +54,7 @@ interface MappingFrame {
 
 type Frame = DocumentFrame | SequenceFrame | MappingFrame
 
+/** @category AST */
 interface FromEventsOptions {
   source: string
   schema: Schema
@@ -161,6 +162,7 @@ function addNode (state: FromEventsState, node: Node) {
   }
 }
 
+/** @category AST */
 function eventsToAst (events: Event[], options: FromEventsOptions): Document[] {
   const state: FromEventsState = {
     source: options.source,

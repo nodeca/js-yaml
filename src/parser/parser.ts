@@ -71,6 +71,7 @@ interface ParserSnapshot {
   eventsLength: number
 }
 
+/** @category Events */
 interface ParserOptions {
   filename?: string
   maxDepth?: number
@@ -1423,6 +1424,7 @@ function readDocument (state: ParserState) {
   }
 }
 
+/** @category Events */
 function parseEvents (input: string, options: ParserOptions): Event[] {
   const length = input.length
   const state: ParserState = {

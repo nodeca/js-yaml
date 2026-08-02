@@ -1,4 +1,6 @@
+/** @category other */
 const NOT_RESOLVED: unique symbol = Symbol('NOT_RESOLVED')
+/** @category other */
 const MERGE_KEY: unique symbol = Symbol('MERGE_KEY')
 
 type ScalarRepresent = (data: any) => string
@@ -8,6 +10,7 @@ type MappingRepresent = (data: any) => Map<unknown, unknown>
 type IdentifyFn = (data: any) => boolean
 type RepresentTagNameFn = (data: any) => string
 
+/** @category Tags */
 interface ScalarTagDefinition<Result = unknown> {
   tagName: string
   nodeKind: 'scalar'
@@ -28,6 +31,7 @@ interface ScalarTagDefinition<Result = unknown> {
   representTagName: RepresentTagNameFn | null
 }
 
+/** @category Tags */
 interface SequenceTagDefinition<Carrier = unknown, Result = Carrier> {
   tagName: string
   nodeKind: 'sequence'
@@ -42,6 +46,7 @@ interface SequenceTagDefinition<Carrier = unknown, Result = Carrier> {
   representTagName: RepresentTagNameFn | null
 }
 
+/** @category Tags */
 interface MappingTagDefinition<Carrier = unknown, Result = Carrier> {
   tagName: string
   nodeKind: 'mapping'
@@ -65,11 +70,13 @@ interface MappingTagDefinition<Carrier = unknown, Result = Carrier> {
   representTagName: RepresentTagNameFn | null
 }
 
+/** @category Tags */
 type TagDefinition =
   | ScalarTagDefinition<any>
   | SequenceTagDefinition<any, any>
   | MappingTagDefinition<any, any>
 
+/** @category Tags */
 interface ScalarTagOptions<Result> {
   implicit?: boolean
   matchByTagPrefix?: boolean
@@ -98,6 +105,7 @@ type RepresentOptions<Container, Canonical, Represent> =
           representTagName?: RepresentTagNameFn | null
         })
 
+/** @category Tags */
 type SequenceTagOptions<Carrier, Result = Carrier> = {
   matchByTagPrefix?: boolean
   create: SequenceTagDefinition<Carrier, Result>['create']
@@ -105,6 +113,7 @@ type SequenceTagOptions<Carrier, Result = Carrier> = {
   finalize?: SequenceTagDefinition<Carrier, Result>['finalize']
 } & RepresentOptions<Result, ArrayLike<unknown>, SequenceRepresent>
 
+/** @category Tags */
 type MappingTagOptions<Carrier, Result = Carrier> = {
   matchByTagPrefix?: boolean
   create: MappingTagDefinition<Carrier, Result>['create']
@@ -115,6 +124,7 @@ type MappingTagOptions<Carrier, Result = Carrier> = {
   finalize?: MappingTagDefinition<Carrier, Result>['finalize']
 } & RepresentOptions<Result, Map<unknown, unknown>, MappingRepresent>
 
+/** @category Tags */
 function defineScalarTag<Result> (tagName: string, options: ScalarTagOptions<Result>): ScalarTagDefinition<Result> {
   return {
     tagName,
@@ -129,6 +139,7 @@ function defineScalarTag<Result> (tagName: string, options: ScalarTagOptions<Res
   }
 }
 
+/** @category Tags */
 function defineSequenceTag<Carrier, Result = Carrier> (tagName: string, options: SequenceTagOptions<Carrier, Result>): SequenceTagDefinition<Carrier, Result> {
   const carrierIsResult = options.finalize === undefined
 
@@ -147,6 +158,7 @@ function defineSequenceTag<Carrier, Result = Carrier> (tagName: string, options:
   }
 }
 
+/** @category Tags */
 function defineMappingTag<Carrier, Result = Carrier> (tagName: string, options: MappingTagOptions<Carrier, Result>): MappingTagDefinition<Carrier, Result> {
   const carrierIsResult = options.finalize === undefined
 

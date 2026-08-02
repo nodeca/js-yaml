@@ -86,6 +86,7 @@ function resolveYamlTimestamp (source: string) {
   return date
 }
 
+/** @category Tags */
 const timestampTag = defineScalarTag('tag:yaml.org,2002:timestamp', {
   implicit: true,
   // Both patterns start with a 4-digit year, so source.charAt(0) is always a digit.

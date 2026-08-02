@@ -15,6 +15,7 @@ import {
   type MappingNode
 } from './nodes.ts'
 
+/** @category AST */
 interface FromJsOptions {
   noRefs?: boolean
   skipInvalid?: boolean
@@ -151,6 +152,7 @@ function build (state: FromJsState, object: unknown): Node | typeof INVALID {
 
 // A JS value is one YAML document. An unrepresentable root becomes an empty
 // document, which the presenter renders as an empty string.
+/** @category AST */
 function jsToAst (input: unknown, schema: Schema, options: FromJsOptions = {}): Document[] {
   const state: FromJsState = {
     representTypes: buildRepresentTypes(schema),

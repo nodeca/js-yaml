@@ -6,6 +6,7 @@ interface OmapCarrier {
   seen: Set<unknown>
 }
 
+/** @category Tags */
 const omapTag = defineSequenceTag('tag:yaml.org,2002:omap', {
   create: (): OmapCarrier => ({ list: [], seen: new Set() }),
   addItem: (carrier, item) => {

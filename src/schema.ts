@@ -77,6 +77,7 @@ function compileTags (tags: readonly TagDefinition[]) {
   return result
 }
 
+/** @category Schema */
 class Schema {
   readonly tags: readonly TagDefinition[]
   readonly implicitScalarTags: readonly ScalarTagDefinition[]
@@ -165,12 +166,14 @@ class Schema {
   }
 }
 
+/** @category Schema */
 const FAILSAFE_SCHEMA = new Schema([
   strTag,
   seqTag,
   mapTag
 ])
 
+/** @category Schema */
 const JSON_SCHEMA = new Schema([
   ...FAILSAFE_SCHEMA.tags,
   nullJsonTag,
@@ -179,6 +182,7 @@ const JSON_SCHEMA = new Schema([
   floatJsonTag
 ])
 
+/** @category Schema */
 const CORE_SCHEMA = new Schema([
   ...FAILSAFE_SCHEMA.tags,
   nullCoreTag,
@@ -187,6 +191,7 @@ const CORE_SCHEMA = new Schema([
   floatCoreTag
 ])
 
+/** @category Schema */
 const YAML11_SCHEMA = new Schema([
   ...FAILSAFE_SCHEMA.tags,
   nullYaml11Tag,

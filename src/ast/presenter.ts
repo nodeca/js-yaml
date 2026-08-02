@@ -57,6 +57,7 @@ ESCAPE_SEQUENCES[0xA0] = '\\_'
 ESCAPE_SEQUENCES[0x2028] = '\\L'
 ESCAPE_SEQUENCES[0x2029] = '\\P'
 
+/** @category AST */
 interface PresenterOptions {
   schema: Schema
   indent?: number
@@ -976,6 +977,7 @@ function writeDocumentDirectives (doc: Document) {
 }
 
 // Documents → text, including the trailing newline.
+/** @category AST */
 function present (documents: Document[], options: PresenterOptions): string {
   const state = createPresenterState(options)
   let result = ''

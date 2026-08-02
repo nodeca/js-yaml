@@ -31,6 +31,7 @@ function normalizeKey (key: unknown): string | null {
   return String(key)
 }
 
+/** @category Tags */
 const legacyMapTag = defineMappingTag('tag:yaml.org,2002:map', {
   create: (): StringMapping => ({}),
   identify: isPlainObject,

@@ -6,6 +6,7 @@ type RealMapping = Map<unknown, unknown>
 // A mapping represented as a real `Map`: keys keep their constructed type,
 // nothing is stringified. Drop-in replacement for the default `!!map` tag
 // (same tag name) — `CORE_SCHEMA.withTags(realMapTag)`.
+/** @category Tags */
 const realMapTag = defineMappingTag('tag:yaml.org,2002:map', {
   create: () => new Map<unknown, unknown>(),
   addPair: (container: RealMapping, key, value) => {

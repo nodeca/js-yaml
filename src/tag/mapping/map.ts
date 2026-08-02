@@ -3,6 +3,7 @@ import { isPlainObject } from '../../common/object.ts'
 
 type StringMapping = Record<string, unknown>
 
+/** @category Tags */
 const mapTag = defineMappingTag('tag:yaml.org,2002:map', {
   create: (): StringMapping => ({}),
   identify: isPlainObject,

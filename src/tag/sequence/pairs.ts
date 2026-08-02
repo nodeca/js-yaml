@@ -2,6 +2,7 @@ import { defineSequenceTag } from '../../tag.ts'
 
 type Pair = [unknown, unknown]
 
+/** @category Tags */
 const pairsTag = defineSequenceTag('tag:yaml.org,2002:pairs', {
   create: () => [] as Pair[],
   addItem: (container, item) => {

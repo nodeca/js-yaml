@@ -281,6 +281,7 @@ function getBlockValue (
   return result
 }
 
+/** @category Events */
 function getScalarValue (input: string, scalar: ScalarEvent): string {
   if (scalar.valueStart === NO_RANGE) return ''
 

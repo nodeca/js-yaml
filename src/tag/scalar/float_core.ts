@@ -44,6 +44,7 @@ function representYamlFloat (object: number) {
   return /^[-+]?[0-9]+e/.test(result) ? result.replace('e', '.e') : result
 }
 
+/** @category Tags */
 const floatCoreTag = defineScalarTag('tag:yaml.org,2002:float', {
   implicit: true,
   // Superset of source.charAt(0) over all matched inputs: optional sign, '.', or digit

@@ -43,6 +43,7 @@ function resolveYamlInteger (source: string, isExplicit: boolean) {
   return Number.isFinite(result) ? result : NOT_RESOLVED
 }
 
+/** @category Tags */
 const intJsonTag = defineScalarTag('tag:yaml.org,2002:int', {
   implicit: true,
   // Superset of source.charAt(0) over all matched inputs: optional '-' or digit.

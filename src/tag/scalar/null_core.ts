@@ -2,6 +2,7 @@ import { defineScalarTag, NOT_RESOLVED } from '../../tag.ts'
 
 const NULL_VALUES = ['', '~', 'null', 'Null', 'NULL']
 
+/** @category Tags */
 const nullCoreTag = defineScalarTag('tag:yaml.org,2002:null', {
   implicit: true,
   // Superset of source.charAt(0) over all matched inputs: '' (empty), '~', 'null'/'Null'/'NULL'.

@@ -75,6 +75,7 @@ interface Anchor {
   isValueFinal: boolean
 }
 
+/** @category Events */
 interface ConstructorOptions {
   source: string
   filename?: string
@@ -352,6 +353,7 @@ function storeAnchor (
   return null
 }
 
+/** @category Events */
 function constructFromEvents (events: Event[], options: ConstructorOptions): unknown[] {
   const state: ConstructorState = {
     ...DEFAULT_CONSTRUCTOR_OPTIONS,
