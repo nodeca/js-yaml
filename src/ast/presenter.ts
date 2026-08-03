@@ -60,17 +60,92 @@ ESCAPE_SEQUENCES[0x2029] = '\\P'
 /** @category AST */
 interface PresenterOptions {
   schema: Schema
+
+  /**
+   * Indentation width in spaces.
+   *
+   * @defaultValue `2`
+   */
   indent?: number
+
+  /**
+   * Does not add an indentation level to array elements when enabled.
+   *
+   * @defaultValue `false`
+   */
   seqNoIndent?: boolean
+
+  /**
+   * Allows a nested collection to start on the same line after `-`.
+   *
+   * @defaultValue `true`
+   */
   seqInlineFirst?: boolean
+
+  /**
+   * Sorts mapping keys when `true`. A function can be provided to define the
+   * sort order.
+   *
+   * @defaultValue `false`
+   */
   sortKeys?: boolean | ((a: any, b: any) => number)
+
+  /**
+   * Maximum line width. Set to `-1` for unlimited width.
+   *
+   * @defaultValue `80`
+   */
   lineWidth?: number
+
+  /**
+   * Adds spaces inside flow collection brackets: `{a: 1}` becomes `{ a: 1 }`.
+   *
+   * @defaultValue `false`
+   */
   flowBracketPadding?: boolean
+
+  /**
+   * Omits the space after commas in flow collections: `[1, 2]` becomes
+   * `[1,2]`.
+   *
+   * @defaultValue `false`
+   */
   flowSkipCommaSpace?: boolean
+
+  /**
+   * Omits the space after `:` in flow mappings: `{a: 1}` becomes `{a:1}`.
+   *
+   * @defaultValue `false`
+   */
   flowSkipColonSpace?: boolean
+
+  /**
+   * Quotes flow mapping keys: `{a: 1}` becomes `{"a": 1}`.
+   *
+   * @defaultValue `false`
+   */
   quoteFlowKeys?: boolean
+
+  /**
+   * Quoting style to use when a string needs quotes.
+   *
+   * @defaultValue `'single'`
+   */
   quoteStyle?: 'single' | 'double'
+
+  /**
+   * Quotes all non-key strings using {@link quoteStyle}.
+   *
+   * @defaultValue `false`
+   */
   forceQuotes?: boolean
+
+  /**
+   * Prints an explicit tag before an anchor: `&ref_0 !!set` becomes
+   * `!!set &ref_0`.
+   *
+   * @defaultValue `false`
+   */
   tagBeforeAnchor?: boolean
 }
 
@@ -976,8 +1051,11 @@ function writeDocumentDirectives (doc: Document) {
   return result
 }
 
-// Documents → text, including the trailing newline.
-/** @category AST */
+/**
+ * Documents → text, including the trailing newline.
+ *
+ * @category AST
+ */
 function present (documents: Document[], options: PresenterOptions): string {
   const state = createPresenterState(options)
   let result = ''

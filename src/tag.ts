@@ -16,17 +16,28 @@ interface ScalarTagDefinition<Result = unknown> {
   nodeKind: 'scalar'
   implicit: boolean
   matchByTagPrefix: boolean
-  // Set of `source.charAt(0)` keys for which `resolve` may succeed (a superset of
-  // what it really matches). A key is either a single character or '' (empty
-  // source). `null` means "no constraint, always try". Used by the composer to
-  // dispatch implicit scalars by first character without running every resolver.
+
+  /**
+   * Set of `source.charAt(0)` keys for which
+   * {@link ScalarTagDefinition.resolve} may succeed (a superset of
+   * what it really matches). A key is either a single character or '' (empty
+   * source). `null` means "no constraint, always try". Used by the composer to
+   * dispatch implicit scalars by first character without running every resolver.
+   */
   implicitFirstChars: readonly string[] | null
-  // `isExplicit` is true for an explicit tag (`!!tag`), false for implicit plain
-  // scalar resolution.
+
+  /**
+   * `isExplicit` is true for an explicit tag (`!!tag`), false for implicit plain
+   * scalar resolution.
+   */
   resolve: (source: string, isExplicit: boolean, tagName: string) => Result | typeof NOT_RESOLVED
   identify: IdentifyFn | null
-  // A scalar's printed form is text, so `represent` always yields a string. The
-  // factory supplies a `String(data)` default when a tag omits it.
+
+  /**
+   * A scalar's printed form is text, so
+   * {@link ScalarTagDefinition.represent} always yields a string.
+   * The factory supplies a `String(data)` default when a tag omits it.
+   */
   represent: ScalarRepresent
   representTagName: RepresentTagNameFn | null
 }
@@ -53,13 +64,21 @@ interface MappingTagDefinition<Carrier = unknown, Result = Carrier> {
   implicit: false
   matchByTagPrefix: boolean
   create: (tagName: string) => Carrier
-  // Writes a pair. Returns '' on success, a non-empty error message otherwise
-  // (key does not fit the representation, value rejected, ...). Always a string
-  // so the hot path never allocates an exception wrapper.
+
+  /**
+   * Writes a pair. Returns '' on success, a non-empty error message otherwise
+   * (key does not fit the representation, value rejected, ...). Always a string
+   * so the hot path never allocates an exception wrapper.
+   */
   addPair: (carrier: Carrier, key: unknown, value: unknown) => string
-  // Read side, mirrors `Map` — defining a representation means defining how to
-  // read it back. `has` is the hot dedup probe (membership without fetching the
-  // value); `keys`/`get` are used only on the cold merge path (`<<`).
+
+  /**
+   * Read side, mirrors `Map` — defining a representation means defining how to
+   * read it back. {@link MappingTagDefinition.has} is the hot dedup probe
+   * (membership without fetching the value);
+   * {@link MappingTagDefinition.keys}/{@link MappingTagDefinition.get}
+   * are used only on the cold merge path (`<<`).
+   */
   has: (carrier: Carrier, key: unknown) => boolean
   keys: (result: Result) => Iterable<unknown>
   get: (result: Result, key: unknown) => unknown

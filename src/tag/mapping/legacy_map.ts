@@ -31,7 +31,13 @@ function normalizeKey (key: unknown): string | null {
   return String(key)
 }
 
-/** @category Tags */
+/**
+ * This implementation exists solely to reproduce v4 behavior exactly. Its use
+ * is strongly discouraged. If complex or non-string keys are needed, use
+ * {@link realMapTag} instead.
+ *
+ * @category Tags
+ */
 const legacyMapTag = defineMappingTag('tag:yaml.org,2002:map', {
   create: (): StringMapping => ({}),
   identify: isPlainObject,

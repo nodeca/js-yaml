@@ -3,7 +3,27 @@ import { isPlainObject } from '../../common/object.ts'
 
 type StringMapping = Record<string, unknown>
 
-/** @category Tags */
+/**
+ * This is the default mapping implementation. It uses `{}` objects and has only
+ * partial functionality due to language limitations. This choice was made
+ * because users expect to get JavaScript objects, and it was left unchanged to
+ * avoid too many breaking changes in the v5 release.
+ *
+ * Side effects:
+ *
+ * - `Object.hasOwn()` checks or `for...of` loops are required for safe use (to
+ *   avoid falling through to prototypes).
+ * - Only scalar string keys are supported properly.
+ * - Other scalar keys, such as `null` and numbers, are converted to strings.
+ *   This is historical behaviour, and it can cause side effects such as
+ *   problems with `!!merge`.
+ *
+ * Note that non-string scalar keys may be deprecated in future versions.
+ *
+ * Ideally, use {@link realMapTag} instead.
+ *
+ * @category Tags
+ */
 const mapTag = defineMappingTag('tag:yaml.org,2002:map', {
   create: (): StringMapping => ({}),
   identify: isPlainObject,

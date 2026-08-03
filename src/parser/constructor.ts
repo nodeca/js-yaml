@@ -79,9 +79,36 @@ interface Anchor {
 interface ConstructorOptions {
   source: string
   filename?: string
+
+  /**
+   * Schema to use.
+   *
+   * @defaultValue {@link CORE_SCHEMA}
+   */
   schema?: Schema
+
+  /**
+   * Enables compatibility with `JSON.parse` behavior. Duplicate keys in a
+   * mapping override values instead of throwing an error.
+   *
+   * @defaultValue `false`
+   */
   json?: boolean
+
+  /**
+   * Maximum total number of keys processed by merge (`<<`) across one load
+   * call. Set to `-1` to disable the limit.
+   *
+   * @defaultValue `10000`
+   */
   maxTotalMergeKeys?: number
+
+  /**
+   * Maximum number of alias nodes (`*ref`) per document. Set to `0` to reject
+   * all aliases, or to `-1` for no limit.
+   *
+   * @defaultValue `-1`
+   */
   maxAliases?: number
 }
 

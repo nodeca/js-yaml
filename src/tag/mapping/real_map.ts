@@ -3,10 +3,30 @@ import { isPlainObject } from '../../common/object.ts'
 
 type RealMapping = Map<unknown, unknown>
 
-// A mapping represented as a real `Map`: keys keep their constructed type,
-// nothing is stringified. Drop-in replacement for the default `!!map` tag
-// (same tag name) — `CORE_SCHEMA.withTags(realMapTag)`.
-/** @category Tags */
+/**
+ * Recommended when non-string keys are actually needed. It uses native
+ * JavaScript `Map` objects, so keys keep their constructed types instead of
+ * being converted to strings.
+ *
+ * It is not the default to avoid widespread breaking changes in existing
+ * projects. `Map` has a different access API and does not pass deep equality
+ * checks against `{}`-based fixtures. Alongside the other changes in v5,
+ * making it the default was considered too disruptive.
+ *
+ * If these differences are acceptable for your project, we recommend using
+ * {@link realMapTag} to guarantee the absence of problems and side effects.
+ *
+ * @example
+ * Enable {@link realMapTag}:
+ *
+ * ```javascript
+ * import { load, CORE_SCHEMA, realMapTag } from 'js-yaml'
+ *
+ * load(data, { schema: CORE_SCHEMA.withTags(realMapTag) })
+ * ```
+ *
+ * @category Tags
+ */
 const realMapTag = defineMappingTag('tag:yaml.org,2002:map', {
   create: () => new Map<unknown, unknown>(),
   addPair: (container: RealMapping, key, value) => {

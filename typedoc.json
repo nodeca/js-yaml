@@ -9,8 +9,18 @@
   "navigationLinks": {
     "GitHub": "https://github.com/nodeca/js-yaml"
   },
-  "defaultCategory": "js-yaml",
-  "categoryOrder": ["js-yaml", "*"],
+  "defaultCategory": "missed (default)",
+  "categoryOrder": [
+    "Main",
+    "Schema",
+    "Tags",
+    "Events",
+    "Nodes",
+    "AST",
+    "*",
+    "other",
+    "missed (default)"
+  ],
   "sort": ["source-order"],
   "navigation": {
     "includeCategories": true

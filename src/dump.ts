@@ -14,11 +14,39 @@ import { intYaml11Tag } from './tag/scalar/int_yaml11.ts'
 import { floatCoreTag } from './tag/scalar/float_core.ts'
 import { floatYaml11Tag } from './tag/scalar/float_yaml11.ts'
 
+/** @category Main */
 interface DumpOptions extends Omit<PresenterOptions, 'schema'> {
+  /**
+   * Schema to use.
+   *
+   * @defaultValue A {@link YAML11_SCHEMA}-based schema.
+   */
   schema?: Schema
+
+  /**
+   * Skips invalid types instead of throwing. Invalid mapping pairs and sequence
+   * items are skipped; `undefined` sequence items are serialized as `null`.
+   *
+   * @defaultValue `false`
+   */
   skipInvalid?: boolean
+
+  /**
+   * Inlines duplicate objects instead of converting them into references.
+   *
+   * @defaultValue `false`
+   */
   noRefs?: boolean
+
+  /**
+   * Nesting level at which collections switch from block to flow style. Set to
+   * `-1` to never switch automatically.
+   *
+   * @defaultValue `-1`
+   */
   flowLevel?: number
+
+  /** Mutates the generated AST before it is rendered. */
   transform?: (documents: Document[]) => void
 }
 
@@ -52,6 +80,14 @@ const DEFAULT_DUMP_OPTIONS: Required<DumpOptions> = {
 
 // Options that need the JS value (tags, format, dedup) go to `jsToAst`; purely
 // presentational ones go to `present`.
+/**
+ * Serializes `object` as a YAML document. By default it can dump every
+ * supported YAML type, so it throws an exception if you try to dump regexps or
+ * functions. However, you can disable exceptions by setting the
+ * {@link DumpOptions.skipInvalid} option to `true`.
+ *
+ * @category Main
+ */
 function dump (input: any, options: DumpOptions = {}) {
   const opts = { ...DEFAULT_DUMP_OPTIONS, ...options }
 

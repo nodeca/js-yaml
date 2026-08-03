@@ -16,14 +16,23 @@ const VISIT_SKIP = Symbol('visit:skip')   // don't descend into this node's chil
 
 type VisitControl = typeof VISIT_BREAK | typeof VISIT_SKIP | undefined | void
 
-// Traversal-derived position of the current node. Kept off the node itself: a
-// node may sit in several places (alias/dedup reuse), so depth/role belong to
-// the walk, not the node. `parent.kind` + `isKey` pin the exact slot.
-/** @category AST */
+/**
+ * Traversal-derived position of the current node. Kept off the node itself: a
+ * node may sit in several places (alias/dedup reuse), so depth/role belong to
+ * the walk, not the node. {@link VisitContext.parent} `kind` +
+ * {@link VisitContext.isKey} pin the exact slot.
+ *
+ * @category AST
+ */
 interface VisitContext {
-  depth: number        // 0 = document content root
-  parent: Node | null  // enclosing sequence/mapping, null at the root
-  isKey: boolean       // node sits in a mapping key position
+  /** 0 = document content root */
+  depth: number
+
+  /** Enclosing sequence/mapping, null at the root */
+  parent: Node | null
+
+  /** Node sits in a mapping key position */
+  isKey: boolean
 }
 
 /** @category AST */
@@ -54,8 +63,12 @@ function visitNode (node: Node, visitor: Visitor, ctx: VisitContext): boolean {
   return false
 }
 
-// Walk every node in the documents, calling `visitor` once per node (pre-order).
-/** @category AST */
+/**
+ * Walk every node in the documents, calling {@link Visitor} once per
+ * node (pre-order).
+ *
+ * @category AST
+ */
 function visit (documents: Document[], visitor: Visitor): void {
   for (const doc of documents) {
     if (doc.contents && visitNode(doc.contents, visitor, { depth: 0, parent: null, isKey: false })) return

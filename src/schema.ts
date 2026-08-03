@@ -81,18 +81,30 @@ function compileTags (tags: readonly TagDefinition[]) {
 class Schema {
   readonly tags: readonly TagDefinition[]
   readonly implicitScalarTags: readonly ScalarTagDefinition[]
-  // Dispatch implicit scalar resolvers by `source.charAt(0)`. Each bucket holds the
-  // resolvers that may match that key, in schema order; a key absent from the map
-  // uses `implicitScalarAnyFirstChar` (resolvers that declared no first-char
-  // constraint, so they apply to any first character).
+
+  /**
+   * Dispatch implicit scalar resolvers by `source.charAt(0)`. Each bucket holds
+   * the resolvers that may match that key, in schema order; a key absent from
+   * the map uses
+   * {@link Schema.implicitScalarAnyFirstChar}
+   * (resolvers that declared no first-char constraint, so they apply to any
+   * first character).
+   */
   readonly implicitScalarByFirstChar: ReadonlyMap<string, readonly ScalarTagDefinition[]>
   readonly implicitScalarAnyFirstChar: readonly ScalarTagDefinition[]
-  // The default scalar tag (`!!str`), resolved once so the composer's fallback for
-  // unresolved plain scalars avoids a keyed lookup per scalar.
+
+  /**
+   * The default scalar tag (`!!str`), resolved once so the composer's fallback
+   * for unresolved plain scalars avoids a keyed lookup per scalar.
+   */
   readonly defaultScalarTag: ScalarTagDefinition
-  // The default container tags (`!!seq` / `!!map`), used by the dumper: when a
-  // value is identified by its default tag, the tag is implicit and not printed.
-  // Undefined if the schema does not define them (then such values can't be dumped).
+
+  /**
+   * The default container tags (`!!seq` / `!!map`), used by the dumper: when a
+   * value is identified by its default tag, the tag is implicit and not
+   * printed. Undefined if the schema does not define them (then such values
+   * can't be dumped).
+   */
   readonly defaultSequenceTag: SequenceTagDefinition | undefined
   readonly defaultMappingTag: MappingTagDefinition | undefined
   readonly exact: TagDefinitionMap
@@ -182,7 +194,21 @@ const JSON_SCHEMA = new Schema([
   floatJsonTag
 ])
 
-/** @category Schema */
+/**
+ * The default schema for the loaders. Note, {@link CORE_SCHEMA} comes
+ * without the `!!merge` tag. You can easily enable it if needed.
+ *
+ * @example
+ * Enable {@link mergeTag}:
+ *
+ * ```javascript
+ * import { load, CORE_SCHEMA, mergeTag } from 'js-yaml'
+ *
+ * load(data, { schema: CORE_SCHEMA.withTags(mergeTag) })
+ * ```
+ *
+ * @category Schema
+ */
 const CORE_SCHEMA = new Schema([
   ...FAILSAFE_SCHEMA.tags,
   nullCoreTag,

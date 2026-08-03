@@ -20,6 +20,7 @@ function formatError (exception: YAMLException, compact?: boolean) {
   return `${exception.reason} ${where}`
 }
 
+/** @category Main */
 class YAMLException extends Error {
   reason: string
   mark?: SnippetMark

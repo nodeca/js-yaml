@@ -54,8 +54,8 @@ an exception on those.
 
 options:
 
-- `filename` _(default: null)_ - string to be used as a file path in
-  error/warning messages.
+- `filename` _(default: null)_ - string to be used as a file path in error
+  messages.
 - `schema` _(default: `CORE_SCHEMA`)_ - specifies a schema to use.
   - `FAILSAFE_SCHEMA` - only strings, arrays and plain objects.
   - `JSON_SCHEMA` - all JSON-supported types.

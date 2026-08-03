@@ -16,13 +16,15 @@ class Style {
 
 /** @category Nodes */
 interface NodeBase {
-  // YAML tag. Untagged nodes carry the semantic resolved tag; tagged nodes carry
-  // the printable/verbatim tag spelling.
+  /**
+   * YAML tag. Untagged nodes carry the semantic resolved tag; tagged nodes carry
+   * the printable/verbatim tag spelling.
+   */
   tag: string
   style: Style
   anchor?: string
 
-  // Reserved for the formatting layer; not populated by the dumper yet.
+  /** Reserved for the formatting layer; not populated by the dumper yet. */
   commentBefore?: string
   comment?: string
   commentAfter?: string
@@ -50,21 +52,30 @@ interface MappingNode extends NodeBase {
 /** @category Nodes */
 interface AliasNode extends NodeBase {
   kind: 'alias'
-  // The anchor name this alias points at (`*name`).
+  /** The anchor name this alias points at (`*name`). */
   anchor: string
 }
 
 /** @category Nodes */
 type Node = ScalarNode | SequenceNode | MappingNode | AliasNode
 
-// The layer above `Node`: each document wraps one content node plus its own
-// markers/directives. Not a member of `Node` — the fields differ. Document
-// directives are ordered presentation data.
-/** @category Nodes */
+/**
+ * The layer above {@link Node}: each document wraps one content node plus its
+ * own markers/directives. Not a member of {@link Node} — the fields differ.
+ * Document directives are ordered presentation data.
+ *
+ * @category Nodes
+ */
 interface Document {
-  contents: Node | null            // null = empty document
-  explicitStart?: boolean          // print '---'
-  explicitEnd?: boolean            // print '...'
+  /** null = empty document */
+  contents: Node | null
+
+  /** print '---' */
+  explicitStart?: boolean
+
+  /** print '...' */
+  explicitEnd?: boolean
+
   directives: DocumentDirective[]
 }
 

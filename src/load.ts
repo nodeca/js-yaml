@@ -12,6 +12,7 @@ import {
 } from './parser/parser.ts'
 
 // `source` is supplied by `loadDocuments` itself, not by the public caller.
+/** @category Main */
 interface LoadOptions extends ParserOptions, Omit<ConstructorOptions, 'source'> {}
 
 type LoadAllIterator = (document: unknown) => void
@@ -34,9 +35,22 @@ function loadDocuments (input: string, options: LoadOptions = {}) {
   return constructFromEvents(events, { ...pick(opts, CONSTRUCTOR_OPT_KEYS), source })
 }
 
-// Signatures with iterator are deprecated. Will be removed in the next versions.
+/**
+ * Same as {@link load}, but understands multi-document sources.
+ * Returns an array of documents.
+ *
+ * @category Main
+ */
 function loadAll (input: string, options?: LoadOptions): unknown[]
+
+/**
+ * @deprecated Iterator is not supported.
+ */
 function loadAll (input: string, iterator: null, options?: LoadOptions): unknown[]
+
+/**
+ * @deprecated Iterator is not supported.
+ */
 function loadAll (input: string, iterator: LoadAllIterator, options?: LoadOptions): void
 function loadAll (
   input: string,
@@ -57,6 +71,37 @@ function loadAll (
   for (const document of documents) iterator(document)
 }
 
+/**
+ * Parses `string` as a single YAML document. Throws {@link YAMLException} on
+ * error. This function does not understand multi-document or empty sources; it
+ * throws an exception on those.
+ *
+ * > [!WARNING]
+ * > When processing untrusted input, see the
+ * > [security considerations](../docs/safety.md).
+ *
+ * > [!NOTE]
+ * > The default {@link CORE_SCHEMA} comes without the `!!merge` tag. You can
+ * > easily enable it if needed.
+ *
+ * > [!WARNING]
+ * > The default {@link mapTag} is `{}`-object based and does not allow complex
+ * > keys (objects, arrays and so on). That's an intentional choice for
+ * > convenience. Also, non-string scalar keys, such as `null`, numbers or
+ * > booleans, are converted to strings. For non-string keys use
+ * > {@link realMapTag} instead (it uses native JS `Map`).
+ *
+ * @example
+ * Enable {@link mergeTag} and {@link realMapTag}:
+ *
+ * ```javascript
+ * import { load, CORE_SCHEMA, mergeTag, realMapTag } from 'js-yaml'
+ *
+ * load(data, { schema: CORE_SCHEMA.withTags(mergeTag, realMapTag) })
+ * ```
+ *
+ * @category Main
+ */
 function load (input: string, options?: LoadOptions) {
   const documents = loadDocuments(input, options)
 

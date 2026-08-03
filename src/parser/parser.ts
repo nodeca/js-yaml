@@ -73,7 +73,18 @@ interface ParserSnapshot {
 
 /** @category Events */
 interface ParserOptions {
+  /**
+   * File path used in error messages.
+   *
+   * @defaultValue `null`
+   */
   filename?: string
+
+  /**
+   * Maximum nesting depth for collections. Aliases are not taken into account.
+   *
+   * @defaultValue `100`
+   */
   maxDepth?: number
 }
 
