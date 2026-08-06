@@ -14,12 +14,7 @@ import {
   eventsToAst,
   present,
   visit,
-  EVENT_DOCUMENT,
-  EVENT_SEQUENCE,
-  EVENT_MAPPING,
-  EVENT_SCALAR,
-  EVENT_ALIAS,
-  EVENT_POP,
+  EVENT_ID,
   SCALAR_STYLE_SINGLE_QUOTED,
   SCALAR_STYLE_DOUBLE_QUOTED,
   SCALAR_STYLE_LITERAL_BLOCK,
@@ -145,34 +140,34 @@ function actualTreeLines (input) {
   let tagHandlers = Object.create(null)
 
   for (const event of events) {
-    if (event.type === EVENT_DOCUMENT) {
+    if (event.type === EVENT_ID.DOCUMENT) {
       tagHandlers = tagHandlersFromDirectives(event.directives)
       lines.push(event.explicitStart ? '+DOC ---' : '+DOC')
       stack.push(event)
-    } else if (event.type === EVENT_SEQUENCE) {
+    } else if (event.type === EVENT_ID.SEQUENCE) {
       const style = event.style === COLLECTION_STYLE_FLOW ? ' []' : ''
       const props = formatProperties(input, event, tagHandlers)
       lines.push(`+SEQ${style} ${props}`.replace(/\s+/g, ' ').trimEnd())
       stack.push(event)
-    } else if (event.type === EVENT_MAPPING) {
+    } else if (event.type === EVENT_ID.MAPPING) {
       const style = event.style === COLLECTION_STYLE_FLOW ? ' {}' : ''
       const props = formatProperties(input, event, tagHandlers)
       lines.push(`+MAP${style} ${props}`.replace(/\s+/g, ' ').trimEnd())
       stack.push(event)
-    } else if (event.type === EVENT_SCALAR) {
+    } else if (event.type === EVENT_ID.SCALAR) {
       const props = formatProperties(input, event, tagHandlers)
       const value = escapeTreeValue(getScalarValue(input, event))
       lines.push(`=VAL ${props}${scalarStyleMarker(event.style)}${value}`)
-    } else if (event.type === EVENT_ALIAS) {
+    } else if (event.type === EVENT_ID.ALIAS) {
       lines.push(`=ALI *${formatRange(input, event.anchorStart, event.anchorEnd)}`)
-    } else if (event.type === EVENT_POP) {
+    } else if (event.type === EVENT_ID.POP) {
       const opened = stack.pop()
 
-      if (opened?.type === EVENT_DOCUMENT) {
+      if (opened?.type === EVENT_ID.DOCUMENT) {
         lines.push(opened.explicitEnd ? '-DOC ...' : '-DOC')
-      } else if (opened?.type === EVENT_SEQUENCE) {
+      } else if (opened?.type === EVENT_ID.SEQUENCE) {
         lines.push('-SEQ')
-      } else if (opened?.type === EVENT_MAPPING) {
+      } else if (opened?.type === EVENT_ID.MAPPING) {
         lines.push('-MAP')
       }
     }

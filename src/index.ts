@@ -53,12 +53,7 @@ export { dump, type DumpOptions } from './dump.ts'
 export { YAMLException } from './common/exception.ts'
 
 export {
-  EVENT_DOCUMENT,
-  EVENT_SEQUENCE,
-  EVENT_MAPPING,
-  EVENT_SCALAR,
-  EVENT_ALIAS,
-  EVENT_POP,
+  EVENT_ID,
   SCALAR_STYLE_PLAIN,
   SCALAR_STYLE_SINGLE_QUOTED,
   SCALAR_STYLE_DOUBLE_QUOTED,

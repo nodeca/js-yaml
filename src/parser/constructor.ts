@@ -1,10 +1,5 @@
 import {
-  EVENT_ALIAS,
-  EVENT_DOCUMENT,
-  EVENT_MAPPING,
-  EVENT_POP,
-  EVENT_SCALAR,
-  EVENT_SEQUENCE,
+  EVENT_ID,
   SCALAR_STYLE_PLAIN,
   type Event,
   type TagHandlers,
@@ -401,7 +396,7 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
     state.position = eventPosition(event)
 
     switch (event.type) {
-      case EVENT_DOCUMENT:
+      case EVENT_ID.DOCUMENT:
         state.anchors = new Map()
         state.aliasCount = 0
         state.tagHandlers = Object.create(null)
@@ -411,14 +406,14 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
         state.frames.push({ kind: 'document', position: state.position, value: undefined, hasValue: false })
         break
 
-      case EVENT_SCALAR: {
+      case EVENT_ID.SCALAR: {
         const { value, tag } = constructScalar(state, event)
         storeAnchor(state, event, value, tag, true)
         addValue(state, value, tag)
         break
       }
 
-      case EVENT_SEQUENCE: {
+      case EVENT_ID.SEQUENCE: {
         const definition = collectionTag(
           state,
           event,
@@ -443,7 +438,7 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
         break
       }
 
-      case EVENT_MAPPING: {
+      case EVENT_ID.MAPPING: {
         const definition = collectionTag(
           state,
           event,
@@ -468,7 +463,7 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
         break
       }
 
-      case EVENT_ALIAS: {
+      case EVENT_ID.ALIAS: {
         if (state.maxAliases !== -1 && ++state.aliasCount > state.maxAliases) {
           throwError(state, `aliases exceeded maxAliases (${state.maxAliases})`)
         }
@@ -485,7 +480,7 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
         break
       }
 
-      case EVENT_POP: {
+      case EVENT_ID.POP: {
         const frame = state.frames.pop()!
 
         if (frame.kind === 'mapping' && frame.hasKey) {

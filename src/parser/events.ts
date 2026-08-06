@@ -1,19 +1,14 @@
-/** @category other */
-const EVENT_DOCUMENT = 1
-/** @category other */
-const EVENT_SEQUENCE = 2
-/** @category other */
-const EVENT_MAPPING = 3
-/** @category other */
-const EVENT_SCALAR = 4
-/** @category other */
-const EVENT_ALIAS = 5
-/** @category other */
-const EVENT_POP = 6
+/** @category Events */
+const EVENT_ID = {
+  DOCUMENT: 1,
+  SEQUENCE: 2,
+  MAPPING: 3,
+  SCALAR: 4,
+  ALIAS: 5,
+  POP: 6
+} as const
 
-type EventType =
-  typeof EVENT_DOCUMENT | typeof EVENT_SEQUENCE | typeof EVENT_MAPPING |
-  typeof EVENT_SCALAR | typeof EVENT_ALIAS | typeof EVENT_POP
+type EventId = typeof EVENT_ID[keyof typeof EVENT_ID]
 
 /** @category Nodes */
 const SCALAR_STYLE_PLAIN = 1
@@ -58,7 +53,7 @@ type TagHandlers = Record<string, string>
 
 /** @category Events */
 interface DocumentEvent {
-  type: typeof EVENT_DOCUMENT
+  type: typeof EVENT_ID.DOCUMENT
   explicitStart: boolean
   explicitEnd: boolean
   directives: DocumentDirective[]
@@ -66,7 +61,7 @@ interface DocumentEvent {
 
 /** @category Events */
 interface SequenceEvent {
-  type: typeof EVENT_SEQUENCE
+  type: typeof EVENT_ID.SEQUENCE
   start: number
   anchorStart: number
   anchorEnd: number
@@ -77,7 +72,7 @@ interface SequenceEvent {
 
 /** @category Events */
 interface MappingEvent {
-  type: typeof EVENT_MAPPING
+  type: typeof EVENT_ID.MAPPING
   start: number
   anchorStart: number
   anchorEnd: number
@@ -88,7 +83,7 @@ interface MappingEvent {
 
 /** @category Events */
 interface ScalarEvent {
-  type: typeof EVENT_SCALAR
+  type: typeof EVENT_ID.SCALAR
   valueStart: number
   valueEnd: number
   anchorStart: number
@@ -103,14 +98,14 @@ interface ScalarEvent {
 
 /** @category Events */
 interface AliasEvent {
-  type: typeof EVENT_ALIAS
+  type: typeof EVENT_ID.ALIAS
   anchorStart: number
   anchorEnd: number
 }
 
 /** @category Events */
 interface PopEvent {
-  type: typeof EVENT_POP
+  type: typeof EVENT_ID.POP
 }
 
 /** @category Events */
@@ -123,12 +118,7 @@ type Event =
   PopEvent
 
 export {
-  EVENT_DOCUMENT,
-  EVENT_SEQUENCE,
-  EVENT_MAPPING,
-  EVENT_SCALAR,
-  EVENT_ALIAS,
-  EVENT_POP,
+  EVENT_ID,
 
   SCALAR_STYLE_PLAIN,
   SCALAR_STYLE_SINGLE_QUOTED,
@@ -143,7 +133,7 @@ export {
   CHOMPING_STRIP,
   CHOMPING_KEEP,
 
-  type EventType,
+  type EventId,
   type ScalarStyle,
   type CollectionStyle,
 

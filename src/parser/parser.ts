@@ -1,10 +1,5 @@
 import {
-  EVENT_DOCUMENT,
-  EVENT_SEQUENCE,
-  EVENT_MAPPING,
-  EVENT_SCALAR,
-  EVENT_ALIAS,
-  EVENT_POP,
+  EVENT_ID,
   SCALAR_STYLE_PLAIN,
   SCALAR_STYLE_SINGLE_QUOTED,
   SCALAR_STYLE_DOUBLE_QUOTED,
@@ -113,7 +108,7 @@ function addDocumentEvent (
   explicitEnd: boolean
 ) {
   state.events.push({
-    type: EVENT_DOCUMENT,
+    type: EVENT_ID.DOCUMENT,
     explicitStart,
     explicitEnd,
     directives: state.directives
@@ -130,7 +125,7 @@ function addSequenceEvent (
   style: CollectionStyle
 ) {
   state.events.push({
-    type: EVENT_SEQUENCE,
+    type: EVENT_ID.SEQUENCE,
     start,
     anchorStart,
     anchorEnd,
@@ -150,7 +145,7 @@ function addMappingEvent (
   style: CollectionStyle
 ) {
   state.events.push({
-    type: EVENT_MAPPING,
+    type: EVENT_ID.MAPPING,
     start,
     anchorStart,
     anchorEnd,
@@ -162,7 +157,7 @@ function addMappingEvent (
 
 function insertFlowPairMappingEvent (state: ParserState, snapshot: ParserSnapshot) {
   state.events.splice(snapshot.eventsLength, 0, {
-    type: EVENT_MAPPING,
+    type: EVENT_ID.MAPPING,
     start: snapshot.position,
     anchorStart: NO_RANGE,
     anchorEnd: NO_RANGE,
@@ -186,7 +181,7 @@ function addScalarEvent (
   fast = false
 ) {
   state.events.push({
-    type: EVENT_SCALAR,
+    type: EVENT_ID.SCALAR,
     valueStart,
     valueEnd,
     anchorStart,
@@ -206,14 +201,14 @@ function addAliasEvent (
   anchorEnd: number
 ) {
   state.events.push({
-    type: EVENT_ALIAS,
+    type: EVENT_ID.ALIAS,
     anchorStart,
     anchorEnd
   })
 }
 
 function addPopEvent (state: ParserState) {
-  state.events.push({ type: EVENT_POP })
+  state.events.push({ type: EVENT_ID.POP })
 }
 
 function addEmptyScalarEvent (state: ParserState) {
@@ -1207,7 +1202,7 @@ function parseNode (
         const mappingIndent = state.position - state.lineStart
 
         if (readBlockMapping(state, mappingIndent, flowIndent, props) &&
-            state.events[fallbackState.eventsLength]?.type === EVENT_MAPPING) {
+            state.events[fallbackState.eventsLength]?.type === EVENT_ID.MAPPING) {
           state.depth--
           return true
         }
@@ -1271,7 +1266,7 @@ function parseNode (
           restoreState(state, propertyStart)
 
           if (readBlockMapping(state, propertyIndent, flowIndent, emptyProperties()) &&
-              state.events[fallbackState.eventsLength]?.type === EVENT_MAPPING) {
+              state.events[fallbackState.eventsLength]?.type === EVENT_ID.MAPPING) {
             hasContent = true
           } else {
             restoreState(state, fallbackState)
@@ -1424,7 +1419,7 @@ function readDocument (state: ParserState) {
   }
 
   const documentEvent = state.events[documentEventIndex]
-  if (documentEvent?.type === EVENT_DOCUMENT) documentEvent.explicitEnd = explicitEnd
+  if (documentEvent?.type === EVENT_ID.DOCUMENT) documentEvent.explicitEnd = explicitEnd
 
   addPopEvent(state)
 

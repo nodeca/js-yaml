@@ -4,12 +4,7 @@
 // original styles, tags and anchors, so parsed YAML can be re-dumped faithfully.
 
 import {
-  EVENT_ALIAS,
-  EVENT_DOCUMENT,
-  EVENT_MAPPING,
-  EVENT_POP,
-  EVENT_SCALAR,
-  EVENT_SEQUENCE,
+  EVENT_ID,
   SCALAR_STYLE_PLAIN,
   SCALAR_STYLE_SINGLE_QUOTED,
   SCALAR_STYLE_DOUBLE_QUOTED,
@@ -178,7 +173,7 @@ function eventsToAst (events: Event[], options: FromEventsOptions): Document[] {
     state.position = eventPosition(event)
 
     switch (event.type) {
-      case EVENT_DOCUMENT: {
+      case EVENT_ID.DOCUMENT: {
         const doc: Document = {
           contents: null,
           explicitStart: event.explicitStart,
@@ -189,32 +184,32 @@ function eventsToAst (events: Event[], options: FromEventsOptions): Document[] {
         break
       }
 
-      case EVENT_SCALAR:
+      case EVENT_ID.SCALAR:
         addNode(state, buildScalar(state, event))
         break
 
-      case EVENT_SEQUENCE: {
+      case EVENT_ID.SEQUENCE: {
         const { tag, style, anchor } = buildCollection(state, event, 'tag:yaml.org,2002:seq')
         const node: SequenceNode = { kind: 'sequence', tag, style, anchor, items: [] }
         state.frames.push({ kind: 'sequence', node })
         break
       }
 
-      case EVENT_MAPPING: {
+      case EVENT_ID.MAPPING: {
         const { tag, style, anchor } = buildCollection(state, event, 'tag:yaml.org,2002:map')
         const node: MappingNode = { kind: 'mapping', tag, style, anchor, items: [] }
         state.frames.push({ kind: 'mapping', node, key: null })
         break
       }
 
-      case EVENT_ALIAS: {
+      case EVENT_ID.ALIAS: {
         const name = state.source.slice(event.anchorStart, event.anchorEnd)
         const node: AliasNode = { kind: 'alias', tag: '', style: new Style(), anchor: name }
         addNode(state, node)
         break
       }
 
-      case EVENT_POP: {
+      case EVENT_ID.POP: {
         const frame = state.frames.pop()!
         if (frame.kind === 'mapping' && frame.key) {
           throw new Error('incomplete mapping pair in event stream')
