@@ -8,7 +8,8 @@ const mergeTag = defineScalarTag('tag:yaml.org,2002:merge', {
   resolve: (source, isExplicit) => {
     if (source === '<<' || (isExplicit && source === '')) return MERGE_KEY
     return NOT_RESOLVED
-  }
+  },
+  identify: () => false
 })
 
 export { mergeTag }

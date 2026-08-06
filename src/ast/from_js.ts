@@ -67,9 +67,9 @@ function matchTag (state: FromJsState, object: unknown): { tag: TagDefinition, t
   for (let index = 0, length = state.representTypes.length; index < length; index += 1) {
     const { tag, implicitTag } = state.representTypes[index]
 
-    if (tag.identify && tag.identify(object)) {
+    if (tag.identify(object)) {
       let tagName: string
-      if (tag.matchByTagPrefix && tag.representTagName) {
+      if (tag.matchByTagPrefix) {
         tagName = tag.representTagName(object)
       } else {
         tagName = tag.tagName

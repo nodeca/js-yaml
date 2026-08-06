@@ -31,7 +31,12 @@ interface ScalarTagDefinition<Result = unknown> {
    * scalar resolution.
    */
   resolve: (source: string, isExplicit: boolean, tagName: string) => Result | typeof NOT_RESOLVED
-  identify: IdentifyFn | null
+
+  /**
+   * Selects this tag for a JavaScript value when dumping. Use `() => false`
+   * for load-only tags.
+   */
+  identify: IdentifyFn
 
   /**
    * A scalar's printed form is text, so
@@ -39,7 +44,7 @@ interface ScalarTagDefinition<Result = unknown> {
    * The factory supplies a `String(data)` default when a tag omits it.
    */
   represent: ScalarRepresent
-  representTagName: RepresentTagNameFn | null
+  representTagName: RepresentTagNameFn
 }
 
 /** @category Tags */
@@ -52,9 +57,14 @@ interface SequenceTagDefinition<Carrier = unknown, Result = Carrier> {
   addItem: (carrier: Carrier, item: unknown, index: number) => void | string
   finalize: (carrier: Carrier) => Result
   carrierIsResult: boolean
-  identify: IdentifyFn | null
+
+  /**
+   * Selects this tag for a JavaScript value when dumping. Use `() => false`
+   * for load-only tags.
+   */
+  identify: IdentifyFn
   represent: SequenceRepresent
-  representTagName: RepresentTagNameFn | null
+  representTagName: RepresentTagNameFn
 }
 
 /** @category Tags */
@@ -84,9 +94,14 @@ interface MappingTagDefinition<Carrier = unknown, Result = Carrier> {
   get: (result: Result, key: unknown) => unknown
   finalize: (carrier: Carrier) => Result
   carrierIsResult: boolean
-  identify: IdentifyFn | null
+
+  /**
+   * Selects this tag for a JavaScript value when dumping. Use `() => false`
+   * for load-only tags.
+   */
+  identify: IdentifyFn
   represent: MappingRepresent
-  representTagName: RepresentTagNameFn | null
+  representTagName: RepresentTagNameFn
 }
 
 /** @category Tags */
@@ -99,30 +114,34 @@ type TagDefinition =
 interface ScalarTagOptions<Result> {
   implicit?: boolean
   matchByTagPrefix?: boolean
+
+  /**
+   * Set of `source.charAt(0)` keys for which `resolve` may succeed (a superset
+   * of what it really matches). A key is either a single character or '' (empty
+   * source). `null` means "no constraint, always try". Used by the composer to
+   * dispatch implicit scalars by first character without running every resolver.
+   */
   implicitFirstChars?: readonly string[] | null
+
+  /**
+   * `isExplicit` is true for an explicit tag (`!!tag`), false for implicit plain
+   * scalar resolution.
+   */
   resolve: ScalarTagDefinition<Result>['resolve']
-  identify?: ScalarTagDefinition<Result>['identify']
+
+  /**
+   * Selects this tag for a JavaScript value when dumping. Use `() => false`
+   * for load-only tags.
+   */
+  identify: ScalarTagDefinition<Result>['identify']
+
+  /**
+   * A scalar's printed form is text, so `represent` always yields a string.
+   * The factory supplies a `String(data)` default when a tag omits it.
+   */
   represent?: ScalarTagDefinition<Result>['represent']
   representTagName?: ScalarTagDefinition<Result>['representTagName']
 }
-
-type RepresentOptions<Container, Canonical, Represent> =
-  | {
-      identify?: null
-      represent?: Represent
-      representTagName?: RepresentTagNameFn | null
-    }
-  | (Container extends Canonical
-      ? {
-          identify?: IdentifyFn | null
-          represent?: Represent
-          representTagName?: RepresentTagNameFn | null
-        }
-      : {
-          identify: IdentifyFn
-          represent: Represent
-          representTagName?: RepresentTagNameFn | null
-        })
 
 /** @category Tags */
 type SequenceTagOptions<Carrier, Result = Carrier> = {
@@ -130,18 +149,46 @@ type SequenceTagOptions<Carrier, Result = Carrier> = {
   create: SequenceTagDefinition<Carrier, Result>['create']
   addItem: SequenceTagDefinition<Carrier, Result>['addItem']
   finalize?: SequenceTagDefinition<Carrier, Result>['finalize']
-} & RepresentOptions<Result, ArrayLike<unknown>, SequenceRepresent>
+
+  /**
+   * Selects this tag for a JavaScript value when dumping. Use `() => false`
+   * for load-only tags.
+   */
+  identify: SequenceTagDefinition<Carrier, Result>['identify']
+  represent?: SequenceTagDefinition<Carrier, Result>['represent']
+  representTagName?: SequenceTagDefinition<Carrier, Result>['representTagName']
+}
 
 /** @category Tags */
 type MappingTagOptions<Carrier, Result = Carrier> = {
   matchByTagPrefix?: boolean
   create: MappingTagDefinition<Carrier, Result>['create']
+
+  /**
+   * Writes a pair. Returns '' on success, a non-empty error message otherwise
+   * (key does not fit the representation, value rejected, ...). Always a string
+   * so the hot path never allocates an exception wrapper.
+   */
   addPair: MappingTagDefinition<Carrier, Result>['addPair']
+
+  /**
+   * Read side, mirrors `Map` — defining a representation means defining how to
+   * read it back. `has` is the hot dedup probe (membership without fetching the
+   * value); `keys` and `get` are used only on the cold merge path (`<<`).
+   */
   has: MappingTagDefinition<Carrier, Result>['has']
   keys: MappingTagDefinition<Carrier, Result>['keys']
   get: MappingTagDefinition<Carrier, Result>['get']
   finalize?: MappingTagDefinition<Carrier, Result>['finalize']
-} & RepresentOptions<Result, Map<unknown, unknown>, MappingRepresent>
+
+  /**
+   * Selects this tag for a JavaScript value when dumping. Use `() => false`
+   * for load-only tags.
+   */
+  identify: MappingTagDefinition<Carrier, Result>['identify']
+  represent?: MappingTagDefinition<Carrier, Result>['represent']
+  representTagName?: MappingTagDefinition<Carrier, Result>['representTagName']
+}
 
 /** @category Tags */
 function defineScalarTag<Result> (tagName: string, options: ScalarTagOptions<Result>): ScalarTagDefinition<Result> {
@@ -152,9 +199,9 @@ function defineScalarTag<Result> (tagName: string, options: ScalarTagOptions<Res
     matchByTagPrefix: options.matchByTagPrefix ?? false,
     implicitFirstChars: options.implicitFirstChars ?? null,
     resolve: options.resolve,
-    identify: options.identify ?? null,
+    identify: options.identify,
     represent: options.represent ?? (data => String(data)),
-    representTagName: options.representTagName ?? null
+    representTagName: options.representTagName ?? (() => tagName)
   }
 }
 
@@ -171,9 +218,9 @@ function defineSequenceTag<Carrier, Result = Carrier> (tagName: string, options:
     addItem: options.addItem,
     finalize: options.finalize ?? (carrier => carrier as unknown as Result),
     carrierIsResult,
-    identify: options.identify ?? null,
+    identify: options.identify,
     represent: options.represent ?? (data => data as ArrayLike<unknown>),
-    representTagName: options.representTagName ?? null
+    representTagName: options.representTagName ?? (() => tagName)
   }
 }
 
@@ -193,9 +240,9 @@ function defineMappingTag<Carrier, Result = Carrier> (tagName: string, options: 
     get: options.get,
     finalize: options.finalize ?? (carrier => carrier as unknown as Result),
     carrierIsResult,
-    identify: options.identify ?? null,
+    identify: options.identify,
     represent: options.represent ?? (data => data as Map<unknown, unknown>),
-    representTagName: options.representTagName ?? null
+    representTagName: options.representTagName ?? (() => tagName)
   }
 }
 

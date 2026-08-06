@@ -185,6 +185,8 @@ both loading and dumping, and you register it via `schema.withTags(...)`.
 The model is different, not just renamed: instead of one `construct(data)`, the
 collection tags build incrementally (`create` + `addItem` / `addPair`), scalars
 return the value or `NOT_RESOLVED`, and `instanceOf` becomes `identify`.
+`identify` is required because it explicitly controls whether the tag may be
+selected when dumping. For a load-only tag, use `identify: () => false`.
 
 ```js
 // v4

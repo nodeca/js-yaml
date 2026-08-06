@@ -49,7 +49,8 @@ const omapTag = defineSequenceTag('tag:yaml.org,2002:omap', {
     carrier.list.push(item)
     return ''
   },
-  finalize: (carrier): unknown[] => carrier.list
+  finalize: (carrier): unknown[] => carrier.list,
+  identify: () => false
 })
 
 export { omapTag }

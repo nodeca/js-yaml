@@ -118,14 +118,16 @@ describe('tags', () => {
   it('custom tag with multiple node kinds', () => {
     const multiSchema = CORE_SCHEMA.withTags([
       defineScalarTag('!Include', {
-        resolve: (obj) => obj
+        resolve: (obj) => obj,
+        identify: () => false
       }),
       defineMappingTag('!Include', {
         create: () => ({}),
         addPair: (container, key, value) => { container[String(key)] = value },
         has: (container, key) => Object.hasOwn(container, String(key)),
         keys: (container) => Object.keys(container),
-        get: (container, key) => container[String(key)]
+        get: (container, key) => container[String(key)],
+        identify: () => false
       })
     ])
 
@@ -136,12 +138,16 @@ describe('tags', () => {
   it('matches exact tags before tag prefixes', () => {
     const prefixTag = prefix => defineScalarTag(prefix, {
       matchByTagPrefix: true,
-      resolve: (value, _isExplicit, tag) => ({ prefix, tag, value })
+      resolve: (value, _isExplicit, tag) => ({ prefix, tag, value }),
+      identify: () => false
     })
     const prefixSchema = CORE_SCHEMA.withTags([
       prefixTag('!foo'),
       prefixTag('!'),
-      defineScalarTag('!foo', { resolve: value => ({ exact: true, value }) })
+      defineScalarTag('!foo', {
+        resolve: value => ({ exact: true, value }),
+        identify: () => false
+      })
     ])
 
     assert.deepEqual(
@@ -310,7 +316,8 @@ describe('tags', () => {
   it('does not call the placeholder finalizer when the carrier is the result', () => {
     const tag = defineSequenceTag('!identity', {
       create: () => [],
-      addItem: (carrier, item) => { carrier.push(item) }
+      addItem: (carrier, item) => { carrier.push(item) },
+      identify: () => false
     })
     tag.finalize = () => { throw new Error('placeholder finalizer was called') }
 

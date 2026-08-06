@@ -168,7 +168,8 @@ timestamp:
 #
 # var SexyYamlTag = jsyaml.defineSequenceTag('!sexy', {
 #   create: function () { return []; },
-#   addItem: function (container, item) { container.push('sexy ' + item); }
+#   addItem: function (container, item) { container.push('sexy ' + item); },
+#   identify: function () { return false; }
 # });
 #
 # var SEXY_SCHEMA = jsyaml.YAML11_SCHEMA.withTags(SexyYamlTag);

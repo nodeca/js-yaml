@@ -25,7 +25,8 @@ function decodeBase64 (str) {
 
 const SexyYamlTag = jsyaml.defineSequenceTag('!sexy', {
   create: () => [],
-  addItem: (container, item) => { container.push(`sexy ${item}`) }
+  addItem: (container, item) => { container.push(`sexy ${item}`) },
+  identify: () => false
 })
 
 const SEXY_SCHEMA = jsyaml.YAML11_SCHEMA.withTags(SexyYamlTag)

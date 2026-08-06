@@ -45,7 +45,8 @@ const pairsTag = defineSequenceTag('tag:yaml.org,2002:pairs', {
 
     container.push([keys[0], object[keys[0]]] satisfies Pair)
     return ''
-  }
+  },
+  identify: () => false
 })
 
 export { pairsTag }

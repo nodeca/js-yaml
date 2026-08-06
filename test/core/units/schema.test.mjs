@@ -7,7 +7,8 @@ describe('schema (coverage)', () => {
     const badTag = defineScalarTag('!bad', {
       implicit: true,
       matchByTagPrefix: true,
-      resolve: () => 'x'
+      resolve: () => 'x',
+      identify: () => false
     })
 
     assert.throws(() => new Schema([badTag]), /Implicit scalar tags cannot match by tag prefix/)
