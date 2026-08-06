@@ -1,18 +1,33 @@
-/** @category other */
+/**
+ * Returned by a scalar resolver when the source does not match its tag.
+ *
+ * @category other
+ */
 const NOT_RESOLVED: unique symbol = Symbol('NOT_RESOLVED')
-/** @category other */
+
+/**
+ * Constructed value of the YAML merge key (`<<`).
+ *
+ * @category other
+ */
 const MERGE_KEY: unique symbol = Symbol('MERGE_KEY')
 
-type ScalarRepresent = (data: any) => string
-type SequenceRepresent = (data: any) => ArrayLike<unknown>
-type MappingRepresent = (data: any) => Map<unknown, unknown>
-
-type IdentifyFn = (data: any) => boolean
-type RepresentTagNameFn = (data: any) => string
-
-/** @category Tags */
+/**
+ * Options for {@link defineScalarTag}.
+ *
+ * @category Tags
+ */
 interface ScalarTagOptions<Result> {
+  /**
+   * Whether this tag participates in resolving plain scalars without an
+   * explicit tag. Default: `false`.
+   */
   implicit?: boolean
+
+  /**
+   * Whether explicit tag names are matched by prefix instead of exact equality.
+   * Default: `false`.
+   */
   matchByTagPrefix?: boolean
 
   /**
@@ -24,8 +39,9 @@ interface ScalarTagOptions<Result> {
   implicitFirstChars?: readonly string[] | null
 
   /**
-   * `isExplicit` is true for an explicit tag (`!!tag`), false for implicit plain
-   * scalar resolution.
+   * Construct a value from scalar text, or return {@link NOT_RESOLVED} when it
+   * is invalid for this tag. `isExplicit` is true for an explicit tag and
+   * `tagName` is the actual matched name.
    */
   resolve: (source: string, isExplicit: boolean, tagName: string) => Result | typeof NOT_RESOLVED
 
@@ -33,49 +49,97 @@ interface ScalarTagOptions<Result> {
    * Selects this tag for a JavaScript value when dumping. Use `() => false`
    * for load-only tags.
    */
-  identify: IdentifyFn
+  identify: (data: any) => boolean
 
   /**
    * A scalar's printed form is text, so `represent` always yields a string.
    * The factory supplies a `String(data)` default when a tag omits it.
    */
-  represent?: ScalarRepresent
-  representTagName?: RepresentTagNameFn
+  represent?: (data: any) => string
+
+  /** Return the tag name to emit for a prefix-matching tag. Defaults to `tagName`. */
+  representTagName?: (data: any) => string
 }
 
-/** @category Tags */
+/**
+ * Normalized scalar tag returned by {@link defineScalarTag}.
+ *
+ * @category Tags
+ */
 interface ScalarTagDefinition<Result = unknown> extends Required<ScalarTagOptions<Result>> {
+  /** Tag name used for schema lookup. */
   tagName: string
+
+  /** YAML node kind handled by this tag. */
   nodeKind: 'scalar'
 }
 
-/** @category Tags */
+/**
+ * Options for {@link defineSequenceTag}.
+ *
+ * @category Tags
+ */
 interface SequenceTagOptions<Carrier, Result = Carrier> {
+  /**
+   * Whether explicit tag names are matched by prefix instead of exact equality.
+   * Default: `false`.
+   */
   matchByTagPrefix?: boolean
+
+  /** Create the carrier used while constructing a sequence. */
   create: (tagName: string) => Carrier
+
+  /** Add an item to the carrier. Return a non-empty error message to reject it. */
   addItem: (carrier: Carrier, item: unknown, index: number) => void | string
+
+  /** Convert the completed carrier to the result. Defaults to the identity function. */
   finalize?: (carrier: Carrier) => Result
 
   /**
    * Selects this tag for a JavaScript value when dumping. Use `() => false`
    * for load-only tags.
    */
-  identify: IdentifyFn
-  represent?: SequenceRepresent
-  representTagName?: RepresentTagNameFn
+  identify: (data: any) => boolean
+
+  /** Return the array-like contents to dump. Defaults to the identity function. */
+  represent?: (data: any) => ArrayLike<unknown>
+
+  /** Return the tag name to emit for a prefix-matching tag. Defaults to `tagName`. */
+  representTagName?: (data: any) => string
 }
 
-/** @category Tags */
+/**
+ * Normalized sequence tag returned by {@link defineSequenceTag}.
+ *
+ * @category Tags
+ */
 interface SequenceTagDefinition<Carrier = unknown, Result = Carrier> extends Required<SequenceTagOptions<Carrier, Result>> {
+  /** Tag name used for schema lookup. */
   tagName: string
+
+  /** YAML node kind handled by this tag. */
   nodeKind: 'sequence'
+
+  /** Sequence tags do not participate in implicit scalar resolution. */
   implicit: false
+
+  /** Whether the carrier is also the final result (`finalize` was omitted). */
   carrierIsResult: boolean
 }
 
-/** @category Tags */
+/**
+ * Options for {@link defineMappingTag}.
+ *
+ * @category Tags
+ */
 interface MappingTagOptions<Carrier, Result = Carrier> {
+  /**
+   * Whether explicit tag names are matched by prefix instead of exact equality.
+   * Default: `false`.
+   */
   matchByTagPrefix?: boolean
+
+  /** Create the carrier used while constructing a mapping. */
   create: (tagName: string) => Carrier
 
   /**
@@ -85,40 +149,65 @@ interface MappingTagOptions<Carrier, Result = Carrier> {
    */
   addPair: (carrier: Carrier, key: unknown, value: unknown) => string
 
-  /**
-   * Read side, mirrors `Map` — defining a representation means defining how to
-   * read it back. `has` is the hot dedup probe (membership without fetching the
-   * value); `keys` and `get` are used only on the cold merge path (`<<`).
-   */
+  /** Return whether the carrier contains a key, for duplicate and merge checks. */
   has: (carrier: Carrier, key: unknown) => boolean
+
+  /** Return the keys of a completed result for YAML merge processing. */
   keys: (result: Result) => Iterable<unknown>
+
+  /** Return a value from a completed result for YAML merge processing. */
   get: (result: Result, key: unknown) => unknown
+
+  /** Convert the completed carrier to the result. Defaults to the identity function. */
   finalize?: (carrier: Carrier) => Result
 
   /**
    * Selects this tag for a JavaScript value when dumping. Use `() => false`
    * for load-only tags.
    */
-  identify: IdentifyFn
-  represent?: MappingRepresent
-  representTagName?: RepresentTagNameFn
+  identify: (data: any) => boolean
+
+  /** Return the mapping entries to dump. Defaults to the identity function. */
+  represent?: (data: any) => Map<unknown, unknown>
+
+  /** Return the tag name to emit for a prefix-matching tag. Defaults to `tagName`. */
+  representTagName?: (data: any) => string
 }
 
-/** @category Tags */
+/**
+ * Normalized mapping tag returned by {@link defineMappingTag}.
+ *
+ * @category Tags
+ */
 interface MappingTagDefinition<Carrier = unknown, Result = Carrier> extends Required<MappingTagOptions<Carrier, Result>> {
+  /** Tag name used for schema lookup. */
   tagName: string
+
+  /** YAML node kind handled by this tag. */
   nodeKind: 'mapping'
+
+  /** Mapping tags do not participate in implicit scalar resolution. */
   implicit: false
+
+  /** Whether the carrier is also the final result (`finalize` was omitted). */
   carrierIsResult: boolean
 }
 
-/** @category Tags */
+/**
+ * Any normalized tag definition accepted by {@link Schema}.
+ *
+ * @category Tags
+ */
 type TagDefinition =
   | ScalarTagDefinition<any>
   | SequenceTagDefinition<any, any>
   | MappingTagDefinition<any, any>
 
-/** @category Tags */
+/**
+ * Create a normalized scalar tag definition.
+ *
+ * @category Tags
+ */
 function defineScalarTag<Result> (tagName: string, options: ScalarTagOptions<Result>): ScalarTagDefinition<Result> {
   return {
     tagName,
@@ -133,7 +222,11 @@ function defineScalarTag<Result> (tagName: string, options: ScalarTagOptions<Res
   }
 }
 
-/** @category Tags */
+/**
+ * Create a normalized sequence tag definition.
+ *
+ * @category Tags
+ */
 function defineSequenceTag<Carrier, Result = Carrier> (tagName: string, options: SequenceTagOptions<Carrier, Result>): SequenceTagDefinition<Carrier, Result> {
   const carrierIsResult = options.finalize === undefined
 
@@ -152,7 +245,11 @@ function defineSequenceTag<Carrier, Result = Carrier> (tagName: string, options:
   }
 }
 
-/** @category Tags */
+/**
+ * Create a normalized mapping tag definition.
+ *
+ * @category Tags
+ */
 function defineMappingTag<Carrier, Result = Carrier> (tagName: string, options: MappingTagOptions<Carrier, Result>): MappingTagDefinition<Carrier, Result> {
   const carrierIsResult = options.finalize === undefined
 
@@ -187,8 +284,5 @@ export {
   type TagDefinition,
   type ScalarTagOptions,
   type SequenceTagOptions,
-  type MappingTagOptions,
-  type ScalarRepresent,
-  type SequenceRepresent,
-  type MappingRepresent
+  type MappingTagOptions
 }
