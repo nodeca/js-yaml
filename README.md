@@ -37,7 +37,7 @@ try {
   const doc = load(readFileSync('example.yml', 'utf8'))
   console.log(doc)
 } catch (e) {
-  console.log(e)
+  // console.log(e)
 }
 ```
 

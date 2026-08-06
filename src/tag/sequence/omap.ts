@@ -6,7 +6,28 @@ interface OmapCarrier {
   seen: Set<unknown>
 }
 
-/** @category Tags */
+/**
+ * Provided only for YAML 1.1 compatibility and supported by the loader only.
+ * JavaScript has no dedicated class to represent this type, so it cannot be
+ * identified and dumped.
+ *
+ * ```yaml
+ * !!omap
+ *   - one: 1
+ *   - two: 2
+ * ```
+ *
+ * is loaded as
+ *
+ * ```javascript
+ * [
+ *   { one: 1 },
+ *   { two: 2 }
+ * ]
+ * ```
+ *
+ * @category Tags
+ */
 const omapTag = defineSequenceTag('tag:yaml.org,2002:omap', {
   create: (): OmapCarrier => ({ list: [], seen: new Set() }),
   addItem: (carrier, item) => {

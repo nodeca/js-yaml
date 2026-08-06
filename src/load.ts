@@ -76,20 +76,15 @@ function loadAll (
  * error. This function does not understand multi-document or empty sources; it
  * throws an exception on those.
  *
- * > [!WARNING]
- * > When processing untrusted input, see the
- * > [security considerations](../docs/safety.md).
- *
  * > [!NOTE]
- * > The default {@link CORE_SCHEMA} comes without the `!!merge` tag. You can
- * > easily enable it if needed.
- *
- * > [!WARNING]
- * > The default {@link mapTag} is `{}`-object based and does not allow complex
- * > keys (objects, arrays and so on). That's an intentional choice for
- * > convenience. Also, non-string scalar keys, such as `null`, numbers or
- * > booleans, are converted to strings. For non-string keys use
- * > {@link realMapTag} instead (it uses native JS `Map`).
+ * > 1. When processing untrusted input, see the
+ * >    [security considerations](../docs/safety.md).
+ * > 2. All exceptions MUST be caught, not just {@link YAMLException}.
+ * > 3. The default {@link CORE_SCHEMA} comes without the `!!merge` tag. You can
+ * >    easily enable it if needed.
+ * > 4. The default {@link mapTag} is `{}`-object based, with known limitations
+ * >    (see description). For full compatibility use {@link realMapTag}
+ * >    instead (it uses native JS `Map`).
  *
  * @example
  * Enable {@link mergeTag} and {@link realMapTag}:

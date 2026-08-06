@@ -1,6 +1,13 @@
 {
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["src/index.ts"],
+  "projectDocuments": [
+    "docs/usage.md",
+    "docs/safety.md",
+    "docs/schemas_info.md",
+    "docs/tags_info.md"
+  ],
+  "alwaysCreateEntryPointModule": false,
   "out": "demo/doc",
   "includeVersion": true,
   "markdownLinkExternal": true,
@@ -12,7 +19,7 @@
   "defaultCategory": "missed (default)",
   "categoryOrder": [
     "Main",
-    "Schema",
+    "Schemas",
     "Tags",
     "Events",
     "Nodes",

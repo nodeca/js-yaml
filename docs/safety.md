@@ -1,3 +1,8 @@
+---
+title: Safety
+category: Main
+---
+
 # Safety notes for untrusted input
 
 The YAML spec by design allows compact documents that produce objects which are

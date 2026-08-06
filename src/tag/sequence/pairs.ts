@@ -2,7 +2,28 @@ import { defineSequenceTag } from '../../tag.ts'
 
 type Pair = [unknown, unknown]
 
-/** @category Tags */
+/**
+ * Provided only for YAML 1.1 compatibility and supported by the loader only.
+ * JavaScript has no dedicated class to represent this type, so it cannot be
+ * identified and dumped.
+ *
+ * ```yaml
+ * !!pairs
+ *   - one: 1
+ *   - two: 2
+ * ```
+ *
+ * is loaded as
+ *
+ * ```javascript
+ * [
+ *   ['one', 1],
+ *   ['two', 2]
+ * ]
+ * ```
+ *
+ * @category Tags
+ */
 const pairsTag = defineSequenceTag('tag:yaml.org,2002:pairs', {
   create: () => [] as Pair[],
   addItem: (container, item) => {

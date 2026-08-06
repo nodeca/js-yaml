@@ -77,7 +77,7 @@ function compileTags (tags: readonly TagDefinition[]) {
   return result
 }
 
-/** @category Schema */
+/** @category Schemas */
 class Schema {
   readonly tags: readonly TagDefinition[]
   readonly implicitScalarTags: readonly ScalarTagDefinition[]
@@ -170,6 +170,30 @@ class Schema {
     this.prefix = prefix
   }
 
+  /**
+   * Creates a new schema with the specified tags added. If a tag already
+   * exists, it is replaced by the specified tag.
+   *
+   * @example
+   * Create a new schema based on {@link CORE_SCHEMA}, with {@link mergeTag}
+   * added:
+   *
+   * ```javascript
+   * import { CORE_SCHEMA, mergeTag } from 'js-yaml'
+   *
+   * const schema = CORE_SCHEMA.withTags(mergeTag)
+   * ```
+   *
+   * @example
+   * Create a new schema based on {@link CORE_SCHEMA}, with {@link mapTag}
+   * replaced by {@link realMapTag}:
+   *
+   * ```javascript
+   * import { CORE_SCHEMA, realMapTag } from 'js-yaml'
+   *
+   * const schema = CORE_SCHEMA.withTags(realMapTag)
+   * ```
+   */
   withTags (...tags: Array<TagDefinition | readonly TagDefinition[]>): Schema {
     let flatTags: TagDefinition[] = []
     for (const tag of tags) flatTags = flatTags.concat(tag)
@@ -178,14 +202,14 @@ class Schema {
   }
 }
 
-/** @category Schema */
+/** @category Schemas */
 const FAILSAFE_SCHEMA = new Schema([
   strTag,
   seqTag,
   mapTag
 ])
 
-/** @category Schema */
+/** @category Schemas */
 const JSON_SCHEMA = new Schema([
   ...FAILSAFE_SCHEMA.tags,
   nullJsonTag,
@@ -207,7 +231,7 @@ const JSON_SCHEMA = new Schema([
  * load(data, { schema: CORE_SCHEMA.withTags(mergeTag) })
  * ```
  *
- * @category Schema
+ * @category Schemas
  */
 const CORE_SCHEMA = new Schema([
   ...FAILSAFE_SCHEMA.tags,
@@ -217,7 +241,7 @@ const CORE_SCHEMA = new Schema([
   floatCoreTag
 ])
 
-/** @category Schema */
+/** @category Schemas */
 const YAML11_SCHEMA = new Schema([
   ...FAILSAFE_SCHEMA.tags,
   nullYaml11Tag,
