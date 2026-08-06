@@ -1,4 +1,5 @@
 import {
+  NOT_RESOLVED,
   type MappingTagDefinition,
   type ScalarTagDefinition,
   type SequenceTagDefinition,
@@ -256,12 +257,37 @@ const YAML11_SCHEMA = new Schema([
   setTag
 ])
 
+/**
+ * The dumper schema for maximum compatibility. It combines all supported type
+ * variants from YAML 1.1 and YAML 1.2 so strings matching any of them are
+ * quoted. This makes the generated YAML more compatible with other parsers.
+ *
+ * @category Schemas
+ */
+const DUMP_SCHEMA = YAML11_SCHEMA.withTags(
+  {
+    ...intYaml11Tag,
+    resolve: (source, isExplicit, tagName) => {
+      const result = intYaml11Tag.resolve(source, isExplicit, tagName)
+      return result === NOT_RESOLVED ? intCoreTag.resolve(source, isExplicit, tagName) : result
+    }
+  },
+  {
+    ...floatYaml11Tag,
+    resolve: (source, isExplicit, tagName) => {
+      const result = floatYaml11Tag.resolve(source, isExplicit, tagName)
+      return result === NOT_RESOLVED ? floatCoreTag.resolve(source, isExplicit, tagName) : result
+    }
+  }
+)
+
 export {
   Schema,
   FAILSAFE_SCHEMA,
   JSON_SCHEMA,
   CORE_SCHEMA,
   YAML11_SCHEMA,
+  DUMP_SCHEMA,
 
   type TagDefinitionMap,
   type TagDefinitionListMap

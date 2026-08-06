@@ -3,7 +3,8 @@ export {
   FAILSAFE_SCHEMA,
   JSON_SCHEMA,
   CORE_SCHEMA,
-  YAML11_SCHEMA
+  YAML11_SCHEMA,
+  DUMP_SCHEMA
 } from './schema.ts'
 
 export {

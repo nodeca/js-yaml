@@ -1,4 +1,4 @@
-import { YAML11_SCHEMA, type Schema } from './schema.ts'
+import { DUMP_SCHEMA, type Schema } from './schema.ts'
 import { jsToAst } from './ast/from_js.ts'
 import { visit, VISIT_SKIP } from './ast/visit.ts'
 import { type Document } from './ast/nodes.ts'
@@ -8,18 +8,13 @@ import {
   type PresenterOptions
 } from './ast/presenter.ts'
 import { pick } from './common/object.ts'
-import { NOT_RESOLVED } from './tag.ts'
-import { intCoreTag } from './tag/scalar/int_core.ts'
-import { intYaml11Tag } from './tag/scalar/int_yaml11.ts'
-import { floatCoreTag } from './tag/scalar/float_core.ts'
-import { floatYaml11Tag } from './tag/scalar/float_yaml11.ts'
 
 /** @category Main */
 interface DumpOptions extends Omit<PresenterOptions, 'schema'> {
   /**
    * Schema to use.
    *
-   * @defaultValue A {@link YAML11_SCHEMA}-based schema.
+   * @defaultValue {@link DUMP_SCHEMA}
    */
   schema?: Schema
 
@@ -50,28 +45,9 @@ interface DumpOptions extends Omit<PresenterOptions, 'schema'> {
   transform?: (documents: Document[]) => void
 }
 
-// YAML 1.1 misses YAML 1.2 `0o...` ints and exponent-only floats.
-// Combine resolvers so all possible collisions are quoted.
-const DEFAULT_DUMP_SCHEMA = YAML11_SCHEMA.withTags(
-  {
-    ...intYaml11Tag,
-    resolve: (source, isExplicit, tagName) => {
-      const result = intYaml11Tag.resolve(source, isExplicit, tagName)
-      return result === NOT_RESOLVED ? intCoreTag.resolve(source, isExplicit, tagName) : result
-    }
-  },
-  {
-    ...floatYaml11Tag,
-    resolve: (source, isExplicit, tagName) => {
-      const result = floatYaml11Tag.resolve(source, isExplicit, tagName)
-      return result === NOT_RESOLVED ? floatCoreTag.resolve(source, isExplicit, tagName) : result
-    }
-  }
-)
-
 const DEFAULT_DUMP_OPTIONS: Required<DumpOptions> = {
   ...DEFAULT_PRESENTER_OPTIONS,
-  schema: DEFAULT_DUMP_SCHEMA,
+  schema: DUMP_SCHEMA,
   skipInvalid: false,
   noRefs: false,
   flowLevel: -1,

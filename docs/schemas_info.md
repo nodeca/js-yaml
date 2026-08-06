@@ -18,6 +18,8 @@ Additional Schemas:
 
 - {@link YAML11_SCHEMA} — YAML 1.1 did not define schemas;
   this convenience schema provides the corresponding set of tags.
+- {@link DUMP_SCHEMA} — combines all supported YAML 1.1 and YAML 1.2 type
+  variants for better compatibility.
 
 You will usually use one of the preferred schemas above and customize it with
 {@link Schema.withTags | Schema.withTags()}.

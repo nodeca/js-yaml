@@ -1,12 +1,22 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { dump, load, JSON_SCHEMA, CORE_SCHEMA, defineMappingTag, realMapTag, YAMLException } from 'js-yaml'
+import {
+  dump,
+  load,
+  JSON_SCHEMA,
+  CORE_SCHEMA,
+  DUMP_SCHEMA,
+  defineMappingTag,
+  realMapTag,
+  YAMLException
+} from 'js-yaml'
 
 describe('dump options', () => {
   it('schema — decides which plain scalars need quoting', () => {
     // The default dump schema is YAML 1.1, where `yes` is a boolean, so the
     // string must be quoted; JSON_SCHEMA has no such collision.
     assert.equal(dump('yes'), "'yes'\n")
+    assert.equal(dump('yes', { schema: DUMP_SCHEMA }), "'yes'\n")
     assert.equal(dump('yes', { schema: JSON_SCHEMA }), 'yes\n')
   })
 
