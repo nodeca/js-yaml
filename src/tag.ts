@@ -11,106 +11,6 @@ type IdentifyFn = (data: any) => boolean
 type RepresentTagNameFn = (data: any) => string
 
 /** @category Tags */
-interface ScalarTagDefinition<Result = unknown> {
-  tagName: string
-  nodeKind: 'scalar'
-  implicit: boolean
-  matchByTagPrefix: boolean
-
-  /**
-   * Set of `source.charAt(0)` keys for which
-   * {@link ScalarTagDefinition.resolve} may succeed (a superset of
-   * what it really matches). A key is either a single character or '' (empty
-   * source). `null` means "no constraint, always try". Used by the composer to
-   * dispatch implicit scalars by first character without running every resolver.
-   */
-  implicitFirstChars: readonly string[] | null
-
-  /**
-   * `isExplicit` is true for an explicit tag (`!!tag`), false for implicit plain
-   * scalar resolution.
-   */
-  resolve: (source: string, isExplicit: boolean, tagName: string) => Result | typeof NOT_RESOLVED
-
-  /**
-   * Selects this tag for a JavaScript value when dumping. Use `() => false`
-   * for load-only tags.
-   */
-  identify: IdentifyFn
-
-  /**
-   * A scalar's printed form is text, so
-   * {@link ScalarTagDefinition.represent} always yields a string.
-   * The factory supplies a `String(data)` default when a tag omits it.
-   */
-  represent: ScalarRepresent
-  representTagName: RepresentTagNameFn
-}
-
-/** @category Tags */
-interface SequenceTagDefinition<Carrier = unknown, Result = Carrier> {
-  tagName: string
-  nodeKind: 'sequence'
-  implicit: false
-  matchByTagPrefix: boolean
-  create: (tagName: string) => Carrier
-  addItem: (carrier: Carrier, item: unknown, index: number) => void | string
-  finalize: (carrier: Carrier) => Result
-  carrierIsResult: boolean
-
-  /**
-   * Selects this tag for a JavaScript value when dumping. Use `() => false`
-   * for load-only tags.
-   */
-  identify: IdentifyFn
-  represent: SequenceRepresent
-  representTagName: RepresentTagNameFn
-}
-
-/** @category Tags */
-interface MappingTagDefinition<Carrier = unknown, Result = Carrier> {
-  tagName: string
-  nodeKind: 'mapping'
-  implicit: false
-  matchByTagPrefix: boolean
-  create: (tagName: string) => Carrier
-
-  /**
-   * Writes a pair. Returns '' on success, a non-empty error message otherwise
-   * (key does not fit the representation, value rejected, ...). Always a string
-   * so the hot path never allocates an exception wrapper.
-   */
-  addPair: (carrier: Carrier, key: unknown, value: unknown) => string
-
-  /**
-   * Read side, mirrors `Map` — defining a representation means defining how to
-   * read it back. {@link MappingTagDefinition.has} is the hot dedup probe
-   * (membership without fetching the value);
-   * {@link MappingTagDefinition.keys}/{@link MappingTagDefinition.get}
-   * are used only on the cold merge path (`<<`).
-   */
-  has: (carrier: Carrier, key: unknown) => boolean
-  keys: (result: Result) => Iterable<unknown>
-  get: (result: Result, key: unknown) => unknown
-  finalize: (carrier: Carrier) => Result
-  carrierIsResult: boolean
-
-  /**
-   * Selects this tag for a JavaScript value when dumping. Use `() => false`
-   * for load-only tags.
-   */
-  identify: IdentifyFn
-  represent: MappingRepresent
-  representTagName: RepresentTagNameFn
-}
-
-/** @category Tags */
-type TagDefinition =
-  | ScalarTagDefinition<any>
-  | SequenceTagDefinition<any, any>
-  | MappingTagDefinition<any, any>
-
-/** @category Tags */
 interface ScalarTagOptions<Result> {
   implicit?: boolean
   matchByTagPrefix?: boolean
@@ -127,68 +27,96 @@ interface ScalarTagOptions<Result> {
    * `isExplicit` is true for an explicit tag (`!!tag`), false for implicit plain
    * scalar resolution.
    */
-  resolve: ScalarTagDefinition<Result>['resolve']
+  resolve: (source: string, isExplicit: boolean, tagName: string) => Result | typeof NOT_RESOLVED
 
   /**
    * Selects this tag for a JavaScript value when dumping. Use `() => false`
    * for load-only tags.
    */
-  identify: ScalarTagDefinition<Result>['identify']
+  identify: IdentifyFn
 
   /**
    * A scalar's printed form is text, so `represent` always yields a string.
    * The factory supplies a `String(data)` default when a tag omits it.
    */
-  represent?: ScalarTagDefinition<Result>['represent']
-  representTagName?: ScalarTagDefinition<Result>['representTagName']
+  represent?: ScalarRepresent
+  representTagName?: RepresentTagNameFn
 }
 
 /** @category Tags */
-type SequenceTagOptions<Carrier, Result = Carrier> = {
+interface ScalarTagDefinition<Result = unknown> extends Required<ScalarTagOptions<Result>> {
+  tagName: string
+  nodeKind: 'scalar'
+}
+
+/** @category Tags */
+interface SequenceTagOptions<Carrier, Result = Carrier> {
   matchByTagPrefix?: boolean
-  create: SequenceTagDefinition<Carrier, Result>['create']
-  addItem: SequenceTagDefinition<Carrier, Result>['addItem']
-  finalize?: SequenceTagDefinition<Carrier, Result>['finalize']
+  create: (tagName: string) => Carrier
+  addItem: (carrier: Carrier, item: unknown, index: number) => void | string
+  finalize?: (carrier: Carrier) => Result
 
   /**
    * Selects this tag for a JavaScript value when dumping. Use `() => false`
    * for load-only tags.
    */
-  identify: SequenceTagDefinition<Carrier, Result>['identify']
-  represent?: SequenceTagDefinition<Carrier, Result>['represent']
-  representTagName?: SequenceTagDefinition<Carrier, Result>['representTagName']
+  identify: IdentifyFn
+  represent?: SequenceRepresent
+  representTagName?: RepresentTagNameFn
 }
 
 /** @category Tags */
-type MappingTagOptions<Carrier, Result = Carrier> = {
+interface SequenceTagDefinition<Carrier = unknown, Result = Carrier> extends Required<SequenceTagOptions<Carrier, Result>> {
+  tagName: string
+  nodeKind: 'sequence'
+  implicit: false
+  carrierIsResult: boolean
+}
+
+/** @category Tags */
+interface MappingTagOptions<Carrier, Result = Carrier> {
   matchByTagPrefix?: boolean
-  create: MappingTagDefinition<Carrier, Result>['create']
+  create: (tagName: string) => Carrier
 
   /**
    * Writes a pair. Returns '' on success, a non-empty error message otherwise
    * (key does not fit the representation, value rejected, ...). Always a string
    * so the hot path never allocates an exception wrapper.
    */
-  addPair: MappingTagDefinition<Carrier, Result>['addPair']
+  addPair: (carrier: Carrier, key: unknown, value: unknown) => string
 
   /**
    * Read side, mirrors `Map` — defining a representation means defining how to
    * read it back. `has` is the hot dedup probe (membership without fetching the
    * value); `keys` and `get` are used only on the cold merge path (`<<`).
    */
-  has: MappingTagDefinition<Carrier, Result>['has']
-  keys: MappingTagDefinition<Carrier, Result>['keys']
-  get: MappingTagDefinition<Carrier, Result>['get']
-  finalize?: MappingTagDefinition<Carrier, Result>['finalize']
+  has: (carrier: Carrier, key: unknown) => boolean
+  keys: (result: Result) => Iterable<unknown>
+  get: (result: Result, key: unknown) => unknown
+  finalize?: (carrier: Carrier) => Result
 
   /**
    * Selects this tag for a JavaScript value when dumping. Use `() => false`
    * for load-only tags.
    */
-  identify: MappingTagDefinition<Carrier, Result>['identify']
-  represent?: MappingTagDefinition<Carrier, Result>['represent']
-  representTagName?: MappingTagDefinition<Carrier, Result>['representTagName']
+  identify: IdentifyFn
+  represent?: MappingRepresent
+  representTagName?: RepresentTagNameFn
 }
+
+/** @category Tags */
+interface MappingTagDefinition<Carrier = unknown, Result = Carrier> extends Required<MappingTagOptions<Carrier, Result>> {
+  tagName: string
+  nodeKind: 'mapping'
+  implicit: false
+  carrierIsResult: boolean
+}
+
+/** @category Tags */
+type TagDefinition =
+  | ScalarTagDefinition<any>
+  | SequenceTagDefinition<any, any>
+  | MappingTagDefinition<any, any>
 
 /** @category Tags */
 function defineScalarTag<Result> (tagName: string, options: ScalarTagOptions<Result>): ScalarTagDefinition<Result> {
