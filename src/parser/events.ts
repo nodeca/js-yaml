@@ -8,41 +8,39 @@ const EVENT_ID = {
   POP: 6
 } as const
 
+/** @category Events */
 type EventId = typeof EVENT_ID[keyof typeof EVENT_ID]
 
 /** @category Nodes */
-const SCALAR_STYLE_PLAIN = 1
-/** @category Nodes */
-const SCALAR_STYLE_SINGLE_QUOTED = 2
-/** @category Nodes */
-const SCALAR_STYLE_DOUBLE_QUOTED = 3
-/** @category Nodes */
-const SCALAR_STYLE_LITERAL_BLOCK = 4
-/** @category Nodes */
-const SCALAR_STYLE_FOLDED_BLOCK = 5
-
-type ScalarStyle =
-  typeof SCALAR_STYLE_PLAIN | typeof SCALAR_STYLE_SINGLE_QUOTED |
-  typeof SCALAR_STYLE_DOUBLE_QUOTED | typeof SCALAR_STYLE_LITERAL_BLOCK |
-  typeof SCALAR_STYLE_FOLDED_BLOCK
+const SCALAR_STYLE = {
+  PLAIN: 1,
+  SINGLE_QUOTED: 2,
+  DOUBLE_QUOTED: 3,
+  LITERAL_BLOCK: 4,
+  FOLDED_BLOCK: 5
+} as const
 
 /** @category Nodes */
-const COLLECTION_STYLE_BLOCK = 1
-/** @category Nodes */
-const COLLECTION_STYLE_FLOW = 2
-
-type CollectionStyle =
-  typeof COLLECTION_STYLE_BLOCK | typeof COLLECTION_STYLE_FLOW
+type ScalarStyle = typeof SCALAR_STYLE[keyof typeof SCALAR_STYLE]
 
 /** @category Nodes */
-const CHOMPING_CLIP = 1
-/** @category Nodes */
-const CHOMPING_STRIP = 2
-/** @category Nodes */
-const CHOMPING_KEEP = 3
+const COLLECTION_STYLE = {
+  BLOCK: 1,
+  FLOW: 2
+} as const
 
-type Chomping =
-  typeof CHOMPING_CLIP | typeof CHOMPING_STRIP | typeof CHOMPING_KEEP
+/** @category Nodes */
+type CollectionStyle = typeof COLLECTION_STYLE[keyof typeof COLLECTION_STYLE]
+
+/** @category Nodes */
+const CHOMPING_MODE = {
+  CLIP: 1,
+  STRIP: 2,
+  KEEP: 3
+} as const
+
+/** @category Nodes */
+type ChompingMode = typeof CHOMPING_MODE[keyof typeof CHOMPING_MODE]
 
 /** @category other */
 type DocumentDirective =
@@ -91,7 +89,7 @@ interface ScalarEvent {
   tagStart: number
   tagEnd: number
   style: ScalarStyle
-  chomping: Chomping
+  chomping: ChompingMode
   indent: number
   fast: boolean
 }
@@ -119,25 +117,15 @@ type Event =
 
 export {
   EVENT_ID,
-
-  SCALAR_STYLE_PLAIN,
-  SCALAR_STYLE_SINGLE_QUOTED,
-  SCALAR_STYLE_DOUBLE_QUOTED,
-  SCALAR_STYLE_LITERAL_BLOCK,
-  SCALAR_STYLE_FOLDED_BLOCK,
-
-  COLLECTION_STYLE_BLOCK,
-  COLLECTION_STYLE_FLOW,
-
-  CHOMPING_CLIP,
-  CHOMPING_STRIP,
-  CHOMPING_KEEP,
+  SCALAR_STYLE,
+  COLLECTION_STYLE,
+  CHOMPING_MODE,
 
   type EventId,
   type ScalarStyle,
   type CollectionStyle,
+  type ChompingMode,
 
-  type Chomping,
   type DocumentDirective,
   type TagHandlers,
   type DocumentEvent,

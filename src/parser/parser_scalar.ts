@@ -1,10 +1,6 @@
 import {
-  SCALAR_STYLE_SINGLE_QUOTED,
-  SCALAR_STYLE_DOUBLE_QUOTED,
-  SCALAR_STYLE_LITERAL_BLOCK,
-  SCALAR_STYLE_FOLDED_BLOCK,
-  CHOMPING_STRIP,
-  CHOMPING_KEEP,
+  SCALAR_STYLE,
+  CHOMPING_MODE,
   type ScalarEvent
 } from './events.ts'
 
@@ -272,9 +268,9 @@ function getBlockValue (
     emptyLines = 0
   }
 
-  if (chomping === CHOMPING_KEEP) {
+  if (chomping === CHOMPING_MODE.KEEP) {
     result += '\n'.repeat(didReadContent ? 1 + emptyLines : emptyLines)
-  } else if (chomping !== CHOMPING_STRIP) {
+  } else if (chomping !== CHOMPING_MODE.STRIP) {
     if (didReadContent) result += '\n'
   }
 
@@ -293,13 +289,13 @@ function getScalarValue (input: string, scalar: ScalarEvent): string {
   if (scalar.fast) return input.slice(valueStart, valueEnd)
 
   switch (scalar.style) {
-    case SCALAR_STYLE_SINGLE_QUOTED:
+    case SCALAR_STYLE.SINGLE_QUOTED:
       return getSingleQuotedValue(input, valueStart, valueEnd)
-    case SCALAR_STYLE_DOUBLE_QUOTED:
+    case SCALAR_STYLE.DOUBLE_QUOTED:
       return getDoubleQuotedValue(input, valueStart, valueEnd)
-    case SCALAR_STYLE_LITERAL_BLOCK:
+    case SCALAR_STYLE.LITERAL_BLOCK:
       return getBlockValue(input, valueStart, valueEnd, scalar.indent, scalar.chomping, false)
-    case SCALAR_STYLE_FOLDED_BLOCK:
+    case SCALAR_STYLE.FOLDED_BLOCK:
       return getBlockValue(input, valueStart, valueEnd, scalar.indent, scalar.chomping, true)
     default:
       return getPlainValue(input, valueStart, valueEnd)

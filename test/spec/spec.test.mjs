@@ -15,11 +15,8 @@ import {
   present,
   visit,
   EVENT_ID,
-  SCALAR_STYLE_SINGLE_QUOTED,
-  SCALAR_STYLE_DOUBLE_QUOTED,
-  SCALAR_STYLE_LITERAL_BLOCK,
-  SCALAR_STYLE_FOLDED_BLOCK,
-  COLLECTION_STYLE_FLOW,
+  SCALAR_STYLE,
+  COLLECTION_STYLE,
   CORE_SCHEMA,
   strTag,
   seqTag,
@@ -125,10 +122,10 @@ function tagHandlersFromDirectives (directives) {
 }
 
 function scalarStyleMarker (style) {
-  if (style === SCALAR_STYLE_SINGLE_QUOTED) return "'"
-  if (style === SCALAR_STYLE_DOUBLE_QUOTED) return '"'
-  if (style === SCALAR_STYLE_LITERAL_BLOCK) return '|'
-  if (style === SCALAR_STYLE_FOLDED_BLOCK) return '>'
+  if (style === SCALAR_STYLE.SINGLE_QUOTED) return "'"
+  if (style === SCALAR_STYLE.DOUBLE_QUOTED) return '"'
+  if (style === SCALAR_STYLE.LITERAL_BLOCK) return '|'
+  if (style === SCALAR_STYLE.FOLDED_BLOCK) return '>'
   return ':'
 }
 
@@ -145,12 +142,12 @@ function actualTreeLines (input) {
       lines.push(event.explicitStart ? '+DOC ---' : '+DOC')
       stack.push(event)
     } else if (event.type === EVENT_ID.SEQUENCE) {
-      const style = event.style === COLLECTION_STYLE_FLOW ? ' []' : ''
+      const style = event.style === COLLECTION_STYLE.FLOW ? ' []' : ''
       const props = formatProperties(input, event, tagHandlers)
       lines.push(`+SEQ${style} ${props}`.replace(/\s+/g, ' ').trimEnd())
       stack.push(event)
     } else if (event.type === EVENT_ID.MAPPING) {
-      const style = event.style === COLLECTION_STYLE_FLOW ? ' {}' : ''
+      const style = event.style === COLLECTION_STYLE.FLOW ? ' {}' : ''
       const props = formatProperties(input, event, tagHandlers)
       lines.push(`+MAP${style} ${props}`.replace(/\s+/g, ' ').trimEnd())
       stack.push(event)

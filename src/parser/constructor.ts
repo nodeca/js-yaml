@@ -1,6 +1,6 @@
 import {
   EVENT_ID,
-  SCALAR_STYLE_PLAIN,
+  SCALAR_STYLE,
   type Event,
   type TagHandlers,
   type MappingEvent,
@@ -235,7 +235,7 @@ function constructScalar (
     throwError(state, `unknown scalar tag !<${tagName}>`)
   }
 
-  if (event.style === SCALAR_STYLE_PLAIN) {
+  if (event.style === SCALAR_STYLE.PLAIN) {
     // charAt(0) (not source[0]) yields '' for an empty source, which is the key
     // the null tag declares; source[0] would be undefined and miss that bucket.
     const candidates = state.schema.implicitScalarByFirstChar.get(source.charAt(0)) ??

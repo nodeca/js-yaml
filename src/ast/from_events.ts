@@ -5,12 +5,8 @@
 
 import {
   EVENT_ID,
-  SCALAR_STYLE_PLAIN,
-  SCALAR_STYLE_SINGLE_QUOTED,
-  SCALAR_STYLE_DOUBLE_QUOTED,
-  SCALAR_STYLE_LITERAL_BLOCK,
-  SCALAR_STYLE_FOLDED_BLOCK,
-  COLLECTION_STYLE_FLOW,
+  SCALAR_STYLE,
+  COLLECTION_STYLE,
   type Event,
   type MappingEvent,
   type ScalarEvent,
@@ -103,17 +99,17 @@ function buildScalar (state: FromEventsState, event: ScalarEvent): ScalarNode {
   const style = new Style()
 
   switch (event.style) {
-    case SCALAR_STYLE_SINGLE_QUOTED: style.singleQuoted = true; break
-    case SCALAR_STYLE_DOUBLE_QUOTED: style.doubleQuoted = true; break
-    case SCALAR_STYLE_LITERAL_BLOCK: style.literal = true; break
-    case SCALAR_STYLE_FOLDED_BLOCK: style.folded = true; break
+    case SCALAR_STYLE.SINGLE_QUOTED: style.singleQuoted = true; break
+    case SCALAR_STYLE.DOUBLE_QUOTED: style.doubleQuoted = true; break
+    case SCALAR_STYLE.LITERAL_BLOCK: style.literal = true; break
+    case SCALAR_STYLE.FOLDED_BLOCK: style.folded = true; break
   }
 
   let tag: string
   if (raw !== '') {
     style.tagged = true
     tag = raw
-  } else if (event.style === SCALAR_STYLE_PLAIN) {
+  } else if (event.style === SCALAR_STYLE.PLAIN) {
     tag = implicitScalarTagName(state, value)
   } else {
     tag = state.schema.defaultScalarTag.tagName
@@ -129,7 +125,7 @@ function buildCollection (
 ): { tag: string, style: Style, anchor?: string } {
   const raw = rawTag(state, event)
   const style = new Style()
-  if (event.style === COLLECTION_STYLE_FLOW) style.flow = true
+  if (event.style === COLLECTION_STYLE.FLOW) style.flow = true
 
   let tag: string
   if (raw === '') {

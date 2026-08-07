@@ -1,19 +1,12 @@
 import {
   EVENT_ID,
-  SCALAR_STYLE_PLAIN,
-  SCALAR_STYLE_SINGLE_QUOTED,
-  SCALAR_STYLE_DOUBLE_QUOTED,
-  SCALAR_STYLE_LITERAL_BLOCK,
-  SCALAR_STYLE_FOLDED_BLOCK,
-  COLLECTION_STYLE_BLOCK,
-  COLLECTION_STYLE_FLOW,
-  CHOMPING_CLIP,
-  CHOMPING_STRIP,
-  CHOMPING_KEEP,
+  SCALAR_STYLE,
+  COLLECTION_STYLE,
+  CHOMPING_MODE,
   type Event,
   type ScalarStyle,
   type CollectionStyle,
-  type Chomping,
+  type ChompingMode,
   type DocumentDirective,
   type TagHandlers
 } from './events.ts'
@@ -163,7 +156,7 @@ function insertFlowPairMappingEvent (state: ParserState, snapshot: ParserSnapsho
     anchorEnd: NO_RANGE,
     tagStart: NO_RANGE,
     tagEnd: NO_RANGE,
-    style: COLLECTION_STYLE_FLOW
+    style: COLLECTION_STYLE.FLOW
   })
 }
 
@@ -176,7 +169,7 @@ function addScalarEvent (
   tagStart: number,
   tagEnd: number,
   style: ScalarStyle,
-  chomping: Chomping = CHOMPING_CLIP,
+  chomping: ChompingMode = CHOMPING_MODE.CLIP,
   indent = -1,
   fast = false
 ) {
@@ -220,7 +213,7 @@ function addEmptyScalarEvent (state: ParserState) {
     NO_RANGE,
     NO_RANGE,
     NO_RANGE,
-    SCALAR_STYLE_PLAIN
+    SCALAR_STYLE.PLAIN
   )
 }
 
@@ -531,7 +524,7 @@ function readSingleQuotedScalar (state: ParserState, nodeIndent: number, props: 
 
       const end = state.position
       state.position++
-      addScalarEvent(state, start, end, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, SCALAR_STYLE_SINGLE_QUOTED, CHOMPING_CLIP, -1, simple)
+      addScalarEvent(state, start, end, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, SCALAR_STYLE.SINGLE_QUOTED, CHOMPING_MODE.CLIP, -1, simple)
       return true
     }
 
@@ -565,7 +558,7 @@ function readDoubleQuotedScalar (state: ParserState, nodeIndent: number, props: 
     if (ch === 0x22/* " */) {
       const end = state.position
       state.position++
-      addScalarEvent(state, start, end, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, SCALAR_STYLE_DOUBLE_QUOTED, CHOMPING_CLIP, -1, simple)
+      addScalarEvent(state, start, end, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, SCALAR_STYLE.DOUBLE_QUOTED, CHOMPING_MODE.CLIP, -1, simple)
       return true
     }
 
@@ -607,13 +600,13 @@ function readDoubleQuotedScalar (state: ParserState, nodeIndent: number, props: 
 
 function readBlockScalar (state: ParserState, parentIndent: number, props: NodeProperties) {
   const ch = state.input.charCodeAt(state.position)
-  let chomping: Chomping = CHOMPING_CLIP
+  let chomping: ChompingMode = CHOMPING_MODE.CLIP
   let indent = -1
   let detectedIndent = false
 
   if (ch !== 0x7C/* | */ && ch !== 0x3E/* > */) return false
 
-  const style = ch === 0x7C/* | */ ? SCALAR_STYLE_LITERAL_BLOCK : SCALAR_STYLE_FOLDED_BLOCK
+  const style = ch === 0x7C/* | */ ? SCALAR_STYLE.LITERAL_BLOCK : SCALAR_STYLE.FOLDED_BLOCK
   state.position++
 
   while (state.input.charCodeAt(state.position) !== 0) {
@@ -621,8 +614,8 @@ function readBlockScalar (state: ParserState, parentIndent: number, props: NodeP
     const digit = fromDecimalCode(current)
 
     if (current === 0x2B/* + */ || current === 0x2D/* - */) {
-      if (chomping !== CHOMPING_CLIP) throwError(state, 'repeat of a chomping mode identifier')
-      chomping = current === 0x2B/* + */ ? CHOMPING_KEEP : CHOMPING_STRIP
+      if (chomping !== CHOMPING_MODE.CLIP) throwError(state, 'repeat of a chomping mode identifier')
+      chomping = current === 0x2B/* + */ ? CHOMPING_MODE.KEEP : CHOMPING_MODE.STRIP
       state.position++
     } else if (digit >= 0) {
       if (digit === 0) {
@@ -818,7 +811,7 @@ function readPlainScalar (state: ParserState, nodeIndent: number, nodeContext: N
   if (end === start) return false
 
   checkPrintable(state, start, end)
-  addScalarEvent(state, start, end, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, SCALAR_STYLE_PLAIN, CHOMPING_CLIP, -1, !multiline)
+  addScalarEvent(state, start, end, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, SCALAR_STYLE.PLAIN, CHOMPING_MODE.CLIP, -1, !multiline)
   return true
 }
 
@@ -886,9 +879,9 @@ function readFlowCollection (state: ParserState, nodeIndent: number, props: Node
   const terminator = isMapping ? 0x7D/* } */ : 0x5D/* ] */
 
   if (isMapping) {
-    addMappingEvent(state, start, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE_FLOW)
+    addMappingEvent(state, start, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE.FLOW)
   } else {
-    addSequenceEvent(state, start, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE_FLOW)
+    addSequenceEvent(state, start, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE.FLOW)
   }
 
   state.position++
@@ -970,7 +963,7 @@ function readBlockSequence (state: ParserState, nodeIndent: number, props: NodeP
     return false
   }
 
-  addSequenceEvent(state, state.position, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE_BLOCK)
+  addSequenceEvent(state, state.position, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE.BLOCK)
 
   while (state.input.charCodeAt(state.position) === 0x2D/* - */ && isWsOrEolOrEnd(state.input.charCodeAt(state.position + 1))) {
     if (state.firstTabInLine !== -1) {
@@ -1030,7 +1023,7 @@ function readBlockMapping (state: ParserState, nodeIndent: number, flowIndent: n
 
     if ((ch === 0x3F/* ? */ || ch === 0x3A/* : */) && isWsOrEolOrEnd(following)) {
       if (!mappingOpened) {
-        addMappingEvent(state, state.position, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE_BLOCK)
+        addMappingEvent(state, state.position, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE.BLOCK)
         mappingOpened = true
       }
 
@@ -1079,7 +1072,7 @@ function readBlockMapping (state: ParserState, nodeIndent: number, flowIndent: n
 
           if (!mappingOpened) {
             restoreState(state, beforeKey)
-            addMappingEvent(state, beforeKey.position, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE_BLOCK)
+            addMappingEvent(state, beforeKey.position, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE.BLOCK)
             mappingOpened = true
             // The key, the `:` and the space after it were already validated
             // above, before the rollback. Re-reading the same input cannot
@@ -1298,7 +1291,7 @@ function parseNode (
       props.anchorEnd,
       props.tagStart,
       props.tagEnd,
-      SCALAR_STYLE_PLAIN
+      SCALAR_STYLE.PLAIN
     )
     hasContent = true
   }
