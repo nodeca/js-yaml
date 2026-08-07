@@ -1,3 +1,8 @@
+---
+title: Migrate to v5
+category: Main
+---
+
 # Migration guide from `js-yaml@4` to `js-yaml@5` <!-- omit in toc -->
 
 - [Base](#base)
@@ -227,7 +232,5 @@ const pointTag = defineSequenceTag('!point', {
 An anchored tag with a temporary carrier cannot recursively alias itself,
 because its result does not exist until `finalize` returns. Such input throws.
 
-This only sketches the shape. See
-[examples/custom_tags.mjs](../examples/custom_tags.mjs) for the full method set
-and [examples/custom_tags_immutable.mjs](../examples/custom_tags_immutable.mjs)
-for carrier finalization and its recursive-alias limitation.
+This only sketches the shape. See [Custom tags](custom_tags.md) for complete
+documentation.

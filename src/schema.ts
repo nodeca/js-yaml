@@ -262,6 +262,10 @@ const YAML11_SCHEMA = new Schema([
  * variants from YAML 1.1 and YAML 1.2 so strings matching any of them are
  * quoted. This makes the generated YAML more compatible with other parsers.
  *
+ * The schema is based on YAML 1.1, but extends `!!int` and `!!float` to accept
+ * both YAML 1.1 and Core Schema forms, since Core Schema supports some forms
+ * that YAML 1.1 does not.
+ *
  * @category Schemas
  */
 const DUMP_SCHEMA = YAML11_SCHEMA.withTags(
