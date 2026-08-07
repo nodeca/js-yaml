@@ -69,12 +69,16 @@ spaces:
       - !point [165, 0, 50]
 `
 
-const value = load(source, { schema })
+try {
+  const value = load(source, { schema })
 
-value.spaces[0] instanceof Space // true
-value.spaces[0].points[0] instanceof Point // true
+  value.spaces[0] instanceof Space // true
+  value.spaces[0].points[0] instanceof Point // true
 
-console.log(dump(value, { schema, flowLevel: 3 }))
+  console.log(dump(value, { schema, flowLevel: 3 }))
+} catch (e) {
+  console.error(e)
+}
 ```
 
 Output:
@@ -116,9 +120,12 @@ const schema = CORE_SCHEMA.withTags(defineSequenceTag('!point', {
   represent: point => point.coordinates
 }))
 
-const point = load('!point [10, 20]', { schema })
-
-console.log(point)
+try {
+  const point = load('!point [10, 20]', { schema })
+  console.log(point)
+} catch (e) {
+  console.error(e)
+}
 ```
 
 Output:
@@ -183,9 +190,12 @@ sequence: !unknown_sequence_tag [1, 2, 3]
 mapping: !unknown_mapping_tag { foo: 1, bar: 2 }
 `
 
-const value = load(source, { schema })
-
-console.log(dump(value, { schema, flowLevel: 1 }))
+try {
+  const value = load(source, { schema })
+  console.log(dump(value, { schema, flowLevel: 1 }))
+} catch (e) {
+  console.error(e)
+}
 ```
 
 Output:

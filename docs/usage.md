@@ -23,8 +23,8 @@ try {
   const config = load(source, { filename })
 
   console.log(`Starting ${config.service.name} on port ${config.service.port}`)
-} catch (error) {
-  console.error(error instanceof Error ? error.message : String(error))
+} catch (e) {
+  console.error(e instanceof Error ? e.message : String(e))
   process.exitCode = 1
 }
 ```
@@ -34,7 +34,8 @@ For a stream containing several YAML documents, use `loadAll()`:
 ```javascript
 import { loadAll } from 'js-yaml'
 
-const documents = loadAll(`
+try {
+  const documents = loadAll(`
 ---
 name: api
 port: 8080
@@ -43,7 +44,10 @@ name: worker
 concurrency: 4
 `)
 
-console.log(documents)
+  console.log(documents)
+} catch (e) {
+  console.error(e)
+}
 ```
 
 Unlike `load()`, `loadAll()` accepts empty and multi-document streams. It
@@ -87,7 +91,11 @@ const schema = CORE_SCHEMA.withTags({
   }
 })
 
-const config = load('{ enabled: true, level: 2 }', { schema })
+try {
+  const config = load('{ enabled: true, level: 2 }', { schema })
+} catch (e) {
+  console.error(e)
+}
 ```
 
 This is not the default because objects without a prototype break many common

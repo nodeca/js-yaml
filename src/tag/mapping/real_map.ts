@@ -22,7 +22,11 @@ type RealMapping = Map<unknown, unknown>
  * ```javascript
  * import { load, CORE_SCHEMA, realMapTag } from 'js-yaml'
  *
- * load(data, { schema: CORE_SCHEMA.withTags(realMapTag) })
+ * try {
+ *   load(data, { schema: CORE_SCHEMA.withTags(realMapTag) })
+ * } catch (e) {
+ *   console.error(e)
+ * }
  * ```
  *
  * @category Tags

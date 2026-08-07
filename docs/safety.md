@@ -52,9 +52,13 @@ function guardNodeCount(root, limit) {
   }
 }
 
-const data = yaml.load(input)
-guardNodeCount(data, 100000)
-const json = JSON.stringify(data)
+try {
+  const data = yaml.load(input)
+  guardNodeCount(data, 100000)
+  const json = JSON.stringify(data)
+} catch (e) {
+  console.error(e)
+}
 ```
 
 Note: aliases that point to the same node are counted every time they appear

@@ -15,8 +15,12 @@ yaml.safeDump(obj)
 js-yaml v4:
 
 ```js
-yaml.load(str)
-yaml.loadAll(str)
+try {
+  yaml.load(str)
+  yaml.loadAll(str)
+} catch (e) {
+  console.error(e)
+}
 yaml.dump(obj)
 ```
 
@@ -28,8 +32,12 @@ yaml.dump(obj)
 js-yaml v3:
 
 ```js
-yaml.load(str)
-yaml.loadAll(str)
+try {
+  yaml.load(str)
+  yaml.loadAll(str)
+} catch (e) {
+  console.error(e)
+}
 yaml.dump(obj)
 ```
 
@@ -38,8 +46,12 @@ js-yaml v4:
 ```js
 let schema = yaml.DEFAULT_SCHEMA.extend(require('js-yaml-js-types').all)
 
-yaml.load(str, { schema })
-yaml.loadAll(str, { schema })
+try {
+  yaml.load(str, { schema })
+  yaml.loadAll(str, { schema })
+} catch (e) {
+  console.error(e)
+}
 yaml.dump(obj, { schema })
 ```
 
@@ -85,10 +97,15 @@ let data = '0123456789'
 // typeof data === 'string'
 
 str  = require('js-yaml@3').dump('0123456789')
-data = require('js-yaml@4').load(str)
 
-// data will be 123456789
-// typeof data === 'number'
+try {
+  data = require('js-yaml@4').load(str)
+
+  // data will be 123456789
+  // typeof data === 'number'
+} catch (e) {
+  console.error(e)
+}
 ```
 
 You can check for these patterns in your data using regexp like this:

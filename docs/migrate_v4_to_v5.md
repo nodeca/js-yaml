@@ -29,12 +29,20 @@ swap the import and you're done.
 ```js
 // v4
 const yaml = require('js-yaml')
-yaml.load(source)
+try {
+  yaml.load(source)
+} catch (e) {
+  console.error(e)
+}
 yaml.dump(data)
 
 // v5
 import { load, dump } from 'js-yaml'
-load(source)
+try {
+  load(source)
+} catch (e) {
+  console.error(e)
+}
 dump(data)
 ```
 
@@ -50,7 +58,11 @@ instead:
 ```js
 import * as yaml from 'js-yaml'
 
-yaml.load(source)
+try {
+  yaml.load(source)
+} catch (e) {
+  console.error(e)
+}
 yaml.dump(data)
 ```
 
@@ -88,7 +100,11 @@ In practice the most common compatibility difference is the missing `!!merge`
 ```js
 import { load, CORE_SCHEMA, mergeTag } from 'js-yaml'
 
-load(source, { schema: CORE_SCHEMA.withTags(mergeTag) })
+try {
+  load(source, { schema: CORE_SCHEMA.withTags(mergeTag) })
+} catch (e) {
+  console.error(e)
+}
 ```
 
 If you need the legacy YAML 1.1 types (`!!timestamp`, `!!binary`, `!!set`) or
@@ -97,7 +113,11 @@ its slightly different int/float/boolean syntax, pass `YAML11_SCHEMA`:
 ```js
 import { load, YAML11_SCHEMA } from 'js-yaml'
 
-load(source, { schema: YAML11_SCHEMA })
+try {
+  load(source, { schema: YAML11_SCHEMA })
+} catch (e) {
+  console.error(e)
+}
 ```
 
 To register custom tags on a schema, `Schema.extend()` is now
@@ -114,7 +134,11 @@ You can restore the old behavior, though it's not recommended:
 ```js
 import { load, CORE_SCHEMA, legacyMapTag } from 'js-yaml'
 
-load(source, { schema: CORE_SCHEMA.withTags(legacyMapTag) })
+try {
+  load(source, { schema: CORE_SCHEMA.withTags(legacyMapTag) })
+} catch (e) {
+  console.error(e)
+}
 ```
 
 Alternatively, get real `Map` instances with no key restrictions — then it's
@@ -123,7 +147,11 @@ your job to handle them:
 ```js
 import { load, CORE_SCHEMA, realMapTag } from 'js-yaml'
 
-load(source, { schema: CORE_SCHEMA.withTags(realMapTag) })
+try {
+  load(source, { schema: CORE_SCHEMA.withTags(realMapTag) })
+} catch (e) {
+  console.error(e)
+}
 ```
 
 ### `!!set`
@@ -131,8 +159,12 @@ load(source, { schema: CORE_SCHEMA.withTags(realMapTag) })
 The YAML 1.1 `!!set` tag now produces a `Set` instead of an object of `null`s:
 
 ```js
-load('!!set { one, two }', { schema: YAML11_SCHEMA })
-// Set { 'one', 'two' }
+try {
+  load('!!set { one, two }', { schema: YAML11_SCHEMA })
+  // Set { 'one', 'two' }
+} catch (e) {
+  console.error(e)
+}
 ```
 
 ## `dump`

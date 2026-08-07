@@ -229,7 +229,11 @@ const JSON_SCHEMA = new Schema([
  * ```javascript
  * import { load, CORE_SCHEMA, mergeTag } from 'js-yaml'
  *
- * load(data, { schema: CORE_SCHEMA.withTags(mergeTag) })
+ * try {
+ *   load(data, { schema: CORE_SCHEMA.withTags(mergeTag) })
+ * } catch (e) {
+ *   console.error(e)
+ * }
  * ```
  *
  * @category Schemas

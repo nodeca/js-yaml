@@ -92,7 +92,11 @@ function loadAll (
  * ```javascript
  * import { load, CORE_SCHEMA, mergeTag, realMapTag } from 'js-yaml'
  *
- * load(data, { schema: CORE_SCHEMA.withTags(mergeTag, realMapTag) })
+ * try {
+ *   load(data, { schema: CORE_SCHEMA.withTags(mergeTag, realMapTag) })
+ * } catch (e) {
+ *   console.error(e)
+ * }
  * ```
  *
  * @category Main
