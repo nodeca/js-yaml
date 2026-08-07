@@ -10,6 +10,7 @@
     "docs/tags_info.md"
   ],
   "alwaysCreateEntryPointModule": false,
+  "excludeInternal": true,
   "out": "demo/doc",
   "includeVersion": true,
   "markdownLinkExternal": true,

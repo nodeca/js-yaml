@@ -108,8 +108,8 @@ class Schema {
    */
   readonly defaultSequenceTag: SequenceTagDefinition | undefined
   readonly defaultMappingTag: MappingTagDefinition | undefined
-  readonly exact: TagDefinitionMap
-  readonly prefix: TagDefinitionListMap
+  private readonly exact: TagDefinitionMap
+  private readonly prefix: TagDefinitionListMap
 
   constructor (tags: readonly TagDefinition[]) {
     const compiledTags = compileTags(tags)
@@ -169,6 +169,42 @@ class Schema {
     this.defaultMappingTag = exact.mapping['tag:yaml.org,2002:map']
     this.exact = exact
     this.prefix = prefix
+  }
+
+  /** @internal */
+  lookupScalarTag (tagName: string): ScalarTagDefinition | undefined {
+    const exactTag = this.exact.scalar[tagName]
+    if (exactTag) return exactTag
+
+    for (const tag of this.prefix.scalar) {
+      if (tagName.startsWith(tag.tagName)) return tag
+    }
+
+    return undefined
+  }
+
+  /** @internal */
+  lookupSequenceTag (tagName: string): SequenceTagDefinition | undefined {
+    const exactTag = this.exact.sequence[tagName]
+    if (exactTag) return exactTag
+
+    for (const tag of this.prefix.sequence) {
+      if (tagName.startsWith(tag.tagName)) return tag
+    }
+
+    return undefined
+  }
+
+  /** @internal */
+  lookupMappingTag (tagName: string): MappingTagDefinition | undefined {
+    const exactTag = this.exact.mapping[tagName]
+    if (exactTag) return exactTag
+
+    for (const tag of this.prefix.mapping) {
+      if (tagName.startsWith(tag.tagName)) return tag
+    }
+
+    return undefined
   }
 
   /**
@@ -295,8 +331,5 @@ export {
   JSON_SCHEMA,
   CORE_SCHEMA,
   YAML11_SCHEMA,
-  DUMP_SCHEMA,
-
-  type TagDefinitionMap,
-  type TagDefinitionListMap
+  DUMP_SCHEMA
 }

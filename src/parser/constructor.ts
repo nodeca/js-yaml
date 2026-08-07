@@ -159,34 +159,6 @@ function finalizeCollection (
   }
 }
 
-function lookupTag<T extends ScalarTagDefinition | SequenceTagDefinition | MappingTagDefinition> (
-  exact: Record<string, T>,
-  prefix: readonly T[],
-  tagName: string
-): T | undefined {
-  const exactTag = exact[tagName]
-  if (exactTag) return exactTag
-
-  for (const tag of prefix) {
-    if (tagName.startsWith(tag.tagName)) return tag
-  }
-
-  return undefined
-}
-
-function findExplicitTag<T extends ScalarTagDefinition | SequenceTagDefinition | MappingTagDefinition> (
-  state: ConstructorState,
-  exact: Record<string, T>,
-  prefix: readonly T[],
-  tagName: string,
-  nodeKind: T['nodeKind']
-) {
-  const tag = lookupTag(exact, prefix, tagName)
-  if (tag) return tag
-
-  throwError(state, `unknown ${nodeKind} tag !<${tagName}>`)
-}
-
 function constructScalar (
   state: ConstructorState,
   event: ScalarEvent
@@ -201,7 +173,7 @@ function constructScalar (
     if (rawTag === '!') return { value: source, tag: strTag }
 
     const tagName = tagNameFull(rawTag, state.tagHandlers)
-    const scalarTag = lookupTag(state.schema.exact.scalar, state.schema.prefix.scalar, tagName)
+    const scalarTag = state.schema.lookupScalarTag(tagName)
 
     if (scalarTag) {
       const result = scalarTag.resolve(source, true, tagName)
@@ -217,8 +189,8 @@ function constructScalar (
     // by the parser as a scalar event, since there is no collection syntax to key
     // off. Resolve it here by the explicit tag's kind into an empty collection.
     const collectionTagDef =
-      lookupTag(state.schema.exact.mapping, state.schema.prefix.mapping, tagName) ??
-      lookupTag(state.schema.exact.sequence, state.schema.prefix.sequence, tagName)
+      state.schema.lookupMappingTag(tagName) ??
+      state.schema.lookupSequenceTag(tagName)
 
     if (collectionTagDef) {
       if (source !== '') {
@@ -249,13 +221,10 @@ function constructScalar (
   return { value: strTag.resolve(source, false, strTag.tagName), tag: strTag }
 }
 
-function collectionTag<Tag extends SequenceTagDefinition | MappingTagDefinition> (
+function collectionTagName (
   state: ConstructorState,
   event: SequenceEvent | MappingEvent,
-  exact: Record<string, Tag>,
-  prefix: readonly Tag[],
-  defaultTagName: string,
-  nodeKind: Tag['nodeKind']
+  defaultTagName: string
 ) {
   const rawTag = event.tagStart === NO_RANGE
     ? ''
@@ -264,10 +233,7 @@ function collectionTag<Tag extends SequenceTagDefinition | MappingTagDefinition>
     ? defaultTagName
     : tagNameFull(rawTag, state.tagHandlers)
 
-  return {
-    tagName,
-    tag: findExplicitTag(state, exact, prefix, tagName, nodeKind)
-  }
+  return tagName
 }
 
 // A merge source must be a mapping; every mapping tag exposes the read side.
@@ -414,16 +380,12 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
       }
 
       case EVENT_ID.SEQUENCE: {
-        const definition = collectionTag(
-          state,
-          event,
-          state.schema.exact.sequence,
-          state.schema.prefix.sequence,
-          'tag:yaml.org,2002:seq',
-          'sequence'
-        )
-        const value = definition.tag.create(definition.tagName)
-        const anchor = storeAnchor(state, event, value, definition.tag, definition.tag.carrierIsResult)
+        const tagName = collectionTagName(state, event, 'tag:yaml.org,2002:seq')
+        const tag = state.schema.lookupSequenceTag(tagName)
+        if (!tag) throwError(state, `unknown sequence tag !<${tagName}>`)
+
+        const value = tag.create(tagName)
+        const anchor = storeAnchor(state, event, value, tag, tag.carrierIsResult)
 
         // `<<: [...]` — the parent mapping is waiting on a merge key, so this
         // sequence is a list of merge sources: its elements must be mappings.
@@ -433,27 +395,23 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
           parent.hasKey && parent.key === MERGE_KEY
 
         state.frames.push({
-          kind: 'sequence', position: state.position, value, tag: definition.tag, anchor, index: 0, merge
+          kind: 'sequence', position: state.position, value, tag, anchor, index: 0, merge
         })
         break
       }
 
       case EVENT_ID.MAPPING: {
-        const definition = collectionTag(
-          state,
-          event,
-          state.schema.exact.mapping,
-          state.schema.prefix.mapping,
-          'tag:yaml.org,2002:map',
-          'mapping'
-        )
-        const value = definition.tag.create(definition.tagName)
-        const anchor = storeAnchor(state, event, value, definition.tag, definition.tag.carrierIsResult)
+        const tagName = collectionTagName(state, event, 'tag:yaml.org,2002:map')
+        const tag = state.schema.lookupMappingTag(tagName)
+        if (!tag) throwError(state, `unknown mapping tag !<${tagName}>`)
+
+        const value = tag.create(tagName)
+        const anchor = storeAnchor(state, event, value, tag, tag.carrierIsResult)
         state.frames.push({
           kind: 'mapping',
           position: state.position,
           value,
-          tag: definition.tag,
+          tag,
           anchor,
           key: undefined,
           keyPosition: state.position,
