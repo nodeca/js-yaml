@@ -1,14 +1,14 @@
 /**
  * Returned by a scalar resolver when the source does not match its tag.
  *
- * @category other
+ * @category Tags
  */
 const NOT_RESOLVED: unique symbol = Symbol('NOT_RESOLVED')
 
 /**
  * Constructed value of the YAML merge key (`<<`).
  *
- * @category other
+ * @category Tags
  */
 const MERGE_KEY: unique symbol = Symbol('MERGE_KEY')
 

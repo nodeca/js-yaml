@@ -1,6 +1,6 @@
 ---
 title: Migrate to v5
-category: Main
+category: Documents
 ---
 
 # Migration guide from `js-yaml@4` to `js-yaml@5` <!-- omit in toc -->

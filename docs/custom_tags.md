@@ -1,6 +1,6 @@
 ---
 title: Custom tags
-category: Main
+category: Documents
 ---
 
 # Custom tags

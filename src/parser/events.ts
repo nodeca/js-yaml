@@ -42,7 +42,7 @@ const CHOMPING_MODE = {
 /** @category Nodes */
 type ChompingMode = typeof CHOMPING_MODE[keyof typeof CHOMPING_MODE]
 
-/** @category other */
+/** @category Events */
 type DocumentDirective =
   { kind: 'yaml', version: string } |
   { kind: 'tag', handle: string, prefix: string }

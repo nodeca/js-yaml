@@ -9,9 +9,9 @@ import {
 
 // Returned by a visitor to control the walk; anything else (incl. `undefined`)
 // descends as usual.
-/** @category other */
+/** @category AST */
 const VISIT_BREAK = Symbol('visit:break') // stop the whole traversal
-/** @category other */
+/** @category AST */
 const VISIT_SKIP = Symbol('visit:skip')   // don't descend into this node's children
 
 /** @inline */
