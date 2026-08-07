@@ -1,8 +1,6 @@
 import { defineMappingTag } from '../../tag.ts'
 import { isPlainObject } from '../../common/object.ts'
 
-type StringMapping = Record<string, unknown>
-
 /**
  * This is the default mapping implementation. It uses `{}` objects and has only
  * partial functionality due to language limitations. This choice was made
@@ -25,11 +23,11 @@ type StringMapping = Record<string, unknown>
  * @category Tags
  */
 const mapTag = defineMappingTag('tag:yaml.org,2002:map', {
-  create: (): StringMapping => ({}),
+  create: (): Record<string, unknown> => ({}),
   identify: isPlainObject,
   // Dump side: wrap the plain object into the canonical `Map` form the writer
   // walks. Shallow — keys/values stay references to the originals.
-  represent: (o: StringMapping) => {
+  represent: (o: Record<string, unknown>) => {
     const map = new Map<string, unknown>()
     for (const key of Object.keys(o)) map.set(key, o[key])
     return map
@@ -64,4 +62,4 @@ const mapTag = defineMappingTag('tag:yaml.org,2002:map', {
   }
 })
 
-export { mapTag, isPlainObject, type StringMapping }
+export { mapTag, isPlainObject }

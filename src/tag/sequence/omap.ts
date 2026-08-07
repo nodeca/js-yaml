@@ -1,11 +1,6 @@
 import { defineSequenceTag } from '../../tag.ts'
 import { isPlainObject } from '../../common/object.ts'
 
-interface OmapCarrier {
-  list: unknown[]
-  seen: Set<unknown>
-}
-
 /**
  * Provided only for YAML 1.1 compatibility and supported by the loader only.
  * JavaScript has no dedicated class to represent this type, so it cannot be
@@ -29,7 +24,7 @@ interface OmapCarrier {
  * @category Tags
  */
 const omapTag = defineSequenceTag('tag:yaml.org,2002:omap', {
-  create: (): OmapCarrier => ({ list: [], seen: new Set() }),
+  create: (): { list: unknown[]; seen: Set<unknown> } => ({ list: [], seen: new Set() }),
   addItem: (carrier, item) => {
     let key: unknown
 

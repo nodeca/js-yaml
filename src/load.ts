@@ -15,6 +15,7 @@ import {
 /** @category Main */
 interface LoadOptions extends ParserOptions, Omit<ConstructorOptions, 'source'> {}
 
+/** @inline */
 type LoadAllIterator = (document: unknown) => void
 
 const DEFAULT_LOAD_OPTIONS: Required<LoadOptions> = {

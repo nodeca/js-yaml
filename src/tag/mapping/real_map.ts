@@ -1,8 +1,6 @@
 import { defineMappingTag } from '../../tag.ts'
 import { isPlainObject } from '../../common/object.ts'
 
-type RealMapping = Map<unknown, unknown>
-
 /**
  * Recommended when non-string keys are actually needed. It uses native
  * JavaScript `Map` objects, so keys keep their constructed types instead of
@@ -33,13 +31,13 @@ type RealMapping = Map<unknown, unknown>
  */
 const realMapTag = defineMappingTag('tag:yaml.org,2002:map', {
   create: () => new Map<unknown, unknown>(),
-  addPair: (container: RealMapping, key, value) => {
+  addPair: (container: Map<unknown, unknown>, key, value) => {
     container.set(key, value)
     return ''
   },
-  has: (container: RealMapping, key) => container.has(key),
-  keys: (container: RealMapping) => container.keys(),
-  get: (container: RealMapping, key) => container.get(key),
+  has: (container: Map<unknown, unknown>, key) => container.has(key),
+  keys: (container: Map<unknown, unknown>) => container.keys(),
+  get: (container: Map<unknown, unknown>, key) => container.get(key),
   // Dump side: handle both a real `Map` and a plain object, so this tag fully
   // replaces the default map representation when dumping too.
   identify: (data) => data instanceof Map || isPlainObject(data),

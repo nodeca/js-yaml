@@ -1,7 +1,5 @@
 import { defineSequenceTag } from '../../tag.ts'
 
-type Pair = [unknown, unknown]
-
 /**
  * Provided only for YAML 1.1 compatibility and supported by the loader only.
  * JavaScript has no dedicated class to represent this type, so it cannot be
@@ -25,7 +23,7 @@ type Pair = [unknown, unknown]
  * @category Tags
  */
 const pairsTag = defineSequenceTag('tag:yaml.org,2002:pairs', {
-  create: () => [] as Pair[],
+  create: () => [] as [unknown, unknown][],
   addItem: (container, item) => {
     if (item instanceof Map) {
       if (item.size !== 1) return 'cannot resolve a pairs item'
@@ -43,7 +41,7 @@ const pairsTag = defineSequenceTag('tag:yaml.org,2002:pairs', {
 
     if (keys.length !== 1) return 'cannot resolve a pairs item'
 
-    container.push([keys[0], object[keys[0]]] satisfies Pair)
+    container.push([keys[0], object[keys[0]]])
     return ''
   },
   identify: () => false

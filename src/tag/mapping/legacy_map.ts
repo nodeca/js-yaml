@@ -1,8 +1,6 @@
 import { defineMappingTag } from '../../tag.ts'
 import { isPlainObject } from '../../common/object.ts'
 
-type StringMapping = Record<string, unknown>
-
 // Coerce a constructed key into the string identity a `{}` representation uses.
 // Returns null for a nested array key (an array element that is itself an
 // array), which would otherwise blow up exponentially when stringified via
@@ -39,11 +37,11 @@ function normalizeKey (key: unknown): string | null {
  * @category Tags
  */
 const legacyMapTag = defineMappingTag('tag:yaml.org,2002:map', {
-  create: (): StringMapping => ({}),
+  create: (): Record<string, unknown> => ({}),
   identify: isPlainObject,
   // Dump side: wrap the plain object into the canonical `Map` form the writer
   // walks. Shallow — keys/values stay references to the originals.
-  represent: (o: StringMapping) => {
+  represent: (o: Record<string, unknown>) => {
     const map = new Map<string, unknown>()
     for (const key of Object.keys(o)) map.set(key, o[key])
     return map
@@ -76,4 +74,4 @@ const legacyMapTag = defineMappingTag('tag:yaml.org,2002:map', {
   }
 })
 
-export { legacyMapTag, isPlainObject, type StringMapping }
+export { legacyMapTag, isPlainObject }

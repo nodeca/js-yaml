@@ -14,6 +14,7 @@ const VISIT_BREAK = Symbol('visit:break') // stop the whole traversal
 /** @category other */
 const VISIT_SKIP = Symbol('visit:skip')   // don't descend into this node's children
 
+/** @inline */
 type VisitControl = typeof VISIT_BREAK | typeof VISIT_SKIP | undefined | void
 
 /**
