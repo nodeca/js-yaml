@@ -81,6 +81,7 @@ function compileTags (tags: readonly TagDefinition[]) {
 /** @category Schemas */
 class Schema {
   readonly tags: readonly TagDefinition[]
+  /** @internal */
   readonly implicitScalarTags: readonly ScalarTagDefinition[]
 
   /**
@@ -91,12 +92,14 @@ class Schema {
    * (resolvers that declared no first-char constraint, so they apply to any
    * first character).
    */
-  readonly implicitScalarByFirstChar: ReadonlyMap<string, readonly ScalarTagDefinition[]>
-  readonly implicitScalarAnyFirstChar: readonly ScalarTagDefinition[]
+  private readonly implicitScalarByFirstChar: ReadonlyMap<string, readonly ScalarTagDefinition[]>
+  private readonly implicitScalarAnyFirstChar: readonly ScalarTagDefinition[]
 
   /**
    * The default scalar tag (`!!str`), resolved once so the composer's fallback
    * for unresolved plain scalars avoids a keyed lookup per scalar.
+   *
+   * @internal
    */
   readonly defaultScalarTag: ScalarTagDefinition
 
@@ -105,8 +108,11 @@ class Schema {
    * value is identified by its default tag, the tag is implicit and not
    * printed. Undefined if the schema does not define them (then such values
    * can't be dumped).
+   *
+   * @internal
    */
   readonly defaultSequenceTag: SequenceTagDefinition | undefined
+  /** @internal */
   readonly defaultMappingTag: MappingTagDefinition | undefined
   private readonly exact: TagDefinitionMap
   private readonly prefix: TagDefinitionListMap
@@ -205,6 +211,20 @@ class Schema {
     }
 
     return undefined
+  }
+
+  /** @internal */
+  resolveImplicitScalarTag (source: string): { value: unknown, tag: ScalarTagDefinition } {
+    const candidates = this.implicitScalarByFirstChar.get(source.charAt(0)) ??
+      this.implicitScalarAnyFirstChar
+
+    for (const tag of candidates) {
+      const value = tag.resolve(source, false, tag.tagName)
+      if (value !== NOT_RESOLVED) return { value, tag }
+    }
+
+    const tag = this.defaultScalarTag
+    return { value: tag.resolve(source, false, tag.tagName), tag }
   }
 
   /**

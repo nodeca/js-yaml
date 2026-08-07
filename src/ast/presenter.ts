@@ -4,7 +4,6 @@
 import { YAMLException } from '../common/exception.ts'
 import { tagNameShort } from '../common/tagname.ts'
 import { type Schema } from '../schema.ts'
-import { NOT_RESOLVED, type ScalarTagDefinition } from '../tag.ts'
 import {
   type Node,
   type Document,
@@ -166,7 +165,6 @@ const DEFAULT_PRESENTER_OPTIONS: Required<Omit<PresenterOptions, 'schema'>> = {
 
 interface PresenterState extends Required<PresenterOptions> {
   defaultScalarTagName: string
-  implicitResolvers: readonly ScalarTagDefinition[]
 }
 
 function nodeTagShort (node: Node) {
@@ -181,8 +179,7 @@ function createPresenterState (options: PresenterOptions): PresenterState {
 
   return {
     ...opts,
-    defaultScalarTagName: opts.schema.defaultScalarTag.tagName,
-    implicitResolvers: opts.schema.implicitScalarTags
+    defaultScalarTagName: opts.schema.defaultScalarTag.tagName
   }
 }
 
@@ -242,18 +239,6 @@ function scalarLayout (state: PresenterState, level: number) {
     : Math.max(Math.min(state.lineWidth, 40), state.lineWidth - indent)
 
   return { indent, blockIndent, lineWidth }
-}
-
-function resolveImplicitTag (state: PresenterState, str: string) {
-  for (let index = 0, length = state.implicitResolvers.length; index < length; index += 1) {
-    const tagDefinition = state.implicitResolvers[index]
-
-    if (tagDefinition.resolve(str, false, tagDefinition.tagName) !== NOT_RESOLVED) {
-      return tagDefinition.tagName
-    }
-  }
-
-  return state.defaultScalarTagName
 }
 
 // [33] s-white ::= s-space | s-tab
@@ -563,7 +548,7 @@ function resolveScalarStyle (state: PresenterState, node: ScalarNode,
     // An empty scalar is safe when its tag is explicit or resolves back to the
     // node tag (notably, the default null representation). A real empty string
     // does neither and therefore remains quoted.
-    if (node.style.tagged || resolveImplicitTag(state, string) === node.tag) return STYLE_PLAIN
+    if (node.style.tagged || state.schema.resolveImplicitScalarTag(string).tag.tagName === node.tag) return STYLE_PLAIN
     return state.quoteStyle === 'double' ? STYLE_DOUBLE : STYLE_SINGLE
   }
 
@@ -575,7 +560,8 @@ function resolveScalarStyle (state: PresenterState, node: ScalarNode,
   // Plain writes no tag, so it round-trips only if the bare text resolves back
   // to the node's tag (or the tag gets printed explicitly). Else downgrade.
   // Downgrade to the preferred quote style here.
-  if (style === STYLE_PLAIN && !node.style.tagged && resolveImplicitTag(state, string) !== node.tag) {
+  if (style === STYLE_PLAIN && !node.style.tagged &&
+      state.schema.resolveImplicitScalarTag(string).tag.tagName !== node.tag) {
     return state.quoteStyle === 'double' ? STYLE_DOUBLE : STYLE_SINGLE
   }
   return style

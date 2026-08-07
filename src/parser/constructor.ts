@@ -208,14 +208,7 @@ function constructScalar (
   }
 
   if (event.style === SCALAR_STYLE.PLAIN) {
-    // charAt(0) (not source[0]) yields '' for an empty source, which is the key
-    // the null tag declares; source[0] would be undefined and miss that bucket.
-    const candidates = state.schema.implicitScalarByFirstChar.get(source.charAt(0)) ??
-      state.schema.implicitScalarAnyFirstChar
-    for (const tag of candidates) {
-      const result = tag.resolve(source, false, tag.tagName)
-      if (result !== NOT_RESOLVED) return { value: result, tag }
-    }
+    return state.schema.resolveImplicitScalarTag(source)
   }
 
   return { value: strTag.resolve(source, false, strTag.tagName), tag: strTag }

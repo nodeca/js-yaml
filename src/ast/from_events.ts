@@ -14,7 +14,6 @@ import {
 } from '../parser/events.ts'
 import { getScalarValue } from '../parser/parser_scalar.ts'
 import { type Schema } from '../schema.ts'
-import { NOT_RESOLVED } from '../tag.ts'
 import {
   Style,
   type Node,
@@ -80,19 +79,6 @@ function anchorName (state: FromEventsState, event: ScalarEvent | SequenceEvent 
     : state.source.slice(event.anchorStart, event.anchorEnd)
 }
 
-// Tag name carried by an empty/plain scalar with no explicit tag: the first
-// implicit scalar resolver that accepts the text, falling back to str. Mirrors
-// the implicit branch of `constructScalar`, but we only want the tag name.
-function implicitScalarTagName (state: FromEventsState, source: string) {
-  const { schema } = state
-  const candidates = schema.implicitScalarByFirstChar.get(source.charAt(0)) ??
-    schema.implicitScalarAnyFirstChar
-  for (const tag of candidates) {
-    if (tag.resolve(source, false, tag.tagName) !== NOT_RESOLVED) return tag.tagName
-  }
-  return schema.defaultScalarTag.tagName
-}
-
 function buildScalar (state: FromEventsState, event: ScalarEvent): ScalarNode {
   const value = getScalarValue(state.source, event)
   const raw = rawTag(state, event)
@@ -110,7 +96,7 @@ function buildScalar (state: FromEventsState, event: ScalarEvent): ScalarNode {
     style.tagged = true
     tag = raw
   } else if (event.style === SCALAR_STYLE.PLAIN) {
-    tag = implicitScalarTagName(state, value)
+    tag = state.schema.resolveImplicitScalarTag(value).tag.tagName
   } else {
     tag = state.schema.defaultScalarTag.tagName
   }
