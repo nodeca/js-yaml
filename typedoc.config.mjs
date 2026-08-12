@@ -1,4 +1,5 @@
 import { Converter } from 'typedoc'
+import condensedThemePlugin from './support/typedoc_condensed_theme/condensed_theme_plugin.mjs'
 
 // Places CHANGELOG.md in Documents without adding TypeDoc frontmatter to it.
 function changelogPlugin (app) {
@@ -20,10 +21,11 @@ export default {
     'docs/tags_info.md',
     'CHANGELOG.md'
   ],
-  plugin: [changelogPlugin],
+  plugin: [changelogPlugin, condensedThemePlugin],
   alwaysCreateEntryPointModule: false,
   excludeInternal: true,
   out: 'demo/doc',
+  theme: 'condensed',
   includeVersion: true,
   markdownLinkExternal: true,
   sourceLinkExternal: true,
