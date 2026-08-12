@@ -232,23 +232,11 @@ class Schema {
    * exists, it is replaced by the specified tag.
    *
    * @example
-   * Create a new schema based on {@link CORE_SCHEMA}, with {@link mergeTag}
-   * added:
    *
    * ```javascript
-   * import { CORE_SCHEMA, mergeTag } from 'js-yaml'
+   * import { CORE_SCHEMA, mergeTag, realMapTag } from 'js-yaml'
    *
-   * const schema = CORE_SCHEMA.withTags(mergeTag)
-   * ```
-   *
-   * @example
-   * Create a new schema based on {@link CORE_SCHEMA}, with {@link mapTag}
-   * replaced by {@link realMapTag}:
-   *
-   * ```javascript
-   * import { CORE_SCHEMA, realMapTag } from 'js-yaml'
-   *
-   * const schema = CORE_SCHEMA.withTags(realMapTag)
+   * const schema = CORE_SCHEMA.withTags(mergeTag, realMapTag)
    * ```
    */
   withTags (...tags: Array<TagDefinition | readonly TagDefinition[]>): Schema {

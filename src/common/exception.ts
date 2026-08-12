@@ -20,7 +20,12 @@ function formatError (exception: YAMLException, compact?: boolean) {
   return `${exception.reason} ${where}`
 }
 
-/** @category Main */
+/**
+ * A YAML error. Unlike an ordinary `Error`, it adds a source snippet showing
+ * the location of the problem to the error message, when available.
+ *
+ * @category Main
+ */
 class YAMLException extends Error {
   reason: string
   mark?: SnippetMark
@@ -40,13 +45,20 @@ class YAMLException extends Error {
     }
   }
 
+  /**
+   * Returns the formatted error, omitting the source snippet in compact mode.
+   */
   toString (compact?: boolean) {
     return `${this.name}: ${formatError(this, compact)}`
   }
 }
 
-// Build a YAMLException with a source snippet and throw it. `source` is the
-// raw input text (no parser sentinel); `position` is an offset into it.
+/**
+ * Build a YAMLException with a source snippet and throw it. `source` is the
+ * raw input text (no parser sentinel); `position` is an offset into it.
+ *
+ * @internal
+ */
 function throwErrorAt (source: string, position: number, message: string, filename = ''): never {
   let line = 0
   let lineStart = 0
