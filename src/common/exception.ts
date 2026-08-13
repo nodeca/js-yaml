@@ -51,41 +51,39 @@ class YAMLException extends Error {
   toString (compact?: boolean) {
     return `${this.name}: ${formatError(this, compact)}`
   }
-}
 
-/**
- * Build a YAMLException with a source snippet and throw it. `source` is the
- * raw input text (no parser sentinel); `position` is an offset into it.
- *
- * @internal
- */
-function throwErrorAt (source: string, position: number, message: string, filename = ''): never {
-  let line = 0
-  let lineStart = 0
+  /**
+   * Builds a YAMLException with a source snippet and throws it. `source` is
+   * the raw input text; `position` is an offset into it.
+   */
+  static throwAt (source: string, position: number, message: string, filename = ''): never {
+    let line = 0
+    let lineStart = 0
 
-  for (let index = 0; index < position; index++) {
-    const ch = source.charCodeAt(index)
+    for (let index = 0; index < position; index++) {
+      const ch = source.charCodeAt(index)
 
-    if (ch === 0x0A/* LF */) {
-      line++
-      lineStart = index + 1
-    } else if (ch === 0x0D/* CR */) {
-      line++
-      if (source.charCodeAt(index + 1) === 0x0A/* LF */) index++
-      lineStart = index + 1
+      if (ch === 0x0A/* LF */) {
+        line++
+        lineStart = index + 1
+      } else if (ch === 0x0D/* CR */) {
+        line++
+        if (source.charCodeAt(index + 1) === 0x0A/* LF */) index++
+        lineStart = index + 1
+      }
     }
-  }
 
-  const mark: SnippetMark = {
-    name: filename,
-    buffer: source,
-    position,
-    line,
-    column: position - lineStart
-  }
+    const mark: SnippetMark = {
+      name: filename,
+      buffer: source,
+      position,
+      line,
+      column: position - lineStart
+    }
 
-  mark.snippet = makeSnippet(mark)
-  throw new YAMLException(message, mark)
+    mark.snippet = makeSnippet(mark)
+    throw new YAMLException(message, mark)
+  }
 }
 
-export { YAMLException, throwErrorAt }
+export { YAMLException }

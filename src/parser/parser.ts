@@ -10,7 +10,7 @@ import {
   type DocumentDirective,
   type TagHandlers
 } from './events.ts'
-import { throwErrorAt } from '../common/exception.ts'
+import { YAMLException } from '../common/exception.ts'
 
 const NO_RANGE = -1
 const HAS_OWN = Object.prototype.hasOwnProperty
@@ -247,7 +247,7 @@ function restoreState (state: ParserState, snapshot: ParserSnapshot) {
 }
 
 function throwError (state: ParserState, message: string): never {
-  throwErrorAt(state.input.slice(0, state.length), state.position, message, state.filename)
+  YAMLException.throwAt(state.input.slice(0, state.length), state.position, message, state.filename)
 }
 
 function isEol (c: number) {
@@ -1443,7 +1443,7 @@ function parseEvents (input: string, options: ParserOptions): Event[] {
   }
 
   const nullpos = input.indexOf('\0')
-  if (nullpos !== -1) throwErrorAt(input, nullpos, 'null byte is not allowed in input', state.filename)
+  if (nullpos !== -1) YAMLException.throwAt(input, nullpos, 'null byte is not allowed in input', state.filename)
 
   if (state.input.charCodeAt(state.position) === 0xFEFF) state.position++
 

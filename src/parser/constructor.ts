@@ -16,7 +16,7 @@ import {
   type ScalarTagDefinition,
   type SequenceTagDefinition
 } from '../tag.ts'
-import { YAMLException, throwErrorAt } from '../common/exception.ts'
+import { YAMLException } from '../common/exception.ts'
 import { tagNameFull } from '../common/tagname.ts'
 
 const NO_RANGE = -1
@@ -137,7 +137,7 @@ function eventPosition (event: Event) {
 }
 
 function throwError (state: ConstructorState, message: string): never {
-  throwErrorAt(state.source, state.position, message, state.filename)
+  YAMLException.throwAt(state.source, state.position, message, state.filename)
 }
 
 function finalizeCollection (
@@ -150,7 +150,7 @@ function finalizeCollection (
     return tag.finalize(carrier)
   } catch (error) {
     if (error instanceof YAMLException) throw error
-    throwErrorAt(
+    YAMLException.throwAt(
       state.source,
       position,
       error instanceof Error ? error.message : String(error),
