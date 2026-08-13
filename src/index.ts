@@ -106,3 +106,40 @@ export {
   type MappingNode,
   type AliasNode
 } from './ast/nodes.ts'
+
+// Deprecated compatibility exports
+
+import { EVENT_ID, SCALAR_STYLE, COLLECTION_STYLE, CHOMPING_MODE } from './parser/events.ts'
+
+/** @deprecated Use `EVENT_ID.DOCUMENT` instead. @internal */
+export const EVENT_DOCUMENT = EVENT_ID.DOCUMENT
+/** @deprecated Use `EVENT_ID.SEQUENCE` instead. @internal */
+export const EVENT_SEQUENCE = EVENT_ID.SEQUENCE
+/** @deprecated Use `EVENT_ID.MAPPING` instead. @internal */
+export const EVENT_MAPPING = EVENT_ID.MAPPING
+/** @deprecated Use `EVENT_ID.SCALAR` instead. @internal */
+export const EVENT_SCALAR = EVENT_ID.SCALAR
+/** @deprecated Use `EVENT_ID.ALIAS` instead. @internal */
+export const EVENT_ALIAS = EVENT_ID.ALIAS
+/** @deprecated Use `EVENT_ID.POP` instead. @internal */
+export const EVENT_POP = EVENT_ID.POP
+/** @deprecated Use `SCALAR_STYLE.PLAIN` instead. @internal */
+export const SCALAR_STYLE_PLAIN = SCALAR_STYLE.PLAIN
+/** @deprecated Use `SCALAR_STYLE.SINGLE_QUOTED` instead. @internal */
+export const SCALAR_STYLE_SINGLE_QUOTED = SCALAR_STYLE.SINGLE_QUOTED
+/** @deprecated Use `SCALAR_STYLE.DOUBLE_QUOTED` instead. @internal */
+export const SCALAR_STYLE_DOUBLE_QUOTED = SCALAR_STYLE.DOUBLE_QUOTED
+/** @deprecated Use `SCALAR_STYLE.LITERAL_BLOCK` instead. @internal */
+export const SCALAR_STYLE_LITERAL_BLOCK = SCALAR_STYLE.LITERAL_BLOCK
+/** @deprecated Use `SCALAR_STYLE.FOLDED_BLOCK` instead. @internal */
+export const SCALAR_STYLE_FOLDED_BLOCK = SCALAR_STYLE.FOLDED_BLOCK
+/** @deprecated Use `COLLECTION_STYLE.BLOCK` instead. @internal */
+export const COLLECTION_STYLE_BLOCK = COLLECTION_STYLE.BLOCK
+/** @deprecated Use `COLLECTION_STYLE.FLOW` instead. @internal */
+export const COLLECTION_STYLE_FLOW = COLLECTION_STYLE.FLOW
+/** @deprecated Use `CHOMPING_MODE.CLIP` instead. @internal */
+export const CHOMPING_CLIP = CHOMPING_MODE.CLIP
+/** @deprecated Use `CHOMPING_MODE.STRIP` instead. @internal */
+export const CHOMPING_STRIP = CHOMPING_MODE.STRIP
+/** @deprecated Use `CHOMPING_MODE.KEEP` instead. @internal */
+export const CHOMPING_KEEP = CHOMPING_MODE.KEEP
