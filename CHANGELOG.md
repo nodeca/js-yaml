@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.3.0] - Unreleased
+
+This release focuses on reworking the documentation and making small
+architectural improvements before moving forward.
+
+### Added
+- Added completely new documentation.
+- Exported `DUMP_SCHEMA`, the default schema used by the dumper.
+- Added `YAMLException.throwAt()` for throwing an error at a source position.
+
+### Changed
+- Changed flat constant exports to grouped exports: `EVENT_ID`, `SCALAR_STYLE`,
+  `COLLECTION_STYLE`, and `CHOMPING_MODE`, along with their value types. The old
+  exports are still preserved, but deprecated.
+- Made `identify` mandatory for custom tag definitions. Use
+  `identify: () => false` for load-only tags.
+
+### Deprecated
+- Deprecated flat constant exports. Use grouped ones instead.
+
+
 ## [5.2.3] - 2026-08-01
 
 ### Fixed
@@ -693,6 +714,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First public release
 
 
+[5.3.0]: https://github.com/nodeca/js-yaml/compare/5.2.3...5.3.0
 [5.2.3]: https://github.com/nodeca/js-yaml/compare/5.2.2...5.2.3
 [5.2.2]: https://github.com/nodeca/js-yaml/compare/5.2.1...5.2.2
 [5.2.1]: https://github.com/nodeca/js-yaml/compare/5.2.0...5.2.1
