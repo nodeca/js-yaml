@@ -25,6 +25,15 @@ architectural improvements before moving forward.
 ### Deprecated
 - Deprecated flat constant exports. Use grouped ones instead.
 
+### Removed
+- Removed the `MERGE_KEY` export (not used anymore after last fixes).
+
+### Fixed
+- Validate `<<` sequence items at merge time, so aliased merge sources are
+  checked too.
+- Resolve `<<` outside of a mapping key as the plain string `'<<'`, matching
+  v4, instead of leaking an internal symbol into the result.
+
 
 ## [5.2.3] - 2026-08-01
 
