@@ -79,7 +79,11 @@ interface MappingEvent {
   style: CollectionStyle
 }
 
-/** @category Events */
+/**
+ * A scalar whose decoded value can be read with {@link getScalarValue}.
+ *
+ * @category Events
+ */
 interface ScalarEvent {
   type: typeof EVENT_ID.SCALAR
   valueStart: number
@@ -101,12 +105,20 @@ interface AliasEvent {
   anchorEnd: number
 }
 
-/** @category Events */
+/**
+ * Closes the most recently opened document, sequence, or mapping.
+ *
+ * @category Events
+ */
 interface PopEvent {
   type: typeof EVENT_ID.POP
 }
 
-/** @category Events */
+/**
+ * Source ranges are zero-based and end-exclusive; `-1` means absent.
+ *
+ * @category Events
+ */
 type Event =
   DocumentEvent |
   SequenceEvent |

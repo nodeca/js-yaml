@@ -9,10 +9,19 @@ import {
 
 // Returned by a visitor to control the walk; anything else (incl. `undefined`)
 // descends as usual.
-/** @category AST */
-const VISIT_BREAK = Symbol('visit:break') // stop the whole traversal
-/** @category AST */
-const VISIT_SKIP = Symbol('visit:skip')   // don't descend into this node's children
+/**
+ * Return from a visitor to stop the whole traversal.
+ *
+ * @category AST
+ */
+const VISIT_BREAK = Symbol('visit:break')
+
+/**
+ * Return from a visitor to skip the current node's children.
+ *
+ * @category AST
+ */
+const VISIT_SKIP = Symbol('visit:skip')
 
 /** @inline */
 type VisitControl = typeof VISIT_BREAK | typeof VISIT_SKIP | undefined | void

@@ -23,7 +23,11 @@ function representYamlBinary (object: Uint8Array) {
   return btoa(binary)
 }
 
-/** @category Tags */
+/**
+ * The `!!binary` tag, represented as a `Uint8Array`.
+ *
+ * @category Tags
+ */
 const binaryTag = defineScalarTag('tag:yaml.org,2002:binary', {
   resolve: resolveYamlBinary,
   identify: (object) => Object.prototype.toString.call(object) === '[object Uint8Array]',

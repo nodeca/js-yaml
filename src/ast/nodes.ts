@@ -4,8 +4,16 @@
 
 import { type DocumentDirective } from '../parser/events.ts'
 
-/** @category Nodes */
+/**
+ * Style bitfields, defined as a class only to initialize their defaults.
+ *
+ * Manually assigned styles are hints; the presenter may use a fallback when
+ * needed to produce valid YAML.
+ *
+ * @category Nodes
+ */
 class Style {
+  /** Whether to print the node's tag explicitly. */
   tagged = false
   flow = false
   singleQuoted = false

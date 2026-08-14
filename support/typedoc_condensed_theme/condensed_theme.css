@@ -175,7 +175,7 @@ pre {
 .cndnsd-call-signature .tsd-signature {
   font-weight: 600;
 }
-.cndnsd-call-signature .tsd-signature * {
+.cndnsd-call-signature .tsd-signature > :not(.tsd-sources) {
   font-weight: inherit;
 }
 

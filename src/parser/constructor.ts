@@ -72,6 +72,7 @@ interface Anchor {
 
 /** @category Events */
 interface ConstructorOptions {
+  /** Source text referenced by offsets in `events`. */
   source: string
   filename?: string
 
@@ -334,7 +335,12 @@ function storeAnchor (
   return null
 }
 
-/** @category Events */
+/**
+ * Constructs JavaScript documents directly from parser events, without an
+ * intermediate AST.
+ *
+ * @category Events
+ */
 function constructFromEvents (events: Event[], options: ConstructorOptions): unknown[] {
   const state: ConstructorState = {
     ...DEFAULT_CONSTRUCTOR_OPTIONS,

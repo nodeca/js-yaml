@@ -30,6 +30,10 @@ class YAMLException extends Error {
   reason: string
   mark?: SnippetMark
 
+  /**
+   * Optional `mark` contains source snippet data. Usually, use
+   * {@link YAMLException.throwAt} instead of passing it directly.
+   */
   constructor (reason: string, mark?: SnippetMark) {
     super()
 

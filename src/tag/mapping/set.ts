@@ -1,6 +1,10 @@
 import { defineMappingTag } from '../../tag.ts'
 
-/** @category Tags */
+/**
+ * The YAML 1.1 `!!set` tag, represented as a JavaScript `Set`.
+ *
+ * @category Tags
+ */
 const setTag = defineMappingTag('tag:yaml.org,2002:set', {
   create: () => new Set<unknown>(),
   identify: (data) => data instanceof Set,

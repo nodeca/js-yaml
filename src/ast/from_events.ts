@@ -46,7 +46,10 @@ type Frame = DocumentFrame | SequenceFrame | MappingFrame
 
 /** @category AST */
 interface FromEventsOptions {
+  /** Source text referenced by offsets in `events`. */
   source: string
+
+  /** Schema used to resolve implicit scalar tags. */
   schema: Schema
 }
 
@@ -139,7 +142,11 @@ function addNode (state: FromEventsState, node: Node) {
   }
 }
 
-/** @category AST */
+/**
+ * Builds an AST from parser events
+ *
+ * @category AST
+ */
 function eventsToAst (events: Event[], options: FromEventsOptions): Document[] {
   const state: FromEventsState = {
     source: options.source,

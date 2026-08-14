@@ -17,7 +17,13 @@ import {
 
 /** @category AST */
 interface FromJsOptions {
+  /** Inlines duplicate objects instead of converting them into references. */
   noRefs?: boolean
+
+  /**
+   * Skips unrepresentable values instead of throwing. Invalid mapping pairs
+   * and sequence items are skipped; `undefined` sequence items become `null`.
+   */
   skipInvalid?: boolean
 }
 
@@ -151,8 +157,9 @@ function build (state: FromJsState, object: unknown): Node | typeof INVALID {
 }
 
 /**
- * A JS value is one YAML document. An unrepresentable root becomes an empty
- * document, which the presenter renders as an empty string.
+ * Convert JS object to AST. A JS value is one YAML document. An unrepresentable
+ * root becomes an empty document, which the presenter renders as an empty
+ * string.
  *
  * @category AST
  */

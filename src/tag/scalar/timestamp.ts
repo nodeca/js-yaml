@@ -86,7 +86,11 @@ function resolveYamlTimestamp (source: string) {
   return date
 }
 
-/** @category Tags */
+/**
+ * The YAML 1.1 `!!timestamp` tag, represented as a JavaScript `Date`.
+ *
+ * @category Tags
+ */
 const timestampTag = defineScalarTag('tag:yaml.org,2002:timestamp', {
   implicit: true,
   // Both patterns start with a 4-digit year, so source.charAt(0) is always a digit.

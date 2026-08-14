@@ -6,13 +6,13 @@ category: Documents
 # Migration guide from `js-yaml@4` to `js-yaml@5` <!-- omit in toc -->
 
 - [Base](#base)
-- [`load` / `loadAll`](#load--loadall)
+- [load / loadAll](#load--loadall)
   - [Removed options](#removed-options)
   - [Empty input throws](#empty-input-throws)
   - [Schema](#schema)
   - [Mapping keys](#mapping-keys)
-  - [`!!set`](#set)
-- [`dump`](#dump)
+  - [!!set](#set)
+- [dump](#dump)
   - [Removed options](#removed-options-1)
   - [Replacing `styles`](#replacing-styles)
 - [Custom types](#custom-types)
@@ -74,7 +74,7 @@ Exports are now flat. The `types` namespace, the `Type` class and
 `DEFAULT_SCHEMA` are gone, and internal `js-yaml/lib/...` imports no longer
 resolve. If you used any of those, read on.
 
-## `load` / `loadAll`
+## load / loadAll
 
 ### Removed options
 
@@ -154,7 +154,7 @@ try {
 }
 ```
 
-### `!!set`
+### !!set
 
 The YAML 1.1 `!!set` tag now produces a `Set` instead of an object of `null`s:
 
@@ -167,7 +167,7 @@ try {
 }
 ```
 
-## `dump`
+## dump
 
 By default dump now uses `YAML11_SCHEMA`, slightly extended with YAML 1.2
 `0o...` ints and exponent-only floats. This guarantees safe quoting for all YAML

@@ -58,6 +58,7 @@ ESCAPE_SEQUENCES[0x2029] = '\\P'
 
 /** @category AST */
 interface PresenterOptions {
+  /** Schema used when selecting a safe scalar style. */
   schema: Schema
 
   /**
@@ -1038,7 +1039,7 @@ function writeDocumentDirectives (doc: Document) {
 }
 
 /**
- * Documents → text, including the trailing newline.
+ * Build YAML from AST.
  *
  * @category AST
  */

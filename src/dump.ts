@@ -57,7 +57,7 @@ const DEFAULT_DUMP_OPTIONS: Required<DumpOptions> = {
 // Options that need the JS value (tags, format, dedup) go to `jsToAst`; purely
 // presentational ones go to `present`.
 /**
- * Serializes `object` as a YAML document. By default it can dump every
+ * Serializes JS object as a YAML document. By default it can dump every
  * supported YAML type, so it throws an exception if you try to dump regexps or
  * functions. However, you can disable exceptions by setting the
  * {@link DumpOptions.skipInvalid} option to `true`.

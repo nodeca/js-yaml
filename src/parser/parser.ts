@@ -1423,7 +1423,11 @@ function readDocument (state: ParserState) {
   }
 }
 
-/** @category Events */
+/**
+ * Parses YAML into a flat event stream referencing source text by offsets.
+ *
+ * @category Events
+ */
 function parseEvents (input: string, options: ParserOptions): Event[] {
   const length = input.length
   const state: ParserState = {

@@ -78,7 +78,11 @@ function compileTags (tags: readonly TagDefinition[]) {
   return result
 }
 
-/** @category Schemas */
+/**
+ * Controls tag resolution when loading and type selection when dumping.
+ *
+ * @category Schemas
+ */
 class Schema {
   readonly tags: readonly TagDefinition[]
   /** @internal */
@@ -247,14 +251,23 @@ class Schema {
   }
 }
 
-/** @category Schemas */
+/**
+ * The YAML 1.2 Failsafe Schema: strings, sequences, and mappings.
+ *
+ * @category Schemas
+ */
 const FAILSAFE_SCHEMA = new Schema([
   strTag,
   seqTag,
   mapTag
 ])
 
-/** @category Schemas */
+/**
+ * The YAML 1.2 JSON Schema. It uses JSON scalar forms while retaining YAML
+ * collection syntax.
+ *
+ * @category Schemas
+ */
 const JSON_SCHEMA = new Schema([
   ...FAILSAFE_SCHEMA.tags,
   nullJsonTag,
@@ -290,7 +303,11 @@ const CORE_SCHEMA = new Schema([
   floatCoreTag
 ])
 
-/** @category Schemas */
+/**
+ * YAML 1.1-compatible schema.
+ *
+ * @category Schemas
+ */
 const YAML11_SCHEMA = new Schema([
   ...FAILSAFE_SCHEMA.tags,
   nullYaml11Tag,
