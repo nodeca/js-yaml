@@ -9,7 +9,6 @@ export {
 
 export {
   NOT_RESOLVED,
-  MERGE_KEY,
   defineScalarTag,
   defineSequenceTag,
   defineMappingTag,

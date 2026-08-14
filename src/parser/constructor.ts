@@ -10,7 +10,6 @@ import {
 import { getScalarValue } from './parser_scalar.ts'
 import { CORE_SCHEMA, type Schema } from '../schema.ts'
 import {
-  MERGE_KEY,
   NOT_RESOLVED,
   type MappingTagDefinition,
   type ScalarTagDefinition,
@@ -20,6 +19,8 @@ import { YAMLException } from '../common/exception.ts'
 import { tagNameFull } from '../common/tagname.ts'
 
 const NO_RANGE = -1
+
+const MERGE_TAG_NAME = 'tag:yaml.org,2002:merge'
 
 interface DocumentFrame {
   kind: 'document'
@@ -46,6 +47,8 @@ interface MappingFrame {
   key: unknown
   keyPosition: number
   hasKey: boolean
+  // The key slot drops its tag, but `<<` is recognized by tag, not by value.
+  keyIsMerge: boolean
   // Keys brought in by a merge that an explicit pair is still allowed to
   // override. Lazily allocated: stays null for mappings without `<<`.
   overridable: Set<unknown> | null
@@ -276,7 +279,7 @@ function addMappingValue (state: ConstructorState, frame: MappingFrame, key: unk
   state.position = frame.keyPosition
 
   // `<<` is intercepted before dedup, so a repeated merge key is allowed.
-  if (key === MERGE_KEY) {
+  if (frame.keyIsMerge) {
     mergeSource(state, frame, value, tag)
     return
   }
@@ -311,6 +314,7 @@ function addValue (state: ConstructorState, value: unknown, tag: AnyTag) {
     frame.key = value
     frame.keyPosition = state.position
     frame.hasKey = true
+    frame.keyIsMerge = tag.tagName === MERGE_TAG_NAME
   }
 }
 
@@ -409,6 +413,7 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
           key: undefined,
           keyPosition: state.position,
           hasKey: false,
+          keyIsMerge: false,
           overridable: null
         })
         break

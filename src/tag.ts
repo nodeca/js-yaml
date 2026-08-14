@@ -6,13 +6,6 @@
 const NOT_RESOLVED: unique symbol = Symbol('NOT_RESOLVED')
 
 /**
- * Constructed value of the YAML merge key (`<<`).
- *
- * @category Tags
- */
-const MERGE_KEY: unique symbol = Symbol('MERGE_KEY')
-
-/**
  * Options for {@link defineScalarTag}.
  *
  * @category Tags
@@ -273,7 +266,6 @@ function defineMappingTag<Carrier, Result = Carrier> (tagName: string, options: 
 
 export {
   NOT_RESOLVED,
-  MERGE_KEY,
   defineScalarTag,
   defineSequenceTag,
   defineMappingTag,

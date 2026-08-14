@@ -126,6 +126,36 @@ a: &x [[p, q]]
     assert.deepStrictEqual(load(src, { schema: YAML11_SCHEMA }), new Set(['a']))
   })
 
+  describe('`<<` outside of a mapping key', () => {
+    it('as a mapping value', () => {
+      assert.deepStrictEqual(load('foo: <<\n', { schema: YAML11_SCHEMA }), { foo: '<<' })
+    })
+
+    it('as a sequence item', () => {
+      assert.deepStrictEqual(load('- <<\n', { schema: YAML11_SCHEMA }), ['<<'])
+    })
+
+    it('as a document root', () => {
+      assert.deepStrictEqual(load('<<\n', { schema: YAML11_SCHEMA }), '<<')
+    })
+
+    it('inside a nested mapping', () => {
+      assert.deepStrictEqual(load('a: {b: <<}\n', { schema: YAML11_SCHEMA }), { a: { b: '<<' } })
+    })
+
+    it('as an explicit !!merge tag on an empty node', () => {
+      assert.deepStrictEqual(load('foo: !!merge\n', { schema: YAML11_SCHEMA }), { foo: '<<' })
+    })
+
+    it('quoted, never a merge key', () => {
+      assert.deepStrictEqual(load('foo: "<<"\n', { schema: YAML11_SCHEMA }), { foo: '<<' })
+    })
+
+    it('still merges in the key position', () => {
+      assert.deepStrictEqual(load('<<: {p: 1}\n', { schema: YAML11_SCHEMA }), { p: 1 })
+    })
+  })
+
   it('Resolving explicit !!merge on empty node', () => {
     assert.doesNotThrow(() => load('? !!merge\n: []', { schema: CORE_SCHEMA.withTags(mergeTag) }))
   })
