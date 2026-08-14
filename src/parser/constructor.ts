@@ -35,10 +35,6 @@ interface SequenceFrame {
   tag: SequenceTagDefinition<any, any>
   anchor: Anchor | null
   index: number
-  // True when this sequence is the source list of a `<<` merge (`<<: [...]`).
-  // Each element is validated as a mapping on arrival; the materialized list is
-  // then delivered to the target mapping, which folds the elements in.
-  merge: boolean
 }
 
 interface MappingFrame {
@@ -124,6 +120,9 @@ interface ConstructorState extends Required<ConstructorOptions> {
   position: number
   frames: Frame[]
   anchors: Map<string, Anchor>
+  // Mapping tag each sequence element was built with, keyed by the element
+  // itself. Needed by `<<` merge, which sees only the finished element values.
+  nodeTags: Map<unknown, MappingTagDefinition<any, any>>
   tagHandlers: TagHandlers
   totalMergeKeys: number
   aliasCount: number
@@ -252,9 +251,9 @@ function mergeKeys (state: ConstructorState, frame: MappingFrame, source: unknow
 }
 
 // The value of a `<<` key: either a mapping (fold its keys) or a sequence of
-// mappings (fold each). A merge sequence has already had every element validated
-// as a mapping on arrival (see addValue), and its elements were built by the
-// target's own mapping tag, so they are read back with it.
+// mappings (fold each). Sequence elements arrive as bare values, so the tag each
+// was built with comes from `nodeTags`; a miss means it is not a mapping (a
+// scalar, a nested sequence, or a value some sequence tag synthesized itself).
 function mergeSource (state: ConstructorState, frame: MappingFrame, source: unknown, sourceTag: AnyTag) {
   state.position = frame.keyPosition
 
@@ -262,7 +261,11 @@ function mergeSource (state: ConstructorState, frame: MappingFrame, source: unkn
     mergeKeys(state, frame, source, sourceTag)
   } else if (sourceTag.nodeKind === 'sequence' && Array.isArray(source)) {
     for (const element of source) {
-      mergeKeys(state, frame, element, frame.tag)
+      const elementTag = state.nodeTags.get(element)
+      if (!elementTag) {
+        throwError(state, 'cannot merge mappings; the provided source object is unacceptable')
+      }
+      mergeKeys(state, frame, element, elementTag)
     }
   } else {
     throwError(state, 'cannot merge mappings; the provided source object is unacceptable')
@@ -294,13 +297,9 @@ function addValue (state: ConstructorState, value: unknown, tag: AnyTag) {
     frame.value = value
     frame.hasValue = true
   } else if (frame.kind === 'sequence') {
-    if (frame.merge) {
-      // Element of a `<<: [...]` list: validate it is a mapping, then collect
-      // it like any other item for the target to fold in.
-      if (!isMappingTag(tag)) {
-        throwError(state, 'cannot merge mappings; the provided source object is unacceptable')
-      }
-    }
+    // Any element may later be folded in by a `<<` merge, which by then has no
+    // way to tell what built it.
+    if (isMappingTag(tag)) state.nodeTags.set(value, tag)
     const err = frame.tag.addItem(frame.value, value, frame.index++)
     if (err) throwError(state, err)
   } else if (frame.hasKey) {
@@ -351,6 +350,7 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
     position: 0,
     frames: [],
     anchors: new Map(),
+    nodeTags: new Map(),
     tagHandlers: Object.create(null),
     totalMergeKeys: 0,
     aliasCount: 0
@@ -363,6 +363,7 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
     switch (event.type) {
       case EVENT_ID.DOCUMENT:
         state.anchors = new Map()
+        state.nodeTags = new Map()
         state.aliasCount = 0
         state.tagHandlers = Object.create(null)
         for (const directive of event.directives) {
@@ -386,15 +387,8 @@ function constructFromEvents (events: Event[], options: ConstructorOptions): unk
         const value = tag.create(tagName)
         const anchor = storeAnchor(state, event, value, tag, tag.carrierIsResult)
 
-        // `<<: [...]` — the parent mapping is waiting on a merge key, so this
-        // sequence is a list of merge sources: its elements must be mappings.
-        // It is still built and delivered as a normal value; the target folds it.
-        const parent = state.frames[state.frames.length - 1]
-        const merge = parent !== undefined && parent.kind === 'mapping' &&
-          parent.hasKey && parent.key === MERGE_KEY
-
         state.frames.push({
-          kind: 'sequence', position: state.position, value, tag, anchor, index: 0, merge
+          kind: 'sequence', position: state.position, value, tag, anchor, index: 0
         })
         break
       }

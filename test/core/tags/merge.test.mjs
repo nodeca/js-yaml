@@ -88,6 +88,44 @@ foo: bar
     )
   })
 
+  it('throws on a string item in an aliased merge sequence', () => {
+    const src = `
+a: &x [abc]
+<<: *x
+`
+    assert.throws(() => load(src, { schema: YAML11_SCHEMA }), /cannot merge mappings/)
+  })
+
+  it('throws on a sequence item in an aliased merge sequence', () => {
+    const src = `
+a: &x [[p, q]]
+<<: *x
+`
+    assert.throws(() => load(src, { schema: YAML11_SCHEMA }), /cannot merge mappings/)
+  })
+
+  it('merges an aliased source', () => {
+    assert.deepStrictEqual(
+      load('a: &x {p: 1}\n<<: *x\n', { schema: YAML11_SCHEMA }),
+      { a: { p: 1 }, p: 1 }
+    )
+    assert.deepStrictEqual(
+      load('a: &x [{p: 1}]\n<<: *x\n', { schema: YAML11_SCHEMA }),
+      { a: [{ p: 1 }], p: 1 }
+    )
+  })
+
+  // `!!set` is a mapping in YAML terms, but its constructed value is a `Set`,
+  // so a merge item must be read with its own tag (`!!map` here) instead of the
+  // target's.
+  it('merges a sequence source when target and item mapping tags differ', () => {
+    const src = `
+--- !!set
+<<: [ { a: null } ]
+`
+    assert.deepStrictEqual(load(src, { schema: YAML11_SCHEMA }), new Set(['a']))
+  })
+
   it('Resolving explicit !!merge on empty node', () => {
     assert.doesNotThrow(() => load('? !!merge\n: []', { schema: CORE_SCHEMA.withTags(mergeTag) }))
   })
