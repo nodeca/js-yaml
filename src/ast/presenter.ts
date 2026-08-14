@@ -120,7 +120,10 @@ interface PresenterOptions {
   flowSkipColonSpace?: boolean
 
   /**
-   * Quotes flow mapping keys: `{a: 1}` becomes `{"a": 1}`.
+   * Quotes flow mapping keys: `{a: 1}` becomes `{"a": 1}`. The key is written
+   * as a JSON-like node — double-quoted regardless of {@link quoteStyle},
+   * unless the node already carries a quoted style hint — so `:` may follow it
+   * directly (see {@link flowSkipColonSpace}).
    *
    * @defaultValue `false`
    */
@@ -543,6 +546,13 @@ function resolveScalarStyle (state: PresenterState, node: ScalarNode,
     if (node.style.folded) return STYLE_FOLDED
   }
 
+  // `quoteFlowKeys` applies to flow mapping keys (`iskey && !inblock`). The
+  // style is forced here rather than by wrapping the rendered text in quotes:
+  // escaping then matches the style, quoting is applied once, and a non-default
+  // tag is still printed, so the key keeps its value. Double-quoted is the only
+  // style that can hold every scalar, so no case has to fall back.
+  if (iskey && !inblock && state.quoteFlowKeys) return STYLE_DOUBLE
+
   const string = node.value
 
   if (string.length === 0) {
@@ -772,20 +782,18 @@ function writeFlowMapping (state: PresenterState, level: number, node: MappingNo
     let pairBuffer = ''
     if (result !== '') pairBuffer += `,${!state.flowSkipCommaSpace ? ' ' : ''}`
 
+    // `quoteFlowKeys` is applied while rendering the key (see
+    // resolveScalarStyle), not by wrapping the rendered text.
     const keyText = writeNode(state, level, key, { iskey: true })
     const explicitPair = keyText.length > 1024
 
-    if (explicitPair) {
-      pairBuffer += '? '
-    } else if (state.quoteFlowKeys) {
-      pairBuffer += '"'
-    }
+    if (explicitPair) pairBuffer += '? '
 
     const valueText = writeNode(state, level, value, {})
     // No separating space when the value renders empty (e.g. null → '').
     const sep = state.flowSkipColonSpace || valueText === '' ? '' : ' '
 
-    pairBuffer += `${keyText}${state.quoteFlowKeys && !explicitPair ? '"' : ''}:${sep}${valueText}`
+    pairBuffer += `${keyText}:${sep}${valueText}`
 
     result += pairBuffer
   }

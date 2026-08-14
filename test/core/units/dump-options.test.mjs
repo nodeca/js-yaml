@@ -157,6 +157,28 @@ describe('dump options', () => {
     assert.equal(dump({ a: 1 }, { flowLevel: 0, quoteFlowKeys: true }), '{"a": 1}\n')
   })
 
+  it('quoteFlowKeys — quotes a key once, in the key style', () => {
+    // The key is rendered quoted, rather than wrapped in quotes afterwards, so
+    // a key that already needs quoting is not quoted twice and its escaping
+    // matches the style actually used.
+    const opts = { flowLevel: 0, quoteFlowKeys: true }
+    assert.equal(dump({ '*x': 1 }, opts), '{"*x": 1}\n')
+    assert.equal(dump({ 'a\\b': 1 }, opts), '{"a\\\\b": 1}\n')
+    assert.equal(dump({ 'a\nb': 1 }, opts), '{"a\\nb": 1}\n')
+    assert.equal(dump({ '': 1 }, opts), '{"": 1}\n')
+
+    // A non-string key keeps its tag, so quoting does not turn it into a string.
+    const schema = CORE_SCHEMA.withTags(realMapTag)
+    assert.equal(dump(new Map([[1, 'v']]), { ...opts, schema }), '{!!int "1": v}\n')
+
+    // `condenseFlow`'s v5 spelling: the key must be JSON-like for an adjacent
+    // `:` to separate it from the value.
+    const condensed = { ...opts, flowSkipCommaSpace: true, flowSkipColonSpace: true }
+    const value = { '*x': 1, 'a b': [true, null] }
+    assert.equal(dump(value, condensed), '{"*x":1,"a b":[true,null]}\n')
+    assert.deepEqual(load(dump(value, condensed)), value)
+  })
+
   it('tagBeforeAnchor — emits the tag before the anchor', () => {
     function Tagged () {}
     const schema = CORE_SCHEMA.withTags(defineMappingTag('!t', {

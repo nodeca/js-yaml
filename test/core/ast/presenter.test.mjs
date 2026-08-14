@@ -34,6 +34,26 @@ describe('ast presenter', () => {
     assert.deepEqual(load(output, { schema: CORE_SCHEMA }), { [key]: 'value' })
   })
 
+  it('keeps a quoted style hint on a quoteFlowKeys key', () => {
+    // `quoteFlowKeys` needs the key to be a JSON-like node so an adjacent `:`
+    // separates it from the value. A single-quoted scalar already is one, so a
+    // node that carries a quote style hint keeps it instead of being forced to
+    // double-quoted.
+    const input = "{'a b': 1, c: 2}"
+    const documents = eventsToAst(parseEvents(input, {}), { source: input, schema: CORE_SCHEMA })
+    const options = {
+      schema: CORE_SCHEMA,
+      flowLevel: 0,
+      quoteFlowKeys: true,
+      flowSkipColonSpace: true,
+      flowSkipCommaSpace: true
+    }
+    const output = present(documents, options)
+
+    assert.equal(output, '{\'a b\':1,"c":2}\n')
+    assert.deepEqual(load(output, { schema: CORE_SCHEMA }), { 'a b': 1, c: 2 })
+  })
+
   it('aligns a compact block-collection key with a wide indent', () => {
     const map = new Map([[[1, 2], new Map([['a', 1], ['b', 2]])]])
     const schema = CORE_SCHEMA.withTags(realMapTag)
