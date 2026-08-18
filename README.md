@@ -12,7 +12,7 @@ __[Online demo](https://nodeca.github.io/js-yaml/)__
 
 
 > [!NOTE]
-> If you are upgrading from v4, see the [v5 migration guide](docs/migrate_v4_to_v5.md).
+> If you are upgrading from v4, see the [v5 migration guide](https://nodeca.github.io/js-yaml/doc/documents/Migrate_to_v5.html).
 
 ### [Documentation >>](https://nodeca.github.io/js-yaml/doc/)
 
