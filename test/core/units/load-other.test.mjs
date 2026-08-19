@@ -8,6 +8,12 @@ describe('core/units/load-other', () => {
     assert.deepStrictEqual(load('foo: bar\n'), { foo: 'bar' })
   })
 
+  it('BOM strip does not indent a multi-key mapping (#791)', () => {
+    const src = '\uFEFFabc: 5\ncba:\n  - Xyz\n  - Zyx\n'
+    assert.deepStrictEqual(load(src), { abc: 5, cba: ['Xyz', 'Zyx'] })
+    assert.deepStrictEqual(load(src.slice(1)), { abc: 5, cba: ['Xyz', 'Zyx'] })
+  })
+
   it('Loading multidocument source using `load` should cause an error', () => {
     assert.throws(() => {
       load('--- # first document\n--- # second document\n')

@@ -1449,7 +1449,12 @@ function parseEvents (input: string, options: ParserOptions): Event[] {
   const nullpos = input.indexOf('\0')
   if (nullpos !== -1) YAMLException.throwAt(input, nullpos, 'null byte is not allowed in input', state.filename)
 
-  if (state.input.charCodeAt(state.position) === 0xFEFF) state.position++
+  // UTF-8 BOM is not content. Advance lineStart with position so the first
+  // line is not treated as indented by one (YAML 1.2.2 §5.2 / [3] c-byte-order-mark).
+  if (state.input.charCodeAt(state.position) === 0xFEFF) {
+    state.position++
+    state.lineStart = state.position
+  }
 
   while (state.position < state.length) {
     skipSeparationSpace(state, true)
