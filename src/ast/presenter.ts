@@ -1005,15 +1005,17 @@ function rootStartsOwnLine (node: Node) {
 // A document whose serialization ends with a keep-chomped (`+`) block scalar is
 // open-ended: the trailing blank line(s) would otherwise be ambiguous, so it
 // needs a `...` terminator. Mirrors the keep test in `blockHeader`.
-function isOpenEnded (node: Node) {
+function isOpenEnded (node: Node, state: PresenterState) {
   // Descend to the last leaf, always taking the last item of a block collection
   // (a flow collection renders on one line, so it ends the document itself).
+  // Mapping order must match writeBlockMapping: sortKeys can change which
+  // value is actually rendered last (#789).
   let leaf = node
   while ((leaf.kind === 'sequence' || leaf.kind === 'mapping') &&
     !leaf.style.flow && leaf.items.length !== 0) {
     leaf = leaf.kind === 'sequence'
       ? leaf.items[leaf.items.length - 1]
-      : leaf.items[leaf.items.length - 1].value
+      : sortMappingItems(state, leaf.items)[leaf.items.length - 1].value
   }
 
   if (leaf.kind !== 'scalar' || !(leaf.style.literal || leaf.style.folded)) return false
@@ -1069,7 +1071,7 @@ function present (documents: Document[], options: PresenterOptions): string {
       result += writeNode(state, 0, doc.contents, { block: true, compact: true }) + '\n'
     }
 
-    previousEnded = doc.explicitEnd || (doc.contents !== null && isOpenEnded(doc.contents))
+    previousEnded = doc.explicitEnd || (doc.contents !== null && isOpenEnded(doc.contents, state))
     if (previousEnded) {
       result += '...\n'
     }

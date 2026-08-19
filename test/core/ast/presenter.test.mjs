@@ -64,6 +64,16 @@ describe('ast presenter', () => {
     assert.equal(output, 'a: 1\na: 2\n')
   })
 
+  it('uses the sorted last mapping value for open-ended detection (#789)', () => {
+    const source = 'b: |+\n  x\n\na: x\n'
+    const documents = eventsToAst(parseEvents(source, {}), { source, schema: CORE_SCHEMA })
+    documents.push(...jsToAst('next', CORE_SCHEMA))
+
+    const output = present(documents, { schema: CORE_SCHEMA, sortKeys: true })
+
+    assert.equal(output, 'a: x\nb: |+\n  x\n\n...\nnext\n')
+  })
+
   it('emits a bare marker for an explicit-start null document', () => {
     const output = present([{ contents: null, directives: [], explicitStart: true }], { schema: CORE_SCHEMA })
 
