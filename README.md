@@ -11,9 +11,6 @@ __[Online demo](https://nodeca.github.io/js-yaml/)__
 - Passes the entire [YAML Test Suite](https://github.com/yaml/yaml-test-suite).
 
 
-> [!NOTE]
-> If you are upgrading from v4, see the [v5 migration guide](docs/migrate_v4_to_v5.md).
-
 ### [Documentation >>](https://nodeca.github.io/js-yaml/doc/)
 
 
