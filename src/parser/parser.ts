@@ -379,6 +379,35 @@ function testDocumentSeparator (state: ParserState, position = state.position) {
   return false
 }
 
+function skipByteOrderMark (state: ParserState) {
+  if (state.position === state.lineStart &&
+      state.input.charCodeAt(state.position) === 0xFEFF) {
+    state.position++
+    state.lineStart = state.position
+  }
+}
+
+function testDocumentBoundary (state: ParserState) {
+  if (state.position !== state.lineStart) return false
+
+  // Fast path: most document boundaries do not have a BOM.
+  if (testDocumentSeparator(state)) return true
+  if (state.input.charCodeAt(state.position) !== 0xFEFF) return false
+
+  // BOM-prefixed boundaries are rare, so snapshot/restore overhead is negligible.
+  const snapshot = snapshotState(state)
+
+  skipByteOrderMark(state)
+  skipSeparationSpace(state, true)
+
+  const ch = state.input.charCodeAt(state.position)
+  const result = state.position === state.lineStart &&
+    (ch === 0x25/* % */ || (ch === 0x2D/* - */ && testDocumentSeparator(state)))
+
+  restoreState(state, snapshot)
+  return result
+}
+
 function skipUntilLineEnd (state: ParserState) {
   let ch = state.input.charCodeAt(state.position)
 
@@ -669,7 +698,7 @@ function readBlockScalar (state: ParserState, parentIndent: number, props: NodeP
       }
       break
     }
-    if (linePosition === state.lineStart && testDocumentSeparator(state, linePosition)) break
+    if (testDocumentBoundary(state)) break
 
     if (!detectedIndent && contentIndent === -1 && isEol(first)) {
       maxLeadingIndent = Math.max(maxLeadingIndent, column)
@@ -773,7 +802,7 @@ function readPlainScalar (state: ParserState, nodeIndent: number, nodeContext: N
   let multiline = false
 
   while (ch !== 0) {
-    if (state.position === state.lineStart && testDocumentSeparator(state)) break
+    if (testDocumentBoundary(state)) break
 
     if (ch === 0x3A/* : */) {
       const following = state.input.charCodeAt(state.position + 1)
@@ -1418,7 +1447,7 @@ function readDocument (state: ParserState) {
 
   if (!explicitEnd &&
       state.position < state.length &&
-      !(state.position === state.lineStart && testDocumentSeparator(state))) {
+      !testDocumentBoundary(state)) {
     throwError(state, 'end of the stream or a document separator is expected')
   }
 }
@@ -1449,9 +1478,8 @@ function parseEvents (input: string, options: ParserOptions): Event[] {
   const nullpos = input.indexOf('\0')
   if (nullpos !== -1) YAMLException.throwAt(input, nullpos, 'null byte is not allowed in input', state.filename)
 
-  if (state.input.charCodeAt(state.position) === 0xFEFF) state.position++
-
   while (state.position < state.length) {
+    skipByteOrderMark(state)
     skipSeparationSpace(state, true)
     if (state.position >= state.length) break
     const documentStart = state.position
