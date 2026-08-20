@@ -3,7 +3,7 @@
 
 import { YAMLException } from '../common/exception.ts'
 import { tagNameShort } from '../common/tagname.ts'
-import { SCALAR_STYLE, type ScalarStyle } from '../parser/events.ts'
+import { COLLECTION_STYLE, SCALAR_STYLE, type ScalarStyle } from '../parser/events.ts'
 import { type Schema } from '../schema.ts'
 import {
   type Node,
@@ -169,8 +169,8 @@ interface PresenterState extends Required<PresenterOptions> {
   defaultScalarTagName: string
 }
 
-function nodeTagShort (node: Node) {
-  return node.style.tagged ? node.tag : tagNameShort(node.tag)
+function nodeTagShort (node: ScalarNode | SequenceNode | MappingNode) {
+  return node.tagged ? node.tag : tagNameShort(node.tag)
 }
 
 function createPresenterState (options: PresenterOptions): PresenterState {
@@ -524,11 +524,11 @@ function resolveScalarStyle (state: PresenterState, node: ScalarNode,
   // original context; only a parent change can break them, and only block
   // styles in a single-line context — quoted styles survive any context. A
   // rejected block hint falls through to selection by content below.
-  if (node.style.singleQuoted) return SCALAR_STYLE.SINGLE_QUOTED
-  if (node.style.doubleQuoted) return SCALAR_STYLE.DOUBLE_QUOTED
+  if (node.style === SCALAR_STYLE.SINGLE_QUOTED) return SCALAR_STYLE.SINGLE_QUOTED
+  if (node.style === SCALAR_STYLE.DOUBLE_QUOTED) return SCALAR_STYLE.DOUBLE_QUOTED
   if (!singleLineOnly) {
-    if (node.style.literal) return SCALAR_STYLE.LITERAL_BLOCK
-    if (node.style.folded) return SCALAR_STYLE.FOLDED_BLOCK
+    if (node.style === SCALAR_STYLE.LITERAL_BLOCK) return SCALAR_STYLE.LITERAL_BLOCK
+    if (node.style === SCALAR_STYLE.FOLDED_BLOCK) return SCALAR_STYLE.FOLDED_BLOCK
   }
 
   const string = node.value
@@ -537,7 +537,7 @@ function resolveScalarStyle (state: PresenterState, node: ScalarNode,
     // An empty scalar is safe when its tag is explicit or resolves back to the
     // node tag (notably, the default null representation). A real empty string
     // does neither and therefore remains quoted.
-    if (node.style.tagged || state.schema.resolveImplicitScalarTag(string).tag.tagName === node.tag) return SCALAR_STYLE.PLAIN
+    if (node.tagged || state.schema.resolveImplicitScalarTag(string).tag.tagName === node.tag) return SCALAR_STYLE.PLAIN
     return state.quoteStyle === 'double' ? SCALAR_STYLE.DOUBLE_QUOTED : SCALAR_STYLE.SINGLE_QUOTED
   }
 
@@ -549,7 +549,7 @@ function resolveScalarStyle (state: PresenterState, node: ScalarNode,
   // Plain writes no tag, so it round-trips only if the bare text resolves back
   // to the node's tag (or the tag gets printed explicitly). Else downgrade.
   // Downgrade to the preferred quote style here.
-  if (style === SCALAR_STYLE.PLAIN && !node.style.tagged &&
+  if (style === SCALAR_STYLE.PLAIN && !node.tagged &&
       state.schema.resolveImplicitScalarTag(string).tag.tagName !== node.tag) {
     return state.quoteStyle === 'double' ? SCALAR_STYLE.DOUBLE_QUOTED : SCALAR_STYLE.SINGLE_QUOTED
   }
@@ -828,8 +828,9 @@ function writeBlockMapping (state: PresenterState, level: number, node: MappingN
     // scalar key stays inline (flow-vs-block is invisible there).
     const keyIsBlock =
       ((key.kind === 'mapping' || key.kind === 'sequence') &&
-        !key.style.flow && key.items.length !== 0) ||
-      (key.kind === 'scalar' && (key.style.literal || key.style.folded))
+        key.style === COLLECTION_STYLE.BLOCK && key.items.length !== 0) ||
+      (key.kind === 'scalar' &&
+        (key.style === SCALAR_STYLE.LITERAL_BLOCK || key.style === SCALAR_STYLE.FOLDED_BLOCK))
 
     // The `?`/`:` indicators shift content right like a `-`, so a block key or
     // value that stays on the indicator line keeps its indentation under
@@ -905,7 +906,8 @@ interface NodeContext {
 // to its own line; a block collection that does so also collapses its seqNoIndent
 // indentation back to the parent.
 function cannotBeCompact (state: PresenterState, node: Node, level: number) {
-  return node.style.tagged || node.anchor !== undefined || (state.indent < 2 && level > 0)
+  if (node.kind === 'alias') return true
+  return node.tagged || node.anchor !== undefined || (state.indent < 2 && level > 0)
 }
 
 function writeNode (state: PresenterState, level: number, node: Node, ctx: NodeContext): string {
@@ -921,10 +923,10 @@ function writeNode (state: PresenterState, level: number, node: Node, ctx: NodeC
   }
 
   let body: string
-  let shouldPrintTag = node.style.tagged
+  let shouldPrintTag = node.tagged
   const useBlockCollection = block &&
     (node.kind === 'mapping' || node.kind === 'sequence') &&
-    !node.style.flow && node.items.length !== 0
+    node.style === COLLECTION_STYLE.BLOCK && node.items.length !== 0
 
   if (node.kind === 'mapping') {
     if (useBlockCollection) {
@@ -946,7 +948,7 @@ function writeNode (state: PresenterState, level: number, node: Node, ctx: NodeC
     const layout = scalarLayout(state, level)
     const style = resolveScalarStyle(state, node, layout, iskey, block)
     body = renderScalarStyle(node.value, style, layout)
-    shouldPrintTag = node.style.tagged || (style !== SCALAR_STYLE.PLAIN && node.tag !== state.defaultScalarTagName)
+    shouldPrintTag = node.tagged || (style !== SCALAR_STYLE.PLAIN && node.tag !== state.defaultScalarTagName)
   }
 
   // An indicator plus its mandatory separator occupies 2 columns. For wider
@@ -984,9 +986,9 @@ function writeNode (state: PresenterState, level: number, node: Node, ctx: NodeC
 // already forces the body onto its own line, so those stay on the `---` line.
 function rootStartsOwnLine (node: Node) {
   return (node.kind === 'sequence' || node.kind === 'mapping') &&
-    !node.style.flow &&
+    node.style === COLLECTION_STYLE.BLOCK &&
     node.items.length !== 0 &&
-    !node.style.tagged &&
+    !node.tagged &&
     node.anchor === undefined
 }
 
@@ -998,13 +1000,14 @@ function isOpenEnded (node: Node) {
   // (a flow collection renders on one line, so it ends the document itself).
   let leaf = node
   while ((leaf.kind === 'sequence' || leaf.kind === 'mapping') &&
-    !leaf.style.flow && leaf.items.length !== 0) {
+    leaf.style === COLLECTION_STYLE.BLOCK && leaf.items.length !== 0) {
     leaf = leaf.kind === 'sequence'
       ? leaf.items[leaf.items.length - 1]
       : leaf.items[leaf.items.length - 1].value
   }
 
-  if (leaf.kind !== 'scalar' || !(leaf.style.literal || leaf.style.folded)) return false
+  if (leaf.kind !== 'scalar' ||
+      (leaf.style !== SCALAR_STYLE.LITERAL_BLOCK && leaf.style !== SCALAR_STYLE.FOLDED_BLOCK)) return false
   const { value } = leaf
   // Keep chomping: ends in a blank line (`\n\n`) or is a lone `\n`.
   return value.endsWith('\n\n') || value === '\n'

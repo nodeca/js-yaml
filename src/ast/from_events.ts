@@ -6,7 +6,7 @@
 import {
   EVENT_ID,
   SCALAR_STYLE,
-  COLLECTION_STYLE,
+  type CollectionStyle,
   type Event,
   type MappingEvent,
   type ScalarEvent,
@@ -15,7 +15,6 @@ import {
 import { getScalarValue } from '../parser/parser_scalar.ts'
 import { type Schema } from '../schema.ts'
 import {
-  Style,
   type Node,
   type Document,
   type ScalarNode,
@@ -85,18 +84,11 @@ function anchorName (state: FromEventsState, event: ScalarEvent | SequenceEvent 
 function buildScalar (state: FromEventsState, event: ScalarEvent): ScalarNode {
   const value = getScalarValue(state.source, event)
   const raw = rawTag(state, event)
-  const style = new Style()
-
-  switch (event.style) {
-    case SCALAR_STYLE.SINGLE_QUOTED: style.singleQuoted = true; break
-    case SCALAR_STYLE.DOUBLE_QUOTED: style.doubleQuoted = true; break
-    case SCALAR_STYLE.LITERAL_BLOCK: style.literal = true; break
-    case SCALAR_STYLE.FOLDED_BLOCK: style.folded = true; break
-  }
 
   let tag: string
+  let tagged = false
   if (raw !== '') {
-    style.tagged = true
+    tagged = true
     tag = raw
   } else if (event.style === SCALAR_STYLE.PLAIN) {
     tag = state.schema.resolveImplicitScalarTag(value).tag.tagName
@@ -104,27 +96,26 @@ function buildScalar (state: FromEventsState, event: ScalarEvent): ScalarNode {
     tag = state.schema.defaultScalarTag.tagName
   }
 
-  return { kind: 'scalar', tag, style, anchor: anchorName(state, event), value }
+  return { kind: 'scalar', tag, tagged, style: event.style, anchor: anchorName(state, event), value }
 }
 
 function buildCollection (
   state: FromEventsState,
   event: SequenceEvent | MappingEvent,
   defaultTagName: string
-): { tag: string, style: Style, anchor?: string } {
+): { tag: string, tagged: boolean, style: CollectionStyle, anchor?: string } {
   const raw = rawTag(state, event)
-  const style = new Style()
-  if (event.style === COLLECTION_STYLE.FLOW) style.flow = true
 
   let tag: string
+  let tagged = false
   if (raw === '') {
     tag = defaultTagName
   } else {
     tag = raw
-    style.tagged = true
+    tagged = true
   }
 
-  return { tag, style, anchor: anchorName(state, event) }
+  return { tag, tagged, style: event.style, anchor: anchorName(state, event) }
 }
 
 function addNode (state: FromEventsState, node: Node) {
@@ -178,22 +169,22 @@ function eventsToAst (events: Event[], options: FromEventsOptions): Document[] {
         break
 
       case EVENT_ID.SEQUENCE: {
-        const { tag, style, anchor } = buildCollection(state, event, 'tag:yaml.org,2002:seq')
-        const node: SequenceNode = { kind: 'sequence', tag, style, anchor, items: [] }
+        const { tag, tagged, style, anchor } = buildCollection(state, event, 'tag:yaml.org,2002:seq')
+        const node: SequenceNode = { kind: 'sequence', tag, tagged, style, anchor, items: [] }
         state.frames.push({ kind: 'sequence', node })
         break
       }
 
       case EVENT_ID.MAPPING: {
-        const { tag, style, anchor } = buildCollection(state, event, 'tag:yaml.org,2002:map')
-        const node: MappingNode = { kind: 'mapping', tag, style, anchor, items: [] }
+        const { tag, tagged, style, anchor } = buildCollection(state, event, 'tag:yaml.org,2002:map')
+        const node: MappingNode = { kind: 'mapping', tag, tagged, style, anchor, items: [] }
         state.frames.push({ kind: 'mapping', node, key: null })
         break
       }
 
       case EVENT_ID.ALIAS: {
         const name = state.source.slice(event.anchorStart, event.anchorEnd)
-        const node: AliasNode = { kind: 'alias', tag: '', style: new Style(), anchor: name }
+        const node: AliasNode = { kind: 'alias', anchor: name }
         addNode(state, node)
         break
       }

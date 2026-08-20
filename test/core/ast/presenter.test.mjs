@@ -9,6 +9,7 @@ import {
   jsToAst,
   eventsToAst,
   present,
+  COLLECTION_STYLE,
   CORE_SCHEMA,
   nullCoreTag,
   realMapTag
@@ -26,7 +27,7 @@ describe('ast presenter', () => {
     const node = documents[0].contents
 
     assert.equal(node?.kind, 'mapping')
-    node.style.flow = true
+    node.style = COLLECTION_STYLE.FLOW
 
     const output = present(documents, { schema: CORE_SCHEMA, quoteFlowKeys: true })
 
@@ -121,7 +122,7 @@ describe('ast presenter', () => {
   it('applies flow recursively to descendants', () => {
     const documents = jsToAst([{ a: [1, 2], b: 'x\ny' }], CORE_SCHEMA)
     const node = documents[0].contents
-    node.style.flow = true // only the outer sequence
+    node.style = COLLECTION_STYLE.FLOW // only the outer sequence
 
     // Nested collections render flow despite their own block style, and a
     // multiline scalar can't stay block inside flow — it falls back to quoting.

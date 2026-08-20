@@ -6,8 +6,8 @@ import { YAMLException } from '../common/exception.ts'
 import { type Schema } from '../schema.ts'
 import { type TagDefinition } from '../tag.ts'
 import { tagNameShort } from '../common/tagname.ts'
+import { COLLECTION_STYLE, SCALAR_STYLE } from '../parser/events.ts'
 import {
-  Style,
   type Document,
   type Node,
   type ScalarNode,
@@ -95,7 +95,7 @@ function build (state: FromJsState, object: unknown): Node | typeof INVALID {
     const existing = state.refs.get(object)
     if (existing) {
       if (existing.anchor === undefined) existing.anchor = `ref_${state.refCounter++}`
-      return { kind: 'alias', tag: '', style: new Style(), anchor: existing.anchor }
+      return { kind: 'alias', anchor: existing.anchor }
     }
   }
 
@@ -111,12 +111,11 @@ function build (state: FromJsState, object: unknown): Node | typeof INVALID {
   const nodeTagName = implicitTag ? tagName : tagNameShort(tagName)
 
   if (tag.nodeKind === 'scalar') {
-    const style = new Style()
-    style.tagged = !implicitTag
     const node: ScalarNode = {
       kind: 'scalar',
       tag: nodeTagName,
-      style,
+      tagged: !implicitTag,
+      style: SCALAR_STYLE.PLAIN,
       value: tag.represent(object)
     }
     return node
@@ -124,9 +123,13 @@ function build (state: FromJsState, object: unknown): Node | typeof INVALID {
 
   if (tag.nodeKind === 'sequence') {
     const container = tag.represent(object)
-    const style = new Style()
-    style.tagged = !implicitTag
-    const node: SequenceNode = { kind: 'sequence', tag: nodeTagName, style, items: [] }
+    const node: SequenceNode = {
+      kind: 'sequence',
+      tag: nodeTagName,
+      tagged: !implicitTag,
+      style: COLLECTION_STYLE.BLOCK,
+      items: []
+    }
     if (!state.noRefs) state.refs.set(object, node)
 
     for (let index = 0, length = container.length; index < length; index += 1) {
@@ -141,9 +144,13 @@ function build (state: FromJsState, object: unknown): Node | typeof INVALID {
 
   // mapping — the canonical form is always a `Map`.
   const map = tag.represent(object)
-  const style = new Style()
-  style.tagged = !implicitTag
-  const node: MappingNode = { kind: 'mapping', tag: nodeTagName, style, items: [] }
+  const node: MappingNode = {
+    kind: 'mapping',
+    tag: nodeTagName,
+    tagged: !implicitTag,
+    style: COLLECTION_STYLE.BLOCK,
+    items: []
+  }
   if (!state.noRefs) state.refs.set(object, node)
 
   for (const [objectKey, objectValue] of map) {

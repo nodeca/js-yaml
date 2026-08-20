@@ -96,7 +96,6 @@ export {
 } from './ast/visit.ts'
 
 export {
-  Style,
   type Node,
   type Document,
   type NodeBase,

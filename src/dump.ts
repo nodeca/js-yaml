@@ -1,4 +1,5 @@
 import { DUMP_SCHEMA, type Schema } from './schema.ts'
+import { COLLECTION_STYLE } from './parser/events.ts'
 import { jsToAst } from './ast/from_js.ts'
 import { visit, VISIT_SKIP } from './ast/visit.ts'
 import { type Document } from './ast/nodes.ts'
@@ -77,7 +78,9 @@ function dump (input: any, options: DumpOptions = {}) {
   if (opts.flowLevel >= 0) {
     visit(documents, (node, ctx) => {
       if (ctx.depth < opts.flowLevel) return
-      node.style.flow = true
+      if (node.kind === 'sequence' || node.kind === 'mapping') {
+        node.style = COLLECTION_STYLE.FLOW
+      }
       return VISIT_SKIP
     })
   }

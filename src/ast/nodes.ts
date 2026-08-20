@@ -2,25 +2,11 @@
 // rendered by the presenter) and, later, by load. Behaviour lives in the walkers,
 // not on the nodes.
 
-import { type DocumentDirective } from '../parser/events.ts'
-
-/**
- * Style bitfields, defined as a class only to initialize their defaults.
- *
- * Manually assigned styles are hints; the presenter may use a fallback when
- * needed to produce valid YAML.
- *
- * @category Nodes
- */
-class Style {
-  /** Whether to print the node's tag explicitly. */
-  tagged = false
-  flow = false
-  singleQuoted = false
-  doubleQuoted = false
-  literal = false
-  folded = false
-}
+import {
+  type CollectionStyle,
+  type DocumentDirective,
+  type ScalarStyle
+} from '../parser/events.ts'
 
 /** @category Nodes */
 interface NodeBase {
@@ -29,7 +15,8 @@ interface NodeBase {
    * the printable/verbatim tag spelling.
    */
   tag: string
-  style: Style
+  /** Whether to print the node's tag explicitly. */
+  tagged: boolean
   anchor?: string
 
   /** Reserved for the formatting layer; not populated by the dumper yet. */
@@ -42,23 +29,27 @@ interface NodeBase {
 /** @category Nodes */
 interface ScalarNode extends NodeBase {
   kind: 'scalar'
+  /** Preferred scalar style; the presenter may fall back when necessary. */
+  style: ScalarStyle
   value: string
 }
 
 /** @category Nodes */
 interface SequenceNode extends NodeBase {
   kind: 'sequence'
+  style: CollectionStyle
   items: Node[]
 }
 
 /** @category Nodes */
 interface MappingNode extends NodeBase {
   kind: 'mapping'
+  style: CollectionStyle
   items: Array<{ key: Node, value: Node }>
 }
 
 /** @category Nodes */
-interface AliasNode extends NodeBase {
+interface AliasNode {
   kind: 'alias'
   /** The anchor name this alias points at (`*name`). */
   anchor: string
@@ -88,8 +79,6 @@ interface Document {
 }
 
 export {
-  Style,
-
   type Node,
   type Document,
   type NodeBase,

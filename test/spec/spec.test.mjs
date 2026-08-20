@@ -336,7 +336,9 @@ describe('yaml-test-suite parser tree', () => {
               const tagHandlers = tagHandlersFromDirectives(doc.directives)
 
               visit([doc], (node) => {
-                if (node.style.tagged && node.tag !== '!') node.tag = tagNameShort(tagNameFull(node.tag, tagHandlers))
+                if (node.kind !== 'alias' && node.tagged && node.tag !== '!') {
+                  node.tag = tagNameShort(tagNameFull(node.tag, tagHandlers))
+                }
               })
 
               doc.directives = []
@@ -346,7 +348,7 @@ describe('yaml-test-suite parser tree', () => {
             // stay flow (they have no block form).
             visit(documents, (node) => {
               if (node.kind === 'sequence' || node.kind === 'mapping') {
-                node.style.flow = false
+                node.style = COLLECTION_STYLE.BLOCK
               }
             })
 
@@ -357,28 +359,23 @@ describe('yaml-test-suite parser tree', () => {
 
               const { style, value } = node
 
-              const isPlain = !style.singleQuoted && !style.doubleQuoted &&
-                !style.literal && !style.folded
+              const isPlain = style === SCALAR_STYLE.PLAIN
 
               const unsafeBlock = /^ +$/m.test(value) || /^ +\t/m.test(value) ||
-                (style.folded && value.includes('\t'))
+                (style === SCALAR_STYLE.FOLDED_BLOCK && value.includes('\t'))
 
-              if ((style.literal || style.folded) && (unsafeBlock || value === '')) {
-                style.literal = false
-                style.folded = false
-                style.doubleQuoted = true
+              if ((style === SCALAR_STYLE.LITERAL_BLOCK || style === SCALAR_STYLE.FOLDED_BLOCK) &&
+                  (unsafeBlock || value === '')) {
+                node.style = SCALAR_STYLE.DOUBLE_QUOTED
               } else if (isPlain && (value.includes('\n') || value.startsWith('---'))) {
-                style.singleQuoted = true
+                node.style = SCALAR_STYLE.SINGLE_QUOTED
               }
             })
 
             // Samples double-quote any scalar with non-ASCII chars.
             visit(documents, (node) => {
               if (node.kind === 'scalar' && /[\u0080-\uffff]/.test(node.value)) {
-                node.style.singleQuoted = false
-                node.style.literal = false
-                node.style.folded = false
-                node.style.doubleQuoted = true
+                node.style = SCALAR_STYLE.DOUBLE_QUOTED
               }
             })
 

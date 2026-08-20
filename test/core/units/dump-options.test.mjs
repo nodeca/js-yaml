@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import {
   dump,
   load,
+  COLLECTION_STYLE,
   JSON_SCHEMA,
   CORE_SCHEMA,
   DUMP_SCHEMA,
@@ -127,7 +128,7 @@ describe('dump options', () => {
         assert.equal(root.kind, 'mapping')
         const values = root.items[0].value
         assert.equal(values.kind, 'sequence')
-        assert.equal(values.style.flow, true) // transform runs after flowLevel
+        assert.equal(values.style, COLLECTION_STYLE.FLOW) // transform runs after flowLevel
         values.items[1].value = '3'
       }
     })

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { dump, visit } from 'js-yaml'
+import { COLLECTION_STYLE, dump, visit } from 'js-yaml'
 
 const input = {
   a: [1, 2],
@@ -11,7 +11,7 @@ const input = {
 const actual = dump(input, {
   transform: documents => {
     visit(documents, node => {
-      if (node.kind === 'sequence') node.style.flow = true
+      if (node.kind === 'sequence') node.style = COLLECTION_STYLE.FLOW
     })
   }
 })
