@@ -3,6 +3,7 @@
 
 import { YAMLException } from '../common/exception.ts'
 import { tagNameShort } from '../common/tagname.ts'
+import { SCALAR_STYLE, type ScalarStyle } from '../parser/events.ts'
 import { type Schema } from '../schema.ts'
 import {
   type Node,
@@ -410,28 +411,15 @@ function needIndentIndicator (string: string) {
   return leadingSpaceRe.test(string)
 }
 
-const STYLE_PLAIN = 1
-const STYLE_SINGLE = 2
-const STYLE_LITERAL = 3
-const STYLE_FOLDED = 4
-const STYLE_DOUBLE = 5
-
-type ScalarStyleId =
-  typeof STYLE_PLAIN |
-  typeof STYLE_SINGLE |
-  typeof STYLE_LITERAL |
-  typeof STYLE_FOLDED |
-  typeof STYLE_DOUBLE
-
 // Determines which scalar styles are possible and returns the preferred style.
 // lineWidth = -1 => no limit.
 // Pre-conditions: str.length > 0.
 // Post-conditions:
-//    STYLE_PLAIN or STYLE_SINGLE => no \n are in the string.
-//    STYLE_LITERAL => no lines are suitable for folding (or lineWidth is -1).
-//    STYLE_FOLDED => a line > lineWidth and can be folded (and lineWidth != -1).
+//    PLAIN or SINGLE_QUOTED => no \n are in the string.
+//    LITERAL_BLOCK => no lines are suitable for folding (or lineWidth is -1).
+//    FOLDED_BLOCK => a line > lineWidth and can be folded (and lineWidth != -1).
 function chooseScalarStyle (state: PresenterState, string: string, layout: ReturnType<typeof scalarLayout>,
-  singleLineOnly: boolean, forceQuote: boolean, inblock: boolean): ScalarStyleId {
+  singleLineOnly: boolean, forceQuote: boolean, inblock: boolean): ScalarStyle {
   const { blockIndent, lineWidth } = layout
   let i
   let char = 0
@@ -452,7 +440,7 @@ function chooseScalarStyle (state: PresenterState, string: string, layout: Retur
     for (i = 0; i < string.length; char >= 0x10000 ? i += 2 : i++) {
       char = codePointAt(string, i)
       if (!isPrintable(char)) {
-        return STYLE_DOUBLE
+        return SCALAR_STYLE.DOUBLE_QUOTED
       }
       plain = plain && isPlainSafe(char, prevChar, inblock)
       prevChar = char
@@ -472,7 +460,7 @@ function chooseScalarStyle (state: PresenterState, string: string, layout: Retur
           previousLineBreak = i
         }
       } else if (!isPrintable(char)) {
-        return STYLE_DOUBLE
+        return SCALAR_STYLE.DOUBLE_QUOTED
       }
       plain = plain && isPlainSafe(char, prevChar, inblock)
       prevChar = char
@@ -488,16 +476,16 @@ function chooseScalarStyle (state: PresenterState, string: string, layout: Retur
   if (!hasLineBreak && !hasFoldableLine) {
     // Syntactic verdict only: whether the bare text round-trips to the node's
     // tag is a semantic check the caller applies (see resolveScalarStyle).
-    if (plain && !forceQuote) return STYLE_PLAIN
-    return state.quoteStyle === 'double' ? STYLE_DOUBLE : STYLE_SINGLE
+    if (plain && !forceQuote) return SCALAR_STYLE.PLAIN
+    return state.quoteStyle === 'double' ? SCALAR_STYLE.DOUBLE_QUOTED : SCALAR_STYLE.SINGLE_QUOTED
   }
   // Edge case: block indentation indicator can only have one digit.
   if (blockIndent > 9 && needIndentIndicator(string)) {
-    return STYLE_DOUBLE
+    return SCALAR_STYLE.DOUBLE_QUOTED
   }
   // At this point we know block styles are valid.
   // Prefer literal style unless we want to fold.
-  return hasFoldableLine ? STYLE_FOLDED : STYLE_LITERAL
+  return hasFoldableLine ? SCALAR_STYLE.FOLDED_BLOCK : SCALAR_STYLE.LITERAL_BLOCK
 }
 
 // Renders `string` in the given numeric style with the given layout.
@@ -506,29 +494,29 @@ function chooseScalarStyle (state: PresenterState, string: string, layout: Retur
 //    • No ending newline => unaffected; already using strip "-" chomping.
 //    • Ending newline    => removed then restored.
 //  Importantly, this keeps the "+" chomp indicator from gaining an extra line.
-function renderScalarStyle (string: string, style: ScalarStyleId, layout: ReturnType<typeof scalarLayout>) {
+function renderScalarStyle (string: string, style: ScalarStyle, layout: ReturnType<typeof scalarLayout>) {
   const { indent, blockIndent, lineWidth } = layout
 
   switch (style) {
-    case STYLE_PLAIN:
+    case SCALAR_STYLE.PLAIN:
       return encodeFlowBreaks(string, indent)
-    case STYLE_SINGLE:
+    case SCALAR_STYLE.SINGLE_QUOTED:
       return `'${encodeFlowBreaks(string, indent).replace(/'/g, "''")}'`
-    case STYLE_LITERAL:
+    case SCALAR_STYLE.LITERAL_BLOCK:
       return '|' + blockHeader(string, blockIndent) +
         dropEndingNewline(indentString(string, indent))
-    case STYLE_FOLDED:
+    case SCALAR_STYLE.FOLDED_BLOCK:
       return '>' + blockHeader(string, blockIndent) +
         dropEndingNewline(indentString(foldBlockScalar(string, lineWidth), indent))
-    case STYLE_DOUBLE:
+    case SCALAR_STYLE.DOUBLE_QUOTED:
       return `"${escapeString(string)}"`
   }
 }
 
 // Picks the scalar style for `node`: a style hint carried on the node wins,
-// otherwise the style chosen by the machinery. Returns a numeric STYLE_*.
+// otherwise the style chosen by the machinery.
 function resolveScalarStyle (state: PresenterState, node: ScalarNode,
-  layout: ReturnType<typeof scalarLayout>, iskey: boolean, inblock: boolean): ScalarStyleId {
+  layout: ReturnType<typeof scalarLayout>, iskey: boolean, inblock: boolean): ScalarStyle {
   // Without knowing if keys are implicit/explicit, assume implicit for safety.
   const singleLineOnly = iskey || !inblock
 
@@ -536,11 +524,11 @@ function resolveScalarStyle (state: PresenterState, node: ScalarNode,
   // original context; only a parent change can break them, and only block
   // styles in a single-line context — quoted styles survive any context. A
   // rejected block hint falls through to selection by content below.
-  if (node.style.singleQuoted) return STYLE_SINGLE
-  if (node.style.doubleQuoted) return STYLE_DOUBLE
+  if (node.style.singleQuoted) return SCALAR_STYLE.SINGLE_QUOTED
+  if (node.style.doubleQuoted) return SCALAR_STYLE.DOUBLE_QUOTED
   if (!singleLineOnly) {
-    if (node.style.literal) return STYLE_LITERAL
-    if (node.style.folded) return STYLE_FOLDED
+    if (node.style.literal) return SCALAR_STYLE.LITERAL_BLOCK
+    if (node.style.folded) return SCALAR_STYLE.FOLDED_BLOCK
   }
 
   const string = node.value
@@ -549,8 +537,8 @@ function resolveScalarStyle (state: PresenterState, node: ScalarNode,
     // An empty scalar is safe when its tag is explicit or resolves back to the
     // node tag (notably, the default null representation). A real empty string
     // does neither and therefore remains quoted.
-    if (node.style.tagged || state.schema.resolveImplicitScalarTag(string).tag.tagName === node.tag) return STYLE_PLAIN
-    return state.quoteStyle === 'double' ? STYLE_DOUBLE : STYLE_SINGLE
+    if (node.style.tagged || state.schema.resolveImplicitScalarTag(string).tag.tagName === node.tag) return SCALAR_STYLE.PLAIN
+    return state.quoteStyle === 'double' ? SCALAR_STYLE.DOUBLE_QUOTED : SCALAR_STYLE.SINGLE_QUOTED
   }
 
   // v4's forceQuotes deliberately excluded keys. Keys are still quoted when
@@ -561,9 +549,9 @@ function resolveScalarStyle (state: PresenterState, node: ScalarNode,
   // Plain writes no tag, so it round-trips only if the bare text resolves back
   // to the node's tag (or the tag gets printed explicitly). Else downgrade.
   // Downgrade to the preferred quote style here.
-  if (style === STYLE_PLAIN && !node.style.tagged &&
+  if (style === SCALAR_STYLE.PLAIN && !node.style.tagged &&
       state.schema.resolveImplicitScalarTag(string).tag.tagName !== node.tag) {
-    return state.quoteStyle === 'double' ? STYLE_DOUBLE : STYLE_SINGLE
+    return state.quoteStyle === 'double' ? SCALAR_STYLE.DOUBLE_QUOTED : SCALAR_STYLE.SINGLE_QUOTED
   }
   return style
 }
@@ -958,7 +946,7 @@ function writeNode (state: PresenterState, level: number, node: Node, ctx: NodeC
     const layout = scalarLayout(state, level)
     const style = resolveScalarStyle(state, node, layout, iskey, block)
     body = renderScalarStyle(node.value, style, layout)
-    shouldPrintTag = node.style.tagged || (style !== STYLE_PLAIN && node.tag !== state.defaultScalarTagName)
+    shouldPrintTag = node.style.tagged || (style !== SCALAR_STYLE.PLAIN && node.tag !== state.defaultScalarTagName)
   }
 
   // An indicator plus its mandatory separator occupies 2 columns. For wider
