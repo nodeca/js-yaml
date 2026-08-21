@@ -53,18 +53,6 @@ describe('ast presenter', () => {
     assert.deepEqual(load(output, { schema }), map)
   })
 
-  it('keeps equal sortKeys keys in their original order', () => {
-    // Two keys that compare equal exercise the comparator's tie branch; a stable
-    // sort leaves them as-is.
-    const documents = jsToAst({ a: 1, b: 2 }, CORE_SCHEMA)
-    const node = documents[0].contents
-    node.items[1].key.value = 'a'
-
-    const output = present(documents, { schema: CORE_SCHEMA, sortKeys: true })
-
-    assert.equal(output, 'a: 1\na: 2\n')
-  })
-
   it('emits a bare marker for an explicit-start null document', () => {
     const output = present([{ contents: null, directives: [], explicitStart: true }], { schema: CORE_SCHEMA })
 

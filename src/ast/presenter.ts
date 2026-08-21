@@ -84,14 +84,6 @@ interface PresenterOptions {
   seqInlineFirst?: boolean
 
   /**
-   * Sorts mapping keys when `true`. A function can be provided to define the
-   * sort order.
-   *
-   * @defaultValue `false`
-   */
-  sortKeys?: boolean | ((a: any, b: any) => number)
-
-  /**
    * Maximum line width. Set to `-1` for unlimited width.
    *
    * @defaultValue `80`
@@ -154,7 +146,6 @@ const DEFAULT_PRESENTER_OPTIONS: Required<Omit<PresenterOptions, 'schema'>> = {
   indent: 2,
   seqNoIndent: false,
   seqInlineFirst: true,
-  sortKeys: false,
   lineWidth: 80,
   flowBracketPadding: false,
   flowSkipCommaSpace: false,
@@ -754,9 +745,8 @@ function writeBlockSequence (state: PresenterState, level: number, node: Sequenc
 
 function writeFlowMapping (state: PresenterState, level: number, node: MappingNode) {
   let result = ''
-  const items = sortMappingItems(state, node.items)
 
-  for (const { key, value } of items) {
+  for (const { key, value } of node.items) {
     let pairBuffer = ''
     if (result !== '') pairBuffer += `,${!state.flowSkipCommaSpace ? ' ' : ''}`
 
@@ -782,45 +772,17 @@ function writeFlowMapping (state: PresenterState, level: number, node: MappingNo
   return `{${pad}${result}${pad}}`
 }
 
-// A scalar key sorts by its text; the default sort and a custom comparator both
-// see that, matching the original keys-array sort.
-function sortKeyValue (key: Node): any {
-  return key.kind === 'scalar' ? key.value : key
-}
-
-function sortMappingItems (state: PresenterState, items: MappingNode['items']) {
-  if (!state.sortKeys) return items
-
-  const copy = items.slice()
-
-  if (state.sortKeys === true) {
-    copy.sort((a, b) => {
-      const x = sortKeyValue(a.key)
-      const y = sortKeyValue(b.key)
-      if (x < y) return -1
-      if (x > y) return 1
-      return 0
-    })
-  } else {
-    const fn = state.sortKeys
-    copy.sort((a, b) => fn(sortKeyValue(a.key), sortKeyValue(b.key)))
-  }
-
-  return copy
-}
-
 function writeBlockMapping (state: PresenterState, level: number, node: MappingNode, compact: boolean) {
   let result = ''
-  const items = sortMappingItems(state, node.items)
 
-  for (let index = 0, length = items.length; index < length; index += 1) {
+  for (let index = 0, length = node.items.length; index < length; index += 1) {
     let pairBuffer = ''
 
     if (!compact || result !== '') {
       pairBuffer += generateNextLine(state, level)
     }
 
-    const { key, value } = items[index]
+    const { key, value } = node.items[index]
 
     // A block key — a block collection (mapping/sequence) or a block scalar
     // (literal/folded) — can't sit on a `key:` line, so it's written with block

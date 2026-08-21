@@ -42,7 +42,34 @@ interface DumpOptions extends Omit<PresenterOptions, 'schema'> {
    */
   flowLevel?: number
 
-  /** Mutates the generated AST before it is rendered. */
+  /**
+   * Sorts mapping keys when `true`. A function can be provided to define the
+   * sort order.
+   *
+   * @defaultValue `false`
+   * @deprecated Use {@link transform} to reorder mapping items.
+   */
+  sortKeys?: boolean | ((a: any, b: any) => number)
+
+  /**
+   * Mutates the generated AST before it is rendered.
+   *
+   * @example Sort mapping keys:
+   *
+   * ```typescript
+   * import { dump, visit } from 'js-yaml'
+   *
+   * dump(value, {
+   *   transform: documents => visit(documents, node => {
+   *     if (node.kind === 'mapping') node.items.sort((a, b) => {
+   *       const x = a.key.kind === 'scalar' ? a.key.value : ''
+   *       const y = b.key.kind === 'scalar' ? b.key.value : ''
+   *       return x.localeCompare(y)
+   *     })
+   *   })
+   * })
+   * ```
+   */
   transform?: (documents: Document[]) => void
 }
 
@@ -52,11 +79,19 @@ const DEFAULT_DUMP_OPTIONS: Required<DumpOptions> = {
   skipInvalid: false,
   noRefs: false,
   flowLevel: -1,
+  sortKeys: false,
   transform: () => {}
 }
 
-// Options that need the JS value (tags, format, dedup) go to `jsToAst`; purely
-// presentational ones go to `present`.
+function defaultCompareFn (a: any, b: any) {
+  const x = String(a)
+  const y = String(b)
+
+  if (x < y) return -1
+  if (x > y) return 1
+  return 0
+}
+
 /**
  * Serializes JS object as a YAML document. By default it can dump every
  * supported YAML type, so it throws an exception if you try to dump regexps or
@@ -83,6 +118,19 @@ function dump (input: any, options: DumpOptions = {}) {
       }
       return VISIT_SKIP
     })
+  }
+
+  if (opts.sortKeys) {
+    const compareFn = opts.sortKeys === true ? defaultCompareFn : opts.sortKeys
+
+    visit(documents, node => {
+    if (node.kind !== 'mapping') return
+
+    node.items.sort((a, b) => compareFn(
+      a.key.kind === 'scalar' ? a.key.value : '',
+      b.key.kind === 'scalar' ? b.key.value : ''
+    ))
+  })
   }
 
   opts.transform(documents)
