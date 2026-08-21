@@ -218,20 +218,18 @@ function generateNextLine (state: PresenterState, level: number) {
 
 // Indentation/width numbers that govern how a scalar lays out at `level`.
 // Scalar-only: collections compute their own indent via `generateNextLine`.
-//   indent      - spaces prepended to the scalar's content (block styles)
-//   blockIndent - the block indentation indicator digit (`|2` / `>2`); at the
-//                 document root (level 0) it is one greater than the spaces we
-//                 actually prepend (reader applies it relative to parent n = -1)
-//   lineWidth   - fold width at this depth, shrinking monotonically toward
-//                 min(state.lineWidth, 40) as indentation deepens; -1 = no limit
+//   shiftOfParent  - parent indentation baseline; -1 at the document root
+//   shiftOfContent - spaces prepended to the scalar's content (block styles)
+//   lineWidth      - fold width at this depth, shrinking monotonically toward
+//                    min(state.lineWidth, 40) as indentation deepens; -1 = no limit
 function scalarLayout (state: PresenterState, level: number) {
-  const indent = state.indent * Math.max(1, level) // no 0-indent scalars
-  const blockIndent = level === 0 ? state.indent + 1 : state.indent
+  const shiftOfParent = level === 0 ? -1 : state.indent * (level - 1)
+  const shiftOfContent = state.indent * Math.max(1, level) // no 0-indent scalars
   const lineWidth = (state.lineWidth === -1)
     ? -1
-    : Math.max(Math.min(state.lineWidth, 40), state.lineWidth - indent)
+    : Math.max(Math.min(state.lineWidth, 40), state.lineWidth - shiftOfContent)
 
-  return { indent, blockIndent, lineWidth }
+  return { shiftOfParent, shiftOfContent, lineWidth }
 }
 
 // [33] s-white ::= s-space | s-tab
@@ -411,7 +409,7 @@ function needIndentIndicator (string: string) {
 //    FOLDED_BLOCK => a line > lineWidth and can be folded (and lineWidth != -1).
 function chooseScalarStyle (state: PresenterState, string: string, layout: ReturnType<typeof scalarLayout>,
   singleLineOnly: boolean, forceQuote: boolean, inblock: boolean): ScalarStyle {
-  const { blockIndent, lineWidth } = layout
+  const { shiftOfParent, shiftOfContent, lineWidth } = layout
   let i
   let char = 0
   let prevChar = -1 // -1 = no previous character yet (see isPlainSafe)
@@ -471,7 +469,7 @@ function chooseScalarStyle (state: PresenterState, string: string, layout: Retur
     return state.quoteStyle === 'double' ? SCALAR_STYLE.DOUBLE_QUOTED : SCALAR_STYLE.SINGLE_QUOTED
   }
   // Edge case: block indentation indicator can only have one digit.
-  if (blockIndent > 9 && needIndentIndicator(string)) {
+  if (shiftOfContent - shiftOfParent > 9 && needIndentIndicator(string)) {
     return SCALAR_STYLE.DOUBLE_QUOTED
   }
   // At this point we know block styles are valid.
@@ -486,19 +484,19 @@ function chooseScalarStyle (state: PresenterState, string: string, layout: Retur
 //    • Ending newline    => removed then restored.
 //  Importantly, this keeps the "+" chomp indicator from gaining an extra line.
 function renderScalarStyle (string: string, style: ScalarStyle, layout: ReturnType<typeof scalarLayout>) {
-  const { indent, blockIndent, lineWidth } = layout
+  const { shiftOfParent, shiftOfContent, lineWidth } = layout
 
   switch (style) {
     case SCALAR_STYLE.PLAIN:
-      return encodeFlowBreaks(string, indent)
+      return encodeFlowBreaks(string, shiftOfContent)
     case SCALAR_STYLE.SINGLE_QUOTED:
-      return `'${encodeFlowBreaks(string, indent).replace(/'/g, "''")}'`
+      return `'${encodeFlowBreaks(string, shiftOfContent).replace(/'/g, "''")}'`
     case SCALAR_STYLE.LITERAL_BLOCK:
-      return '|' + blockHeader(string, blockIndent) +
-        dropEndingNewline(indentString(string, indent))
+      return '|' + blockHeader(string, shiftOfParent, shiftOfContent) +
+        dropEndingNewline(indentString(string, shiftOfContent))
     case SCALAR_STYLE.FOLDED_BLOCK:
-      return '>' + blockHeader(string, blockIndent) +
-        dropEndingNewline(indentString(foldBlockScalar(string, lineWidth), indent))
+      return '>' + blockHeader(string, shiftOfParent, shiftOfContent) +
+        dropEndingNewline(indentString(foldBlockScalar(string, lineWidth), shiftOfContent))
     case SCALAR_STYLE.DOUBLE_QUOTED:
       return `"${escapeString(string)}"`
   }
@@ -547,9 +545,12 @@ function resolveScalarStyle (state: PresenterState, node: ScalarNode,
   return style
 }
 
-// Pre-conditions: string is valid for a block scalar, 1 <= indentPerLevel <= 9.
-function blockHeader (string: string, indentPerLevel: number) {
-  const indentIndicator = needIndentIndicator(string) ? String(indentPerLevel) : ''
+// Pre-conditions: string is valid for a block scalar,
+// 1 <= shiftOfContent - shiftOfParent <= 9.
+function blockHeader (string: string, shiftOfParent: number, shiftOfContent: number) {
+  const indentIndicator = needIndentIndicator(string)
+    ? String(shiftOfContent - shiftOfParent)
+    : ''
 
   // note the special case: the string '\n' counts as a "trailing" empty line.
   const clip = string[string.length - 1] === '\n'
@@ -567,11 +568,11 @@ function blockHeader (string: string, indentPerLevel: number) {
 // (a bare break would yield invalid "deficient indentation" output).
 // `foldBlockScalar` can't be reused here: it treats a leading white space as a
 // "more-indented" line and suppresses the doubling, which a flow scalar must not.
-function encodeFlowBreaks (string: string, indent: number) {
+function encodeFlowBreaks (string: string, shiftOfContent: number) {
   let nextLF = string.indexOf('\n')
   if (nextLF === -1) return string
 
-  const pad = ' '.repeat(indent)
+  const pad = ' '.repeat(shiftOfContent)
   let result = string.slice(0, nextLF) // first line follows the quote, no indent
 
   const lineRe = /(\n+)([^\n]*)/g
