@@ -84,7 +84,8 @@ interface PresenterOptions {
   seqInlineFirst?: boolean
 
   /**
-   * Maximum line width. Set to `-1` for unlimited width.
+   * Preferred line width for folding. Unbreakable and more-indented lines may
+   * exceed it. Set to `-1` for unlimited width.
    *
    * @defaultValue `80`
    */
