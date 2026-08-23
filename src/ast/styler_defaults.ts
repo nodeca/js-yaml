@@ -11,6 +11,7 @@ type ScalarStyleRule = (layout: ScalarLayout) => void
 const MIN_SCALAR_CONTENT_WIDTH = 40
 
 const scalarStylerDefaults: ScalarStyleRule[] = [
+  applyQuoteFlowKeysOption,
   doubleQuoteForInvisibles,
   applyForceQuotesOption,
   tryLongOrMultilineAsBlock,
@@ -25,6 +26,15 @@ function _preferredQuotedStyle (layout: ScalarLayout): ScalarStyle {
   }
 
   return SCALAR_STYLE.DOUBLE_QUOTED
+}
+
+function applyQuoteFlowKeysOption (layout: ScalarLayout): void {
+  if (!layout.presenterOptions.quoteFlowKeys) return
+
+  // quoteFlowKeys applies only to plain scalar keys in flow mappings.
+  if (!layout.isKey || !layout.flowOnly || layout.style !== SCALAR_STYLE.PLAIN) return
+
+  layout.style = SCALAR_STYLE.DOUBLE_QUOTED
 }
 
 function doubleQuoteForInvisibles (layout: ScalarLayout): void {

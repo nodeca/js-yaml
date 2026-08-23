@@ -210,17 +210,13 @@ function writeFlowMapping (state: PresenterState, level: number, node: MappingNo
     const keyText = writeNode(state, level, key, node, { iskey: true })
     const explicitPair = keyText.length > 1024
 
-    if (explicitPair) {
-      pairBuffer += '? '
-    } else if (state.quoteFlowKeys) {
-      pairBuffer += '"'
-    }
+    if (explicitPair) pairBuffer += '? '
 
     const valueText = writeNode(state, level, value, node, {})
     // No separating space when the value renders empty (e.g. null → '').
     const sep = state.flowSkipColonSpace || valueText === '' ? '' : ' '
 
-    pairBuffer += `${keyText}${state.quoteFlowKeys && !explicitPair ? '"' : ''}:${sep}${valueText}`
+    pairBuffer += `${keyText}:${sep}${valueText}`
 
     result += pairBuffer
   }

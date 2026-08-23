@@ -157,6 +157,11 @@ describe('dump options', () => {
   it('quoteFlowKeys — quotes keys in flow mappings', () => {
     assert.equal(dump({ a: 1 }, { flowLevel: 0 }), '{a: 1}\n')
     assert.equal(dump({ a: 1 }, { flowLevel: 0, quoteFlowKeys: true }), '{"a": 1}\n')
+
+    for (const key of ['*x', 'a\\b']) {
+      const output = dump({ [key]: 1 }, { flowLevel: 0, quoteFlowKeys: true })
+      assert.deepEqual(load(output), { [key]: 1 })
+    }
   })
 
   it('tagBeforeAnchor — emits the tag before the anchor', () => {
