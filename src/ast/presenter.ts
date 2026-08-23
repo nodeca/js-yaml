@@ -750,20 +750,18 @@ function writeFlowMapping (state: PresenterState, level: number, node: MappingNo
     let pairBuffer = ''
     if (result !== '') pairBuffer += `,${!state.flowSkipCommaSpace ? ' ' : ''}`
 
-    const keyText = writeNode(state, level, key, { iskey: true })
+    const keyText = writeNode(state, level, key, { iskey: true, quoteKey: state.quoteFlowKeys })
     const explicitPair = keyText.length > 1024
 
     if (explicitPair) {
       pairBuffer += '? '
-    } else if (state.quoteFlowKeys) {
-      pairBuffer += '"'
     }
 
     const valueText = writeNode(state, level, value, {})
     // No separating space when the value renders empty (e.g. null → '').
     const sep = state.flowSkipColonSpace || valueText === '' ? '' : ' '
 
-    pairBuffer += `${keyText}${state.quoteFlowKeys && !explicitPair ? '"' : ''}:${sep}${valueText}`
+    pairBuffer += `${keyText}:${sep}${valueText}`
 
     result += pairBuffer
   }
@@ -857,6 +855,8 @@ interface NodeContext {
   block?: boolean      // block context (vs flow); propagates downward
   compact?: boolean    // may start on the current line (no leading newline)
   iskey?: boolean      // node is a mapping key
+  quoteKey?: boolean   // scalar mapping key must not render plain, so an
+                       // adjacent `:` stays valid in a flow mapping
   isblockseq?: boolean // content follows an indicator (`-`, or `?`/`:` in an
                        // explicit pair) that already shifted it right; keeps
                        // its indentation under seqNoIndent
@@ -875,7 +875,7 @@ function cannotBeCompact (state: PresenterState, node: Node, level: number) {
 function writeNode (state: PresenterState, level: number, node: Node, ctx: NodeContext): string {
   if (node.kind === 'alias') return `*${node.anchor}`
 
-  const { block = false, iskey = false, isblockseq = false } = ctx
+  const { block = false, iskey = false, quoteKey = false, isblockseq = false } = ctx
   let compact = ctx.compact ?? false
 
   const hasAnchor = node.anchor !== undefined
@@ -908,7 +908,10 @@ function writeNode (state: PresenterState, level: number, node: Node, ctx: NodeC
     }
   } else {
     const layout = scalarLayout(state, level)
-    const style = resolveScalarStyle(state, node, layout, iskey, block)
+    let style = resolveScalarStyle(state, node, layout, iskey, block)
+    // quoteFlowKeys needs a quoted key so an adjacent `:` stays valid; keep
+    // the historical double-quoted spelling for keys that resolve plain.
+    if (quoteKey && style === SCALAR_STYLE.PLAIN) style = SCALAR_STYLE.DOUBLE_QUOTED
     body = renderScalarStyle(node.value, style, layout)
     shouldPrintTag = node.tagged || (style !== SCALAR_STYLE.PLAIN && node.tag !== state.defaultScalarTagName)
   }

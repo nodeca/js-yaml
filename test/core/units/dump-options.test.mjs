@@ -159,6 +159,19 @@ describe('dump options', () => {
     assert.equal(dump({ a: 1 }, { flowLevel: 0, quoteFlowKeys: true }), '{"a": 1}\n')
   })
 
+  it('quoteFlowKeys quotes the key scalar itself, not the rendered text', () => {
+    // A key that already renders quoted must not be wrapped again.
+    const starred = dump({ '*x': 1 }, { flowLevel: 0, quoteFlowKeys: true })
+    assert.equal(starred, "{'*x': 1}\n")
+    assert.deepEqual(load(starred), { '*x': 1 })
+
+    // `\` is plain-safe, so wrapping the rendered text used to produce a
+    // `\b` escape that loads back as a backspace character.
+    const backslash = dump({ 'a\\b': 1 }, { flowLevel: 0, quoteFlowKeys: true })
+    assert.equal(backslash, '{"a\\\\b": 1}\n')
+    assert.deepEqual(load(backslash), { 'a\\b': 1 })
+  })
+
   it('tagBeforeAnchor — emits the tag before the anchor', () => {
     function Tagged () {}
     const schema = CORE_SCHEMA.withTags(defineMappingTag('!t', {
