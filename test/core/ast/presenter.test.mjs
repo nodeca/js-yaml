@@ -35,6 +35,14 @@ describe('ast presenter', () => {
     assert.deepEqual(load(output, { schema: CORE_SCHEMA }), { [key]: 'value' })
   })
 
+  it('counts Unicode code points in the block simple-key limit', () => {
+    const keyAtLimit = '😀'.repeat(1024)
+    const keyOverLimit = '😀'.repeat(1025)
+
+    assert.equal(dump({ [keyAtLimit]: 'value' }), `${keyAtLimit}: value\n`)
+    assert.equal(dump({ [keyOverLimit]: 'value' }), `? ${keyOverLimit}\n: value\n`)
+  })
+
   it('separates an alias key from the colon in a flow mapping', () => {
     const schema = CORE_SCHEMA.withTags(realMapTag)
     const shared = new Map([['x', 1]])
