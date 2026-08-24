@@ -112,6 +112,13 @@ describe('Scalar style dump:', () => {
     it('quotes an empty scalar with double quotes under quoteStyle: double', () => {
       assert.strictEqual(dump('', { quoteStyle: 'double' }), '""\n')
     })
+
+    it('double-quotes whitespace-only strings', () => {
+      assert.strictEqual(dump(' '), '" "\n')
+      assert.strictEqual(dump('\n'), '"\\n"\n')
+      assert.strictEqual(dump('\n\n'), '"\\n\\n"\n')
+      assert.strictEqual(dump(' \n '), '" \\n "\n')
+    })
   })
 
   describe('Literal style', () => {
@@ -119,10 +126,8 @@ describe('Scalar style dump:', () => {
     const indented = indent(content)
 
     it('preserves trailing newlines using chomping', () => {
-      assert.strictEqual(dump({ a: '\n', b: '\n\n', c: 'c\n', d: 'd\nd' }),
-        'a: |+\n\nb: |+\n\n\nc: |\n  c\nd: |-\n  d\n  d\n')
-      assert.strictEqual(dump('\n'), '|+\n' + '\n...\n')
-      assert.strictEqual(dump('\n\n'), '|+\n' + '\n\n...\n')
+      assert.strictEqual(dump({ c: 'c\n', d: 'd\nd' }),
+        'c: |\n  c\nd: |-\n  d\n  d\n')
 
       assert.strictEqual(dump(content), `|-\n${indented}\n`)
       assert.strictEqual(dump(`${content}\n`), `|\n${indented}\n`)

@@ -13,6 +13,7 @@ const MIN_SCALAR_CONTENT_WIDTH = 40
 const scalarStylerDefaults: ScalarStyleRule[] = [
   applyQuoteFlowKeysOption,
   doubleQuoteForInvisibles,
+  doubleQuoteWhitespaceOnly,
   applyForceQuotesOption,
   tryLongOrMultilineAsBlock,
   quoteInvalidPlain,
@@ -40,6 +41,15 @@ function applyQuoteFlowKeysOption (layout: ScalarLayout): void {
 function doubleQuoteForInvisibles (layout: ScalarLayout): void {
   if (layout.style === SCALAR_STYLE.PLAIN &&
       /[\t\x7F-\xA0\u2028\u2029\uFEFF\uFFFE\uFFFF]/.test(layout.node.value)) {
+    layout.style = SCALAR_STYLE.DOUBLE_QUOTED
+  }
+}
+
+function doubleQuoteWhitespaceOnly (layout: ScalarLayout): void {
+  // Block styles normally make multiline structure easier to see, but
+  // whitespace-only content turns that structure into visually empty lines,
+  // so force double quotes for this special case.
+  if (layout.style === SCALAR_STYLE.PLAIN && /^\s+$/.test(layout.node.value)) {
     layout.style = SCALAR_STYLE.DOUBLE_QUOTED
   }
 }
