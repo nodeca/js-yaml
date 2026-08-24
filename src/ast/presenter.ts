@@ -166,11 +166,11 @@ function writeFlowSequence (state: PresenterState, level: number, node: Sequence
 
   for (let index = 0, length = node.items.length; index < length; index += 1) {
     const item = writeNode(state, level, node.items[index], node, {}).text
-    if (result !== '') result += `,${!state.flowSkipCommaSpace ? ' ' : ''}`
+    if (index > 0) result += `,${!state.flowSkipCommaSpace ? ' ' : ''}`
     result += item
   }
 
-  const pad = state.flowBracketPadding && result !== '' ? ' ' : ''
+  const pad = state.flowBracketPadding && node.items.length > 0 ? ' ' : ''
   return `[${pad}${result}${pad}]`
 }
 
@@ -376,7 +376,11 @@ function writeNode (state: PresenterState, level: number, node: Node,
     for (const rule of scalarStylerDefaults) rule(layout)
 
     body = renderScalar(layout)
+
+    // A flow sequence entry cannot be completely empty. Print the semantic tag
+    // as the node property that explicitly indicates the entry's existence.
     shouldPrintTag = node.tagged ||
+      (body === '' && layout.flowOnly && parent?.kind === 'sequence' && !hasAnchor) ||
       (layout.style !== SCALAR_STYLE.PLAIN && node.tag !== state.defaultScalarTagName)
   }
 

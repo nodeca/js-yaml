@@ -137,6 +137,39 @@ describe('ast presenter', () => {
     assert.equal(dump({ a: '' }, { schema }), "a: ''\n")
   })
 
+  it('tags an otherwise empty flow sequence item', () => {
+    for (const [input, expected] of [
+      ['-\n', '[!!null]\n'],
+      ['-\n- 1\n', '[!!null, 1]\n'],
+      ['- 1\n-\n', '[1, !!null]\n']
+    ]) {
+      const documents = eventsToAst(parseEvents(input, { schema: CORE_SCHEMA }),
+        { source: input, schema: CORE_SCHEMA })
+      documents[0].contents.style = COLLECTION_STYLE.FLOW
+
+      const output = present(documents, { schema: CORE_SCHEMA })
+
+      assert.equal(output, expected)
+      assert.deepEqual(load(output, { schema: CORE_SCHEMA }), load(input, { schema: CORE_SCHEMA }))
+    }
+  })
+
+  it('keeps property-only flow sequence items unquoted', () => {
+    for (const [input, expected] of [
+      ['- !!null\n- 1\n', '[!!null, 1]\n'],
+      ['- &a\n- *a\n', '[&a, *a]\n']
+    ]) {
+      const documents = eventsToAst(parseEvents(input, { schema: CORE_SCHEMA }),
+        { source: input, schema: CORE_SCHEMA })
+      documents[0].contents.style = COLLECTION_STYLE.FLOW
+
+      const output = present(documents, { schema: CORE_SCHEMA })
+
+      assert.equal(output, expected)
+      assert.deepEqual(load(output, { schema: CORE_SCHEMA }), load(input, { schema: CORE_SCHEMA }))
+    }
+  })
+
   it('applies flow recursively to descendants', () => {
     const documents = jsToAst([{ a: [1, 2], b: 'x\ny' }], CORE_SCHEMA)
     const node = documents[0].contents
