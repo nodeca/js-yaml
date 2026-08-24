@@ -151,7 +151,11 @@ describe('dump options', () => {
 
   it('flowSkipColonSpace — drops the space after flow colons', () => {
     assert.equal(dump({ a: 1 }, { flowLevel: 0 }), '{a: 1}\n')
-    assert.equal(dump({ a: 1 }, { flowLevel: 0, flowSkipColonSpace: true }), '{a:1}\n')
+
+    const output = dump({ a: 1 }, { flowLevel: 0, flowSkipColonSpace: true })
+
+    assert.equal(output, '{"a":1}\n')
+    assert.deepEqual(load(output), { a: 1 })
   })
 
   it('quoteFlowKeys — quotes keys in flow mappings', () => {

@@ -67,7 +67,10 @@ interface PresenterOptions {
   flowSkipCommaSpace?: boolean
 
   /**
-   * Omits the space after `:` in flow mappings: `{a: 1}` becomes `{a:1}`.
+   * Omits the space after `:` in flow mappings: `{"a": 1}` becomes `{"a":1}`.
+   *
+   * This forces `quoteFlowKeys`; otherwise `a:1` would be parsed as a single
+   * plain scalar instead of a mapping entry.
    *
    * @defaultValue `false`
    */
@@ -130,6 +133,10 @@ function createPresenterState (options: PresenterOptions): PresenterState {
   const opts = {
     ...DEFAULT_PRESENTER_OPTIONS,
     ...options
+  }
+
+  if (opts.flowSkipColonSpace) {
+    opts.quoteFlowKeys = true
   }
 
   return {
