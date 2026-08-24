@@ -49,10 +49,17 @@ const SRC_NS_PLAIN_FIRST_FLOW_IN =
 
 // YAML 1.2.2 [130] ns-plain-char(c).
 // The production itself requires lookbehind, so these regexps require ES2018 lookbehind support.
+// const SRC_NS_PLAIN_CHAR_FLOW_OUT =
+//   `(?:(?:(?![:#])${SRC_NS_PLAIN_SAFE_FLOW_OUT})|(?<=${SRC_NS_CHAR})#|:(?=${SRC_NS_PLAIN_SAFE_FLOW_OUT}))`
+// const SRC_NS_PLAIN_CHAR_FLOW_IN =
+//   `(?:(?:(?![:#])${SRC_NS_PLAIN_SAFE_FLOW_IN})|(?<=${SRC_NS_CHAR})#|:(?=${SRC_NS_PLAIN_SAFE_FLOW_IN}))`
+
+// ES2015-compatible alternative without lookbehind: consume each run of hashes
+// together with the preceding non-hash ns-plain-char.
 const SRC_NS_PLAIN_CHAR_FLOW_OUT =
-  `(?:(?:(?![:#])${SRC_NS_PLAIN_SAFE_FLOW_OUT})|(?<=${SRC_NS_CHAR})#|:(?=${SRC_NS_PLAIN_SAFE_FLOW_OUT}))`
+  `(?:(?:(?![:#])${SRC_NS_PLAIN_SAFE_FLOW_OUT})|:(?=${SRC_NS_PLAIN_SAFE_FLOW_OUT}))#*`
 const SRC_NS_PLAIN_CHAR_FLOW_IN =
-  `(?:(?:(?![:#])${SRC_NS_PLAIN_SAFE_FLOW_IN})|(?<=${SRC_NS_CHAR})#|:(?=${SRC_NS_PLAIN_SAFE_FLOW_IN}))`
+  `(?:(?:(?![:#])${SRC_NS_PLAIN_SAFE_FLOW_IN})|:(?=${SRC_NS_PLAIN_SAFE_FLOW_IN}))#*`
 
 // YAML 1.2.2 [132] nb-ns-plain-in-line(c).
 const SRC_NB_NS_PLAIN_IN_LINE_FLOW_OUT = `(?:${SRC_S_WHITE}*${SRC_NS_PLAIN_CHAR_FLOW_OUT})*`
@@ -60,9 +67,9 @@ const SRC_NB_NS_PLAIN_IN_LINE_FLOW_IN = `(?:${SRC_S_WHITE}*${SRC_NS_PLAIN_CHAR_F
 
 // YAML 1.2.2 [133] ns-plain-one-line(c).
 const SRC_NS_PLAIN_ONE_LINE_FLOW_OUT =
-  `${SRC_NS_PLAIN_FIRST_FLOW_OUT}${SRC_NB_NS_PLAIN_IN_LINE_FLOW_OUT}`
+  `${SRC_NS_PLAIN_FIRST_FLOW_OUT}#*${SRC_NB_NS_PLAIN_IN_LINE_FLOW_OUT}`
 const SRC_NS_PLAIN_ONE_LINE_FLOW_IN =
-  `${SRC_NS_PLAIN_FIRST_FLOW_IN}${SRC_NB_NS_PLAIN_IN_LINE_FLOW_IN}`
+  `${SRC_NS_PLAIN_FIRST_FLOW_IN}#*${SRC_NB_NS_PLAIN_IN_LINE_FLOW_IN}`
 const SRC_NS_PLAIN_ONE_LINE_BLOCK_KEY = SRC_NS_PLAIN_ONE_LINE_FLOW_OUT
 const SRC_NS_PLAIN_ONE_LINE_FLOW_KEY = SRC_NS_PLAIN_ONE_LINE_FLOW_IN
 
