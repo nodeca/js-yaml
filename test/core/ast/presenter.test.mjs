@@ -4,12 +4,14 @@ import assert from 'node:assert/strict'
 import {
   dump,
   load,
+  loadAll,
   defineScalarTag,
   parseEvents,
   jsToAst,
   eventsToAst,
   present,
   COLLECTION_STYLE,
+  SCALAR_STYLE,
   CORE_SCHEMA,
   nullCoreTag,
   realMapTag
@@ -106,6 +108,26 @@ describe('ast presenter', () => {
     const output = present(documents, { schema: CORE_SCHEMA })
 
     assert.equal(output, '%YAML 1.2\n%TAG !e! tag:example.com,2024:\n---\nbar\n')
+  })
+
+  it('tracks an auto-selected keep-chomped scalar at the document end', () => {
+    const documents = [
+      ...jsToAst({ value: 'x\n\n' }, CORE_SCHEMA),
+      ...jsToAst('next', CORE_SCHEMA)
+    ]
+    documents[1].directives = [{ kind: 'yaml', version: '1.2' }]
+
+    const output = present(documents, { schema: CORE_SCHEMA })
+
+    assert.equal(output, 'value: |+\n  x\n\n...\n%YAML 1.2\n---\nnext\n')
+    assert.deepEqual(loadAll(output, { schema: CORE_SCHEMA }), [{ value: 'x\n\n' }, 'next'])
+  })
+
+  it('does not mark a rejected keep-chomped style as open-ended', () => {
+    const documents = jsToAst(' x\n\n', CORE_SCHEMA)
+    documents[0].contents.style = SCALAR_STYLE.LITERAL_BLOCK
+
+    assert.equal(present(documents, { schema: CORE_SCHEMA, indent: 10 }), '" x\\n\\n"\n')
   })
 
   it('keeps explicit parsed tag spelling', () => {

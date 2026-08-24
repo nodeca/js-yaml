@@ -119,6 +119,7 @@ const DEFAULT_PRESENTER_OPTIONS: Required<Omit<PresenterOptions, 'schema'>> = {
 
 interface PresenterState extends Required<PresenterOptions> {
   defaultScalarTagName: string
+  openEnded: boolean
 }
 
 function nodeTagShort (node: ScalarNode | SequenceNode | MappingNode) {
@@ -133,7 +134,8 @@ function createPresenterState (options: PresenterOptions): PresenterState {
 
   return {
     ...opts,
-    defaultScalarTagName: opts.schema.defaultScalarTag.tagName
+    defaultScalarTagName: opts.schema.defaultScalarTag.tagName,
+    openEnded: false
   }
 }
 
@@ -338,7 +340,10 @@ function cannotBeCompact (state: PresenterState, node: Node, level: number) {
 
 function writeNode (state: PresenterState, level: number, node: Node,
   parent: Readonly<Node> | null, ctx: NodeContext): NodeRender {
-  if (node.kind === 'alias') return { text: `*${node.anchor}`, noBody: false }
+  if (node.kind === 'alias') {
+    state.openEnded = false
+    return { text: `*${node.anchor}`, noBody: false }
+  }
 
   const { block = false, iskey = false, isblockseq = false } = ctx
   let compact = ctx.compact ?? false
@@ -378,12 +383,20 @@ function writeNode (state: PresenterState, level: number, node: Node,
     for (const rule of scalarStylerDefaults) rule(layout)
 
     body = renderScalar(layout)
+    state.openEnded =
+      (layout.style === SCALAR_STYLE.LITERAL_BLOCK || layout.style === SCALAR_STYLE.FOLDED_BLOCK) &&
+      (node.value === '\n' || node.value.endsWith('\n\n'))
 
     // A flow sequence entry cannot be completely empty. Print the semantic tag
     // as the node property that explicitly indicates the entry's existence.
     shouldPrintTag = node.tagged ||
       (body === '' && layout.flowOnly && parent?.kind === 'sequence' && !hasAnchor) ||
       (layout.style !== SCALAR_STYLE.PLAIN && node.tag !== state.defaultScalarTagName)
+  }
+
+  // A flow collection ends with its closing indicator, not with its last child.
+  if ((node.kind === 'mapping' || node.kind === 'sequence') && !useBlockCollection) {
+    state.openEnded = false
   }
 
   // An indicator plus its mandatory separator occupies 2 columns. For wider
@@ -430,27 +443,6 @@ function rootStartsOwnLine (node: Node) {
     node.anchor === undefined
 }
 
-// A document whose serialization ends with a keep-chomped (`+`) block scalar is
-// open-ended: the trailing blank line(s) would otherwise be ambiguous, so it
-// needs a `...` terminator. Mirrors the keep test in `blockHeader`.
-function isOpenEnded (node: Node) {
-  // Descend to the last leaf, always taking the last item of a block collection
-  // (a flow collection renders on one line, so it ends the document itself).
-  let leaf = node
-  while ((leaf.kind === 'sequence' || leaf.kind === 'mapping') &&
-    leaf.style === COLLECTION_STYLE.BLOCK && leaf.items.length !== 0) {
-    leaf = leaf.kind === 'sequence'
-      ? leaf.items[leaf.items.length - 1]
-      : leaf.items[leaf.items.length - 1].value
-  }
-
-  if (leaf.kind !== 'scalar' ||
-      (leaf.style !== SCALAR_STYLE.LITERAL_BLOCK && leaf.style !== SCALAR_STYLE.FOLDED_BLOCK)) return false
-  const { value } = leaf
-  // Keep chomping: ends in a blank line (`\n\n`) or is a lone `\n`.
-  return value.endsWith('\n\n') || value === '\n'
-}
-
 function writeDocumentDirectives (doc: Document) {
   let result = ''
 
@@ -479,6 +471,7 @@ function present (documents: Document[], options: PresenterOptions): string {
 
   for (let index = 0; index < documents.length; index += 1) {
     const doc = documents[index]
+    state.openEnded = false
     const directives = writeDocumentDirectives(doc)
     const hasDirectives = directives !== ''
     const marker = doc.explicitStart || hasDirectives || (index > 0 && !previousEnded)
@@ -498,7 +491,7 @@ function present (documents: Document[], options: PresenterOptions): string {
       result += writeNode(state, 0, doc.contents, null, { block: true, compact: true }).text + '\n'
     }
 
-    previousEnded = doc.explicitEnd || (doc.contents !== null && isOpenEnded(doc.contents))
+    previousEnded = doc.explicitEnd || state.openEnded
     if (previousEnded) {
       result += '...\n'
     }
