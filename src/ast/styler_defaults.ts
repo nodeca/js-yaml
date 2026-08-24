@@ -10,7 +10,7 @@ const MIN_SCALAR_CONTENT_WIDTH = 40
 
 /**
  * Default scalar styling rules in application order.
- * See [Scalar styling](../../docs/scalar_stying.md) for usage details.
+ * See [Scalar styling](../../docs/scalar_styling.md) for usage details.
  *
  * @category AST
  */
