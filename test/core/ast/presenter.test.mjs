@@ -35,6 +35,36 @@ describe('ast presenter', () => {
     assert.deepEqual(load(output, { schema: CORE_SCHEMA }), { [key]: 'value' })
   })
 
+  it('separates an alias key from the colon in a flow mapping', () => {
+    const schema = CORE_SCHEMA.withTags(realMapTag)
+    const shared = new Map([['x', 1]])
+    const map = new Map([['copy', shared], [shared, 'value']])
+    const output = dump(map, { schema, flowLevel: 0 })
+
+    assert.equal(output, '{copy: &ref_0 {x: 1}, *ref_0 : value}\n')
+    assert.deepEqual(load(output, { schema }), map)
+  })
+
+  it('separates property-only keys from the colon in a flow mapping', () => {
+    const schema = CORE_SCHEMA.withTags(realMapTag)
+
+    for (const [input, expected] of [
+      ['&a : value\n', '{&a : value}\n'],
+      ['!!str : value\n', '{!!str : value}\n']
+    ]) {
+      const documents = eventsToAst(parseEvents(input, { schema }), { source: input, schema })
+      const node = documents[0].contents
+
+      assert.equal(node?.kind, 'mapping')
+      node.style = COLLECTION_STYLE.FLOW
+
+      const output = present(documents, { schema })
+
+      assert.equal(output, expected)
+      assert.deepEqual(load(output, { schema }), load(input, { schema }))
+    }
+  })
+
   it('aligns a compact block-collection key with a wide indent', () => {
     const map = new Map([[[1, 2], new Map([['a', 1], ['b', 2]])]])
     const schema = CORE_SCHEMA.withTags(realMapTag)

@@ -16,8 +16,6 @@ import { detectAllowedStyles, renderScalar, type ScalarLayout } from './scalar_s
 import { scalarStylerDefaults } from './styler_defaults.ts'
 
 const CHAR_LINE_FEED = 0x0A /* LF */
-const CHAR_DOUBLE_QUOTE = 0x22 /* " */
-const CHAR_SINGLE_QUOTE = 0x27 /* ' */
 
 /** @category AST */
 interface PresenterOptions {
@@ -167,7 +165,7 @@ function writeFlowSequence (state: PresenterState, level: number, node: Sequence
   let result = ''
 
   for (let index = 0, length = node.items.length; index < length; index += 1) {
-    const item = writeNode(state, level, node.items[index], node, {})
+    const item = writeNode(state, level, node.items[index], node, {}).text
     if (result !== '') result += `,${!state.flowSkipCommaSpace ? ' ' : ''}`
     result += item
   }
@@ -181,7 +179,7 @@ function writeBlockSequence (state: PresenterState, level: number, node: Sequenc
 
   for (let index = 0, length = node.items.length; index < length; index += 1) {
     const item = writeNode(state, level + 1, node.items[index], node,
-      { block: true, compact: state.seqInlineFirst, isblockseq: true })
+      { block: true, compact: state.seqInlineFirst, isblockseq: true }).text
 
     if (!compact || result !== '') {
       result += generateNextLine(state, level)
@@ -207,16 +205,23 @@ function writeFlowMapping (state: PresenterState, level: number, node: MappingNo
     let pairBuffer = ''
     if (result !== '') pairBuffer += `,${!state.flowSkipCommaSpace ? ' ' : ''}`
 
-    const keyText = writeNode(state, level, key, node, { iskey: true })
+    const keyRender = writeNode(state, level, key, node, { iskey: true })
+    const keyText = keyRender.text
     const explicitPair = keyText.length > 1024
 
     if (explicitPair) pairBuffer += '? '
 
-    const valueText = writeNode(state, level, value, node, {})
+    const valueText = writeNode(state, level, value, node, {}).text
     // No separating space when the value renders empty (e.g. null → '').
     const sep = state.flowSkipColonSpace || valueText === '' ? '' : ' '
 
-    pairBuffer += `${keyText}:${sep}${valueText}`
+    // An alias or a property-only scalar must be separated from `:` because the
+    // colon can otherwise be consumed as part of the alias/anchor/tag name.
+    const keyIsBareProps = key.kind === 'scalar' && keyRender.noBody &&
+      (key.tagged || key.anchor !== undefined)
+    const keyColonSep = key.kind === 'alias' || keyIsBareProps ? ' ' : ''
+
+    pairBuffer += `${keyText}${keyColonSep}:${sep}${valueText}`
 
     result += pairBuffer
   }
@@ -251,10 +256,11 @@ function writeBlockMapping (state: PresenterState, level: number, node: MappingN
     // value that stays on the indicator line keeps its indentation under
     // seqNoIndent (`isblockseq`). One that drops to its own line (tag/anchor)
     // collapses to the parent indent, so leave the flag off there.
-    const keyText = keyIsBlock
+    const keyRender = keyIsBlock
       ? writeNode(state, level + 1, key, node,
         { block: true, compact: true, isblockseq: !cannotBeCompact(state, key, level + 1) })
       : writeNode(state, level + 1, key, node, { block: true, compact: true, iskey: true })
+    const keyText = keyRender.text
 
     // Block key, over-long key, or multiline scalar key forces explicit form.
     // Multiline isn't a spec requirement — just matches pyyaml's simple-key rule.
@@ -276,17 +282,15 @@ function writeBlockMapping (state: PresenterState, level: number, node: MappingN
     }
 
     const valueText = writeNode(state, level + 1, value, node,
-      { block: true, compact: explicitPair, isblockseq: explicitPair && !cannotBeCompact(state, value, level + 1) })
+      { block: true, compact: explicitPair, isblockseq: explicitPair && !cannotBeCompact(state, value, level + 1) }).text
 
     // Keep a space before the colon when the key text ends in a leading
     // property rather than scalar content, so the colon can't be read as part
     // of it. Two cases: an inline alias key (`*b : v`), and an empty scalar key
     // whose whole text is its anchor/tag (`&a :`, `!!str :`) — without the
     // space `&a:` reparses as an anchored value, dropping the null key.
-    const keyIsBareProps = key.kind === 'scalar' && key.value === '' &&
-      keyText !== '' &&
-      keyText.charCodeAt(keyText.length - 1) !== CHAR_SINGLE_QUOTE &&
-      keyText.charCodeAt(keyText.length - 1) !== CHAR_DOUBLE_QUOTE
+    const keyIsBareProps = key.kind === 'scalar' && keyRender.noBody &&
+      (key.tagged || key.anchor !== undefined)
     const keyColonSep = !explicitPair && (key.kind === 'alias' || keyIsBareProps) ? ' ' : ''
 
     // No trailing space when the value renders empty (e.g. null → '').
@@ -315,6 +319,11 @@ interface NodeContext {
                        // its indentation under seqNoIndent
 }
 
+interface NodeRender {
+  text: string
+  noBody: boolean
+}
+
 // A node can't sit compact on its parent's indicator (`-`/`?`/`:`) line when it
 // carries leading props (tag/anchor) that would collide with the indicator, or
 // when the indent step is too narrow for the 2-char indicator. Such a node drops
@@ -326,8 +335,8 @@ function cannotBeCompact (state: PresenterState, node: Node, level: number) {
 }
 
 function writeNode (state: PresenterState, level: number, node: Node,
-  parent: Readonly<Node> | null, ctx: NodeContext): string {
-  if (node.kind === 'alias') return `*${node.anchor}`
+  parent: Readonly<Node> | null, ctx: NodeContext): NodeRender {
+  if (node.kind === 'alias') return { text: `*${node.anchor}`, noBody: false }
 
   const { block = false, iskey = false, isblockseq = false } = ctx
   let compact = ctx.compact ?? false
@@ -378,6 +387,9 @@ function writeNode (state: PresenterState, level: number, node: Node,
     body = `${' '.repeat(state.indent - 2)}${body}`
   }
 
+  const noBody = body === ''
+  let text = body
+
   if (shouldPrintTag || hasAnchor) {
     const props: string[] = []
     const tag = shouldPrintTag ? nodeTagShort(node) : null
@@ -394,10 +406,10 @@ function writeNode (state: PresenterState, level: number, node: Node,
     // No separator when the body is empty (e.g. `&anchor` on a null node) or
     // already starts on its own line.
     const sep = body === '' || body.charCodeAt(0) === CHAR_LINE_FEED ? '' : ' '
-    body = `${props.join(' ')}${sep}${body}`
+    text = `${props.join(' ')}${sep}${body}`
   }
 
-  return body
+  return { text, noBody }
 }
 
 // A bare (untagged, unanchored) non-empty block collection: writeNode renders it
@@ -470,14 +482,14 @@ function present (documents: Document[], options: PresenterOptions): string {
     if (doc.contents === null) {
       if (marker) result += '---\n'
     } else if (marker) {
-      const body = writeNode(state, 0, doc.contents, null, { block: true, compact: true })
+      const body = writeNode(state, 0, doc.contents, null, { block: true, compact: true }).text
       // Content shares the `---` line, except: an empty render (no separator at
       // all), a bare block collection (wraps to the next line), or directives
       // forcing `---` onto its own line.
       const sep = body === '' ? '' : (hasDirectives || rootStartsOwnLine(doc.contents) ? '\n' : ' ')
       result += `---${sep}${body}\n`
     } else {
-      result += writeNode(state, 0, doc.contents, null, { block: true, compact: true }) + '\n'
+      result += writeNode(state, 0, doc.contents, null, { block: true, compact: true }).text + '\n'
     }
 
     previousEnded = doc.explicitEnd || (doc.contents !== null && isOpenEnded(doc.contents))
