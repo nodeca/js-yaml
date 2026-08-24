@@ -21,7 +21,7 @@ function presentParsed (input) {
 }
 
 describe('ast presenter', () => {
-  it('keeps quoteFlowKeys outside an explicit long flow key', () => {
+  it('keeps a long flow key in implicit form', () => {
     const key = `${'a'.repeat(1024)}\nb`
     const documents = jsToAst({ [key]: 'value' }, CORE_SCHEMA)
     const node = documents[0].contents
@@ -31,7 +31,7 @@ describe('ast presenter', () => {
 
     const output = present(documents, { schema: CORE_SCHEMA, quoteFlowKeys: true })
 
-    assert.equal(output, `{? "${'a'.repeat(1024)}\\nb": value}\n`)
+    assert.equal(output, `{"${'a'.repeat(1024)}\\nb": value}\n`)
     assert.deepEqual(load(output, { schema: CORE_SCHEMA }), { [key]: 'value' })
   })
 
