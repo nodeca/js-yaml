@@ -121,13 +121,13 @@ describe('Scalar style dump:', () => {
     it('preserves trailing newlines using chomping', () => {
       assert.strictEqual(dump({ a: '\n', b: '\n\n', c: 'c\n', d: 'd\nd' }),
         'a: |+\n\nb: |+\n\n\nc: |\n  c\nd: |-\n  d\n  d\n')
-      assert.strictEqual(dump('\n'), '|+\n' + '\n')
-      assert.strictEqual(dump('\n\n'), '|+\n' + '\n\n')
+      assert.strictEqual(dump('\n'), '|+\n' + '\n...\n')
+      assert.strictEqual(dump('\n\n'), '|+\n' + '\n\n...\n')
 
       assert.strictEqual(dump(content), `|-\n${indented}\n`)
       assert.strictEqual(dump(`${content}\n`), `|\n${indented}\n`)
-      assert.strictEqual(dump(`${content}\n\n`), `|+\n${indented}\n\n`)
-      assert.strictEqual(dump(`${content}\n\n\n`), `|+\n${indented}\n\n\n`)
+      assert.strictEqual(dump(`${content}\n\n`), `|+\n${indented}\n\n...\n`)
+      assert.strictEqual(dump(`${content}\n\n\n`), `|+\n${indented}\n\n\n...\n`)
     })
 
     it('accepts leading whitespace', () => {
@@ -192,8 +192,8 @@ describe('Scalar style dump:', () => {
 
       it('preserves trailing newlines using chomping', () => {
         assert.strictEqual(dumpNarrow(`${content}\n`), `>\n${indented}\n`)
-        assert.strictEqual(dumpNarrow(`${content}\n\n`), `>+\n${indented}\n\n`)
-        assert.strictEqual(dumpNarrow(`${content}\n\n\n`), `>+\n${indented}\n\n\n`)
+        assert.strictEqual(dumpNarrow(`${content}\n\n`), `>+\n${indented}\n\n...\n`)
+        assert.strictEqual(dumpNarrow(`${content}\n\n\n`), `>+\n${indented}\n\n\n...\n`)
       })
     })()
 
