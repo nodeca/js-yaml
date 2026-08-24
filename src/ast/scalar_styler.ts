@@ -3,6 +3,7 @@ import { type Node, type ScalarNode } from './nodes.ts'
 import { type PresenterOptions } from './presenter.ts'
 import { MIN_SCALAR_CONTENT_WIDTH } from './styler_defaults.ts'
 
+/** Scalar presentation state passed to styling rules. @category AST */
 interface ScalarLayout {
   readonly node: Readonly<ScalarNode>
   readonly parent: Readonly<Node> | null
@@ -13,9 +14,21 @@ interface ScalarLayout {
   readonly shiftOfContent: number
   readonly shiftOfFirstLine: number
   readonly presenterOptions: Readonly<Required<PresenterOptions>>
+  /**
+   * Bit mask of allowed styles; each bit corresponds to a {@link SCALAR_STYLE}
+   * value.
+   */
   allowedStylesMask: number
+  /**
+   * Selected output style, which styling rules may modify. To avoid overriding
+   * earlier decisions, a rule should normally modify it only while it is
+   * {@link SCALAR_STYLE.PLAIN}.
+   */
   style: ScalarStyle
 }
+
+/** Function signature for scalar styling rules. @category AST */
+type ScalarStyleRule = (layout: ScalarLayout) => void
 
 function setBit (mask: number, bit: number): number { return mask | (1 << bit) }
 
@@ -437,5 +450,6 @@ function escapeString (string: string): string {
 export {
   detectAllowedStyles,
   renderScalar,
-  type ScalarLayout
+  type ScalarLayout,
+  type ScalarStyleRule
 }

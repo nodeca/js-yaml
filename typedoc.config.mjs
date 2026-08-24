@@ -16,6 +16,7 @@ export default {
     'docs/safety.md',
     'docs/usage.md',
     'docs/custom_tags.md',
+    'docs/scalar_stying.md',
     'docs/migrate_v4_to_v5.md',
     'docs/schemas_info.md',
     'docs/tags_info.md',

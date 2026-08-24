@@ -3,14 +3,18 @@ import { type ScalarLayout } from './scalar_styler.ts'
 
 function hasBit (mask: number, bit: number): boolean { return (mask & (1 << bit)) !== 0 }
 
-type ScalarStyleRule = (layout: ScalarLayout) => void
-
 // This should eventually be a presenter option, but collection styling,
 // especially key layout, must be designed first to decide whether scalar and
 // collection width limits should share an option or be configured separately.
 const MIN_SCALAR_CONTENT_WIDTH = 40
 
-const scalarStylerDefaults: ScalarStyleRule[] = [
+/**
+ * Default scalar styling rules in application order.
+ * See [Scalar styling](../../docs/scalar_stying.md) for usage details.
+ *
+ * @category AST
+ */
+const DEFAULT_SCALAR_STYLE_RULES = {
   applyQuoteFlowKeysOption,
   doubleQuoteForInvisibles,
   doubleQuoteWhitespaceOnly,
@@ -18,7 +22,7 @@ const scalarStylerDefaults: ScalarStyleRule[] = [
   tryLongOrMultilineAsBlock,
   quoteInvalidPlain,
   fallbackToDoubleQuoted
-]
+} as const
 
 function _preferredQuotedStyle (layout: ScalarLayout): ScalarStyle {
   if (layout.presenterOptions.quoteStyle === 'single' &&
@@ -134,4 +138,4 @@ function fallbackToDoubleQuoted (layout: ScalarLayout): void {
   }
 }
 
-export { MIN_SCALAR_CONTENT_WIDTH, scalarStylerDefaults }
+export { MIN_SCALAR_CONTENT_WIDTH, DEFAULT_SCALAR_STYLE_RULES }

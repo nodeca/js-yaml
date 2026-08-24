@@ -86,6 +86,8 @@ export {
 export { eventsToAst, type FromEventsOptions } from './ast/from_events.ts'
 export { jsToAst, type FromJsOptions } from './ast/from_js.ts'
 export { present, type PresenterOptions } from './ast/presenter.ts'
+export { type ScalarLayout, type ScalarStyleRule } from './ast/scalar_styler.ts'
+export { DEFAULT_SCALAR_STYLE_RULES } from './ast/styler_defaults.ts'
 
 export {
   visit,

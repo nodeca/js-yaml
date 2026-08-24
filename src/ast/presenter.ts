@@ -12,8 +12,13 @@ import {
   type SequenceNode,
   type MappingNode
 } from './nodes.ts'
-import { detectAllowedStyles, renderScalar, type ScalarLayout } from './scalar_styler.ts'
-import { scalarStylerDefaults } from './styler_defaults.ts'
+import {
+  detectAllowedStyles,
+  renderScalar,
+  type ScalarLayout,
+  type ScalarStyleRule
+} from './scalar_styler.ts'
+import { DEFAULT_SCALAR_STYLE_RULES } from './styler_defaults.ts'
 
 const CHAR_LINE_FEED = 0x0A /* LF */
 
@@ -98,6 +103,15 @@ interface PresenterOptions {
   forceQuotes?: boolean
 
   /**
+   * Customizes how strings are rendered as plain, quoted, literal, or folded
+   * scalars. Rules are applied in array order; providing this option replaces
+   * the {@link DEFAULT_SCALAR_STYLE_RULES default rules}.
+   *
+   * @defaultValue `Object.values(DEFAULT_SCALAR_STYLE_RULES)`
+   */
+  scalarStyleRules?: readonly ScalarStyleRule[]
+
+  /**
    * Prints an explicit tag before an anchor: `&ref_0 !!set` becomes
    * `!!set &ref_0`.
    *
@@ -117,6 +131,8 @@ const DEFAULT_PRESENTER_OPTIONS: Required<Omit<PresenterOptions, 'schema'>> = {
   quoteFlowKeys: false,
   quoteStyle: 'single',
   forceQuotes: false,
+  scalarStyleRules: Object.keys(DEFAULT_SCALAR_STYLE_RULES)
+    .map(name => Reflect.get(DEFAULT_SCALAR_STYLE_RULES, name)),
   tagBeforeAnchor: false
 }
 
@@ -387,7 +403,7 @@ function writeNode (state: PresenterState, level: number, node: Node,
     const layout = scalarLayout(state, node, parent, level, iskey, !block)
 
     detectAllowedStyles(layout)
-    for (const rule of scalarStylerDefaults) rule(layout)
+    for (const rule of state.scalarStyleRules) rule(layout)
 
     body = renderScalar(layout)
     state.openEnded =
