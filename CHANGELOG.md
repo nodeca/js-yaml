@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [5.4.0] - Unreleased
+
+### Added
+- Added the `scalarStyleRules` dumper option to customize string formatting.
+  See [Scalar styling](docs/scalar_styling.md) for details.
+
+### Changed
+- [breaking] Flattened the low-level AST node style representation. Scalar
+  and collection nodes now use `SCALAR_STYLE` and `COLLECTION_STYLE` values;
+  explicit tags use the separate `tagged` property. Alias nodes now contain
+  only `kind` and `anchor`. This only affects code that directly constructs or
+  edits AST nodes.
+- [breaking] The `sortKeys` option was rewritten using AST mutation to avoid
+  side effects.
+- Reworked scalar style selection. This can change formatting without changing
+  loaded values; in particular, whitespace-only strings are now double-quoted.
+
+### Fixed
+- Accept a byte order mark at the start of each document in a stream, #791.
+- Produce valid flow mappings with `quoteFlowKeys` and `flowSkipColonSpace`,
+  including alias and property-only keys, #786.
+- Preserve empty scalar items when converting block sequences to flow style.
+- Do not apply the 1024-character simple-key limit to flow mapping keys.
+- Count Unicode code points, rather than UTF-16 code units, for the
+  1024-character simple-key limit.
+- Add an explicit document-end marker after keep-chomped block scalars when
+  needed to preserve trailing newlines.
+
+
 ## [5.3.0] - 2026-08-14
 
 This release focuses on reworking the documentation and making small
@@ -723,6 +753,7 @@ architectural improvements before moving forward.
 - First public release
 
 
+[5.4.0]: https://github.com/nodeca/js-yaml/compare/5.3.0...5.4.0
 [5.3.0]: https://github.com/nodeca/js-yaml/compare/5.2.3...5.3.0
 [5.2.3]: https://github.com/nodeca/js-yaml/compare/5.2.2...5.2.3
 [5.2.2]: https://github.com/nodeca/js-yaml/compare/5.2.1...5.2.2
