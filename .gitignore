@@ -5,3 +5,5 @@ doc
 benchmark/implementations/*
 !/benchmark/implementations/current/
 .idea
+.claude/
+.codex/
