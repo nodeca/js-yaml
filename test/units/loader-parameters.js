@@ -79,7 +79,7 @@ suite('loader parameters', function () {
     }
 
     assert.doesNotThrow(function () {
-      yaml.safeLoad(merge(3), { maxTotalMergeKeys: 5 });
+      yaml.safeLoad(merge(3), { maxTotalMergeKeys: 6 });
     });
     assert.throws(function () {
       yaml.safeLoad(merge(3), { maxTotalMergeKeys: 2 });
@@ -104,7 +104,7 @@ suite('loader parameters', function () {
     ].join('\n');
 
     assert.doesNotThrow(function () {
-      yaml.safeLoadAll(src, { maxTotalMergeKeys: 4 });
+      yaml.safeLoadAll(src, { maxTotalMergeKeys: 6 });
     });
     assert.throws(function () {
       yaml.safeLoadAll(src, { maxTotalMergeKeys: 3 });
