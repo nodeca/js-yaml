@@ -1,0 +1,1213 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>CHANGELOG | js-yaml - v5.4.1</title><meta name="description" content="Documentation for js-yaml"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><script async src="../assets/hierarchy.js" id="tsd-hierarchy-script"></script><link rel="stylesheet" href="../assets/condensed_theme.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">js-yaml - v5.4.1</a>
+<div id="tsd-toolbar-links"><a href="https://github.com/nodeca/js-yaml">GitHub</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header>
+<div class="container container-main">
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="" aria-current="page">CHANGELOG</a></li></ul></div>
+<div class="tsd-panel tsd-typography"><h1 id="changelog" class="tsd-anchor-link">Changelog<a href="#changelog" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h1>
+<p>All notable changes to this project will be documented in this file.</p>
+<p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
+and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<h2 id="541-2026-08-26" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/5.4.0...5.4.1">5.4.1</a> - 2026-08-26<a href="#541-2026-08-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed" class="tsd-anchor-link">Changed<a href="#changed" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Hard-limit merge sequence size to 100.</li>
+</ul>
+<h3 id="security" class="tsd-anchor-link">Security<a href="#security" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Count empty mappings in merge sequences toward <code>maxTotalMergeKeys</code> to limit
+CPU usage, #797.</li>
+</ul>
+<h2 id="540-2026-08-25" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/5.3.0...5.4.0">5.4.0</a> - 2026-08-25<a href="#540-2026-08-25" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added" class="tsd-anchor-link">Added<a href="#added" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added the <code>scalarStyleRules</code> dumper option to customize string formatting.
+See <a href="Scalar_styling.html">Scalar styling</a> for details.</li>
+</ul>
+<h3 id="changed-1" class="tsd-anchor-link">Changed<a href="#changed-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>[breaking] Flattened the low-level AST node style representation. Scalar
+and collection nodes now use <code>SCALAR_STYLE</code> and <code>COLLECTION_STYLE</code> values;
+explicit tags use the separate <code>tagged</code> property. Alias nodes now contain
+only <code>kind</code> and <code>anchor</code>. This only affects code that directly constructs or
+edits AST nodes.</li>
+<li>[breaking] The <code>sortKeys</code> option was rewritten using AST mutation to avoid
+side effects.</li>
+<li>Reworked scalar style selection. This can change formatting without changing
+loaded values; in particular, whitespace-only strings are now double-quoted.</li>
+</ul>
+<h3 id="fixed" class="tsd-anchor-link">Fixed<a href="#fixed" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Accept a byte order mark at the start of each document in a stream, #791.</li>
+<li>Produce valid flow mappings with <code>quoteFlowKeys</code> and <code>flowSkipColonSpace</code>,
+including alias and property-only keys, #786.</li>
+<li>Preserve empty scalar items when converting block sequences to flow style.</li>
+<li>Do not apply the 1024-character simple-key limit to flow mapping keys.</li>
+<li>Count Unicode code points, rather than UTF-16 code units, for the
+1024-character simple-key limit.</li>
+<li>Add an explicit document-end marker after keep-chomped block scalars when
+needed to preserve trailing newlines.</li>
+</ul>
+<h2 id="530-2026-08-14" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/5.2.3...5.3.0">5.3.0</a> - 2026-08-14<a href="#530-2026-08-14" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<p>This release focuses on reworking the documentation and making small
+architectural improvements before moving forward.</p>
+<h3 id="added-1" class="tsd-anchor-link">Added<a href="#added-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added completely new documentation.</li>
+<li>Exported <code>DUMP_SCHEMA</code>, the default schema used by the dumper.</li>
+<li>Added <code>YAMLException.throwAt()</code> for throwing an error at a source position.</li>
+</ul>
+<h3 id="changed-2" class="tsd-anchor-link">Changed<a href="#changed-2" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Changed flat constant exports to grouped exports: <code>EVENT_ID</code>, <code>SCALAR_STYLE</code>,
+<code>COLLECTION_STYLE</code>, and <code>CHOMPING_MODE</code>, along with their value types. The old
+exports are still preserved, but deprecated.</li>
+<li>Made <code>identify</code> mandatory for custom tag definitions. Use
+<code>identify: () =&gt; false</code> for load-only tags.</li>
+</ul>
+<h3 id="deprecated" class="tsd-anchor-link">Deprecated<a href="#deprecated" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Deprecated flat constant exports. Use grouped ones instead.</li>
+</ul>
+<h3 id="removed" class="tsd-anchor-link">Removed<a href="#removed" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Removed the <code>MERGE_KEY</code> export (not used anymore after last fixes).</li>
+</ul>
+<h3 id="fixed-1" class="tsd-anchor-link">Fixed<a href="#fixed-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Validate <code>&lt;&lt;</code> sequence items at merge time, so aliased merge sources are
+checked too.</li>
+<li>Resolve <code>&lt;&lt;</code> outside of a mapping key as the plain string <code>'&lt;&lt;'</code>, matching
+v4, instead of leaking an internal symbol into the result.</li>
+</ul>
+<h2 id="523-2026-08-01" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/5.2.2...5.2.3">5.2.3</a> - 2026-08-01<a href="#523-2026-08-01" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-2" class="tsd-anchor-link">Fixed<a href="#fixed-2" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Prevent prototype fallback when resolving tags and mapping entries, #782.</li>
+<li>Resolve <code>!!timestamp</code> years 0000-0099 correctly, #775.</li>
+<li>Preserve implicit null mapping values before document markers and reject
+unpaired mapping event streams, #784.</li>
+<li>Preserve folded scalar values with tab-indented lines when round-tripping a
+parsed AST through <code>present()</code>; <code>dump()</code> and loading are unaffected, #780.</li>
+</ul>
+<h2 id="522-2026-07-24" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/5.2.1...5.2.2">5.2.2</a> - 2026-07-24<a href="#522-2026-07-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-3" class="tsd-anchor-link">Fixed<a href="#fixed-3" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Quote flow scalars where a colon precedes a flow indicator, #773.</li>
+</ul>
+<h3 id="security-1" class="tsd-anchor-link">Security<a href="#security-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Avoid exponential parsing time for nested flow sequence pairs.</li>
+</ul>
+<h2 id="521-2026-07-02" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/5.2.0...5.2.1">5.2.1</a> - 2026-07-02<a href="#521-2026-07-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-4" class="tsd-anchor-link">Fixed<a href="#fixed-4" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Add <code>Map</code> support to !!omap (should work when <code>realMapTag</code> used)</li>
+</ul>
+<h3 id="security-2" class="tsd-anchor-link">Security<a href="#security-2" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Remove quadratic complexity from !!omap <code>addItem</code>. Regression from v5
+(usually not critical, because YAML11_SCHEMA is not default anymore).</li>
+</ul>
+<h2 id="430-3150-2026-06-27" class="tsd-anchor-link">4.3.0, 3.15.0 - 2026-06-27<a href="#430-3150-2026-06-27" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-3" class="tsd-anchor-link">Security<a href="#security-3" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Backported <code>maxTotalMergeKeys</code> option.</li>
+</ul>
+<h2 id="520-2026-06-26" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/5.1.0...5.2.0">5.2.0</a> - 2026-06-26<a href="#520-2026-06-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-2" class="tsd-anchor-link">Added<a href="#added-2" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added <code>maxTotalMergeKeys</code> (10000) loader option to limit the total number of
+keys processed by YAML merge (<code>&lt;&lt;</code>) across one <code>load()</code> / <code>loadAll()</code> call.</li>
+<li>Added <code>maxAliases</code> (-1) loader option to limit the number of YAML aliases per
+document.</li>
+</ul>
+<h3 id="removed-1" class="tsd-anchor-link">Removed<a href="#removed-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li><code>maxMergeSeqLength</code> replaced with <code>maxTotalMergeKeys</code> for limiting YAML merge
+processing.</li>
+</ul>
+<h3 id="fixed-5" class="tsd-anchor-link">Fixed<a href="#fixed-5" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Round-trip of integers with exponential form (&gt;= <code>1e21</code>)</li>
+</ul>
+<h2 id="510-2026-06-23" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/5.0.0...5.1.0">5.1.0</a> - 2026-06-23<a href="#510-2026-06-23" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-3" class="tsd-anchor-link">Added<a href="#added-3" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Collection tags can finalize an incrementally populated carrier into a
+different result value.</li>
+</ul>
+<h3 id="changed-3" class="tsd-anchor-link">Changed<a href="#changed-3" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>[breaking] <code>quoteStyle</code> now selects the preferred quote style; use the
+restored <code>forceQuotes</code> option to force quoting non-key strings.</li>
+</ul>
+<h2 id="500-2026-06-20" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/4.2.0...5.0.0">5.0.0</a> - 2026-06-20<a href="#500-2026-06-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-4" class="tsd-anchor-link">Added<a href="#added-4" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added named exports for schemas, tags, parser events and AST utilities.</li>
+<li>Reworked <code>JSON_SCHEMA</code> and <code>CORE_SCHEMA</code> with spec-compliant scalar resolution
+rules, and added <code>YAML11_SCHEMA</code>.</li>
+<li>Added <code>realMapTag</code> for lossless mappings with non-string and complex keys.
+Object-based mappings now reject complex keys instead of stringifying them.</li>
+<li>Added <code>dump()</code> <code>transform</code> option for changing the generated AST before
+rendering.</li>
+<li>Added <code>dump()</code> options <code>seqInlineFirst</code>, <code>flowBracketPadding</code>,
+<code>flowSkipCommaSpace</code>, <code>flowSkipColonSpace</code>, <code>quoteFlowKeys</code>, <code>quoteStyle</code> and
+<code>tagBeforeAnchor</code>.</li>
+<li>Added formal data layers (events and AST) for modular data pipelines.
+<ul>
+<li>Added low-level parser (to events), presenter and visitor APIs.</li>
+</ul>
+</li>
+<li>Added the <a href="https://github.com/yaml/yaml-test-suite">YAML Test Suite</a> to the
+test set.</li>
+</ul>
+<h3 id="changed-4" class="tsd-anchor-link">Changed<a href="#changed-4" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>See the <a href="Migrate_to_v5.html">migration guide</a> for upgrade notes.</li>
+<li>Rewritten in TypeScript and reorganized the public API around flat named
+exports.</li>
+<li>Reduced the set of exported schemas:
+<ul>
+<li>YAML 1.2 schemas: <code>CORE_SCHEMA</code> (loader default), <code>JSON_SCHEMA</code>,
+<code>FAILSAFE_SCHEMA</code>.</li>
+<li><code>YAML11_SCHEMA</code>, a combination of all YAML 1.1 tags (YAML 1.1 does not
+specify a schema, only &quot;types&quot;).</li>
+</ul>
+</li>
+<li><code>load</code>/<code>dump</code> default behaviour is now specified exactly via schemas:
+<ul>
+<li><code>load</code> uses <code>CORE_SCHEMA</code>, without <code>!!merge</code> by default.</li>
+<li><code>dump</code> uses <code>YAML11_SCHEMA</code> + <code>CORE_SCHEMA</code> for the quoting check, to
+guarantee backward compatibility by default.</li>
+</ul>
+</li>
+<li><code>!!set</code> is now loaded as a JavaScript <code>Set</code>.</li>
+<li>Replaced the <code>Type</code> API with a tags API. Similar, but more precise and
+simpler. See examples for details. Tags can be defined via
+<code>defineScalarTag()</code>, <code>defineSequenceTag()</code> and <code>defineMappingTag()</code>, or as a
+spread + override of an existing tag.</li>
+<li>Renamed <code>Schema.extend()</code> to <code>Schema.withTags()</code>.</li>
+<li>Expanded YAML 1.2 conformance and improved handling of directives, document
+markers, block keys, multiline scalars, tag syntax and other things.</li>
+<li><code>load()</code> now throws on empty input instead of returning <code>undefined</code>.</li>
+<li>Moved browser builds to the <code>js-yaml/browser</code> export.</li>
+<li>Deprecated the <code>loadAll</code> signature with an iterator (still works, but is a
+candidate for removal).</li>
+</ul>
+<h3 id="removed-2" class="tsd-anchor-link">Removed<a href="#removed-2" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Removed deprecated <code>safeLoad()</code>, <code>safeLoadAll()</code> and <code>safeDump()</code> exports.</li>
+<li>Removed <code>DEFAULT_SCHEMA</code> and the nested <code>types</code> export.</li>
+<li>Removed loader options <code>onWarning</code>, <code>legacy</code> and <code>listener</code>.</li>
+<li>Removed dumper options <code>styles</code>, <code>replacer</code>, <code>noCompatMode</code>, <code>condenseFlow</code>,
+<code>quotingType</code> and <code>forceQuotes</code>. Renamed <code>noArrayIndent</code> to <code>seqNoIndent</code>.
+Formatting and representation are now configured through presenter options,
+schemas and tag definitions. See migration guide on how to replace.</li>
+<li>Removed support for importing internal files from <code>lib/</code>.</li>
+</ul>
+<h2 id="420-2026-06-01" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/4.1.1...4.2.0">4.2.0</a> - 2026-06-01<a href="#420-2026-06-01" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-5" class="tsd-anchor-link">Added<a href="#added-5" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added <code>docs/safety.md</code> with notes about processing untrusted YAML.</li>
+<li>Added <code>maxDepth</code> (100) loader option. Not a problem, but gives a better
+exception instead of RangeError on stack overflow.</li>
+<li>Added a loader option limiting merge sequence length. Not a problem after
+<code>merge</code> fix, but an additional restriction for safety.</li>
+<li>Added sourcemaps to <code>dist/</code> builds.</li>
+</ul>
+<h3 id="changed-5" class="tsd-anchor-link">Changed<a href="#changed-5" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Stop resolving numbers with underscores as numeric scalars, #627.</li>
+<li>Switched dev toolchains to Vite / neostandard.</li>
+<li>Updated demo.</li>
+<li>Reorganized tests.</li>
+<li><code>dist/</code> files are no longer kept in the repository.</li>
+</ul>
+<h3 id="fixed-6" class="tsd-anchor-link">Fixed<a href="#fixed-6" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix parsing of properties on the first implicit block mapping key, #62.</li>
+<li>Fix trailing whitespace handling when folding flow scalar lines, #307.</li>
+<li>Reject top-level block scalars without content indentation, #280.</li>
+<li>Ensure numbers survive round-trip, #737.</li>
+<li>Fix test coverage for issue #221.</li>
+<li>Fix flow scalar trailing whitespace folding, #307.</li>
+<li>Fix digits in YAML named tag handles.</li>
+</ul>
+<h3 id="security-4" class="tsd-anchor-link">Security<a href="#security-4" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix potential DoS via quadratic complexity in merge - deduplicate repeated
+elements (makes sense for malformed files &gt; 10K).</li>
+</ul>
+<h2 id="3142-2025-11-15" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.14.1...3.14.2">3.14.2</a> - 2025-11-15<a href="#3142-2025-11-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-5" class="tsd-anchor-link">Security<a href="#security-5" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Backported v4.1.1 fix to v3</li>
+</ul>
+<h2 id="411-2025-11-12" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/4.1.0...4.1.1">4.1.1</a> - 2025-11-12<a href="#411-2025-11-12" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-6" class="tsd-anchor-link">Security<a href="#security-6" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix prototype pollution issue in yaml merge (&lt;&lt;) operator.</li>
+</ul>
+<h2 id="410-2021-04-15" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/4.0.0...4.1.0">4.1.0</a> - 2021-04-15<a href="#410-2021-04-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-6" class="tsd-anchor-link">Added<a href="#added-6" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Types are now exported as <code>yaml.types.XXX</code>.</li>
+<li>Every type now has <code>options</code> property with original arguments kept as they were
+(see <code>yaml.types.int.options</code> as an example).</li>
+</ul>
+<h3 id="changed-6" class="tsd-anchor-link">Changed<a href="#changed-6" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li><code>Schema.extend()</code> now keeps old type order in case of conflicts
+(e.g. Schema.extend([ a, b, c ]).extend([ b, a, d ]) is now ordered as <code>abcd</code> instead of <code>cbad</code>).</li>
+</ul>
+<h2 id="400-2021-01-03" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.14.0...4.0.0">4.0.0</a> - 2021-01-03<a href="#400-2021-01-03" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-7" class="tsd-anchor-link">Changed<a href="#changed-7" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Check migration guide for details of all breaking changes.</li>
+<li>Breaking: &quot;unsafe&quot; tags <code>!!js/function</code>, <code>!!js/regexp</code>, <code>!!js/undefined</code> are
+moved to <a href="https://github.com/nodeca/js-yaml-js-types">js-yaml-js-types</a> package.</li>
+<li>Breaking: removed <code>safe*</code> functions. Use <code>load</code>, <code>loadAll</code>, <code>dump</code>
+instead which are all now safe by default.</li>
+<li><code>yaml.DEFAULT_SAFE_SCHEMA</code> and <code>yaml.DEFAULT_FULL_SCHEMA</code> are removed, use
+<code>yaml.DEFAULT_SCHEMA</code> instead.</li>
+<li><code>yaml.Schema.create(schema, tags)</code> is removed, use <code>schema.extend(tags)</code> instead.</li>
+<li><code>!!binary</code> now always mapped to <code>Uint8Array</code> on load.</li>
+<li>Reduced nesting of <code>/lib</code> folder.</li>
+<li>Parse numbers according to YAML 1.2 instead of YAML 1.1 (<code>01234</code> is now decimal,
+<code>0o1234</code> is octal, <code>1:23</code> is parsed as string instead of base60).</li>
+<li><code>dump()</code> no longer quotes <code>:</code>, <code>[</code>, <code>]</code>, <code>(</code>, <code>)</code> except when necessary, #470, #557.</li>
+<li>Line and column in exceptions are now formatted as <code>(X:Y)</code> instead of
+<code>at line X, column Y</code> (also present in compact format), #332.</li>
+<li>Code snippet created in exceptions now contains multiple lines with line numbers.</li>
+<li><code>dump()</code> now serializes <code>undefined</code> as <code>null</code> in collections and removes keys with
+<code>undefined</code> in mappings, #571.</li>
+<li>Custom tags starting with <code>!</code> are now dumped as <code>!tag</code> instead of <code>!&lt;!tag&gt;</code>, #576.</li>
+<li>Custom tags starting with <code>tag:yaml.org,2002:</code> are now shorthanded using <code>!!</code>, #258.</li>
+</ul>
+<h3 id="added-7" class="tsd-anchor-link">Added<a href="#added-7" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added <code>.mjs</code> (es modules) support.</li>
+<li>Added <code>quotingType</code> and <code>forceQuotes</code> options for dumper to configure
+string literal style, #290, #529.</li>
+<li>Added <code>styles: { '!!null': 'empty' }</code> option for dumper
+(serializes <code>{ foo: null }</code> as &quot;<code>foo: </code>&quot;), #570.</li>
+<li>Added <code>replacer</code> option (similar to option in JSON.stringify), #339.</li>
+<li>Custom <code>Tag</code> can now handle all tags or multiple tags with the same prefix, #385.</li>
+</ul>
+<h3 id="fixed-7" class="tsd-anchor-link">Fixed<a href="#fixed-7" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Astral characters are no longer encoded by <code>dump()</code>, #587.</li>
+<li>&quot;duplicate mapping key&quot; exception now points at the correct column, #452.</li>
+<li>Extra commas in flow collections (e.g. <code>[foo,,bar]</code>) now throw an exception
+instead of producing null, #321.</li>
+<li><code>__proto__</code> key no longer overrides object prototype, #164.</li>
+<li>Removed <code>bower.json</code>.</li>
+<li>Tags are now url-decoded in <code>load()</code> and url-encoded in <code>dump()</code>
+(previously usage of custom non-ascii tags may have led to invalid YAML that can't be parsed).</li>
+<li>Anchors now work correctly with empty nodes, #301.</li>
+<li>Fix incorrect parsing of invalid block mapping syntax, #418.</li>
+<li>Throw an error if block sequence/mapping indent contains a tab, #80.</li>
+</ul>
+<h2 id="3141-2020-12-07" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.14.0...3.14.1">3.14.1</a> - 2020-12-07<a href="#3141-2020-12-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-7" class="tsd-anchor-link">Security<a href="#security-7" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix possible code execution in (already unsafe) <code>.load()</code> (in &amp;anchor).</li>
+</ul>
+<h2 id="3140-2020-05-22" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.13.1...3.14.0">3.14.0</a> - 2020-05-22<a href="#3140-2020-05-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-8" class="tsd-anchor-link">Changed<a href="#changed-8" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Support <code>safe/loadAll(input, options)</code> variant of call.</li>
+<li>CI: drop outdated nodejs versions.</li>
+<li>Dev deps bump.</li>
+</ul>
+<h3 id="fixed-8" class="tsd-anchor-link">Fixed<a href="#fixed-8" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Quote <code>=</code> in plain scalars #519.</li>
+<li>Check the node type for <code>!&lt;?&gt;</code> tag in case user manually specifies it.</li>
+<li>Verify that there are no null-bytes in input.</li>
+<li>Fix wrong quote position when writing condensed flow, #526.</li>
+</ul>
+<h2 id="3131-2019-04-05" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.13.0...3.13.1">3.13.1</a> - 2019-04-05<a href="#3131-2019-04-05" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-8" class="tsd-anchor-link">Security<a href="#security-8" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix possible code execution in (already unsafe) <code>.load()</code>, #480.</li>
+</ul>
+<h2 id="3130-2019-03-20" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.12.2...3.13.0">3.13.0</a> - 2019-03-20<a href="#3130-2019-03-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-9" class="tsd-anchor-link">Security<a href="#security-9" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Security fix: <code>safeLoad()</code> can hang when arrays with nested refs
+used as key. Now throws exception for nested arrays. #475.</li>
+</ul>
+<h2 id="3122-2019-02-26" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.12.1...3.12.2">3.12.2</a> - 2019-02-26<a href="#3122-2019-02-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-9" class="tsd-anchor-link">Fixed<a href="#fixed-9" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix <code>noArrayIndent</code> option for root level, #468.</li>
+</ul>
+<h2 id="3121-2019-01-05" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.12.0...3.12.1">3.12.1</a> - 2019-01-05<a href="#3121-2019-01-05" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-8" class="tsd-anchor-link">Added<a href="#added-8" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added <code>noArrayIndent</code> option, #432.</li>
+</ul>
+<h2 id="3120-2018-06-02" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.11.0...3.12.0">3.12.0</a> - 2018-06-02<a href="#3120-2018-06-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-9" class="tsd-anchor-link">Changed<a href="#changed-9" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Support arrow functions without a block statement, #421.</li>
+</ul>
+<h2 id="3110-2018-03-05" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.10.0...3.11.0">3.11.0</a> - 2018-03-05<a href="#3110-2018-03-05" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-9" class="tsd-anchor-link">Added<a href="#added-9" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Add arrow functions suport for <code>!!js/function</code>.</li>
+</ul>
+<h3 id="fixed-10" class="tsd-anchor-link">Fixed<a href="#fixed-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix dump in bin/octal/hex formats for negative integers, #399.</li>
+</ul>
+<h2 id="3100-2017-09-10" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.9.1...3.10.0">3.10.0</a> - 2017-09-10<a href="#3100-2017-09-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-11" class="tsd-anchor-link">Fixed<a href="#fixed-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix <code>condenseFlow</code> output (quote keys for sure, instead of spaces), #371, #370.</li>
+<li>Dump astrals as codepoints instead of surrogate pair, #368.</li>
+</ul>
+<h2 id="391-2017-07-08" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.9.0...3.9.1">3.9.1</a> - 2017-07-08<a href="#391-2017-07-08" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-12" class="tsd-anchor-link">Fixed<a href="#fixed-12" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Ensure stack is present for custom errors in node 7.+, #351.</li>
+</ul>
+<h2 id="390-2017-07-08" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.8.4...3.9.0">3.9.0</a> - 2017-07-08<a href="#390-2017-07-08" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-10" class="tsd-anchor-link">Added<a href="#added-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Add <code>condenseFlow</code> option (to create pretty URL query params), #346.</li>
+</ul>
+<h3 id="fixed-13" class="tsd-anchor-link">Fixed<a href="#fixed-13" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Support array return from safeLoadAll/loadAll, #350.</li>
+</ul>
+<h2 id="384-2017-05-08" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.8.3...3.8.4">3.8.4</a> - 2017-05-08<a href="#384-2017-05-08" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-14" class="tsd-anchor-link">Fixed<a href="#fixed-14" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Dumper: prevent space after dash for arrays that wrap, #343.</li>
+</ul>
+<h2 id="383-2017-04-05" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.8.2...3.8.3">3.8.3</a> - 2017-04-05<a href="#383-2017-04-05" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-15" class="tsd-anchor-link">Fixed<a href="#fixed-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Should not allow numbers to begin and end with underscore, #335.</li>
+</ul>
+<h2 id="382-2017-03-02" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.8.1...3.8.2">3.8.2</a> - 2017-03-02<a href="#382-2017-03-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-16" class="tsd-anchor-link">Fixed<a href="#fixed-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix <code>!!float 123</code> (integers) parse, #333.</li>
+<li>Don't allow leading zeros in floats (except 0, <a href="http://0.xxx">0.xxx</a>).</li>
+<li>Allow positive exponent without sign in floats.</li>
+</ul>
+<h2 id="381-2017-02-07" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.8.0...3.8.1">3.8.1</a> - 2017-02-07<a href="#381-2017-02-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-10" class="tsd-anchor-link">Changed<a href="#changed-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Maintenance: update browserified build.</li>
+</ul>
+<h2 id="380-2017-02-07" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.7.0...3.8.0">3.8.0</a> - 2017-02-07<a href="#380-2017-02-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-17" class="tsd-anchor-link">Fixed<a href="#fixed-17" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix reported position for <code>duplicated mapping key</code> errors.
+Now points to block start instead of block end.
+(#243, thanks to @shockey).</li>
+</ul>
+<h2 id="370-2016-11-12" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.6.1...3.7.0">3.7.0</a> - 2016-11-12<a href="#370-2016-11-12" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-11" class="tsd-anchor-link">Added<a href="#added-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Support polymorphism for tags (#300, thanks to @monken).</li>
+</ul>
+<h3 id="fixed-18" class="tsd-anchor-link">Fixed<a href="#fixed-18" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix parsing of quotes followed by newlines (#304, thanks to @dplepage).</li>
+</ul>
+<h2 id="361-2016-05-11" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.6.0...3.6.1">3.6.1</a> - 2016-05-11<a href="#361-2016-05-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-19" class="tsd-anchor-link">Fixed<a href="#fixed-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix output cut on a pipe, #286.</li>
+</ul>
+<h2 id="360-2016-04-16" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.5.5...3.6.0">3.6.0</a> - 2016-04-16<a href="#360-2016-04-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-20" class="tsd-anchor-link">Fixed<a href="#fixed-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Dumper rewrite, fix multiple bugs with trailing <code>\n</code>.
+Big thanks to @aepsilon!</li>
+<li>Loader: fix leading/trailing newlines in block scalars, @aepsilon.</li>
+</ul>
+<h2 id="355-2016-03-17" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.5.4...3.5.5">3.5.5</a> - 2016-03-17<a href="#355-2016-03-17" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-21" class="tsd-anchor-link">Fixed<a href="#fixed-21" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Date parse fix: don't allow dates with on digit in month and day, #268.</li>
+</ul>
+<h2 id="354-2016-03-09" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.5.3...3.5.4">3.5.4</a> - 2016-03-09<a href="#354-2016-03-09" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-12" class="tsd-anchor-link">Added<a href="#added-12" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li><code>noCompatMode</code> for dumper, to disable quoting YAML 1.1 values.</li>
+</ul>
+<h2 id="353-2016-02-11" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.5.2...3.5.3">3.5.3</a> - 2016-02-11<a href="#353-2016-02-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-11" class="tsd-anchor-link">Changed<a href="#changed-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Maintenance release.</li>
+</ul>
+<h2 id="352-2016-01-11" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.5.1...3.5.2">3.5.2</a> - 2016-01-11<a href="#352-2016-01-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-12" class="tsd-anchor-link">Changed<a href="#changed-12" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Maintenance: missed comma in bower config.</li>
+</ul>
+<h2 id="351-2016-01-11" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.5.0...3.5.1">3.5.1</a> - 2016-01-11<a href="#351-2016-01-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-13" class="tsd-anchor-link">Changed<a href="#changed-13" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Removed <code>inherit</code> dependency, #239.</li>
+<li>Better browserify workaround for esprima load.</li>
+<li>Demo rewrite.</li>
+</ul>
+<h2 id="350-2016-01-10" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.4.6...3.5.0">3.5.0</a> - 2016-01-10<a href="#350-2016-01-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-22" class="tsd-anchor-link">Fixed<a href="#fixed-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Dumper. Fold strings only, #217.</li>
+<li>Dumper. <code>norefs</code> option, to clone linked objects, #229.</li>
+<li>Loader. Throw a warning for duplicate keys, #166.</li>
+<li>Improved browserify support (mark <code>esprima</code> &amp; <code>Buffer</code> excluded).</li>
+</ul>
+<h2 id="346-2015-11-26" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.4.5...3.4.6">3.4.6</a> - 2015-11-26<a href="#346-2015-11-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-14" class="tsd-anchor-link">Changed<a href="#changed-14" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Use standalone <code>inherit</code> to keep browserified files clear.</li>
+</ul>
+<h2 id="345-2015-11-23" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.4.4...3.4.5">3.4.5</a> - 2015-11-23<a href="#345-2015-11-23" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-13" class="tsd-anchor-link">Added<a href="#added-13" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added <code>lineWidth</code> option to dumper.</li>
+</ul>
+<h2 id="344-2015-11-21" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.4.3...3.4.4">3.4.4</a> - 2015-11-21<a href="#344-2015-11-21" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-23" class="tsd-anchor-link">Fixed<a href="#fixed-23" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed floats dump (missed dot for scientific format), #220.</li>
+<li>Allow non-printable characters inside quoted scalars, #192.</li>
+</ul>
+<h2 id="343-2015-10-10" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.4.2...3.4.3">3.4.3</a> - 2015-10-10<a href="#343-2015-10-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-15" class="tsd-anchor-link">Changed<a href="#changed-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Maintenance release - deps bump (esprima, argparse).</li>
+</ul>
+<h2 id="342-2015-09-09" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.4.1...3.4.2">3.4.2</a> - 2015-09-09<a href="#342-2015-09-09" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-24" class="tsd-anchor-link">Fixed<a href="#fixed-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed serialization of duplicated entries in sequences, #205.
+Thanks to @vogelsgesang.</li>
+</ul>
+<h2 id="341-2015-09-05" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.4.0...3.4.1">3.4.1</a> - 2015-09-05<a href="#341-2015-09-05" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-25" class="tsd-anchor-link">Fixed<a href="#fixed-25" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed stacktrace handling in generated errors, for browsers (FF/IE).</li>
+</ul>
+<h2 id="340-2015-08-23" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.3.1...3.4.0">3.4.0</a> - 2015-08-23<a href="#340-2015-08-23" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-16" class="tsd-anchor-link">Changed<a href="#changed-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Don't throw on warnings anymore. Use <code>onWarning</code> option to catch.</li>
+<li>Throw error on unknown tags (was warning before).</li>
+<li>Reworked internals of error class.</li>
+</ul>
+<h3 id="fixed-26" class="tsd-anchor-link">Fixed<a href="#fixed-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed multiline keys dump, #197. Thanks to @tcr.</li>
+<li>Fixed heading line breaks in some scalars (regression).</li>
+</ul>
+<h2 id="331-2015-05-13" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.3.0...3.3.1">3.3.1</a> - 2015-05-13<a href="#331-2015-05-13" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-14" class="tsd-anchor-link">Added<a href="#added-14" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added <code>.sortKeys</code> dumper option, thanks to @rjmunro.</li>
+</ul>
+<h3 id="fixed-27" class="tsd-anchor-link">Fixed<a href="#fixed-27" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed astral characters support, #191.</li>
+</ul>
+<h2 id="330-2015-04-26" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.2.7...3.3.0">3.3.0</a> - 2015-04-26<a href="#330-2015-04-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-17" class="tsd-anchor-link">Changed<a href="#changed-17" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Significantly improved long strings formatting in dumper, thanks to @isaacs.</li>
+<li>Strip BOM if exists.</li>
+</ul>
+<h2 id="327-2015-02-19" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.2.6...3.2.7">3.2.7</a> - 2015-02-19<a href="#327-2015-02-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-18" class="tsd-anchor-link">Changed<a href="#changed-18" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Maintenance release.</li>
+<li>Updated dependencies.</li>
+<li><a href="http://HISTORY.md">HISTORY.md</a> -&gt; <a href="http://CHANGELOG.md">CHANGELOG.md</a></li>
+</ul>
+<h2 id="326-2015-02-07" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.2.5...3.2.6">3.2.6</a> - 2015-02-07<a href="#326-2015-02-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-28" class="tsd-anchor-link">Fixed<a href="#fixed-28" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed encoding of UTF-16 surrogate pairs. (e.g. &quot;\U0001F431&quot; CAT FACE).</li>
+<li>Fixed demo dates dump (#113, thanks to @Hypercubed).</li>
+</ul>
+<h2 id="325-2014-12-28" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.2.4...3.2.5">3.2.5</a> - 2014-12-28<a href="#325-2014-12-28" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-29" class="tsd-anchor-link">Fixed<a href="#fixed-29" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed resolving of all built-in types on empty nodes.</li>
+<li>Fixed invalid warning on empty lines within quoted scalars and flow collections.</li>
+<li>Fixed bug: Tag on an empty node didn't resolve in some cases.</li>
+</ul>
+<h2 id="324-2014-12-19" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.2.3...3.2.4">3.2.4</a> - 2014-12-19<a href="#324-2014-12-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-30" class="tsd-anchor-link">Fixed<a href="#fixed-30" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed resolving of !!null tag on an empty node.</li>
+</ul>
+<h2 id="323-2014-11-08" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.2.2...3.2.3">3.2.3</a> - 2014-11-08<a href="#323-2014-11-08" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-31" class="tsd-anchor-link">Fixed<a href="#fixed-31" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Implemented dumping of objects with circular and cross references.</li>
+<li>Partially fixed aliasing of constructed objects. (see issue #141 for details)</li>
+</ul>
+<h2 id="322-2014-09-07" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.2.1...3.2.2">3.2.2</a> - 2014-09-07<a href="#322-2014-09-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-32" class="tsd-anchor-link">Fixed<a href="#fixed-32" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed infinite loop on unindented block scalars.</li>
+<li>Rewritten base64 encode/decode in binary type, to keep code licence clear.</li>
+</ul>
+<h2 id="321-2014-08-24" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.2.0...3.2.1">3.2.1</a> - 2014-08-24<a href="#321-2014-08-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-33" class="tsd-anchor-link">Fixed<a href="#fixed-33" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Nothig new. Just fix npm publish error.</li>
+</ul>
+<h2 id="320-2014-08-24" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.1.0...3.2.0">3.2.0</a> - 2014-08-24<a href="#320-2014-08-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-15" class="tsd-anchor-link">Added<a href="#added-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added input piping support to CLI.</li>
+</ul>
+<h3 id="fixed-34" class="tsd-anchor-link">Fixed<a href="#fixed-34" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed typo, that could cause hand on initial indent (#139).</li>
+</ul>
+<h2 id="310-2014-07-07" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.0.2...3.1.0">3.1.0</a> - 2014-07-07<a href="#310-2014-07-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-19" class="tsd-anchor-link">Changed<a href="#changed-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>1.5x-2x speed boost.</li>
+<li>Removed deprecated <code>require('xxx.yml')</code> support.</li>
+<li>Significant code cleanup and refactoring.</li>
+<li>Internal API changed. If you used custom types - see updated examples.
+Others are not affected.</li>
+<li>Even if the input string has no trailing line break character,
+it will be parsed as if it has one.</li>
+<li>Added benchmark scripts.</li>
+<li>Moved bower files to /dist folder</li>
+<li>Bugfixes.</li>
+</ul>
+<h2 id="302-2014-02-27" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.0.1...3.0.2">3.0.2</a> - 2014-02-27<a href="#302-2014-02-27" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-35" class="tsd-anchor-link">Fixed<a href="#fixed-35" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed bug: &quot;constructor&quot; string parsed as <code>null</code>.</li>
+</ul>
+<h2 id="301-2013-12-22" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/3.0.0...3.0.1">3.0.1</a> - 2013-12-22<a href="#301-2013-12-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-36" class="tsd-anchor-link">Fixed<a href="#fixed-36" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed parsing of literal scalars. (issue #108)</li>
+<li>Prevented adding unnecessary spaces in object dumps. (issue #68)</li>
+<li>Fixed dumping of objects with very long (&gt; 1024 in length) keys.</li>
+</ul>
+<h2 id="300-2013-12-16" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/2.1.3...3.0.0">3.0.0</a> - 2013-12-16<a href="#300-2013-12-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-20" class="tsd-anchor-link">Changed<a href="#changed-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Refactored code. Changed API for custom types.</li>
+<li>Removed output colors in CLI, dump json by default.</li>
+<li>Removed big dependencies from browser version (esprima, buffer). Load <code>esprima</code> manually, if <code>!!js/function</code> needed. <code>!!bin</code> now returns Array in browser</li>
+<li>AMD support.</li>
+<li>Don't quote dumped strings because of <code>-</code> &amp; <code>?</code> (if not first char).</li>
+<li><strong>Deprecated</strong> loading yaml files via <code>require()</code>, as not recommended
+behaviour for node.</li>
+</ul>
+<h2 id="213-2013-10-16" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/2.1.2...2.1.3">2.1.3</a> - 2013-10-16<a href="#213-2013-10-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-37" class="tsd-anchor-link">Fixed<a href="#fixed-37" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix wrong loading of empty block scalars.</li>
+</ul>
+<h2 id="212-2013-10-07" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/2.1.1...2.1.2">2.1.2</a> - 2013-10-07<a href="#212-2013-10-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-38" class="tsd-anchor-link">Fixed<a href="#fixed-38" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix unwanted line breaks in folded scalars.</li>
+</ul>
+<h2 id="211-2013-10-02" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/2.1.0...2.1.1">2.1.1</a> - 2013-10-02<a href="#211-2013-10-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-39" class="tsd-anchor-link">Fixed<a href="#fixed-39" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Dumper now respects deprecated booleans syntax from YAML 1.0/1.1</li>
+<li>Fixed reader bug in JSON-like sequences/mappings.</li>
+</ul>
+<h2 id="210-2013-06-05" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/2.0.5...2.1.0">2.1.0</a> - 2013-06-05<a href="#210-2013-06-05" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-16" class="tsd-anchor-link">Added<a href="#added-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Add standard YAML schemas: Failsafe (<code>FAILSAFE_SCHEMA</code>),
+JSON (<code>JSON_SCHEMA</code>) and Core (<code>CORE_SCHEMA</code>).</li>
+<li>Add <code>skipInvalid</code> dumper option.</li>
+</ul>
+<h3 id="changed-21" class="tsd-anchor-link">Changed<a href="#changed-21" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Rename <code>DEFAULT_SCHEMA</code> to <code>DEFAULT_FULL_SCHEMA</code>
+and <code>SAFE_SCHEMA</code> to <code>DEFAULT_SAFE_SCHEMA</code>.</li>
+<li>Use <code>safeLoad</code> for <code>require</code> extension.</li>
+</ul>
+<h3 id="fixed-40" class="tsd-anchor-link">Fixed<a href="#fixed-40" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Bug fix: export <code>NIL</code> constant from the public interface.</li>
+</ul>
+<h2 id="205-2013-04-26" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/2.0.4...2.0.5">2.0.5</a> - 2013-04-26<a href="#205-2013-04-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-10" class="tsd-anchor-link">Security<a href="#security-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Close security issue in !!js/function constructor.
+Big thanks to @nealpoole for security audit.</li>
+</ul>
+<h2 id="204-2013-04-08" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/2.0.3...2.0.4">2.0.4</a> - 2013-04-08<a href="#204-2013-04-08" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-22" class="tsd-anchor-link">Changed<a href="#changed-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated .npmignore to reduce package size</li>
+</ul>
+<h2 id="203-2013-02-26" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/2.0.2...2.0.3">2.0.3</a> - 2013-02-26<a href="#203-2013-02-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-41" class="tsd-anchor-link">Fixed<a href="#fixed-41" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed dumping of empty arrays ans objects. ([] and {} instead of null)</li>
+</ul>
+<h2 id="202-2013-02-15" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/2.0.1...2.0.2">2.0.2</a> - 2013-02-15<a href="#202-2013-02-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-42" class="tsd-anchor-link">Fixed<a href="#fixed-42" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed input validation: tabs are printable characters.</li>
+</ul>
+<h2 id="201-2013-02-09" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/2.0.0...2.0.1">2.0.1</a> - 2013-02-09<a href="#201-2013-02-09" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-43" class="tsd-anchor-link">Fixed<a href="#fixed-43" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed error, when options not passed to function cass</li>
+</ul>
+<h2 id="200-2013-02-09" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/1.0.3...2.0.0">2.0.0</a> - 2013-02-09<a href="#200-2013-02-09" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-23" class="tsd-anchor-link">Changed<a href="#changed-23" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Full rewrite. New architecture. Fast one-stage parsing.</li>
+<li>Changed custom types API.</li>
+<li>Added YAML dumper.</li>
+</ul>
+<h2 id="103-2012-11-05" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/1.0.2...1.0.3">1.0.3</a> - 2012-11-05<a href="#103-2012-11-05" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-44" class="tsd-anchor-link">Fixed<a href="#fixed-44" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed utf-8 files loading.</li>
+</ul>
+<h2 id="102-2012-08-02" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/1.0.1...1.0.2">1.0.2</a> - 2012-08-02<a href="#102-2012-08-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-45" class="tsd-anchor-link">Fixed<a href="#fixed-45" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Pull out hand-written shims. Use ES5-Shims for old browsers support. See #44.</li>
+<li>Fix timstamps incorectly parsed in local time when no time part specified.</li>
+</ul>
+<h2 id="101-2012-07-07" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/1.0.0...1.0.1">1.0.1</a> - 2012-07-07<a href="#101-2012-07-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-46" class="tsd-anchor-link">Fixed<a href="#fixed-46" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixes <code>TypeError: 'undefined' is not an object</code> under Safari. Thanks Phuong.</li>
+<li>Fix timestamps incorrectly parsed in local time. Thanks @caolan. Closes #46.</li>
+</ul>
+<h2 id="100-2012-07-01" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.3.7...1.0.0">1.0.0</a> - 2012-07-01<a href="#100-2012-07-01" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-24" class="tsd-anchor-link">Changed<a href="#changed-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li><code>y</code>, <code>yes</code>, <code>n</code>, <code>no</code>, <code>on</code>, <code>off</code> are not converted to Booleans anymore.
+Fixes #42.</li>
+<li><code>require(filename)</code> now returns a single document and throws an Error if
+file contains more than one document.</li>
+<li>CLI was merged back from js-yaml.bin</li>
+</ul>
+<h2 id="037-2012-02-28" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.3.6...0.3.7">0.3.7</a> - 2012-02-28<a href="#037-2012-02-28" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-47" class="tsd-anchor-link">Fixed<a href="#fixed-47" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix export of <code>addConstructor()</code>. Closes #39.</li>
+</ul>
+<h2 id="036-2012-02-22" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.3.5...0.3.6">0.3.6</a> - 2012-02-22<a href="#036-2012-02-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-25" class="tsd-anchor-link">Changed<a href="#changed-25" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Removed AMD parts - too buggy to use. Need help to rewrite from scratch</li>
+</ul>
+<h3 id="fixed-48" class="tsd-anchor-link">Fixed<a href="#fixed-48" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Removed YUI compressor warning (renamed <code>double</code> variable). Closes #40.</li>
+</ul>
+<h2 id="035-2012-01-10" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.3.4...0.3.5">0.3.5</a> - 2012-01-10<a href="#035-2012-01-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-49" class="tsd-anchor-link">Fixed<a href="#fixed-49" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Workagound for .npmignore fuckup under windows. Thanks to airportyh.</li>
+</ul>
+<h2 id="034-2011-12-24" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.3.3...0.3.4">0.3.4</a> - 2011-12-24<a href="#034-2011-12-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-50" class="tsd-anchor-link">Fixed<a href="#fixed-50" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixes str[] for oldIEs support.</li>
+<li>Adds better has change support for browserified demo.</li>
+<li>improves compact output of Error. Closes #33.</li>
+</ul>
+<h2 id="033-2011-12-20" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.3.2...0.3.3">0.3.3</a> - 2011-12-20<a href="#033-2011-12-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-17" class="tsd-anchor-link">Added<a href="#added-17" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>adds <code>compact</code> stringification of Errors.</li>
+</ul>
+<h3 id="changed-26" class="tsd-anchor-link">Changed<a href="#changed-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>jsyaml executable moved to separate module.</li>
+</ul>
+<h2 id="032-2011-12-16" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.3.1...0.3.2">0.3.2</a> - 2011-12-16<a href="#032-2011-12-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-18" class="tsd-anchor-link">Added<a href="#added-18" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added jsyaml executable.</li>
+<li>Added !!js/function support. Closes #12.</li>
+</ul>
+<h3 id="fixed-51" class="tsd-anchor-link">Fixed<a href="#fixed-51" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixes ug with block style scalars. Closes #26.</li>
+<li>All sources are passing JSLint now.</li>
+<li>Fixes bug in Safari. Closes #28.</li>
+<li>Fixes bug in Opers. Closes #29.</li>
+<li>Improves browser support. Closes #20.</li>
+</ul>
+<h2 id="031-2011-11-18" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.3.0...0.3.1">0.3.1</a> - 2011-11-18<a href="#031-2011-11-18" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-19" class="tsd-anchor-link">Added<a href="#added-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added AMD support for browserified version.</li>
+<li>Added permalinks for online demo YAML snippets. Now we have YPaste service, lol.</li>
+<li>Added !!js/regexp and !!js/undefined types. Partially solves #12.</li>
+</ul>
+<h3 id="changed-27" class="tsd-anchor-link">Changed<a href="#changed-27" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Wrapped browserified js-yaml into closure.</li>
+</ul>
+<h3 id="fixed-52" class="tsd-anchor-link">Fixed<a href="#fixed-52" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed the resolvement of non-specific tags. Closes #17.</li>
+<li>Fixed !!set mapping.</li>
+<li>Fixed month parse in dates. Closes #19.</li>
+</ul>
+<h2 id="030-2011-11-09" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.2.2...0.3.0">0.3.0</a> - 2011-11-09<a href="#030-2011-11-09" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-20" class="tsd-anchor-link">Added<a href="#added-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added browserified version. Closes #13.</li>
+<li>Added live demo of browserified version.</li>
+<li>Ported some of the PyYAML tests. See #14.</li>
+</ul>
+<h3 id="fixed-53" class="tsd-anchor-link">Fixed<a href="#fixed-53" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Removed JS.Class dependency. Closes #3.</li>
+<li>Fixed timestamp bug when fraction was given.</li>
+</ul>
+<h2 id="022-2011-11-06" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.2.1...0.2.2">0.2.2</a> - 2011-11-06<a href="#022-2011-11-06" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-54" class="tsd-anchor-link">Fixed<a href="#fixed-54" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed crash on docs without ---. Closes #8.</li>
+<li>Fixed multiline string parse</li>
+<li>Fixed tests/comments for using array as key</li>
+</ul>
+<h2 id="021-2011-11-02" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/compare/0.2.0...0.2.1">0.2.1</a> - 2011-11-02<a href="#021-2011-11-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-55" class="tsd-anchor-link">Fixed<a href="#fixed-55" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed short file read (&lt;4k). Closes #9.</li>
+</ul>
+<h2 id="020-2011-11-02" class="tsd-anchor-link"><a href="https://github.com/nodeca/js-yaml/releases/tag/0.2.0">0.2.0</a> - 2011-11-02<a href="#020-2011-11-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-28" class="tsd-anchor-link">Changed<a href="#changed-28" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>First public release</li>
+</ul>
+</div></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details"><a href="#changelog"><span>Changelog</span></a>
+<ul>
+<li><a href="#541-2026-08-26"><span>5.4.1 -<wbr/> 2026-<wbr/>08-<wbr/>26</span></a></li>
+<li>
+<ul>
+<li><a href="#changed"><span>Changed</span></a></li>
+<li><a href="#security"><span>Security</span></a></li></ul></li>
+<li><a href="#540-2026-08-25"><span>5.4.0 -<wbr/> 2026-<wbr/>08-<wbr/>25</span></a></li>
+<li>
+<ul>
+<li><a href="#added"><span>Added</span></a></li>
+<li><a href="#changed-1"><span>Changed</span></a></li>
+<li><a href="#fixed"><span>Fixed</span></a></li></ul></li>
+<li><a href="#530-2026-08-14"><span>5.3.0 -<wbr/> 2026-<wbr/>08-<wbr/>14</span></a></li>
+<li>
+<ul>
+<li><a href="#added-1"><span>Added</span></a></li>
+<li><a href="#changed-2"><span>Changed</span></a></li>
+<li><a href="#deprecated"><span>Deprecated</span></a></li>
+<li><a href="#removed"><span>Removed</span></a></li>
+<li><a href="#fixed-1"><span>Fixed</span></a></li></ul></li>
+<li><a href="#523-2026-08-01"><span>5.2.3 -<wbr/> 2026-<wbr/>08-<wbr/>01</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-2"><span>Fixed</span></a></li></ul></li>
+<li><a href="#522-2026-07-24"><span>5.2.2 -<wbr/> 2026-<wbr/>07-<wbr/>24</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-3"><span>Fixed</span></a></li>
+<li><a href="#security-1"><span>Security</span></a></li></ul></li>
+<li><a href="#521-2026-07-02"><span>5.2.1 -<wbr/> 2026-<wbr/>07-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-4"><span>Fixed</span></a></li>
+<li><a href="#security-2"><span>Security</span></a></li></ul></li>
+<li><a href="#430-3150-2026-06-27"><span>4.3.0, 3.15.0 -<wbr/> 2026-<wbr/>06-<wbr/>27</span></a></li>
+<li>
+<ul>
+<li><a href="#security-3"><span>Security</span></a></li></ul></li>
+<li><a href="#520-2026-06-26"><span>5.2.0 -<wbr/> 2026-<wbr/>06-<wbr/>26</span></a></li>
+<li>
+<ul>
+<li><a href="#added-2"><span>Added</span></a></li>
+<li><a href="#removed-1"><span>Removed</span></a></li>
+<li><a href="#fixed-5"><span>Fixed</span></a></li></ul></li>
+<li><a href="#510-2026-06-23"><span>5.1.0 -<wbr/> 2026-<wbr/>06-<wbr/>23</span></a></li>
+<li>
+<ul>
+<li><a href="#added-3"><span>Added</span></a></li>
+<li><a href="#changed-3"><span>Changed</span></a></li></ul></li>
+<li><a href="#500-2026-06-20"><span>5.0.0 -<wbr/> 2026-<wbr/>06-<wbr/>20</span></a></li>
+<li>
+<ul>
+<li><a href="#added-4"><span>Added</span></a></li>
+<li><a href="#changed-4"><span>Changed</span></a></li>
+<li><a href="#removed-2"><span>Removed</span></a></li></ul></li>
+<li><a href="#420-2026-06-01"><span>4.2.0 -<wbr/> 2026-<wbr/>06-<wbr/>01</span></a></li>
+<li>
+<ul>
+<li><a href="#added-5"><span>Added</span></a></li>
+<li><a href="#changed-5"><span>Changed</span></a></li>
+<li><a href="#fixed-6"><span>Fixed</span></a></li>
+<li><a href="#security-4"><span>Security</span></a></li></ul></li>
+<li><a href="#3142-2025-11-15"><span>3.14.2 -<wbr/> 2025-<wbr/>11-<wbr/>15</span></a></li>
+<li>
+<ul>
+<li><a href="#security-5"><span>Security</span></a></li></ul></li>
+<li><a href="#411-2025-11-12"><span>4.1.1 -<wbr/> 2025-<wbr/>11-<wbr/>12</span></a></li>
+<li>
+<ul>
+<li><a href="#security-6"><span>Security</span></a></li></ul></li>
+<li><a href="#410-2021-04-15"><span>4.1.0 -<wbr/> 2021-<wbr/>04-<wbr/>15</span></a></li>
+<li>
+<ul>
+<li><a href="#added-6"><span>Added</span></a></li>
+<li><a href="#changed-6"><span>Changed</span></a></li></ul></li>
+<li><a href="#400-2021-01-03"><span>4.0.0 -<wbr/> 2021-<wbr/>01-<wbr/>03</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-7"><span>Changed</span></a></li>
+<li><a href="#added-7"><span>Added</span></a></li>
+<li><a href="#fixed-7"><span>Fixed</span></a></li></ul></li>
+<li><a href="#3141-2020-12-07"><span>3.14.1 -<wbr/> 2020-<wbr/>12-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#security-7"><span>Security</span></a></li></ul></li>
+<li><a href="#3140-2020-05-22"><span>3.14.0 -<wbr/> 2020-<wbr/>05-<wbr/>22</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-8"><span>Changed</span></a></li>
+<li><a href="#fixed-8"><span>Fixed</span></a></li></ul></li>
+<li><a href="#3131-2019-04-05"><span>3.13.1 -<wbr/> 2019-<wbr/>04-<wbr/>05</span></a></li>
+<li>
+<ul>
+<li><a href="#security-8"><span>Security</span></a></li></ul></li>
+<li><a href="#3130-2019-03-20"><span>3.13.0 -<wbr/> 2019-<wbr/>03-<wbr/>20</span></a></li>
+<li>
+<ul>
+<li><a href="#security-9"><span>Security</span></a></li></ul></li>
+<li><a href="#3122-2019-02-26"><span>3.12.2 -<wbr/> 2019-<wbr/>02-<wbr/>26</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-9"><span>Fixed</span></a></li></ul></li>
+<li><a href="#3121-2019-01-05"><span>3.12.1 -<wbr/> 2019-<wbr/>01-<wbr/>05</span></a></li>
+<li>
+<ul>
+<li><a href="#added-8"><span>Added</span></a></li></ul></li>
+<li><a href="#3120-2018-06-02"><span>3.12.0 -<wbr/> 2018-<wbr/>06-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-9"><span>Changed</span></a></li></ul></li>
+<li><a href="#3110-2018-03-05"><span>3.11.0 -<wbr/> 2018-<wbr/>03-<wbr/>05</span></a></li>
+<li>
+<ul>
+<li><a href="#added-9"><span>Added</span></a></li>
+<li><a href="#fixed-10"><span>Fixed</span></a></li></ul></li>
+<li><a href="#3100-2017-09-10"><span>3.10.0 -<wbr/> 2017-<wbr/>09-<wbr/>10</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-11"><span>Fixed</span></a></li></ul></li>
+<li><a href="#391-2017-07-08"><span>3.9.1 -<wbr/> 2017-<wbr/>07-<wbr/>08</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-12"><span>Fixed</span></a></li></ul></li>
+<li><a href="#390-2017-07-08"><span>3.9.0 -<wbr/> 2017-<wbr/>07-<wbr/>08</span></a></li>
+<li>
+<ul>
+<li><a href="#added-10"><span>Added</span></a></li>
+<li><a href="#fixed-13"><span>Fixed</span></a></li></ul></li>
+<li><a href="#384-2017-05-08"><span>3.8.4 -<wbr/> 2017-<wbr/>05-<wbr/>08</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-14"><span>Fixed</span></a></li></ul></li>
+<li><a href="#383-2017-04-05"><span>3.8.3 -<wbr/> 2017-<wbr/>04-<wbr/>05</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-15"><span>Fixed</span></a></li></ul></li>
+<li><a href="#382-2017-03-02"><span>3.8.2 -<wbr/> 2017-<wbr/>03-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-16"><span>Fixed</span></a></li></ul></li>
+<li><a href="#381-2017-02-07"><span>3.8.1 -<wbr/> 2017-<wbr/>02-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-10"><span>Changed</span></a></li></ul></li>
+<li><a href="#380-2017-02-07"><span>3.8.0 -<wbr/> 2017-<wbr/>02-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-17"><span>Fixed</span></a></li></ul></li>
+<li><a href="#370-2016-11-12"><span>3.7.0 -<wbr/> 2016-<wbr/>11-<wbr/>12</span></a></li>
+<li>
+<ul>
+<li><a href="#added-11"><span>Added</span></a></li>
+<li><a href="#fixed-18"><span>Fixed</span></a></li></ul></li>
+<li><a href="#361-2016-05-11"><span>3.6.1 -<wbr/> 2016-<wbr/>05-<wbr/>11</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-19"><span>Fixed</span></a></li></ul></li>
+<li><a href="#360-2016-04-16"><span>3.6.0 -<wbr/> 2016-<wbr/>04-<wbr/>16</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-20"><span>Fixed</span></a></li></ul></li>
+<li><a href="#355-2016-03-17"><span>3.5.5 -<wbr/> 2016-<wbr/>03-<wbr/>17</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-21"><span>Fixed</span></a></li></ul></li>
+<li><a href="#354-2016-03-09"><span>3.5.4 -<wbr/> 2016-<wbr/>03-<wbr/>09</span></a></li>
+<li>
+<ul>
+<li><a href="#added-12"><span>Added</span></a></li></ul></li>
+<li><a href="#353-2016-02-11"><span>3.5.3 -<wbr/> 2016-<wbr/>02-<wbr/>11</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-11"><span>Changed</span></a></li></ul></li>
+<li><a href="#352-2016-01-11"><span>3.5.2 -<wbr/> 2016-<wbr/>01-<wbr/>11</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-12"><span>Changed</span></a></li></ul></li>
+<li><a href="#351-2016-01-11"><span>3.5.1 -<wbr/> 2016-<wbr/>01-<wbr/>11</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-13"><span>Changed</span></a></li></ul></li>
+<li><a href="#350-2016-01-10"><span>3.5.0 -<wbr/> 2016-<wbr/>01-<wbr/>10</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-22"><span>Fixed</span></a></li></ul></li>
+<li><a href="#346-2015-11-26"><span>3.4.6 -<wbr/> 2015-<wbr/>11-<wbr/>26</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-14"><span>Changed</span></a></li></ul></li>
+<li><a href="#345-2015-11-23"><span>3.4.5 -<wbr/> 2015-<wbr/>11-<wbr/>23</span></a></li>
+<li>
+<ul>
+<li><a href="#added-13"><span>Added</span></a></li></ul></li>
+<li><a href="#344-2015-11-21"><span>3.4.4 -<wbr/> 2015-<wbr/>11-<wbr/>21</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-23"><span>Fixed</span></a></li></ul></li>
+<li><a href="#343-2015-10-10"><span>3.4.3 -<wbr/> 2015-<wbr/>10-<wbr/>10</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-15"><span>Changed</span></a></li></ul></li>
+<li><a href="#342-2015-09-09"><span>3.4.2 -<wbr/> 2015-<wbr/>09-<wbr/>09</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-24"><span>Fixed</span></a></li></ul></li>
+<li><a href="#341-2015-09-05"><span>3.4.1 -<wbr/> 2015-<wbr/>09-<wbr/>05</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-25"><span>Fixed</span></a></li></ul></li>
+<li><a href="#340-2015-08-23"><span>3.4.0 -<wbr/> 2015-<wbr/>08-<wbr/>23</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-16"><span>Changed</span></a></li>
+<li><a href="#fixed-26"><span>Fixed</span></a></li></ul></li>
+<li><a href="#331-2015-05-13"><span>3.3.1 -<wbr/> 2015-<wbr/>05-<wbr/>13</span></a></li>
+<li>
+<ul>
+<li><a href="#added-14"><span>Added</span></a></li>
+<li><a href="#fixed-27"><span>Fixed</span></a></li></ul></li>
+<li><a href="#330-2015-04-26"><span>3.3.0 -<wbr/> 2015-<wbr/>04-<wbr/>26</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-17"><span>Changed</span></a></li></ul></li>
+<li><a href="#327-2015-02-19"><span>3.2.7 -<wbr/> 2015-<wbr/>02-<wbr/>19</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-18"><span>Changed</span></a></li></ul></li>
+<li><a href="#326-2015-02-07"><span>3.2.6 -<wbr/> 2015-<wbr/>02-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-28"><span>Fixed</span></a></li></ul></li>
+<li><a href="#325-2014-12-28"><span>3.2.5 -<wbr/> 2014-<wbr/>12-<wbr/>28</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-29"><span>Fixed</span></a></li></ul></li>
+<li><a href="#324-2014-12-19"><span>3.2.4 -<wbr/> 2014-<wbr/>12-<wbr/>19</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-30"><span>Fixed</span></a></li></ul></li>
+<li><a href="#323-2014-11-08"><span>3.2.3 -<wbr/> 2014-<wbr/>11-<wbr/>08</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-31"><span>Fixed</span></a></li></ul></li>
+<li><a href="#322-2014-09-07"><span>3.2.2 -<wbr/> 2014-<wbr/>09-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-32"><span>Fixed</span></a></li></ul></li>
+<li><a href="#321-2014-08-24"><span>3.2.1 -<wbr/> 2014-<wbr/>08-<wbr/>24</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-33"><span>Fixed</span></a></li></ul></li>
+<li><a href="#320-2014-08-24"><span>3.2.0 -<wbr/> 2014-<wbr/>08-<wbr/>24</span></a></li>
+<li>
+<ul>
+<li><a href="#added-15"><span>Added</span></a></li>
+<li><a href="#fixed-34"><span>Fixed</span></a></li></ul></li>
+<li><a href="#310-2014-07-07"><span>3.1.0 -<wbr/> 2014-<wbr/>07-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-19"><span>Changed</span></a></li></ul></li>
+<li><a href="#302-2014-02-27"><span>3.0.2 -<wbr/> 2014-<wbr/>02-<wbr/>27</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-35"><span>Fixed</span></a></li></ul></li>
+<li><a href="#301-2013-12-22"><span>3.0.1 -<wbr/> 2013-<wbr/>12-<wbr/>22</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-36"><span>Fixed</span></a></li></ul></li>
+<li><a href="#300-2013-12-16"><span>3.0.0 -<wbr/> 2013-<wbr/>12-<wbr/>16</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-20"><span>Changed</span></a></li></ul></li>
+<li><a href="#213-2013-10-16"><span>2.1.3 -<wbr/> 2013-<wbr/>10-<wbr/>16</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-37"><span>Fixed</span></a></li></ul></li>
+<li><a href="#212-2013-10-07"><span>2.1.2 -<wbr/> 2013-<wbr/>10-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-38"><span>Fixed</span></a></li></ul></li>
+<li><a href="#211-2013-10-02"><span>2.1.1 -<wbr/> 2013-<wbr/>10-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-39"><span>Fixed</span></a></li></ul></li>
+<li><a href="#210-2013-06-05"><span>2.1.0 -<wbr/> 2013-<wbr/>06-<wbr/>05</span></a></li>
+<li>
+<ul>
+<li><a href="#added-16"><span>Added</span></a></li>
+<li><a href="#changed-21"><span>Changed</span></a></li>
+<li><a href="#fixed-40"><span>Fixed</span></a></li></ul></li>
+<li><a href="#205-2013-04-26"><span>2.0.5 -<wbr/> 2013-<wbr/>04-<wbr/>26</span></a></li>
+<li>
+<ul>
+<li><a href="#security-10"><span>Security</span></a></li></ul></li>
+<li><a href="#204-2013-04-08"><span>2.0.4 -<wbr/> 2013-<wbr/>04-<wbr/>08</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-22"><span>Changed</span></a></li></ul></li>
+<li><a href="#203-2013-02-26"><span>2.0.3 -<wbr/> 2013-<wbr/>02-<wbr/>26</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-41"><span>Fixed</span></a></li></ul></li>
+<li><a href="#202-2013-02-15"><span>2.0.2 -<wbr/> 2013-<wbr/>02-<wbr/>15</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-42"><span>Fixed</span></a></li></ul></li>
+<li><a href="#201-2013-02-09"><span>2.0.1 -<wbr/> 2013-<wbr/>02-<wbr/>09</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-43"><span>Fixed</span></a></li></ul></li>
+<li><a href="#200-2013-02-09"><span>2.0.0 -<wbr/> 2013-<wbr/>02-<wbr/>09</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-23"><span>Changed</span></a></li></ul></li>
+<li><a href="#103-2012-11-05"><span>1.0.3 -<wbr/> 2012-<wbr/>11-<wbr/>05</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-44"><span>Fixed</span></a></li></ul></li>
+<li><a href="#102-2012-08-02"><span>1.0.2 -<wbr/> 2012-<wbr/>08-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-45"><span>Fixed</span></a></li></ul></li>
+<li><a href="#101-2012-07-07"><span>1.0.1 -<wbr/> 2012-<wbr/>07-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-46"><span>Fixed</span></a></li></ul></li>
+<li><a href="#100-2012-07-01"><span>1.0.0 -<wbr/> 2012-<wbr/>07-<wbr/>01</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-24"><span>Changed</span></a></li></ul></li>
+<li><a href="#037-2012-02-28"><span>0.3.7 -<wbr/> 2012-<wbr/>02-<wbr/>28</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-47"><span>Fixed</span></a></li></ul></li>
+<li><a href="#036-2012-02-22"><span>0.3.6 -<wbr/> 2012-<wbr/>02-<wbr/>22</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-25"><span>Changed</span></a></li>
+<li><a href="#fixed-48"><span>Fixed</span></a></li></ul></li>
+<li><a href="#035-2012-01-10"><span>0.3.5 -<wbr/> 2012-<wbr/>01-<wbr/>10</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-49"><span>Fixed</span></a></li></ul></li>
+<li><a href="#034-2011-12-24"><span>0.3.4 -<wbr/> 2011-<wbr/>12-<wbr/>24</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-50"><span>Fixed</span></a></li></ul></li>
+<li><a href="#033-2011-12-20"><span>0.3.3 -<wbr/> 2011-<wbr/>12-<wbr/>20</span></a></li>
+<li>
+<ul>
+<li><a href="#added-17"><span>Added</span></a></li>
+<li><a href="#changed-26"><span>Changed</span></a></li></ul></li>
+<li><a href="#032-2011-12-16"><span>0.3.2 -<wbr/> 2011-<wbr/>12-<wbr/>16</span></a></li>
+<li>
+<ul>
+<li><a href="#added-18"><span>Added</span></a></li>
+<li><a href="#fixed-51"><span>Fixed</span></a></li></ul></li>
+<li><a href="#031-2011-11-18"><span>0.3.1 -<wbr/> 2011-<wbr/>11-<wbr/>18</span></a></li>
+<li>
+<ul>
+<li><a href="#added-19"><span>Added</span></a></li>
+<li><a href="#changed-27"><span>Changed</span></a></li>
+<li><a href="#fixed-52"><span>Fixed</span></a></li></ul></li>
+<li><a href="#030-2011-11-09"><span>0.3.0 -<wbr/> 2011-<wbr/>11-<wbr/>09</span></a></li>
+<li>
+<ul>
+<li><a href="#added-20"><span>Added</span></a></li>
+<li><a href="#fixed-53"><span>Fixed</span></a></li></ul></li>
+<li><a href="#022-2011-11-06"><span>0.2.2 -<wbr/> 2011-<wbr/>11-<wbr/>06</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-54"><span>Fixed</span></a></li></ul></li>
+<li><a href="#021-2011-11-02"><span>0.2.1 -<wbr/> 2011-<wbr/>11-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-55"><span>Fixed</span></a></li></ul></li>
+<li><a href="#020-2011-11-02"><span>0.2.0 -<wbr/> 2011-<wbr/>11-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-28"><span>Changed</span></a></li></ul></li></ul></div></details></div>
+<div class="site-menu">
+<nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/nodeca/js-yaml" class="tsd-nav-link">GitHub</a></nav>
+<nav class="tsd-navigation"><a href="../modules.html">js-yaml - v5.4.1</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div></body></html>

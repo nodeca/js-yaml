@@ -1,0 +1,221 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Migrate to v5 | js-yaml - v5.4.1</title><meta name="description" content="Documentation for js-yaml"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><script async src="../assets/hierarchy.js" id="tsd-hierarchy-script"></script><link rel="stylesheet" href="../assets/condensed_theme.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">js-yaml - v5.4.1</a>
+<div id="tsd-toolbar-links"><a href="https://github.com/nodeca/js-yaml">GitHub</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header>
+<div class="container container-main">
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="" aria-current="page">Migrate to v5</a></li></ul></div>
+<div class="tsd-panel tsd-typography"><h1 id="migration-guide-from-to" class="tsd-anchor-link">Migration guide from <code>js-yaml@4</code> to <code>js-yaml@5</code> <!-- omit in toc --><a href="#migration-guide-from-to" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h1>
+<ul>
+<li><a href="#base">Base</a></li>
+<li><a href="#load--loadall">load / loadAll</a>
+<ul>
+<li><a href="#removed-options">Removed options</a></li>
+<li><a href="#empty-input-throws">Empty input throws</a></li>
+<li><a href="#schema">Schema</a></li>
+<li><a href="#mapping-keys">Mapping keys</a></li>
+<li><a href="#set">!!set</a></li>
+</ul>
+</li>
+<li><a href="#dump">dump</a>
+<ul>
+<li><a href="#removed-options-1">Removed options</a></li>
+<li><a href="#replacing-styles">Replacing <code>styles</code></a></li>
+</ul>
+</li>
+<li><a href="#custom-types">Custom types</a></li>
+</ul>
+<p>js-yaml v5 has a new API and a new YAML implementation. <code>load()</code> and <code>dump()</code>
+stay, but exports, schemas, options and custom tags changed. Work through the
+sections in order and skip the ones you don't use.</p>
+<h2 id="base" class="tsd-anchor-link">Base<a href="#base" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<p>If you only <code>load()</code> and <code>dump()</code> without options, this is the whole migration:
+swap the import and you're done.</p>
+<pre><code class="js"><span class="hl-7">// v4</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">yaml</span><span class="hl-1"> = </span><span class="hl-0">require</span><span class="hl-1">(</span><span class="hl-2">&#39;js-yaml&#39;</span><span class="hl-1">)</span><br/><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">yaml</span><span class="hl-1">.</span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-4">source</span><span class="hl-1">)</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> (</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">)</span><br/><span class="hl-1">}</span><br/><span class="hl-4">yaml</span><span class="hl-1">.</span><span class="hl-0">dump</span><span class="hl-1">(</span><span class="hl-4">data</span><span class="hl-1">)</span><br/><br/><span class="hl-7">// v5</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">load</span><span class="hl-1">, </span><span class="hl-4">dump</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;js-yaml&#39;</span><br/><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-4">source</span><span class="hl-1">)</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> (</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">)</span><br/><span class="hl-1">}</span><br/><span class="hl-0">dump</span><span class="hl-1">(</span><span class="hl-4">data</span><span class="hl-1">)</span>
+</code><button type="button">Copy</button></pre>
+
+<p>CommonJS keeps working through destructuring:</p>
+<pre><code class="js"><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">load</span><span class="hl-1">, </span><span class="hl-6">dump</span><span class="hl-1"> } = </span><span class="hl-0">require</span><span class="hl-1">(</span><span class="hl-2">&#39;js-yaml&#39;</span><span class="hl-1">)</span>
+</code><button type="button">Copy</button></pre>
+
+<p>If you want to keep the old namespace-style calls, import the ESM namespace
+instead:</p>
+<pre><code class="js"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-5">*</span><span class="hl-1"> </span><span class="hl-3">as</span><span class="hl-1"> </span><span class="hl-4">yaml</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;js-yaml&#39;</span><br/><br/><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">yaml</span><span class="hl-1">.</span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-4">source</span><span class="hl-1">)</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> (</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">)</span><br/><span class="hl-1">}</span><br/><span class="hl-4">yaml</span><span class="hl-1">.</span><span class="hl-0">dump</span><span class="hl-1">(</span><span class="hl-4">data</span><span class="hl-1">)</span>
+</code><button type="button">Copy</button></pre>
+
+<p>js-yaml v5 does not provide an ESM default export by design. Prefer named
+exports for new code, or use the namespace import above when migrating code that
+expects <code>yaml.load()</code> / <code>yaml.dump()</code>.</p>
+<p>Exports are now flat. The <code>types</code> namespace, the <code>Type</code> class and
+<code>DEFAULT_SCHEMA</code> are gone, and internal <code>js-yaml/lib/...</code> imports no longer
+resolve. If you used any of those, read on.</p>
+<h2 id="load-loadall" class="tsd-anchor-link">load / loadAll<a href="#load-loadall" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="removed-options" class="tsd-anchor-link">Removed options<a href="#removed-options" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Removed option</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>onWarning</code>, <code>legacy</code></td>
+<td>nothing — errors are still thrown</td>
+</tr>
+<tr>
+<td><code>listener</code></td>
+<td>was a workaround for the missing AST; v5 exposes events and an AST to build your own pipeline</td>
+</tr>
+</tbody>
+</table>
+<h3 id="empty-input-throws" class="tsd-anchor-link">Empty input throws<a href="#empty-input-throws" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<p><code>load('')</code> now throws: an empty stream has no document, and <code>load</code> has no output
+value to signal its absence. Previously it cheated on types and returned
+<code>undefined</code>; now it just throws an error.</p>
+<p><code>loadAll('')</code> is unchanged — it still returns an empty array of documents.</p>
+<h3 id="schema" class="tsd-anchor-link">Schema<a href="#schema" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<p><code>load()</code> now uses the YAML 1.2 <code>CORE_SCHEMA</code>, as recommended by the spec author.
+In practice the most common compatibility difference is the missing <code>!!merge</code>
+(<code>&lt;&lt;</code>) feature, which is easy to add back:</p>
+<pre><code class="js"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">load</span><span class="hl-1">, </span><span class="hl-4">CORE_SCHEMA</span><span class="hl-1">, </span><span class="hl-4">mergeTag</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;js-yaml&#39;</span><br/><br/><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-4">source</span><span class="hl-1">, { </span><span class="hl-4">schema:</span><span class="hl-1"> </span><span class="hl-6">CORE_SCHEMA</span><span class="hl-1">.</span><span class="hl-0">withTags</span><span class="hl-1">(</span><span class="hl-4">mergeTag</span><span class="hl-1">) })</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> (</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">)</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+
+<p>If you need the legacy YAML 1.1 types (<code>!!timestamp</code>, <code>!!binary</code>, <code>!!set</code>) or
+its slightly different int/float/boolean syntax, pass <code>YAML11_SCHEMA</code>:</p>
+<pre><code class="js"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">load</span><span class="hl-1">, </span><span class="hl-4">YAML11_SCHEMA</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;js-yaml&#39;</span><br/><br/><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-4">source</span><span class="hl-1">, { </span><span class="hl-4">schema:</span><span class="hl-1"> </span><span class="hl-6">YAML11_SCHEMA</span><span class="hl-1"> })</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> (</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">)</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+
+<p>To register custom tags on a schema, <code>Schema.extend()</code> is now
+<code>Schema.withTags()</code>.</p>
+<h3 id="mapping-keys" class="tsd-anchor-link">Mapping keys<a href="#mapping-keys" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<p>Simple keys (numbers, strings) are still stringified, but complex keys (arrays,
+objects) now throw instead of being silently coerced to a lossy string.</p>
+<p>You can restore the old behavior, though it's not recommended:</p>
+<pre><code class="js"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">load</span><span class="hl-1">, </span><span class="hl-4">CORE_SCHEMA</span><span class="hl-1">, </span><span class="hl-4">legacyMapTag</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;js-yaml&#39;</span><br/><br/><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-4">source</span><span class="hl-1">, { </span><span class="hl-4">schema:</span><span class="hl-1"> </span><span class="hl-6">CORE_SCHEMA</span><span class="hl-1">.</span><span class="hl-0">withTags</span><span class="hl-1">(</span><span class="hl-4">legacyMapTag</span><span class="hl-1">) })</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> (</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">)</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+
+<p>Alternatively, get real <code>Map</code> instances with no key restrictions — then it's
+your job to handle them:</p>
+<pre><code class="js"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">load</span><span class="hl-1">, </span><span class="hl-4">CORE_SCHEMA</span><span class="hl-1">, </span><span class="hl-4">realMapTag</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;js-yaml&#39;</span><br/><br/><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-4">source</span><span class="hl-1">, { </span><span class="hl-4">schema:</span><span class="hl-1"> </span><span class="hl-6">CORE_SCHEMA</span><span class="hl-1">.</span><span class="hl-0">withTags</span><span class="hl-1">(</span><span class="hl-4">realMapTag</span><span class="hl-1">) })</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> (</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">)</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="set" class="tsd-anchor-link">!!set<a href="#set" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<p>The YAML 1.1 <code>!!set</code> tag now produces a <code>Set</code> instead of an object of <code>null</code>s:</p>
+<pre><code class="js"><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-0">load</span><span class="hl-1">(</span><span class="hl-2">&#39;!!set { one, two }&#39;</span><span class="hl-1">, { </span><span class="hl-4">schema:</span><span class="hl-1"> </span><span class="hl-6">YAML11_SCHEMA</span><span class="hl-1"> })</span><br/><span class="hl-1">  </span><span class="hl-7">// Set { &#39;one&#39;, &#39;two&#39; }</span><br/><span class="hl-1">} </span><span class="hl-3">catch</span><span class="hl-1"> (</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">)</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="dump" class="tsd-anchor-link">dump<a href="#dump" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<p>By default dump now uses <code>YAML11_SCHEMA</code>, slightly extended with YAML 1.2
+<code>0o...</code> ints and exponent-only floats. This guarantees safe quoting for all YAML
+versions. If you don't need deep compatibility, you can pass <code>CORE_SCHEMA</code> to
+options.</p>
+<h3 id="removed-options-1" class="tsd-anchor-link">Removed options<a href="#removed-options-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Removed option</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>styles</code></td>
+<td>override the tag's <code>represent()</code> (see below)</td>
+</tr>
+<tr>
+<td><code>replacer</code></td>
+<td>removed — patch the data before <code>dump()</code></td>
+</tr>
+<tr>
+<td><code>noCompatMode</code></td>
+<td>select the schema whose scalar rules apply</td>
+</tr>
+<tr>
+<td><code>condenseFlow</code></td>
+<td><code>flowSkipCommaSpace</code>, <code>flowSkipColonSpace</code>, <code>quoteFlowKeys</code></td>
+</tr>
+<tr>
+<td><code>quotingType</code></td>
+<td><code>quoteStyle: 'single'</code> or <code>quoteStyle: 'double'</code></td>
+</tr>
+<tr>
+<td><code>noArrayIndent</code></td>
+<td><code>seqNoIndent</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="replacing" class="tsd-anchor-link">Replacing <code>styles</code><a href="#replacing" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<p>Patch the tag whose output you want to change:</p>
+<pre><code class="js"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">CORE_SCHEMA</span><span class="hl-1">, </span><span class="hl-4">dump</span><span class="hl-1">, </span><span class="hl-4">nullCoreTag</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;js-yaml&#39;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">schema</span><span class="hl-1"> = </span><span class="hl-6">CORE_SCHEMA</span><span class="hl-1">.</span><span class="hl-0">withTags</span><span class="hl-1">({ ...</span><span class="hl-4">nullCoreTag</span><span class="hl-1">, </span><span class="hl-0">represent</span><span class="hl-4">:</span><span class="hl-1"> () </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-2">&#39;~&#39;</span><span class="hl-1"> })</span><br/><br/><span class="hl-0">dump</span><span class="hl-1">({ </span><span class="hl-4">value:</span><span class="hl-1"> </span><span class="hl-5">null</span><span class="hl-1"> }, { </span><span class="hl-4">schema</span><span class="hl-1"> })</span>
+</code><button type="button">Copy</button></pre>
+
+<p>If you style int/float and want to keep quoting safe, patch <code>resolve</code> too, as the
+default dump schema does:</p>
+<pre><code class="js"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">YAML11_SCHEMA</span><span class="hl-1">, </span><span class="hl-4">dump</span><span class="hl-1">, </span><span class="hl-4">NOT_RESOLVED</span><span class="hl-1">, </span><span class="hl-4">intYaml11Tag</span><span class="hl-1">, </span><span class="hl-4">intCoreTag</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;js-yaml&#39;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">schema</span><span class="hl-1"> = </span><span class="hl-6">YAML11_SCHEMA</span><span class="hl-1">.</span><span class="hl-0">withTags</span><span class="hl-1">({</span><br/><span class="hl-1">  ...</span><span class="hl-4">intYaml11Tag</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-0">represent</span><span class="hl-4">:</span><span class="hl-1"> (</span><span class="hl-4">value</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">value</span><span class="hl-1"> &gt;= </span><span class="hl-9">0</span><span class="hl-1"> ? </span><span class="hl-2">`0x</span><span class="hl-5">${</span><span class="hl-4">value</span><span class="hl-10">.</span><span class="hl-0">toString</span><span class="hl-10">(</span><span class="hl-9">16</span><span class="hl-10">)</span><span class="hl-5">}</span><span class="hl-2">`</span><span class="hl-1"> : </span><span class="hl-4">value</span><span class="hl-1">.</span><span class="hl-0">toString</span><span class="hl-1">(</span><span class="hl-9">10</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-0">resolve</span><span class="hl-4">:</span><span class="hl-1"> (</span><span class="hl-4">source</span><span class="hl-1">, </span><span class="hl-4">isExplicit</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">result</span><span class="hl-1"> = </span><span class="hl-4">intYaml11Tag</span><span class="hl-1">.</span><span class="hl-0">resolve</span><span class="hl-1">(</span><span class="hl-4">source</span><span class="hl-1">, </span><span class="hl-4">isExplicit</span><span class="hl-1">)</span><br/><span class="hl-1">    </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-4">result</span><span class="hl-1"> === </span><span class="hl-6">NOT_RESOLVED</span><span class="hl-1"> ? </span><span class="hl-4">intCoreTag</span><span class="hl-1">.</span><span class="hl-0">resolve</span><span class="hl-1">(</span><span class="hl-4">source</span><span class="hl-1">, </span><span class="hl-4">isExplicit</span><span class="hl-1">) : </span><span class="hl-4">result</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">})</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="custom-types" class="tsd-anchor-link">Custom types<a href="#custom-types" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<p>The <code>Type</code> class is gone. Tags are now built with <code>defineScalarTag</code>,
+<code>defineSequenceTag</code> or <code>defineMappingTag</code> (pick by node kind); one tag describes
+both loading and dumping, and you register it via <code>schema.withTags(...)</code>.</p>
+<p>The model is different, not just renamed: instead of one <code>construct(data)</code>, the
+collection tags build incrementally (<code>create</code> + <code>addItem</code> / <code>addPair</code>), scalars
+return the value or <code>NOT_RESOLVED</code>, and <code>instanceOf</code> becomes <code>identify</code>.
+<code>identify</code> is required because it explicitly controls whether the tag may be
+selected when dumping. For a load-only tag, use <code>identify: () =&gt; false</code>.</p>
+<pre><code class="js"><span class="hl-7">// v4</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">pointType</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-4">yaml</span><span class="hl-1">.</span><span class="hl-0">Type</span><span class="hl-1">(</span><span class="hl-2">&#39;!point&#39;</span><span class="hl-1">, {</span><br/><span class="hl-1">  </span><span class="hl-4">kind:</span><span class="hl-1"> </span><span class="hl-2">&#39;sequence&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-0">construct</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-4">data</span><span class="hl-1"> </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Point</span><span class="hl-1">(...</span><span class="hl-4">data</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-4">instanceOf:</span><span class="hl-1"> </span><span class="hl-4">Point</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-0">represent</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-4">point</span><span class="hl-1"> </span><span class="hl-5">=&gt;</span><span class="hl-1"> [</span><span class="hl-4">point</span><span class="hl-1">.</span><span class="hl-4">x</span><span class="hl-1">, </span><span class="hl-4">point</span><span class="hl-1">.</span><span class="hl-4">y</span><span class="hl-1">]</span><br/><span class="hl-1">})</span><br/><br/><span class="hl-7">// v5</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">defineSequenceTag</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;js-yaml&#39;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">pointTag</span><span class="hl-1"> = </span><span class="hl-0">defineSequenceTag</span><span class="hl-1">(</span><span class="hl-2">&#39;!point&#39;</span><span class="hl-1">, {</span><br/><span class="hl-1">  </span><span class="hl-0">create</span><span class="hl-4">:</span><span class="hl-1"> () </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Point</span><span class="hl-1">(),</span><br/><span class="hl-1">  </span><span class="hl-0">addItem</span><span class="hl-4">:</span><span class="hl-1"> (</span><span class="hl-4">point</span><span class="hl-1">, </span><span class="hl-4">value</span><span class="hl-1">, </span><span class="hl-4">index</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">index</span><span class="hl-1"> === </span><span class="hl-9">0</span><span class="hl-1">) </span><span class="hl-4">point</span><span class="hl-1">.</span><span class="hl-4">x</span><span class="hl-1"> = </span><span class="hl-4">value</span><br/><span class="hl-1">    </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">index</span><span class="hl-1"> === </span><span class="hl-9">1</span><span class="hl-1">) </span><span class="hl-4">point</span><span class="hl-1">.</span><span class="hl-4">y</span><span class="hl-1"> = </span><span class="hl-4">value</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">  </span><span class="hl-0">identify</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-4">value</span><span class="hl-1"> </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">value</span><span class="hl-1"> </span><span class="hl-5">instanceof</span><span class="hl-1"> </span><span class="hl-8">Point</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-0">represent</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-4">point</span><span class="hl-1"> </span><span class="hl-5">=&gt;</span><span class="hl-1"> [</span><span class="hl-4">point</span><span class="hl-1">.</span><span class="hl-4">x</span><span class="hl-1">, </span><span class="hl-4">point</span><span class="hl-1">.</span><span class="hl-4">y</span><span class="hl-1">]</span><br/><span class="hl-1">})</span>
+</code><button type="button">Copy</button></pre>
+
+<p>If the result cannot be populated incrementally, collect its contents in a
+temporary carrier and add <code>finalize</code>:</p>
+<pre><code class="js"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">pointTag</span><span class="hl-1"> = </span><span class="hl-0">defineSequenceTag</span><span class="hl-1">(</span><span class="hl-2">&#39;!point&#39;</span><span class="hl-1">, {</span><br/><span class="hl-1">  </span><span class="hl-0">create</span><span class="hl-4">:</span><span class="hl-1"> () </span><span class="hl-5">=&gt;</span><span class="hl-1"> [],</span><br/><span class="hl-1">  </span><span class="hl-0">addItem</span><span class="hl-4">:</span><span class="hl-1"> (</span><span class="hl-4">items</span><span class="hl-1">, </span><span class="hl-4">value</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> { </span><span class="hl-4">items</span><span class="hl-1">.</span><span class="hl-0">push</span><span class="hl-1">(</span><span class="hl-4">value</span><span class="hl-1">) },</span><br/><span class="hl-1">  </span><span class="hl-0">finalize</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-4">items</span><span class="hl-1"> </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">ImmutablePoint</span><span class="hl-1">(...</span><span class="hl-4">items</span><span class="hl-1">),</span><br/><span class="hl-1">  </span><span class="hl-0">identify</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-4">value</span><span class="hl-1"> </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">value</span><span class="hl-1"> </span><span class="hl-5">instanceof</span><span class="hl-1"> </span><span class="hl-8">ImmutablePoint</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-0">represent</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-4">point</span><span class="hl-1"> </span><span class="hl-5">=&gt;</span><span class="hl-1"> [</span><span class="hl-4">point</span><span class="hl-1">.</span><span class="hl-4">x</span><span class="hl-1">, </span><span class="hl-4">point</span><span class="hl-1">.</span><span class="hl-4">y</span><span class="hl-1">]</span><br/><span class="hl-1">})</span>
+</code><button type="button">Copy</button></pre>
+
+<p>An anchored tag with a temporary carrier cannot recursively alias itself,
+because its result does not exist until <code>finalize</code> returns. Such input throws.</p>
+<p>This only sketches the shape. See <a href="Custom_tags.html">Custom tags</a> for complete
+documentation.</p>
+</div></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details"><a href="#migration-guide-from-to"><span>Migration guide from  to  </span></a>
+<ul>
+<li><a href="#base"><span>Base</span></a></li>
+<li><a href="#load-loadall"><span>load / load<wbr/>All</span></a></li>
+<li>
+<ul>
+<li><a href="#removed-options"><span>Removed options</span></a></li>
+<li><a href="#empty-input-throws"><span>Empty input throws</span></a></li>
+<li><a href="#schema"><span>Schema</span></a></li>
+<li><a href="#mapping-keys"><span>Mapping keys</span></a></li>
+<li><a href="#set"><span>!!set</span></a></li></ul></li>
+<li><a href="#dump"><span>dump</span></a></li>
+<li>
+<ul>
+<li><a href="#removed-options-1"><span>Removed options</span></a></li>
+<li><a href="#replacing"><span>Replacing </span></a></li></ul></li>
+<li><a href="#custom-types"><span>Custom types</span></a></li></ul></div></details></div>
+<div class="site-menu">
+<nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/nodeca/js-yaml" class="tsd-nav-link">GitHub</a></nav>
+<nav class="tsd-navigation"><a href="../modules.html">js-yaml - v5.4.1</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div></body></html>
