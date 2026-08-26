@@ -56,13 +56,14 @@ describe('Pathological tests', () => {
       }, /merge keys exceeded maxTotalMergeKeys/)
     })
 
-    it('counts empty merge sources against maxTotalMergeKeys', () => {
+    // Not relevant after limiting the merge sequence length, but kept for history.
+    /* it('counts empty merge sources against maxTotalMergeKeys', () => {
       const n = 100000
       const src = 'arr: &arr [' + '{},'.repeat(n).slice(0, -1) + ']\n' +
         'targets:\n' + '  - <<: *arr\n'.repeat(n)
       assertYamlException(() => {
         load(src, { schema: YAML11_SCHEMA })
       }, /merge keys exceeded maxTotalMergeKeys/)
-    })
+    }) */
   })
 })

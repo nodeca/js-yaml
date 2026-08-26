@@ -275,6 +275,12 @@ function mergeSource (state: ConstructorState, frame: MappingFrame, source: unkn
   if (isMappingTag(sourceTag)) {
     mergeKeys(state, frame, source, sourceTag)
   } else if (sourceTag.nodeKind === 'sequence' && Array.isArray(source)) {
+    // The current merge budget is sufficient; this hard cap only further limits
+    // the attack vector, so there is no reason to expose it as a public option.
+    if (source.length > 100) {
+      throwError(state, 'abnormal merge sequence size')
+    }
+
     for (const element of source) {
       const elementTag = state.nodeTags.get(element)
       if (!elementTag) {
