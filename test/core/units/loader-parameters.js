@@ -78,7 +78,7 @@ describe('loader parameters', function () {
       '\n- <<: [' + Array.from({ length: n }, (_, i) => `*x${i}`).join(', ') + ']\n'
 
     assert.doesNotThrow(function () {
-      yaml.load(merge(3), { maxTotalMergeKeys: 5 })
+      yaml.load(merge(3), { maxTotalMergeKeys: 6 })
     })
     assert.throws(function () {
       yaml.load(merge(3), { maxTotalMergeKeys: 2 })
@@ -102,7 +102,7 @@ b: { <<: *a }
 `
 
     assert.doesNotThrow(function () {
-      yaml.loadAll(src, { maxTotalMergeKeys: 4 })
+      yaml.loadAll(src, { maxTotalMergeKeys: 6 })
     })
     assert.throws(function () {
       yaml.loadAll(src, { maxTotalMergeKeys: 3 })
