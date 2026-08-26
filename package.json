@@ -1,6 +1,6 @@
 {
   "name": "js-yaml",
-  "version": "5.4.0",
+  "version": "5.4.1",
   "description": "YAML 1.2 parser and serializer",
   "keywords": [
     "yaml",
