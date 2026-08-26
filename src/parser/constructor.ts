@@ -92,7 +92,8 @@ interface ConstructorOptions {
 
   /**
    * Maximum total number of keys processed by merge (`<<`) across one load
-   * call. Set to `-1` to disable the limit.
+   * call. Each member of a merge sequence also counts as one key. Set to `-1`
+   * to disable the limit.
    *
    * @defaultValue `10000`
    */
@@ -237,8 +238,10 @@ function isMappingTag (tag: AnyTag): tag is MappingTagDefinition<any, any> {
   return tag.nodeKind === 'mapping'
 }
 
-function chargeMergeKey (state: ConstructorState) {
-  if (state.maxTotalMergeKeys !== -1 && ++state.totalMergeKeys > state.maxTotalMergeKeys) {
+function chargeMergeWork (state: ConstructorState) {
+  state.totalMergeKeys++
+
+  if (state.maxTotalMergeKeys !== -1 && state.totalMergeKeys > state.maxTotalMergeKeys) {
     throwError(state, `merge keys exceeded maxTotalMergeKeys (${state.maxTotalMergeKeys})`)
   }
 }
@@ -246,23 +249,20 @@ function chargeMergeKey (state: ConstructorState) {
 // Fold the keys of one mapping source into the target frame, honoring merge
 // precedence: an already-present key (explicit or from an earlier source) wins.
 function mergeKeys (state: ConstructorState, frame: MappingFrame, source: unknown, sourceTag: MappingTagDefinition<any, any>) {
-  let counted = false
+  // Count the source mapping itself to bound sequences of empty mappings.
+  chargeMergeWork(state)
 
   for (const sourceKey of sourceTag.keys(source)) {
-    counted = true
-    chargeMergeKey(state)
+    chargeMergeWork(state)
 
     if (frame.tag.has(frame.value, sourceKey)) continue
 
     const err = frame.tag.addPair(frame.value, sourceKey, sourceTag.get(source, sourceKey))
     if (err) throwError(state, err)
-    ;(frame.overridable ??= new Set()).add(sourceKey)
-  }
 
-  // A source that folds no keys still costs work to process, so charge one unit
-  // for it. Otherwise a sequence of empty mappings, re-merged through an alias,
-  // does O(sources) work per merge while never touching the key counter.
-  if (!counted) chargeMergeKey(state)
+    frame.overridable ??= new Set()
+    frame.overridable.add(sourceKey)
+  }
 }
 
 // The value of a `<<` key: either a mapping (fold its keys) or a sequence of

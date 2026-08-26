@@ -57,7 +57,7 @@ describe('Pathological tests', () => {
     })
 
     it('counts empty merge sources against maxTotalMergeKeys', () => {
-      const n = 20000
+      const n = 100000
       const src = 'arr: &arr [' + '{},'.repeat(n).slice(0, -1) + ']\n' +
         'targets:\n' + '  - <<: *arr\n'.repeat(n)
       assertYamlException(() => {

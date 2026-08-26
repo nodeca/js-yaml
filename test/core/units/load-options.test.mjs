@@ -41,7 +41,7 @@ describe('load options', () => {
       Array.from({ length: n }, (_, i) => `- &x${i} {a${i}: ${i}}`).join('\n') +
       '\n- <<: [' + Array.from({ length: n }, (_, i) => `*x${i}`).join(', ') + ']\n'
 
-    assert.doesNotThrow(() => load(merge(3), { schema: YAML11_SCHEMA, maxTotalMergeKeys: 5 }))
+    assert.doesNotThrow(() => load(merge(3), { schema: YAML11_SCHEMA, maxTotalMergeKeys: 6 }))
     assert.throws(() => load(merge(3), { schema: YAML11_SCHEMA, maxTotalMergeKeys: 2 }), /maxTotalMergeKeys/)
     assert.doesNotThrow(() => load(merge(3), { schema: YAML11_SCHEMA, maxTotalMergeKeys: -1 }))
 
@@ -58,7 +58,7 @@ b: { <<: *a }
 a: &a { k1: 1, k2: 2 }
 b: { <<: *a }
 `
-    assert.doesNotThrow(() => loadAll(src, { schema: YAML11_SCHEMA, maxTotalMergeKeys: 4 }))
+    assert.doesNotThrow(() => loadAll(src, { schema: YAML11_SCHEMA, maxTotalMergeKeys: 6 }))
     assert.throws(() => loadAll(src, { schema: YAML11_SCHEMA, maxTotalMergeKeys: 3 }), /maxTotalMergeKeys/)
   })
 
