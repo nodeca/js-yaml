@@ -237,13 +237,20 @@ function isMappingTag (tag: AnyTag): tag is MappingTagDefinition<any, any> {
   return tag.nodeKind === 'mapping'
 }
 
+function chargeMergeKey (state: ConstructorState) {
+  if (state.maxTotalMergeKeys !== -1 && ++state.totalMergeKeys > state.maxTotalMergeKeys) {
+    throwError(state, `merge keys exceeded maxTotalMergeKeys (${state.maxTotalMergeKeys})`)
+  }
+}
+
 // Fold the keys of one mapping source into the target frame, honoring merge
 // precedence: an already-present key (explicit or from an earlier source) wins.
 function mergeKeys (state: ConstructorState, frame: MappingFrame, source: unknown, sourceTag: MappingTagDefinition<any, any>) {
+  let counted = false
+
   for (const sourceKey of sourceTag.keys(source)) {
-    if (state.maxTotalMergeKeys !== -1 && ++state.totalMergeKeys > state.maxTotalMergeKeys) {
-      throwError(state, `merge keys exceeded maxTotalMergeKeys (${state.maxTotalMergeKeys})`)
-    }
+    counted = true
+    chargeMergeKey(state)
 
     if (frame.tag.has(frame.value, sourceKey)) continue
 
@@ -251,6 +258,11 @@ function mergeKeys (state: ConstructorState, frame: MappingFrame, source: unknow
     if (err) throwError(state, err)
     ;(frame.overridable ??= new Set()).add(sourceKey)
   }
+
+  // A source that folds no keys still costs work to process, so charge one unit
+  // for it. Otherwise a sequence of empty mappings, re-merged through an alias,
+  // does O(sources) work per merge while never touching the key counter.
+  if (!counted) chargeMergeKey(state)
 }
 
 // The value of a `<<` key: either a mapping (fold its keys) or a sequence of
