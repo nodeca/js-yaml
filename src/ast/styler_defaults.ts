@@ -61,8 +61,10 @@ function doubleQuoteWhitespaceOnly (layout: ScalarLayout): void {
 function applyForceQuotesOption (layout: ScalarLayout): void {
   if (!layout.presenterOptions.forceQuotes) return
 
-  // forceQuotes applies only to plain values, not to mapping keys.
+  // forceQuotes applies only to plain string values, not to mapping keys
+  // or other types.
   if (layout.isKey || layout.style !== SCALAR_STYLE.PLAIN) return
+  if (layout.node.tag !== layout.presenterOptions.schema.defaultScalarTag.tagName) return
 
   layout.style = layout.node.value.includes('\n')
     ? SCALAR_STYLE.DOUBLE_QUOTED

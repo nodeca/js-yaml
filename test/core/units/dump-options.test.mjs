@@ -91,7 +91,13 @@ describe('dump options', () => {
   })
 
   it('forceQuotes — quotes non-key strings using quoteStyle', () => {
-    assert.equal(dump({ hello: 'world' }, { forceQuotes: true }), "hello: 'world'\n")
+    assert.equal(
+      dump(
+        { hello: 'world', b: true, i: 42, f: 3.14, nil: null, d: new Date(0) },
+        { forceQuotes: true }
+      ),
+      "hello: 'world'\nb: true\ni: 42\nf: 3.14\nnil: null\nd: 1970-01-01T00:00:00.000Z\n"
+    )
     assert.equal(
       dump({ hello: 'world' }, { forceQuotes: true, quoteStyle: 'double' }),
       'hello: "world"\n'
