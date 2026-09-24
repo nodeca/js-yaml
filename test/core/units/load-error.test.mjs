@@ -174,6 +174,47 @@ describe('load errors', () => {
     assert.throws(() => { load('\x9f') }, YAMLException)
   })
 
+  it('forbid non-printable characters inside plain scalars', () => {
+    assert.throws(() => { load('key: val\x80ue') }, YAMLException)
+    assert.throws(() => { load('key: \x80abc') }, YAMLException)
+    assert.throws(() => { load('key: \x80a b') }, YAMLException)
+    assert.throws(() => { load('key: a\x7fb') }, YAMLException)
+    assert.throws(() => { load('key: a\x01b') }, YAMLException)
+    assert.throws(() => { load('key: abc\n  d\x80ef') }, YAMLException)
+    assert.throws(() => { load('[a\x80b]') }, YAMLException)
+  })
+
+  it('points non-printable character errors at the offending character', () => {
+    function assertMark (source, line, column) {
+      assert.throws(() => { load(source) }, error => {
+        assert.ok(error instanceof YAMLException)
+        assert.equal(error.mark.line, line)
+        assert.equal(error.mark.column, column)
+        return true
+      })
+    }
+
+    assertMark('a: b\x01\nc: d', 0, 4)
+    assertMark('a: b\x01\n  c', 0, 4)
+    assertMark('a: |\n  x\x01\n  y\n', 1, 3)
+    assertMark('a: x\udc00', 0, 4)
+  })
+
+  it('forbid flow indicators at the start of block plain scalars', () => {
+    assert.throws(() => { load('k: ]') }, YAMLException)
+    assert.throws(() => { load('k: }') }, YAMLException)
+    assert.throws(() => { load('k: ,x') }, YAMLException)
+    assert.throws(() => { load('- ]') }, YAMLException)
+    assert.throws(() => { load(']') }, YAMLException)
+    assert.throws(() => { load(']: v') }, YAMLException)
+
+    assert.deepStrictEqual(load('k: a]'), { k: 'a]' })
+    assert.deepStrictEqual(load('k: a,b'), { k: 'a,b' })
+    assert.deepStrictEqual(load('- -]'), ['-]'])
+    assert.deepStrictEqual(load('k: [a]'), { k: ['a'] })
+    assert.deepStrictEqual(load('k: {a: b}'), { k: { a: 'b' } })
+  })
+
   it('forbid lone surrogates', () => {
     assert.throws(() => { load('\udc00\ud800') }, YAMLException)
   })

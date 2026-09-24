@@ -38,6 +38,19 @@ last: document
         { last: 'document' }
       ])
     })
+
+    it('detects BOM-prefixed document boundaries after a plain scalar line', () => {
+      assert.deepStrictEqual(loadAll('foo\nbar\n﻿--- baz'), ['foo bar', 'baz'])
+      assert.deepStrictEqual(loadAll('foo\n﻿---\nbaz'), ['foo', 'baz'])
+      assert.deepStrictEqual(loadAll('foo\n﻿%YAML 1.2\n---\nbaz'), ['foo', 'baz'])
+    })
+  })
+
+  it('accepts printable non-ASCII characters in plain scalars', () => {
+    assert.deepStrictEqual(load('key: café'), { key: 'café' })
+    assert.deepStrictEqual(load('key: 日本'), { key: '日本' })
+    assert.deepStrictEqual(load('key: \u{1F600}'), { key: '\u{1F600}' })
+    assert.deepStrictEqual(load('key: a\x85b'), { key: 'a\x85b' })
   })
 
   it('Loading multidocument source using `load` should cause an error', () => {

@@ -417,7 +417,12 @@ function skipUntilLineEnd (state: ParserState) {
 }
 
 function checkPrintable (state: ParserState, start: number, end: number) {
-  if (PATTERN_NON_PRINTABLE.test(state.input.slice(start, end))) {
+  const match = PATTERN_NON_PRINTABLE.exec(state.input.slice(start, end))
+
+  if (match !== null) {
+    // Point at the offending char. The lone low surrogate alternative also
+    // matches the preceding char, so take the last one of the match.
+    state.position = start + match.index + match[0].length - 1
     throwError(state, 'the stream contains non-printable characters')
   }
 }
@@ -777,7 +782,7 @@ function canStartPlainScalar (state: ParserState, nodeContext: NodeContext) {
       ch === 0x25/* % */ ||
       ch === 0x40/* @ */ ||
       ch === 0x60/* ` */ ||
-      (inFlow && isFlowIndicator(ch))) {
+      isFlowIndicator(ch)) {
     return false
   }
 
