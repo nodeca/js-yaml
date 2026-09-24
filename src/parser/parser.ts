@@ -1100,20 +1100,18 @@ function readBlockMapping (state: ParserState, nodeIndent: number, flowIndent: n
           }
 
           if (!mappingOpened) {
-            restoreState(state, beforeKey)
-            addMappingEvent(state, beforeKey.position, props.anchorStart, props.anchorEnd, props.tagStart, props.tagEnd, COLLECTION_STYLE.BLOCK)
+            // The key is already parsed; insert the MAPPING event before its
+            // events instead of rolling back and re-reading the key.
+            state.events.splice(beforeKey.eventsLength, 0, {
+              type: EVENT_ID.MAPPING,
+              start: beforeKey.position,
+              anchorStart: props.anchorStart,
+              anchorEnd: props.anchorEnd,
+              tagStart: props.tagStart,
+              tagEnd: props.tagEnd,
+              style: COLLECTION_STYLE.BLOCK
+            })
             mappingOpened = true
-            // The key, the `:` and the space after it were already validated
-            // above, before the rollback. Re-reading the same input cannot
-            // fail, so just consume it again without error checks.
-            parseNode(state, flowIndent, CONTEXT_FLOW_OUT, false, true)
-
-            ch = state.input.charCodeAt(state.position)
-            while (isWhiteSpace(ch)) {
-              ch = state.input.charCodeAt(++state.position)
-            }
-
-            state.position++
           }
 
           detected = true
