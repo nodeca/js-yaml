@@ -709,7 +709,7 @@ function readBlockScalar (state: ParserState, parentIndent: number, props: NodeP
         state.position = linePosition + column
         throwError(state, 'tab characters must not be used in indentation')
       }
-      if (column < maxLeadingIndent) {
+      if (column >= parentIndent && column < maxLeadingIndent) {
         state.position = linePosition + column
         throwError(state, 'bad indentation of a mapping entry')
       }
