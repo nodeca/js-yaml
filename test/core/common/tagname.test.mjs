@@ -1,5 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
+import { parseEvents } from '../../../src/parser/parser.ts'
 import {
   tagNameFull,
   tagNameShort
@@ -27,6 +28,7 @@ describe('tagname', () => {
     it('resolves a registered custom handle', () => {
       const handlers = { '!e!': 'tag:example.com,2024:' }
       assert.equal(tagNameFull('!e!foo', handlers), 'tag:example.com,2024:foo')
+      assert.equal(tagNameFull('!e!21', { '!e!': '!%25' }), '!%21')
     })
 
     it('lets user handles override the defaults', () => {
@@ -42,6 +44,7 @@ describe('tagname', () => {
     it('percent-decodes the resolved name', () => {
       assert.equal(tagNameFull('!foo%20bar'), '!foo bar')
       assert.equal(tagNameFull('!%E2%9C%93'), '!✓') // checkmark
+      assert.equal(tagNameFull('!%c3%a9%E2%9C%93%f0%9f%98%80+%2521'), '!é✓😀+%21')
     })
   })
 
@@ -49,17 +52,31 @@ describe('tagname', () => {
     it('shortens the yaml.org prefix to "!!"', () => {
       assert.equal(tagNameShort(`${YAML_PREFIX}str`), '!!str')
       assert.equal(tagNameShort(`${YAML_PREFIX}`), '!!')
+      assert.equal(tagNameShort(`${YAML_PREFIX}a,b`), '!!a%2Cb')
     })
 
     it('keeps a local "!" tag, re-encoding its body', () => {
       assert.equal(tagNameShort('!local'), '!local')
       assert.equal(tagNameShort('!foo bar'), '!foo%20bar')
       assert.equal(tagNameShort('!a!b'), '!a%21b')
+      assert.equal(tagNameShort('!a.b!,[]{}%'), '!a.b%21%2C%5B%5D%7B%7D%25')
+      assert.equal(tagNameShort('!é✓😀+%21'), '!%C3%A9%E2%9C%93%F0%9F%98%80+%2521')
     })
 
     it('wraps any other tag as verbatim', () => {
       assert.equal(tagNameShort('tag:example.com,2024:foo'), '!<tag:example.com,2024:foo>')
+      assert.equal(
+        tagNameShort('tag:example.com,2024:a!b[c]{}%'),
+        '!<tag:example.com,2024:a!b[c]%7B%7D%25>'
+      )
     })
+  })
+
+  it('does not throw on malformed encodings', () => {
+    assert.doesNotThrow(() => tagNameShort('!\uD800'))
+    assert.doesNotThrow(() => tagNameFull('!%FF'))
+    assert.doesNotThrow(() => parseEvents('!%FF value'))
+    assert.doesNotThrow(() => parseEvents('%TAG !e! !%FF\n--- !e!foo value'))
   })
 
   describe('round-trips between full and short forms', () => {

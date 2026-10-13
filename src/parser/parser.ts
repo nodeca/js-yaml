@@ -472,11 +472,6 @@ function readTagProperty (state: ParserState, props: NodeProperties, inFlow: boo
   if (tagName && !(isVerbatim ? PATTERN_TAG_URI.test(tagName) : PATTERN_TAG_SUFFIX.test(tagName))) {
     throwError(state, `tag name cannot contain such characters: ${tagName}`)
   }
-  try {
-    decodeURIComponent(tagName)
-  } catch {
-    throwError(state, `tag name is malformed: ${tagName}`)
-  }
 
   if (!isVerbatim && tagHandle !== '!' && tagHandle !== '!!' && !HAS_OWN.call(state.tagHandlers, tagHandle)) {
     throwError(state, `undeclared tag handle "${tagHandle}"`)
@@ -1367,11 +1362,6 @@ function readDirective (state: ParserState) {
     if (!PATTERN_TAG_HANDLE.test(handle)) throwError(state, 'ill-formed tag handle (first argument) of the TAG directive')
     if (HAS_OWN.call(state.tagHandlers, handle)) throwError(state, `there is a previously declared suffix for "${handle}" tag handle`)
     if (!PATTERN_TAG_PREFIX.test(prefix)) throwError(state, 'ill-formed tag prefix (second argument) of the TAG directive')
-    try {
-      decodeURIComponent(prefix)
-    } catch {
-      throwError(state, `tag prefix is malformed: ${prefix}`)
-    }
 
     state.tagHandlers[handle] = prefix
     state.directives.push({ kind: 'tag', handle, prefix })
