@@ -174,6 +174,22 @@ describe('load errors', () => {
     assert.throws(() => { load('\x9f') }, YAMLException)
   })
 
+  it('forbid flow indicators at the start of block plain scalars', () => {
+    assert.throws(() => { load('k: ]') }, YAMLException)
+    assert.throws(() => { load('k: }') }, YAMLException)
+    assert.throws(() => { load('k: ,x') }, YAMLException)
+    assert.throws(() => { load('- ]') }, YAMLException)
+    assert.throws(() => { load(']') }, YAMLException)
+    assert.throws(() => { load(']: v') }, YAMLException)
+
+    assert.deepStrictEqual(load('k: a]'), { k: 'a]' })
+    assert.deepStrictEqual(load('k: a,b'), { k: 'a,b' })
+    assert.deepStrictEqual(load('k: a\n  }'), { k: 'a }' })
+    assert.deepStrictEqual(load('- -]'), ['-]'])
+    assert.deepStrictEqual(load('k: [a]'), { k: ['a'] })
+    assert.deepStrictEqual(load('k: {a: b}'), { k: { a: 'b' } })
+  })
+
   it('forbid lone surrogates', () => {
     assert.throws(() => { load('\udc00\ud800') }, YAMLException)
   })

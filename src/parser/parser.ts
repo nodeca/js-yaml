@@ -772,7 +772,7 @@ function canStartPlainScalar (state: ParserState, nodeContext: NodeContext) {
       ch === 0x25/* % */ ||
       ch === 0x40/* @ */ ||
       ch === 0x60/* ` */ ||
-      (inFlow && isFlowIndicator(ch))) {
+      isFlowIndicator(ch)) {
     return false
   }
 
