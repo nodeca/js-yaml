@@ -174,6 +174,26 @@ describe('load errors', () => {
     assert.throws(() => { load('\x9f') }, YAMLException)
   })
 
+  it('points non-printable character errors at the offending character', () => {
+    function assertMark (source, position, line, column) {
+      assert.throws(() => { load(source) }, error => {
+        assert.ok(error instanceof YAMLException)
+        assert.equal(error.mark.position, position)
+        assert.equal(error.mark.line, line)
+        assert.equal(error.mark.column, column)
+        return true
+      })
+    }
+
+    assertMark('a: b\x01\nc: d', 4, 0, 4)
+    assertMark('a: b\x01\n  c', 4, 0, 4)
+    assertMark('a: |\n  x\x01\n  y\n', 8, 1, 3)
+    assertMark('a: b\r\n  c\x01', 9, 1, 3)
+    assertMark('a: x\udc00', 4, 0, 4)
+    assertMark('a: \udc00', 3, 0, 3)
+    assertMark('a: x\ud800', 4, 0, 4)
+  })
+
   it('forbid flow indicators at the start of block plain scalars', () => {
     assert.throws(() => { load('k: ]') }, YAMLException)
     assert.throws(() => { load('k: }') }, YAMLException)

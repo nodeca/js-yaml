@@ -417,7 +417,12 @@ function skipUntilLineEnd (state: ParserState) {
 }
 
 function checkPrintable (state: ParserState, start: number, end: number) {
-  if (PATTERN_NON_PRINTABLE.test(state.input.slice(start, end))) {
+  const match = PATTERN_NON_PRINTABLE.exec(state.input.slice(start, end))
+
+  if (match !== null) {
+    // The lone low surrogate alternative also matches the preceding character,
+    // so the offending character is always the last one in the match.
+    state.position = start + match.index + match[0].length - 1
     throwError(state, 'the stream contains non-printable characters')
   }
 }
