@@ -68,23 +68,23 @@
     "postpublish": "npm run demo:publish"
   },
   "dependencies": {
-    "argparse": "^2.0.1"
+    "argparse": "^3.0.3"
   },
   "devDependencies": {
-    "@streamparser/json": "^0.0.22",
-    "@types/node": "^24.12.2",
-    "c8": "^11.0.0",
+    "@streamparser/json": "^0.0.26",
+    "@types/node": "^26.6.5",
+    "c8": "^12.0.0",
     "codemirror": "^5.65.21",
-    "eslint": "^9.39.4",
-    "fast-check": "^4.8.0",
+    "eslint": "^10.12.0",
+    "fast-check": "^4.10.2",
     "gh-pages": "^6.3.0",
     "mitata": "^1.0.34",
-    "neostandard": "^0.13.0",
-    "rollup": "^4.62.2",
-    "rollup-plugin-dts": "^6.4.1",
-    "typedoc": "^0.28.19",
+    "neostandard": "^0.14.1",
+    "rollup": "^4.64.7",
+    "rollup-plugin-dts": "^6.5.1",
+    "typedoc": "^0.28.20",
     "typescript": "^6.0.3",
-    "vite": "^8.1.2",
+    "vite": "^8.3.4",
     "vite-plugin-node-polyfills": "^0.28.0",
     "vite-plugin-singlefile": "^2.3.3",
     "workerpool": "^10.0.3"
