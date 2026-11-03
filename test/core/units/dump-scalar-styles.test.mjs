@@ -71,6 +71,23 @@ describe('Scalar style dump:', () => {
       }
     })
 
+    it('quotes a root block mapping key that would read as a document marker', () => {
+      // A root block mapping key starts at column 0, where `---`/`...` followed
+      // by separation whitespace is a document boundary marker, not content.
+      for (const key of ['--- x', '... x', '---', '...']) {
+        const dumped = dump({ [key]: 1 })
+
+        assert.strictEqual(dumped, `'${key}': 1\n`)
+        assert.deepStrictEqual(load(dumped), { [key]: 1 })
+      }
+
+      // An indent wider than the default does not move a root key off column 0.
+      assert.strictEqual(dump({ '... x': 1 }, { indent: 4 }), "'... x': 1\n")
+      // Nested and sequence-item keys are indented, so they stay plain.
+      assert.strictEqual(dump({ a: { '... x': 1 } }), 'a:\n  ... x: 1\n')
+      assert.strictEqual(dump([{ '... x': 1 }]), '- ... x: 1\n')
+    })
+
     it('quote strings of ambiguous type', () => {
       assert.strictEqual(dump('Yes'), '\'Yes\'\n')
       assert.strictEqual(dump('true'), '\'true\'\n')
