@@ -171,6 +171,14 @@ function scalarLayout (state: PresenterState, node: ScalarNode, parent: Readonly
   const shiftOfParent = level === 0 ? -1 : state.indent * (level - 1)
   const shiftOfContent = state.indent * Math.max(1, level)
 
+  // A block mapping key is written on its mapping's line, one level above the
+  // level `writeBlockMapping` hands to the key scalar, so at the document root
+  // the key really starts at column 0. A flow key always follows `{` or the
+  // `, ` separator, so it never does.
+  const shiftOfFirstLine = isKey && !flowOnly
+    ? state.indent * Math.max(0, level - 1)
+    : (level === 0 ? 0 : state.indent * level)
+
   return {
     node,
     parent,
@@ -179,7 +187,7 @@ function scalarLayout (state: PresenterState, node: ScalarNode, parent: Readonly
     flowOnly,
     shiftOfParent,
     shiftOfContent,
-    shiftOfFirstLine: level === 0 ? 0 : state.indent * level,
+    shiftOfFirstLine,
     presenterOptions: state,
     allowedStylesMask: 0,
     style: node.style
