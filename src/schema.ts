@@ -20,7 +20,7 @@ import { floatJsonTag } from './tag/scalar/float_json.ts'
 import { floatYaml11Tag } from './tag/scalar/float_yaml11.ts'
 import { mergeTag } from './tag/scalar/merge.ts'
 import { binaryTag } from './tag/scalar/binary.ts'
-import { timestampTag } from './tag/scalar/timestamp.ts'
+import { timestampTag, isYamlTimestampShape } from './tag/scalar/timestamp.ts'
 import { seqTag } from './tag/sequence/seq.ts'
 import { omapTag } from './tag/sequence/omap.ts'
 import { pairsTag } from './tag/sequence/pairs.ts'
@@ -346,6 +346,14 @@ const DUMP_SCHEMA = YAML11_SCHEMA.withTags(
     resolve: (source, isExplicit, tagName) => {
       const result = floatYaml11Tag.resolve(source, isExplicit, tagName)
       return result === NOT_RESOLVED ? floatCoreTag.resolve(source, isExplicit, tagName) : result
+    }
+  },
+  {
+    ...timestampTag,
+    resolve: (source, isExplicit, tagName) => {
+      const result = timestampTag.resolve(source, isExplicit, tagName)
+      if (result !== NOT_RESOLVED) return result
+      return !isExplicit && isYamlTimestampShape(source) ? new Date(NaN) : NOT_RESOLVED
     }
   }
 )

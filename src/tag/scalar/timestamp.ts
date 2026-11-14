@@ -100,4 +100,8 @@ const timestampTag = defineScalarTag('tag:yaml.org,2002:timestamp', {
   represent: (object: Date) => object.toISOString()
 })
 
-export { timestampTag }
+function isYamlTimestampShape (source: string): boolean {
+  return YAML_DATE_REGEXP.test(source) || YAML_TIMESTAMP_REGEXP.test(source)
+}
+
+export { timestampTag, isYamlTimestampShape }
