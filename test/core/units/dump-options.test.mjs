@@ -21,6 +21,19 @@ describe('dump options', () => {
     assert.equal(dump('yes', { schema: JSON_SCHEMA }), 'yes\n')
   })
 
+  it('schema — quotes date-shaped strings that are invalid calendar/time values', () => {
+    for (const value of [
+      '0000-00-00',
+      '2026-02-30',
+      '2026-11-31',
+      '2026-13-45',
+      '2026-01-01 25:00:00',
+      '2026-01-01T24:00:00Z'
+    ]) {
+      assert.equal(dump({ d: value }), `d: '${value}'\n`)
+    }
+  })
+
   it('skipInvalid — drops unrepresentable values instead of throwing', () => {
     assert.throws(() => dump({ a: () => 1 }), YAMLException)
     assert.equal(dump({ a: () => 1, b: 2 }, { skipInvalid: true }), 'b: 2\n')
