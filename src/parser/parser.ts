@@ -651,7 +651,10 @@ function readBlockScalar (state: ParserState, parentIndent: number, props: NodeP
         throwError(state, 'bad explicit indentation width of a block scalar; it cannot be less than one')
       }
       if (detectedIndent) throwError(state, 'repeat of an indentation width identifier')
-      indent = parentIndent + digit - 1
+      // The indicator is relative to the parent node, but the resulting
+      // content indent is never less than 1: `|1` at the top level still
+      // requires indented content, so a line at column 0 ends the scalar.
+      indent = Math.max(parentIndent, 1) + digit - 1
       detectedIndent = true
       state.position++
     } else {
