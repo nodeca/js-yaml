@@ -19,6 +19,22 @@ function repeat (string, n) {
 
 describe('Scalar style dump:', () => {
   describe('Plain style', () => {
+    it('is not used for root block mapping keys that would read as document markers', () => {
+      // https://github.com/nodeca/js-yaml/issues/805
+      for (const key of ['--- x', '... x', '---', '...']) {
+        const input = { [key]: 1 }
+
+        assert.strictEqual(dump(input), `'${key}': 1\n`)
+        assert.deepStrictEqual(load(dump(input)), input)
+      }
+    })
+
+    it('is kept for indented and mid-line keys starting with document markers', () => {
+      assert.strictEqual(dump({ a: { '--- x': 1 } }), 'a:\n  --- x: 1\n')
+      assert.strictEqual(dump([{ '--- x': 1 }]), '- --- x: 1\n')
+      assert.strictEqual(dump({ a: '--- x' }), 'a: --- x\n')
+    })
+
     it('is preferred', () => {
       ['plain',
         'hello world',

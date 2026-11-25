@@ -179,7 +179,17 @@ function scalarLayout (state: PresenterState, node: ScalarNode, parent: Readonly
     flowOnly,
     shiftOfParent,
     shiftOfContent,
-    shiftOfFirstLine: level === 0 ? 0 : state.indent * level,
+    // A block mapping key shares its mapping's indentation: writeBlockMapping
+    // writes keys one structural level deeper than the line they sit on, so the
+    // first-line shift is one level less than for other nodes at this depth.
+    // (Compact and explicit-form keys sit mid-line, where a smaller shift is
+    // wrong but harmless: it can only overestimate how forbidden the line start
+    // is, and quoting is always safe.)
+    shiftOfFirstLine: level === 0 ? 0
+      : isKey && !flowOnly && parent !== null && parent.kind === 'mapping' &&
+        parent.style === COLLECTION_STYLE.BLOCK
+        ? state.indent * (level - 1)
+        : state.indent * level,
     presenterOptions: state,
     allowedStylesMask: 0,
     style: node.style
