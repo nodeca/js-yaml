@@ -1205,18 +1205,14 @@ function parseNode (
   if (indentStatus === 1) {
     while (true) {
       const ch = state.input.charCodeAt(state.position)
+      if (ch !== 0x21/* ! */ && ch !== 0x26/* & */) break
+      if (atNewLine && indentStatus !== 1) break
+
       const propertyState = snapshotState(state)
 
       if (atNewLine &&
-          indentStatus !== 1 &&
-          (ch === 0x21/* ! */ || ch === 0x26/* & */)) {
-        break
-      }
-
-      if (atNewLine &&
           allowBlockStyles &&
-          (props.tagStart !== NO_RANGE || props.anchorStart !== NO_RANGE) &&
-          (ch === 0x21/* ! */ || ch === 0x26/* & */)) {
+          (props.tagStart !== NO_RANGE || props.anchorStart !== NO_RANGE)) {
         const fallbackState = snapshotState(state)
         const flowIndent = parentIndent + 1
         const mappingIndent = state.position - state.lineStart
